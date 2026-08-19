@@ -202,6 +202,16 @@ export const NewListing = () => {
 
   const [offlineDrafts, setOfflineDrafts] = useState([]);
   const [razorpayDetails, setRazorpayDetails] = useState(null);
+  const [platformSettings, setPlatformSettings] = useState(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [selfiePhoto, setSelfiePhoto] = useState(null);
+  const [selfiePreview, setSelfiePreview] = useState(null);
+  const [showSelfieCamera, setShowSelfieCamera] = useState(false);
+  const [faceDetected, setFaceDetected] = useState(false);
+  const [faceMisaligned, setFaceMisaligned] = useState(false);
 
   const loadOfflineDrafts = async () => {
     try {
@@ -570,17 +580,6 @@ export const NewListing = () => {
       }
     }
   }, [step, consentMethod]);
-
-  const [platformSettings, setPlatformSettings] = useState(null);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [selfiePhoto, setSelfiePhoto] = useState(null);
-  const [selfiePreview, setSelfiePreview] = useState(null);
-  const [showSelfieCamera, setShowSelfieCamera] = useState(false);
-  const [faceDetected, setFaceDetected] = useState(false);
-  const [faceMisaligned, setFaceMisaligned] = useState(false);
 
   const selfieVideoRef = useRef(null);
   const selfieCanvasRef = useRef(null);
