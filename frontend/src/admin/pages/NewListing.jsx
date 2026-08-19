@@ -1269,9 +1269,13 @@ export const NewListing = () => {
         setStep(1);
         setPosition(null);
         setFiles([]);
-        setMediaUrls([]);
-        setVoiceNoteBlob(null);
-        setVoiceNoteUrl("");
+        setAudioBlob(null);
+        setAudioURL(null);
+        setSelfiePhoto(null);
+        setSelfiePreview(null);
+        setOtpVerified(false);
+        setOtpSent(false);
+        setOtpCode("");
         setTimeout(() => navigate("/admin"), 2000);
       } else {
         const errData = await res.json().catch(() => ({}));
