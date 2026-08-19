@@ -1,0 +1,55 @@
+# Environment & Secrets
+.env
+*.env
+.env.*
+
+# Database
+db.sqlite3
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Logs
+logs/
+*.log
+
+# Media uploads (user-generated content — never commit)
+media/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage / Testing
+htmlcov/
+.coverage
+.tox/
+
+# Docs build
+docs/_build/
