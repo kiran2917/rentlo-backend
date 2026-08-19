@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../shared/context/AuthContext";
+import { compressImage } from "../../shared/imageCompressor";
 import { AdminLayout } from "../components/AdminLayout";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -822,8 +823,10 @@ export const NewListing = () => {
     try {
       const newUploaded = [];
       for (const file of validFiles) {
+        // Compress the image file in the browser to WebP format before uploading
+        const compressedFile = await compressImage(file);
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", compressedFile);
 
         const uploadRes = await fetch(
           `${import.meta.env.VITE_API_URL}/media/upload/`,
