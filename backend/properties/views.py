@@ -1045,6 +1045,9 @@ class PlatformSettingsView(views.APIView):
             'e_stamp_provider': settings.e_stamp_provider,
             'e_stamp_api_key': settings.e_stamp_api_key if (request.user and request.user.is_authenticated and 'admin' in getattr(request.user, 'roles', [])) else '',
             'e_stamp_api_secret': settings.e_stamp_api_secret if (request.user and request.user.is_authenticated and 'admin' in getattr(request.user, 'roles', [])) else '',
+
+            # Owner Listing Verification
+            'owner_listing_verification_method': settings.owner_listing_verification_method,
         }
 
         # Admin-only fields: bypass flags must never be exposed publicly
@@ -1183,6 +1186,11 @@ class PlatformSettingsView(views.APIView):
         set_bool('agent_require_otp_login')
         set_bool('agent_require_otp_signup')
         set_bool('otp_bypass_enabled')
+
+        # Owner listing verification method
+        new_method = request.data.get('owner_listing_verification_method')
+        if new_method in ('otp', 'selfie'):
+            settings.owner_listing_verification_method = new_method
 
         settings.save()
         return Response({'detail': 'Platform settings updated successfully.'})

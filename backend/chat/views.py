@@ -71,7 +71,10 @@ class ChatMessagesView(APIView):
             from notifications.models import Notification
             sender_name = request.user.first_name or request.user.username or "Someone"
             prop_title = prop.property_type.replace('_', ' ').capitalize()
-            snippet = message_text[:40] + ("..." if len(message_text) > 40 else "")
+            if message_text.startswith('data:image/'):
+                snippet = "📷 Photo Attachment"
+            else:
+                snippet = message_text[:40] + ("..." if len(message_text) > 40 else "")
             
             Notification.objects.create(
                 recipient=recipient,

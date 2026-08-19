@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn daemon for Rentlo Django API Backend
+After=network.target postgresql.service redis.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/rentlo/backend
+ExecStart=/var/www/rentlo/backend/venv/bin/gunicorn --access-logfile - --workers 4 --bind 127.0.0.1:8000 rentlo_backend.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

@@ -338,6 +338,41 @@ class PlatformSettings(models.Model):
         ('warm_luxury', 'Warm Luxury'),
         ('midnight_glass', 'Midnight Glass'),
         ('emerald_minimal', 'Emerald Minimal'),
+        ('sapphire_luxury', 'Royal Sapphire Indigo'),
+        ('midnight_cyber', 'Obsidian Cyber Dark'),
+        ('graffiti_street', 'Graffiti Street Art'),
+        
+        ('graffiti_pink', 'Graffiti Pink Asphalt'),
+        ('graffiti_lime', 'Graffiti Lime Purple'),
+        ('graffiti_cyan', 'Graffiti Cyan Orange'),
+        
+        ('glass_emerald', 'Glassmorphism Emerald'),
+        ('glass_sapphire', 'Glassmorphism Sapphire'),
+        ('glass_crimson', 'Glassmorphism Crimson'),
+        
+        ('clay_blue', 'Claymorphism Pastel Blue'),
+        ('clay_peach', 'Claymorphism Pastel Peach'),
+        ('clay_sage', 'Claymorphism Pastel Sage'),
+
+        ('bento_cyber', 'Cyber Obsidian Bento'),
+        ('bento_slate', 'Soft Slate Bento'),
+        ('bento_amber', 'Royal Amber Bento'),
+
+        ('luxury_champagne', 'Classic Champagne'),
+        ('luxury_forest', 'Forest Regency'),
+        ('luxury_terracotta', 'Warm Terracotta'),
+
+        ('brutal_pink', 'Retro Pop Pink'),
+        ('brutal_citrus', 'Cyber Citrus'),
+        ('brutal_violet', 'Electric Violet'),
+
+        ('cyber_magenta', 'Cyber Magenta'),
+        ('cyber_cyan', 'Cyber Cyan'),
+        ('cyber_sunset', 'Synthwave Sunset'),
+
+        ('neumorphic_pearl', 'Soft Pearl Neumorphic'),
+        ('neumorphic_obsidian', 'Obsidian Neumorphic'),
+        ('neumorphic_sage', 'Sage Neumorphic'),
     ]
     theme = models.CharField(max_length=50, choices=THEME_CHOICES, default='warm_luxury')
     buyer_theme = models.CharField(max_length=50, choices=THEME_CHOICES, default='warm_luxury')
@@ -353,6 +388,18 @@ class PlatformSettings(models.Model):
     )
     e_stamp_api_key = models.CharField(max_length=255, blank=True, default='')
     e_stamp_api_secret = models.CharField(max_length=255, blank=True, default='')
+
+    # Owner Listing Verification Method (for staff-initiated listings)
+    OWNER_LISTING_VERIFICATION_CHOICES = [
+        ('otp', 'OTP Verification'),
+        ('selfie', 'Live Selfie Capture'),
+    ]
+    owner_listing_verification_method = models.CharField(
+        max_length=10,
+        choices=OWNER_LISTING_VERIFICATION_CHOICES,
+        default='otp',
+        help_text="Verification method required when staff registers a property on behalf of an owner."
+    )
 
     updated_at = models.DateTimeField(auto_now=True)
 

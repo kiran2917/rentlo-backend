@@ -1,0 +1,13 @@
+[Unit]
+Description=Celery Redis Worker for Rentlo Async Image Processing & SMS Dispatch
+After=network.target redis.service
+
+[Service]
+Type=forking
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/rentlo/backend
+ExecStart=/var/www/rentlo/backend/venv/bin/celery -A rentlo_backend worker --loglevel=INFO -D
+
+[Install]
+WantedBy=multi-user.target
