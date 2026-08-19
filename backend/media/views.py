@@ -19,6 +19,42 @@ def is_r2_configured():
         'your-account-id' not in settings.R2_ENDPOINT_URL
     )
 
+def is_cloudinary_configured():
+    return bool(
+        getattr(settings, 'CLOUDINARY_CLOUD_NAME', '') and
+        getattr(settings, 'CLOUDINARY_API_KEY', '') and
+        getattr(settings, 'CLOUDINARY_API_SECRET', '')
+    )
+
+def upload_to_cloudinary(buffer, public_id, resource_type='image'):
+    """Upload file buffer to Cloudinary. Returns (full_url, medium_url, thumbnail_url)."""
+    import cloudinary
+    import cloudinary.uploader
+    cloudinary.config(
+        cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+        api_key=settings.CLOUDINARY_API_KEY,
+        api_secret=settings.CLOUDINARY_API_SECRET,
+        secure=True
+    )
+    buffer.seek(0)
+    result = cloudinary.uploader.upload(
+        buffer,
+        public_id=public_id,
+        folder='rentlo/uploads',
+        resource_type=resource_type,
+        overwrite=True,
+        format='webp',
+        quality='auto:good',
+    )
+    base_url = result['secure_url']
+    # Derive medium & thumbnail via Cloudinary transformation URLs
+    cloud = settings.CLOUDINARY_CLOUD_NAME
+    pid_with_folder = result['public_id']  # e.g. rentlo/uploads/uuid
+    medium_url = f"https://res.cloudinary.com/{cloud}/image/upload/w_800,h_600,c_fit,f_webp,q_auto/{pid_with_folder}"
+    thumbnail_url = f"https://res.cloudinary.com/{cloud}/image/upload/w_400,h_300,c_fit,f_webp,q_auto/{pid_with_folder}"
+    return base_url, medium_url, thumbnail_url
+
+
 def get_r2_client():
     if not is_r2_configured():
         raise ValueError("R2 is not configured. Falling back to local storage.")
@@ -156,39 +192,57 @@ class UploadMediaView(views.APIView):
             prefix = 'sig_' if 'sig' in original_name else ''
             base_uuid = f"{prefix}{uuid.uuid4()}"
             
-            use_local = not is_r2_configured()
-            if not use_local:
+            use_r2 = is_r2_configured()
+            use_cloudinary = not use_r2 and is_cloudinary_configured()
+            use_local = not use_r2 and not use_cloudinary
+
+            if use_r2:
                 try:
                     s3 = get_r2_client()
                 except Exception:
+                    use_r2 = False
+                    use_cloudinary = is_cloudinary_configured()
+                    use_local = not use_cloudinary
+
+            if use_cloudinary:
+                # Upload the full-res WebP to Cloudinary once; derive medium/thumbnail via transform URLs
+                buffer = io.BytesIO()
+                img.save(buffer, format='WEBP', quality=85)
+                buffer.seek(0)
+                try:
+                    full_url, medium_url, thumbnail_url = upload_to_cloudinary(buffer, base_uuid)
+                    urls = {'full': full_url, 'medium': medium_url, 'thumbnail': thumbnail_url}
+                except Exception as cld_err:
+                    logger.error(f"Cloudinary upload failed: {cld_err}", exc_info=True)
+                    use_cloudinary = False
                     use_local = True
 
-            for size_name, max_size in sizes.items():
-                img_copy = img.copy()
-                if max_size:
-                    img_copy.thumbnail(max_size, Image.Resampling.LANCZOS)
-                
-                # Convert to WebP
-                buffer = io.BytesIO()
-                img_copy.save(buffer, format='WEBP', quality=85)
-                buffer.seek(0)
-                
-                object_key = f"uploads/{request.user.id}/{base_uuid}-{size_name}.webp"
-                
-                if use_local:
-                    # Bypass actual S3 upload, save locally instead
-                    from django.core.files.storage import default_storage
-                    from django.core.files.base import ContentFile
-                    local_path = default_storage.save(object_key, ContentFile(buffer.read()))
-                    urls[size_name] = request.build_absolute_uri(f"{settings.MEDIA_URL}{local_path}")
-                else:
-                    s3.put_object(
-                        Bucket=settings.R2_BUCKET_NAME,
-                        Key=object_key,
-                        Body=buffer,
-                        ContentType='image/webp'
-                    )
-                    urls[size_name] = f"{settings.R2_PUBLIC_URL_PREFIX}/{object_key}"
+            if use_r2 or use_local:
+                for size_name, max_size in sizes.items():
+                    img_copy = img.copy()
+                    if max_size:
+                        img_copy.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+                    buf = io.BytesIO()
+                    img_copy.save(buf, format='WEBP', quality=85)
+                    buf.seek(0)
+
+                    object_key = f"uploads/{request.user.id}/{base_uuid}-{size_name}.webp"
+
+                    if use_r2:
+                        s3.put_object(
+                            Bucket=settings.R2_BUCKET_NAME,
+                            Key=object_key,
+                            Body=buf,
+                            ContentType='image/webp'
+                        )
+                        urls[size_name] = f"{settings.R2_PUBLIC_URL_PREFIX}/{object_key}"
+                    else:
+                        # Local dev fallback (Render ephemeral — not persistent)
+                        from django.core.files.storage import default_storage
+                        from django.core.files.base import ContentFile
+                        local_path = default_storage.save(object_key, ContentFile(buf.read()))
+                        urls[size_name] = request.build_absolute_uri(f"{settings.MEDIA_URL}{local_path}")
 
             # Calculate perceptual hash
             import imagehash

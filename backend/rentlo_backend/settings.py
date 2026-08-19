@@ -229,6 +229,11 @@ R2_BUCKET_NAME = os.getenv('R2_BUCKET_NAME', '')
 R2_ENDPOINT_URL = os.getenv('R2_ENDPOINT_URL', '')
 R2_PUBLIC_URL_PREFIX = os.getenv('R2_PUBLIC_URL_PREFIX', '')
 
+# Cloudinary Config (free 25GB — permanent image storage)
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME', '')
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY', '')
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET', '')
+
 import mimetypes
 mimetypes.add_type('image/webp', '.webp', True)
 
