@@ -455,7 +455,7 @@ class InitiateOwnerPassOrderView(views.APIView):
                 'price': price
             })
         except Exception as e:
-            return Response({'detail': f'Failed to create order: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'detail': 'Payment gateway configuration error. Please contact the support team.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class VerifyOwnerPassOrderView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -559,7 +559,7 @@ class CreateRegistrationOrderView(views.APIView):
                 'key_id': key_id
             })
         except Exception as e:
-            return Response({'detail': str(e)}, status=500)
+            return Response({'detail': 'Payment gateway configuration error. Please contact the support team.'}, status=500)
 
 class RegistrationConfigView(views.APIView):
     permission_classes = [AllowAny]
@@ -903,8 +903,8 @@ class InitiateOnboardingPaymentView(views.APIView):
             and 'dummy' not in razorpay_key_id
         )
 
-        # If bypass_owner_payment or Razorpay not configured, mark as paid instantly
-        if platform_settings.bypass_owner_payment or not razorpay_ready:
+        # If bypass_owner_payment is explicitly set to True, mark as paid instantly
+        if platform_settings.bypass_owner_payment:
             prop.onboarding_payment_status = 'paid'
             prop.onboarding_payment_method = 'bypass'
             prop.save(update_fields=['onboarding_payment_status', 'onboarding_payment_method'])
@@ -913,6 +913,12 @@ class InitiateOnboardingPaymentView(views.APIView):
                 'detail': 'Onboarding fee bypassed. Property is ready for submission.',
                 'property_id': prop.id,
             })
+            
+        if not razorpay_ready:
+            return Response(
+                {'detail': 'Payment gateway is not configured or credentials are invalid. Please contact the support team.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         try:
             import razorpay as rzp
@@ -943,10 +949,9 @@ class InitiateOnboardingPaymentView(views.APIView):
                 f"Razorpay onboarding order failed for property {pk}", exc_info=True
             )
             return Response(
-                {'detail': 'Payment initiation failed. Please try again.'},
+                {'detail': 'Payment gateway configuration error. Please contact the support team.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
 
 class VerifyOnboardingPaymentView(views.APIView):
     """Verify Razorpay signature and mark the onboarding fee as paid."""

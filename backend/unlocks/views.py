@@ -147,8 +147,8 @@ class InitiateUnlockView(views.APIView):
         from properties.models import PlatformSettings
         ps = PlatformSettings.load()
 
-        # Check payment bypass mode or dev fallback mode (also bypass if Razorpay creds not configured)
-        if ps.bypass_buyer_payment or not razorpay_configured():
+        # Check payment bypass mode (only bypass if explicitly enabled by admin)
+        if ps.bypass_buyer_payment:
             unlock, _ = Unlock.objects.get_or_create(
                 buyer=buyer_user,
                 property=prop,
@@ -173,6 +173,12 @@ class InitiateUnlockView(views.APIView):
                 'owner_phone': prop.owner_phone,
                 'unlock_id': unlock.id
             })
+
+        if not razorpay_configured():
+            return Response(
+                {'detail': 'Payment gateway is not configured or credentials are invalid. Please contact the support team.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         unlock_price = float(ps.buyer_unlock_fee)
         amount = int(unlock_price * 100)
@@ -211,7 +217,7 @@ class InitiateUnlockView(views.APIView):
         except Exception as e:
             logger.error(f"Failed to initiate Razorpay order for user {request.user.id}, property {id}", exc_info=True)
             return Response({
-                'detail': f'Failed to initiate Razorpay order: {str(e)}. Please try again.'
+                'detail': 'Payment gateway configuration error. Please contact the support team.'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             # Direct UPI flow
