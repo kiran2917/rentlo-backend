@@ -610,8 +610,8 @@ class VerifyBuyerOTPView(views.APIView):
             'token',
             token.key,
             httponly=True,
-            samesite='Lax',
-            secure=False
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG
         )
         return response
 

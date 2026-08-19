@@ -100,7 +100,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 access_token,
                 max_age=3600 * 24, # 1 day
                 httponly=True,
-                samesite='Lax',
+                samesite='None' if not settings.DEBUG else 'Lax',
                 secure=not settings.DEBUG,
             )
             response.set_cookie(
@@ -108,7 +108,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 refresh_token,
                 max_age=3600 * 24 * 7, # 7 days
                 httponly=True,
-                samesite='Lax',
+                samesite='None' if not settings.DEBUG else 'Lax',
                 secure=not settings.DEBUG,
             )
             # Remove tokens from response body for extra security, 
@@ -171,7 +171,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 access_token,
                 max_age=3600 * 24,
                 httponly=True,
-                samesite='Lax',
+                samesite='None' if not settings.DEBUG else 'Lax',
                 secure=not settings.DEBUG,
             )
             if 'access' in response.data:
@@ -390,7 +390,7 @@ class BuyerVerifyOTPView(APIView):
             access_token,
             max_age=3600 * 24,
             httponly=True,
-            samesite='Lax',
+            samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG,
         )
         response.set_cookie(
@@ -398,7 +398,7 @@ class BuyerVerifyOTPView(APIView):
             refresh_token,
             max_age=3600 * 24 * 7,
             httponly=True,
-            samesite='Lax',
+            samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG,
         )
         return response
@@ -477,8 +477,8 @@ class CompleteRegistrationView(APIView):
                 'force_password_change': user.force_password_change
             }
         })
-        response.set_cookie('access_token', access_token, max_age=3600 * 24, httponly=True, samesite='Lax', secure=not settings.DEBUG)
-        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 7, httponly=True, samesite='Lax', secure=not settings.DEBUG)
+        response.set_cookie('access_token', access_token, max_age=3600 * 24, httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
+        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 7, httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
         return response
 
 from .serializers import AgentSerializer
