@@ -237,8 +237,9 @@ MEDIA_URL = '/media/'
 import os
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Ensure logs directory exists
+# Ensure logs and media directories exist on startup
 (BASE_DIR / 'logs').mkdir(parents=True, exist_ok=True)
+(BASE_DIR / 'media').mkdir(parents=True, exist_ok=True)
 
 LOGGING = {
     'version': 1,
