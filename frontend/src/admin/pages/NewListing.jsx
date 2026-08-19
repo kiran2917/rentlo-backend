@@ -706,7 +706,7 @@ export const NewListing = () => {
           if (data.exists) {
             setOwnerAccountExists(true);
             setOwnerAccountDetails(data);
-            if (!formData.owner_name && data.first_name) {
+            if (data.first_name) {
               setFormData((prev) => ({ ...prev, owner_name: data.first_name }));
             }
           } else {

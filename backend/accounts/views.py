@@ -209,10 +209,11 @@ class CheckPhoneView(APIView):
 
         user = User.objects.filter(phone=phone).first()
         if user:
-            # Return only roles — never expose username or name (prevents user enumeration)
             return Response({
                 'exists': True,
-                'roles': user.roles if isinstance(user.roles, list) else [str(user.roles)]
+                'roles': user.roles if isinstance(user.roles, list) else [str(user.roles)],
+                'first_name': user.first_name,
+                'username': user.username
             })
         else:
             return Response({'exists': False})
