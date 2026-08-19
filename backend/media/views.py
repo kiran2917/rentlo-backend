@@ -11,7 +11,17 @@ from .models import PropertyMedia
 
 logger = logging.getLogger('error')
 
+def is_r2_configured():
+    return bool(
+        settings.R2_ENDPOINT_URL and 
+        settings.R2_ACCESS_KEY_ID and 
+        settings.R2_SECRET_ACCESS_KEY and 
+        'your-account-id' not in settings.R2_ENDPOINT_URL
+    )
+
 def get_r2_client():
+    if not is_r2_configured():
+        raise ValueError("R2 is not configured. Falling back to local storage.")
     return boto3.client(
         's3',
         endpoint_url=settings.R2_ENDPOINT_URL,
@@ -63,6 +73,13 @@ class PresignedURLView(views.APIView):
         object_key = f"uploads/{request.user.id}/{unique_name}"
 
         try:
+            if not is_r2_configured():
+                # If R2 is not configured, return a dummy local endpoint URL
+                return Response({
+                    'upload_url': request.build_absolute_uri('/api/v1/media/upload/'),
+                    'public_url': request.build_absolute_uri(f"{settings.MEDIA_URL}{object_key}")
+                })
+                
             s3 = get_r2_client()
             presigned_url = s3.generate_presigned_url(
                 ClientMethod='put_object',
@@ -135,12 +152,17 @@ class UploadMediaView(views.APIView):
             img.thumbnail((1920, 1080), Image.Resampling.LANCZOS)
             
             urls = {}
-            s3 = get_r2_client()
-            
             original_name = getattr(file_obj, 'name', '').lower()
             prefix = 'sig_' if 'sig' in original_name else ''
             base_uuid = f"{prefix}{uuid.uuid4()}"
             
+            use_local = not is_r2_configured()
+            if not use_local:
+                try:
+                    s3 = get_r2_client()
+                except Exception:
+                    use_local = True
+
             for size_name, max_size in sizes.items():
                 img_copy = img.copy()
                 if max_size:
@@ -153,8 +175,8 @@ class UploadMediaView(views.APIView):
                 
                 object_key = f"uploads/{request.user.id}/{base_uuid}-{size_name}.webp"
                 
-                if 'your-account-id' in settings.R2_ENDPOINT_URL:
-                    # Bypass actual S3 upload for local testing, save locally instead
+                if use_local:
+                    # Bypass actual S3 upload, save locally instead
                     from django.core.files.storage import default_storage
                     from django.core.files.base import ContentFile
                     local_path = default_storage.save(object_key, ContentFile(buffer.read()))
@@ -235,13 +257,19 @@ class UploadVoiceNoteView(views.APIView):
             unique_name = f"{uuid.uuid4()}{ext}"
             object_key = f"voice_notes/{request.user.id}/{unique_name}"
 
-            if 'your-account-id' in settings.R2_ENDPOINT_URL:
+            use_local = not is_r2_configured()
+            if not use_local:
+                try:
+                    s3 = get_r2_client()
+                except Exception:
+                    use_local = True
+
+            if use_local:
                 # Local storage fallback
                 from django.core.files.storage import default_storage
                 saved_path = default_storage.save(object_key, file_obj)
-                public_url = f"{settings.MEDIA_URL}{saved_path}"
+                public_url = request.build_absolute_uri(f"{settings.MEDIA_URL}{saved_path}")
             else:
-                s3 = get_r2_client()
                 s3.put_object(
                     Bucket=settings.R2_BUCKET_NAME,
                     Key=object_key,
