@@ -94,7 +94,12 @@ DATABASES = {
     }
 }
 
-
+if os.getenv('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=not DEBUG
+    )
 elif os.getenv('DB_ENGINE') == 'postgresql':
     DATABASES = {
         'default': {
