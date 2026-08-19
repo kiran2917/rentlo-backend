@@ -2783,22 +2783,22 @@ export const OwnerNewListing = () => {
                       "WiFi",
                       "Air Conditioning"
                     ].map((amenity) => (
-                      <button
+                       <button
                         key={amenity}
                         type="button"
                         onClick={() => {
-                          const has = formData.amenities.includes(amenity);
+                          const has = (formData.amenities || []).includes(amenity);
                           setFormData((prev) => ({
                             ...prev,
                             amenities: has
-                              ? prev.amenities.filter((a) => a !== amenity)
-                              : [...prev.amenities, amenity],
+                              ? (prev.amenities || []).filter((a) => a !== amenity)
+                              : [...(prev.amenities || []), amenity],
                           }));
                         }}
                         className="h-9 px-5 rounded-full text-[9px] font-extrabold tracking-widest uppercase transition-all shadow-sm cursor-pointer"
                         style={{
-                          backgroundColor: formData.amenities.includes(amenity) ? "var(--accent)" : "var(--surface-alt)",
-                          color: formData.amenities.includes(amenity) ? "#ffffff" : "var(--ink)",
+                          backgroundColor: (formData.amenities || []).includes(amenity) ? "var(--accent)" : "var(--surface-alt)",
+                          color: (formData.amenities || []).includes(amenity) ? "#ffffff" : "var(--ink)",
                           borderColor: "var(--border)"
                         }}
                       >
