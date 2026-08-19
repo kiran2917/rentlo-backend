@@ -886,9 +886,17 @@ class InitiateOnboardingPaymentView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Check if Razorpay credentials are properly configured
-        razorpay_key_id = getattr(settings, 'RAZORPAY_KEY_ID', '')
-        razorpay_key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '')
+        # Check if Razorpay credentials are properly configured — prefer DB over env vars
+        # DB keys (set via Admin Settings UI) take priority and take effect without restart
+        db_key_id = (platform_settings.razorpay_key_id or '').strip()
+        db_key_secret = (platform_settings.razorpay_key_secret or '').strip()
+        if db_key_id and db_key_secret and 'REPLACE_WITH' not in db_key_secret:
+            razorpay_key_id = db_key_id
+            razorpay_key_secret = db_key_secret
+        else:
+            razorpay_key_id = getattr(settings, 'RAZORPAY_KEY_ID', '')
+            razorpay_key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '')
+
         razorpay_ready = (
             razorpay_key_id and razorpay_key_secret
             and 'REPLACE_WITH' not in razorpay_key_secret
@@ -1087,6 +1095,25 @@ class PlatformSettingsView(views.APIView):
             data['bypass_owner_payment'] = settings.bypass_owner_payment
             data['otp_bypass_enabled'] = settings.otp_bypass_enabled
 
+            # Razorpay credentials (admin-only; secrets masked)
+            data['razorpay_key_id'] = settings.razorpay_key_id
+            # Return a masked indicator for secrets — never return the real value
+            data['razorpay_key_secret_set'] = bool(settings.razorpay_key_secret and 'REPLACE_WITH' not in settings.razorpay_key_secret)
+            data['razorpay_webhook_secret_set'] = bool(settings.razorpay_webhook_secret)
+            data['razorpay_key_secret_masked'] = ('••••' + settings.razorpay_key_secret[-4:]) if (settings.razorpay_key_secret and len(settings.razorpay_key_secret) > 4 and 'REPLACE_WITH' not in settings.razorpay_key_secret) else ''
+
+            # SMS provider config (admin-only; secret masked)
+            data['sms_provider'] = settings.sms_provider
+            data['sms_api_key'] = settings.sms_api_key
+            data['sms_api_secret_set'] = bool(settings.sms_api_secret)
+            data['sms_api_secret_masked'] = ('••••' + settings.sms_api_secret[-4:]) if (settings.sms_api_secret and len(settings.sms_api_secret) > 4) else ''
+            data['sms_sender_id'] = settings.sms_sender_id
+            data['sms_template_id'] = settings.sms_template_id
+            data['sms_from_number'] = settings.sms_from_number
+        else:
+            # Non-admin: expose Razorpay Key ID only (needed for frontend Razorpay.js checkout)
+            data['razorpay_key_id'] = settings.razorpay_key_id
+
         response = Response(data)
         response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         return response
@@ -1216,6 +1243,38 @@ class PlatformSettingsView(views.APIView):
         new_method = request.data.get('owner_listing_verification_method')
         if new_method in ('otp', 'selfie'):
             settings.owner_listing_verification_method = new_method
+
+        # Razorpay credentials
+        rzp_key_id = request.data.get('razorpay_key_id')
+        if rzp_key_id is not None:
+            settings.razorpay_key_id = rzp_key_id.strip()
+        rzp_key_secret = request.data.get('razorpay_key_secret', '')
+        # Only update if it's not a masked placeholder (masked values contain '•')
+        if rzp_key_secret and '•' not in rzp_key_secret:
+            settings.razorpay_key_secret = rzp_key_secret.strip()
+        rzp_webhook_secret = request.data.get('razorpay_webhook_secret', '')
+        if rzp_webhook_secret and '•' not in rzp_webhook_secret:
+            settings.razorpay_webhook_secret = rzp_webhook_secret.strip()
+
+        # SMS provider credentials
+        sms_provider = request.data.get('sms_provider')
+        if sms_provider in [c[0] for c in settings.SMS_PROVIDER_CHOICES]:
+            settings.sms_provider = sms_provider
+        sms_api_key = request.data.get('sms_api_key')
+        if sms_api_key is not None:
+            settings.sms_api_key = sms_api_key.strip()
+        sms_api_secret = request.data.get('sms_api_secret', '')
+        if sms_api_secret and '•' not in sms_api_secret:
+            settings.sms_api_secret = sms_api_secret.strip()
+        sms_sender_id = request.data.get('sms_sender_id')
+        if sms_sender_id is not None:
+            settings.sms_sender_id = sms_sender_id.strip()
+        sms_template_id = request.data.get('sms_template_id')
+        if sms_template_id is not None:
+            settings.sms_template_id = sms_template_id.strip()
+        sms_from_number = request.data.get('sms_from_number')
+        if sms_from_number is not None:
+            settings.sms_from_number = sms_from_number.strip()
 
         settings.save()
         return Response({'detail': 'Platform settings updated successfully.'})

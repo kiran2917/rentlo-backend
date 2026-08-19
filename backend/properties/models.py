@@ -401,6 +401,36 @@ class PlatformSettings(models.Model):
         help_text="Verification method required when staff registers a property on behalf of an owner."
     )
 
+    # ─── Payment Gateway: Razorpay ───────────────────────────────────────────
+    razorpay_key_id = models.CharField(max_length=100, blank=True, default='',
+        help_text="Razorpay Key ID (e.g. rzp_test_... or rzp_live_...)")
+    razorpay_key_secret = models.CharField(max_length=255, blank=True, default='',
+        help_text="Razorpay Key Secret — never exposed in API responses")
+    razorpay_webhook_secret = models.CharField(max_length=255, blank=True, default='',
+        help_text="Razorpay Webhook Secret — never exposed in API responses")
+
+    # ─── SMS / OTP Provider ───────────────────────────────────────────────────
+    SMS_PROVIDER_CHOICES = [
+        ('none',      'None (Demo mode — use 000000)'),
+        ('exotel',    'Exotel'),
+        ('twilio',    'Twilio'),
+        ('msg91',     'MSG91'),
+        ('fast2sms',  'Fast2SMS'),
+        ('textlocal', 'TextLocal'),
+    ]
+    sms_provider = models.CharField(max_length=20, choices=SMS_PROVIDER_CHOICES, default='none',
+        help_text="Active SMS gateway for OTP delivery")
+    sms_api_key = models.CharField(max_length=255, blank=True, default='',
+        help_text="API Key / Account SID / Auth Key for the SMS provider")
+    sms_api_secret = models.CharField(max_length=255, blank=True, default='',
+        help_text="API Secret / Auth Token — never exposed in API responses")
+    sms_sender_id = models.CharField(max_length=20, blank=True, default='',
+        help_text="Sender ID shown to recipient (e.g. RENTLO)")
+    sms_template_id = models.CharField(max_length=50, blank=True, default='',
+        help_text="DLT Template ID (required for Indian carriers via MSG91 / Fast2SMS)")
+    sms_from_number = models.CharField(max_length=20, blank=True, default='',
+        help_text="Twilio: From phone number (e.g. +1XXXXXXXXXX)")
+
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

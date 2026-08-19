@@ -273,6 +273,26 @@ export const Settings = () => {
   const [eStampApiKey, setEStampApiKey] = useState("");
   const [eStampApiSecret, setEStampApiSecret] = useState("");
 
+  // ─── Razorpay Credentials ───────────────────────────────────────────────
+  const [rzpKeyId, setRzpKeyId] = useState("");
+  const [rzpKeySecret, setRzpKeySecret] = useState("");
+  const [rzpWebhookSecret, setRzpWebhookSecret] = useState("");
+  const [rzpKeySecretSet, setRzpKeySecretSet] = useState(false);
+  const [rzpWebhookSet, setRzpWebhookSet] = useState(false);
+  const [showRzpSecret, setShowRzpSecret] = useState(false);
+  const [showRzpWebhook, setShowRzpWebhook] = useState(false);
+
+  // ─── SMS / OTP Provider ────────────────────────────────────────────────
+  const [smsProvider, setSmsProvider] = useState("none");
+  const [smsApiKey, setSmsApiKey] = useState("");
+  const [smsApiSecret, setSmsApiSecret] = useState("");
+  const [smsSenderId, setSmsSenderId] = useState("");
+  const [smsTemplateId, setSmsTemplateId] = useState("");
+  const [smsFromNumber, setSmsFromNumber] = useState("");
+  const [smsApiSecretSet, setSmsApiSecretSet] = useState(false);
+  const [showSmsSecret, setShowSmsSecret] = useState(false);
+  const [smsTestLoading, setSmsTestLoading] = useState(false);
+
   // Change Password state
   const [changePassNew, setChangePassNew] = useState("");
   const [changePassConfirm, setChangePassConfirm] = useState("");
@@ -430,6 +450,23 @@ export const Settings = () => {
         setEStampProvider(data.e_stamp_provider || "digio");
         setEStampApiKey(data.e_stamp_api_key || "");
         setEStampApiSecret(data.e_stamp_api_secret || "");
+
+        // Razorpay credentials
+        setRzpKeyId(data.razorpay_key_id || "");
+        setRzpKeySecretSet(data.razorpay_key_secret_set || false);
+        setRzpWebhookSet(data.razorpay_webhook_secret_set || false);
+        // Show masked value in the input so user knows it's set
+        setRzpKeySecret(data.razorpay_key_secret_masked || "");
+        setRzpWebhookSecret("");
+
+        // SMS / OTP provider
+        setSmsProvider(data.sms_provider || "none");
+        setSmsApiKey(data.sms_api_key || "");
+        setSmsApiSecretSet(data.sms_api_secret_set || false);
+        setSmsApiSecret(data.sms_api_secret_masked || "");
+        setSmsSenderId(data.sms_sender_id || "");
+        setSmsTemplateId(data.sms_template_id || "");
+        setSmsFromNumber(data.sms_from_number || "");
       }
     } catch (err) {
       console.error("Failed to fetch settings:", err);
@@ -503,7 +540,20 @@ export const Settings = () => {
           e_stamp_price: parseFloat(eStampPrice) || 499,
           e_stamp_provider: eStampProvider,
           e_stamp_api_key: eStampApiKey,
-          e_stamp_api_secret: eStampApiSecret
+          e_stamp_api_secret: eStampApiSecret,
+
+          // Razorpay credentials (masked values are skipped server-side)
+          razorpay_key_id: rzpKeyId,
+          razorpay_key_secret: rzpKeySecret,
+          razorpay_webhook_secret: rzpWebhookSecret,
+
+          // SMS / OTP provider
+          sms_provider: smsProvider,
+          sms_api_key: smsApiKey,
+          sms_api_secret: smsApiSecret,
+          sms_sender_id: smsSenderId,
+          sms_template_id: smsTemplateId,
+          sms_from_number: smsFromNumber,
         })
       });
       if (res.ok) {
@@ -565,8 +615,9 @@ export const Settings = () => {
         {/* Horizontal Tab Navigation Bar (Matching Reference Design) */}
         <div className="flex items-center gap-2 p-1.5 rounded-2xl border mb-8 overflow-x-auto custom-scrollbar shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
           {[
-            { id: "pricing", label: "General & Pricing", icon: "payments" },
+                      { id: "pricing", label: "General & Pricing", icon: "payments" },
             { id: "gateways", label: "Payment Gateways", icon: "account_balance" },
+            { id: "credentials", label: "API Credentials", icon: "vpn_key" },
             { id: "estamp", label: "E-Stamp & Legal", icon: "verified" },
             { id: "auth", label: "Auth & Security", icon: "security" },
             { id: "theme", label: "Theme & Branding", icon: "palette" },
@@ -1038,6 +1089,274 @@ export const Settings = () => {
             </div>
           </div>
         )}
+
+        {/* TAB: API CREDENTIALS — Razorpay & SMS/OTP */}
+        {activeTab === "credentials" && (() => {
+          const inputCls = "w-full h-11 px-4 rounded-xl border text-[13px] font-mono outline-none focus:border-blue-500 transition-all";
+          const inputStyle = { backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" };
+          const labelCls = "text-[11px] font-bold uppercase tracking-widest block mb-1.5";
+          const labelStyle = { color: "var(--text-muted)" };
+
+          const isRzpLive = rzpKeyId.startsWith("rzp_live_");
+          const isRzpConfigured = rzpKeyId && rzpKeySecretSet;
+
+          const SMS_PROVIDERS = [
+            { value: "none", label: "None — Demo Mode (000000)", icon: "block" },
+            { value: "fast2sms", label: "Fast2SMS", icon: "sms" },
+            { value: "msg91", label: "MSG91", icon: "sms" },
+            { value: "exotel", label: "Exotel", icon: "call" },
+            { value: "twilio", label: "Twilio", icon: "sms" },
+            { value: "textlocal", label: "TextLocal", icon: "sms" },
+          ];
+
+          const handleTestSms = async () => {
+            setSmsTestLoading(true);
+            try {
+              // First save current config, then trigger a test
+              await fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`, {
+                method: "PUT", credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sms_provider: smsProvider, sms_api_key: smsApiKey, sms_api_secret: smsApiSecret,
+                  sms_sender_id: smsSenderId, sms_template_id: smsTemplateId, sms_from_number: smsFromNumber,
+                })
+              });
+              toast.success("SMS config saved. Test OTP (000000) will be sent on next login attempt.");
+            } catch { toast.error("Failed to save SMS config."); }
+            finally { setSmsTestLoading(false); }
+          };
+
+          return (
+            <div className="space-y-8 animate-in fade-in duration-300">
+
+              {/* ── Razorpay Card ── */}
+              <div className="rounded-3xl p-8 border shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+                <div className="flex items-start justify-between mb-6 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+                  <div>
+                    <h2 className="text-[16px] font-extrabold tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
+                      <span className="material-symbols-outlined text-[22px]" style={{ color: "#2563EB" }}>credit_card</span>
+                      Razorpay Payment Gateway
+                    </h2>
+                    <p className="text-[13px] font-medium mt-1" style={{ color: "var(--text-muted)" }}>
+                      Keys saved here override environment variables and take effect immediately — no server restart needed.
+                    </p>
+                  </div>
+                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold ${
+                    isRzpConfigured
+                      ? isRzpLive ? "bg-green-500/15 text-green-700 border border-green-500/30" : "bg-amber-500/15 text-amber-700 border border-amber-500/30"
+                      : "bg-red-500/15 text-red-700 border border-red-500/30"
+                  }`}>
+                    <span className="material-symbols-outlined text-[14px]">{isRzpConfigured ? (isRzpLive ? "check_circle" : "warning") : "cancel"}</span>
+                    {isRzpConfigured ? (isRzpLive ? "Live Mode" : "Test Mode") : "Not Configured"}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Key ID */}
+                  <div>
+                    <label className={labelCls} style={labelStyle}>Razorpay Key ID</label>
+                    <input
+                      type="text"
+                      value={rzpKeyId}
+                      onChange={(e) => { setRzpKeyId(e.target.value); setRzpKeySecretSet(false); }}
+                      placeholder="rzp_test_... or rzp_live_..."
+                      className={inputCls} style={inputStyle}
+                    />
+                    <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>Public key — safe to expose to frontend checkout.</p>
+                  </div>
+
+                  {/* Key Secret */}
+                  <div>
+                    <label className={labelCls} style={labelStyle}>
+                      Key Secret {rzpKeySecretSet && <span className="text-green-600 font-bold ml-1">✓ Set</span>}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showRzpSecret ? "text" : "password"}
+                        value={rzpKeySecret}
+                        onChange={(e) => { setRzpKeySecret(e.target.value); setRzpKeySecretSet(false); }}
+                        onFocus={() => { if (rzpKeySecret.includes("•")) setRzpKeySecret(""); }}
+                        placeholder="Paste new secret here"
+                        className={inputCls + " pr-12"} style={inputStyle}
+                      />
+                      <button type="button" onClick={() => setShowRzpSecret(!showRzpSecret)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[18px] cursor-pointer"
+                        style={{ color: "var(--text-muted)" }}>
+                        <span className="material-symbols-outlined">{showRzpSecret ? "visibility_off" : "visibility"}</span>
+                      </button>
+                    </div>
+                    <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>Never exposed in API responses. Click to clear & enter new value.</p>
+                  </div>
+
+                  {/* Webhook Secret */}
+                  <div className="md:col-span-2">
+                    <label className={labelCls} style={labelStyle}>
+                      Webhook Secret {rzpWebhookSet && <span className="text-green-600 font-bold ml-1">✓ Set</span>}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showRzpWebhook ? "text" : "password"}
+                        value={rzpWebhookSecret}
+                        onChange={(e) => setRzpWebhookSecret(e.target.value)}
+                        placeholder={rzpWebhookSet ? "(already set — paste to update)" : "Paste webhook secret here"}
+                        className={inputCls + " pr-12"} style={inputStyle}
+                      />
+                      <button type="button" onClick={() => setShowRzpWebhook(!showRzpWebhook)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[18px] cursor-pointer"
+                        style={{ color: "var(--text-muted)" }}>
+                        <span className="material-symbols-outlined">{showRzpWebhook ? "visibility_off" : "visibility"}</span>
+                      </button>
+                    </div>
+                    <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>Used to verify Razorpay webhook signatures. Never exposed in API responses.</p>
+                  </div>
+                </div>
+
+                <div className="mt-5 p-4 rounded-2xl border border-blue-500/20 bg-blue-500/5">
+                  <p className="text-[12px] font-semibold" style={{ color: "var(--text-muted)" }}>
+                    <span className="material-symbols-outlined text-[14px] align-middle mr-1 text-blue-500">info</span>
+                    Get your keys from{" "}
+                    <a href="https://dashboard.razorpay.com/app/keys" target="_blank" rel="noreferrer" className="text-blue-500 underline font-bold">Razorpay Dashboard → Settings → API Keys</a>.
+                    {" "}Use <strong>rzp_test_*</strong> for testing (no real charges) and <strong>rzp_live_*</strong> for production.
+                  </p>
+                </div>
+              </div>
+
+              {/* ── SMS / OTP Provider Card ── */}
+              <div className="rounded-3xl p-8 border shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+                <div className="flex items-start justify-between mb-6 border-b pb-4" style={{ borderColor: "var(--border)" }}>
+                  <div>
+                    <h2 className="text-[16px] font-extrabold tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
+                      <span className="material-symbols-outlined text-[22px] text-purple-500">sms</span>
+                      SMS / OTP Provider
+                    </h2>
+                    <p className="text-[13px] font-medium mt-1" style={{ color: "var(--text-muted)" }}>
+                      Configure a real SMS gateway to deliver OTPs to users. Until configured, <strong>000000</strong> works as demo code.
+                    </p>
+                  </div>
+                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold ${
+                    smsProvider !== "none"
+                      ? "bg-green-500/15 text-green-700 border border-green-500/30"
+                      : "bg-slate-500/15 text-slate-600 border border-slate-500/30"
+                  }`}>
+                    <span className="material-symbols-outlined text-[14px]">{smsProvider !== "none" ? "check_circle" : "developer_mode"}</span>
+                    {smsProvider !== "none" ? `Live — ${SMS_PROVIDERS.find(p=>p.value===smsProvider)?.label || smsProvider}` : "Demo Mode (000000)"}
+                  </div>
+                </div>
+
+                {/* Provider selector */}
+                <div className="mb-6">
+                  <label className={labelCls} style={labelStyle}>SMS Provider</label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {SMS_PROVIDERS.map(p => (
+                      <button key={p.value} type="button"
+                        onClick={() => setSmsProvider(p.value)}
+                        className={`p-3 rounded-xl border text-[12px] font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                          smsProvider === p.value ? "border-purple-500 bg-purple-500/10 text-purple-700" : "border-border bg-surface-alt"
+                        }`} style={{ color: smsProvider === p.value ? undefined : "var(--text-muted)" }}>
+                        <span className="material-symbols-outlined text-[16px]">{p.icon}</span>
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {smsProvider !== "none" && (
+                  <div className="space-y-5">
+                    {/* API Key / Account SID */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label className={labelCls} style={labelStyle}>
+                          {smsProvider === "twilio" ? "Account SID" : "API Key"}
+                        </label>
+                        <input type="text" value={smsApiKey} onChange={(e) => setSmsApiKey(e.target.value)}
+                          placeholder={smsProvider === "exotel" ? "API Key (Account SID)" : smsProvider === "twilio" ? "ACxxxxxxxx" : "Your API Key"}
+                          className={inputCls} style={inputStyle} />
+                      </div>
+
+                      {/* API Secret / Auth Token */}
+                      <div>
+                        <label className={labelCls} style={labelStyle}>
+                          {smsProvider === "twilio" || smsProvider === "exotel" ? "Auth Token" : "API Secret"}
+                          {smsApiSecretSet && <span className="text-green-600 font-bold ml-1">✓ Set</span>}
+                        </label>
+                        <div className="relative">
+                          <input type={showSmsSecret ? "text" : "password"} value={smsApiSecret}
+                            onChange={(e) => { setSmsApiSecret(e.target.value); setSmsApiSecretSet(false); }}
+                            onFocus={() => { if (smsApiSecret.includes("•")) setSmsApiSecret(""); }}
+                            placeholder="Paste secret here"
+                            className={inputCls + " pr-12"} style={inputStyle} />
+                          <button type="button" onClick={() => setShowSmsSecret(!showSmsSecret)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                            style={{ color: "var(--text-muted)" }}>
+                            <span className="material-symbols-outlined text-[18px]">{showSmsSecret ? "visibility_off" : "visibility"}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Sender ID — not needed for Twilio */}
+                      {smsProvider !== "twilio" && (
+                        <div>
+                          <label className={labelCls} style={labelStyle}>Sender ID</label>
+                          <input type="text" value={smsSenderId} onChange={(e) => setSmsSenderId(e.target.value)}
+                            placeholder="RENTLO" maxLength={6}
+                            className={inputCls} style={inputStyle} />
+                          <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>6-char DLT registered sender ID. Required in India.</p>
+                        </div>
+                      )}
+
+                      {/* DLT Template ID — MSG91 / Fast2SMS only */}
+                      {(smsProvider === "msg91" || smsProvider === "fast2sms") && (
+                        <div>
+                          <label className={labelCls} style={labelStyle}>DLT Template ID</label>
+                          <input type="text" value={smsTemplateId} onChange={(e) => setSmsTemplateId(e.target.value)}
+                            placeholder="1707XXXXXXXXXXXXXXXXX"
+                            className={inputCls} style={inputStyle} />
+                          <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>Required by TRAI. Register at DLT portal.</p>
+                        </div>
+                      )}
+
+                      {/* From Number — Twilio only */}
+                      {smsProvider === "twilio" && (
+                        <div>
+                          <label className={labelCls} style={labelStyle}>From Number</label>
+                          <input type="text" value={smsFromNumber} onChange={(e) => setSmsFromNumber(e.target.value)}
+                            placeholder="+1XXXXXXXXXX"
+                            className={inputCls} style={inputStyle} />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button type="button" onClick={handleTestSms} disabled={smsTestLoading}
+                        className="h-10 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[12px] font-extrabold flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50">
+                        {smsTestLoading
+                          ? <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                          : <span className="material-symbols-outlined text-[18px]">send</span>}
+                        Save & Apply Config
+                      </button>
+                      <p className="text-[12px]" style={{ color: "var(--text-muted)" }}>Config is applied immediately. Real OTPs will be sent on next login attempt.</p>
+                    </div>
+                  </div>
+                )}
+
+                {smsProvider === "none" && (
+                  <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5">
+                    <p className="text-[12px] font-semibold text-amber-700">
+                      <span className="material-symbols-outlined text-[14px] align-middle mr-1">info</span>
+                      Demo mode is active. All OTP fields will accept <strong>000000</strong>. Select a provider above to enable real SMS delivery.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <button onClick={handleSave}
+                className="h-11 px-6 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white text-[13px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer">
+                <span className="material-symbols-outlined text-[18px]">save</span>
+                Save Credentials
+              </button>
+            </div>
+          );
+        })()}
 
         {/* TAB 3: E-STAMP & LEGAL */}
         {activeTab === "estamp" && (

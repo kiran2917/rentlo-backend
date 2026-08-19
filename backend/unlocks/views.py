@@ -14,23 +14,46 @@ from .models import Unlock
 
 logger = logging.getLogger(__name__)
 
-# Initialize Razorpay client
+# Initialize Razorpay client from env vars (fallback baseline)
 try:
     razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 except Exception:
     razorpay_client = None
 
+def _get_effective_razorpay_keys():
+    """
+    Returns (key_id, key_secret) — prefers DB PlatformSettings over env vars.
+    DB keys take effect immediately after admin saves them (no restart needed).
+    """
+    try:
+        from properties.models import PlatformSettings
+        ps = PlatformSettings.load()
+        db_id = (ps.razorpay_key_id or '').strip()
+        db_secret = (ps.razorpay_key_secret or '').strip()
+        if db_id and db_secret and 'REPLACE_WITH' not in db_secret:
+            return db_id, db_secret
+    except Exception:
+        pass
+    return getattr(settings, 'RAZORPAY_KEY_ID', ''), getattr(settings, 'RAZORPAY_KEY_SECRET', '')
+
 def razorpay_configured():
-    """Returns True only if real (non-placeholder) Razorpay credentials are set."""
-    key_id = getattr(settings, 'RAZORPAY_KEY_ID', '')
-    key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '')
-    if not razorpay_client:
-        return False
+    """Returns True only if real (non-placeholder) Razorpay credentials are available."""
+    key_id, key_secret = _get_effective_razorpay_keys()
     if not key_id or not key_secret:
         return False
     if 'REPLACE_WITH' in key_secret or 'dummy' in key_id or 'dummy' in key_secret:
         return False
     return True
+
+def get_razorpay_client():
+    """Returns a fresh Razorpay client using the most up-to-date credentials."""
+    key_id, key_secret = _get_effective_razorpay_keys()
+    if not key_id or not key_secret:
+        return None
+    try:
+        return razorpay.Client(auth=(key_id, key_secret))
+    except Exception:
+        return None
 
 class InitiateUnlockView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -156,8 +179,10 @@ class InitiateUnlockView(views.APIView):
         currency = 'INR'
 
         try:
-            # Create Razorpay order
-            razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='1'))
+            # Create Razorpay order using the most current credentials (DB preferred over env)
+            effective_client = get_razorpay_client()
+            effective_key_id, _ = _get_effective_razorpay_keys()
+            razorpay_order = effective_client.order.create(dict(amount=amount, currency=currency, payment_capture='1'))
             order_id = razorpay_order['id']
 
             # Tightly scoped DB insert with IntegrityError handling
@@ -177,8 +202,8 @@ class InitiateUnlockView(views.APIView):
                 'payment_gateway': 'razorpay',
                 'order_id': order_id,
                 'amount': amount,
-                'key_id': settings.RAZORPAY_KEY_ID,
-                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'key_id': effective_key_id,
+                'razorpay_key_id': effective_key_id,
                 'buyer_name': request.user.username,
                 'buyer_phone': getattr(request.user, 'phone', ''),
                 'currency': currency

@@ -238,6 +238,95 @@ from properties.models import ConsentOTP
 import secrets
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
+def send_otp_sms(phone: str, code: str, ps) -> bool:
+    """
+    Sends OTP via the configured SMS provider in PlatformSettings.
+    Returns True if sent successfully, False if in demo/unconfigured mode.
+    `phone` should already be a clean 10-digit Indian number (no +91 prefix needed internally).
+    """
+    provider = getattr(ps, 'sms_provider', 'none')
+    if provider == 'none' or not provider:
+        return False
+
+    api_key = getattr(ps, 'sms_api_key', '')
+    api_secret = getattr(ps, 'sms_api_secret', '')
+    sender_id = getattr(ps, 'sms_sender_id', 'RENTLO') or 'RENTLO'
+    template_id = getattr(ps, 'sms_template_id', '')
+    from_number = getattr(ps, 'sms_from_number', '')
+    message = f"{code} is your Rentlo OTP. Valid for 10 minutes. Do not share with anyone."
+
+    try:
+        import requests as req_lib
+
+        if provider == 'fast2sms':
+            # Fast2SMS Quick SMS API
+            headers = {"authorization": api_key, "Content-Type": "application/json"}
+            payload = {
+                "route": "otp",
+                "variables_values": code,
+                "numbers": phone,
+            }
+            if template_id:
+                payload["flash"] = "0"
+            resp = req_lib.post("https://www.fast2sms.com/dev/bulkV2", json=payload, headers=headers, timeout=10)
+            return resp.status_code == 200 and resp.json().get('return') is True
+
+        elif provider == 'msg91':
+            # MSG91 OTP API
+            url = "https://api.msg91.com/api/v5/otp"
+            params = {
+                "authkey": api_key,
+                "mobile": f"91{phone}",
+                "message": message,
+                "sender": sender_id,
+                "otp": code,
+            }
+            if template_id:
+                params["template_id"] = template_id
+            resp = req_lib.post(url, params=params, timeout=10)
+            return resp.status_code == 200
+
+        elif provider == 'twilio':
+            # Twilio SMS API
+            from urllib.parse import urlencode
+            account_sid = api_key
+            auth_token = api_secret
+            to_number = f"+91{phone}"
+            url = f"https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json"
+            data = urlencode({"From": from_number, "To": to_number, "Body": message})
+            resp = req_lib.post(url, data=data, auth=(account_sid, auth_token), timeout=10)
+            return resp.status_code in (200, 201)
+
+        elif provider == 'exotel':
+            # Exotel SMS API
+            account_sid = api_key
+            auth_token = api_secret
+            url = f"https://api.exotel.com/v1/Accounts/{account_sid}/Sms/send"
+            data = {"From": sender_id, "To": f"0{phone}", "Body": message}
+            resp = req_lib.post(url, data=data, auth=(account_sid, auth_token), timeout=10)
+            return resp.status_code in (200, 201)
+
+        elif provider == 'textlocal':
+            # TextLocal SMS API
+            url = "https://api.textlocal.in/send/"
+            data = {
+                "apikey": api_key,
+                "numbers": f"91{phone}",
+                "message": message,
+                "sender": sender_id,
+            }
+            resp = req_lib.post(url, data=data, timeout=10)
+            result = resp.json()
+            return result.get('status') == 'success'
+
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"SMS sending failed via {provider}: {e}")
+
+    return False
+
+
 class BuyerRequestOTPView(APIView):
     permission_classes = [AllowAny]
     throttle_scope = 'otp_request'
@@ -255,31 +344,38 @@ class BuyerRequestOTPView(APIView):
         # Determine if it's a login or signup
         is_signup = not User.objects.filter(phone=phone).exists()
 
-        settings = PlatformSettings.load()
-        if not settings.requires_otp(intended_role, is_signup):
+        ps = PlatformSettings.load()
+        if not ps.requires_otp(intended_role, is_signup):
             return Response({
                 'detail': 'Phone number accepted (OTP bypassed)', 
                 'demo_code': '000000',
                 'require_otp': False
             })
-            
-        # Fixed demo OTP: always 000000 (no SMS gateway configured)
-        code = '000000'
-        
+
+        # Generate real OTP if SMS is configured, otherwise use demo code
+        sms_live = (getattr(ps, 'sms_provider', 'none') != 'none')
+        code = str(secrets.randbelow(900000) + 100000) if sms_live else '000000'
+
         # Save OTP for verification
         obj, created = OTPVerification.objects.get_or_create(phone=phone, defaults={'code': code, 'expires_at': timezone.now() + timedelta(minutes=10)})
         if not created:
             obj.code = code
             obj.expires_at = timezone.now() + timedelta(minutes=10)
             obj.save()
-            
+
+        # Attempt to send SMS
+        sms_sent = send_otp_sms(phone, code, ps) if sms_live else False
+
         resp_data = {
-            'detail': 'OTP sent successfully. Use code 000000 to verify.',
+            'detail': 'OTP sent to your mobile number.' if sms_sent else 'OTP sent successfully. Use code 000000 to verify.',
             'require_otp': True,
-            'demo_code': '000000'
         }
+        # Only return demo_code when in demo mode (no real SMS configured)
+        if not sms_live:
+            resp_data['demo_code'] = '000000'
 
         return Response(resp_data)
+
 
 import uuid
 
@@ -659,9 +755,15 @@ class ForgotPasswordRequestOTPView(APIView):
             return Response({'detail': 'No registered account found with this username or mobile number.'}, status=status.HTTP_404_NOT_FOUND)
 
         target_phone = user.phone or phone_or_user
-        # Fixed demo OTP: always 000000 (no SMS gateway configured)
-        code = '000000'
+        # Generate real OTP if SMS is configured, otherwise use demo code
         from properties.models import OTPVerification
+        ps = PlatformSettings.load() if 'PlatformSettings' in dir() else None
+        if ps is None:
+            from properties.models import PlatformSettings
+            ps = PlatformSettings.load()
+        sms_live = (getattr(ps, 'sms_provider', 'none') != 'none')
+        code = str(secrets.randbelow(900000) + 100000) if sms_live else '000000'
+
         obj, created = OTPVerification.objects.get_or_create(
             phone=target_phone,
             defaults={'code': code, 'expires_at': timezone.now() + timedelta(minutes=10)}
@@ -671,12 +773,17 @@ class ForgotPasswordRequestOTPView(APIView):
             obj.expires_at = timezone.now() + timedelta(minutes=10)
             obj.save()
 
+        # Attempt to send SMS
+        sms_sent = send_otp_sms(target_phone, code, ps) if sms_live else False
+
         security_logger.info(f"Password reset OTP generated for user: {user.username}")
-        return Response({
-            'detail': f'Password reset OTP sent for @{user.username}. Use code 000000 to verify.',
+        resp = {
+            'detail': f'OTP sent to your mobile number for @{user.username}.' if sms_sent else f'Password reset OTP sent for @{user.username}. Use code 000000 to verify.',
             'phone': target_phone,
-            'demo_code': '000000'
-        }, status=status.HTTP_200_OK)
+        }
+        if not sms_live:
+            resp['demo_code'] = '000000'
+        return Response(resp, status=status.HTTP_200_OK)
 
 
 class ForgotPasswordResetView(APIView):
