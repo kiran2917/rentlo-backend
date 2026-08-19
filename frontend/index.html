@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <title>Rentlo — Zero-Brokerage Real Estate Platform | Hubli &amp; Dharwad</title>
+    <meta name="description" content="Rentlo is Hubli and Dharwad's premier zero-brokerage real estate platform. Connect directly with verified property owners to rent or buy residential flats, 2BHK apartments, PGs, and commercial spaces in Hubli-Dharwad without broker fees." />
+    <meta name="keywords" content="Rentlo, zero brokerage Hubli, flats for rent in Hubli, house for rent in Dharwad, 2BHK rent Hubli, direct owner property Hubli Dharwad, no broker rental Hubli" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://rentlo.in/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://rentlo.in/" />
+    <meta property="og:title" content="Rentlo — Zero-Brokerage Real Estate Platform | Hubli &amp; Dharwad" />
+    <meta property="og:description" content="Find verified 1BHK, 2BHK, 3BHK flats, houses, and commercial spaces directly from owners in Hubli and Dharwad. Zero broker commission." />
+    <meta property="og:image" content="https://rentlo.in/og-cover.jpg" />
+    <meta property="og:site_name" content="Rentlo" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rentlo — Zero-Brokerage Real Estate Platform" />
+    <meta name="twitter:description" content="Find verified properties directly from owners across India. Zero broker fees." />
+    <meta name="twitter:image" content="https://rentlo.in/og-cover.jpg" />
+
+    <!-- Schema.org Organization & RealEstateAgent JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Rentlo Technologies",
+      "url": "https://rentlo.in",
+      "logo": "https://rentlo.in/logo.png",
+      "description": "Zero-Brokerage Real Estate Platform connecting buyers and tenants directly with verified property owners.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "priceRange": "₹₹",
+      "areaServed": "India"
+    }
+    </script>
+
+    <!-- SEO_TAGS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered:', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed:', registrationError);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
