@@ -193,6 +193,21 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             'added_by': added_by
         }
         
+        # Calculate and save onboarding fee based on platform settings and property type
+        settings_obj = PlatformSettings.load()
+        if settings_obj.bypass_owner_payment:
+            save_kwargs['onboarding_fee'] = 0.00
+        elif settings_obj.owner_onboarding_fee > 0:
+            save_kwargs['onboarding_fee'] = settings_obj.owner_onboarding_fee
+        else:
+            p_lower = str(serializer.validated_data.get('property_type', '')).lower()
+            if p_lower in ['apartment', 'pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'hostel']:
+                save_kwargs['onboarding_fee'] = settings_obj.owner_apt_pg_fee
+            elif p_lower in ['office', 'retail', 'warehouse', 'coworking', 'industrial', 'commercial', 'commercial_plot']:
+                save_kwargs['onboarding_fee'] = settings_obj.owner_commercial_fee
+            else:
+                save_kwargs['onboarding_fee'] = settings_obj.owner_residential_fee
+
         if not owner_phone and owner:
             save_kwargs['owner_phone'] = owner.phone
         if not owner_name and owner:

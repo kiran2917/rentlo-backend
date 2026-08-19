@@ -249,6 +249,36 @@ export const NewListing = () => {
     return () => window.removeEventListener("online", handleOnline);
   }, []);
 
+  useEffect(() => {
+    if (platformSettings) {
+      if (platformSettings.bypass_owner_payment) {
+        setFormData(prev => ({ ...prev, onboarding_fee: "0" }));
+        return;
+      }
+      
+      // If a global onboarding fee is explicitly set in settings (greater than 0), use it
+      if (parseFloat(platformSettings.owner_onboarding_fee) > 0) {
+        setFormData(prev => ({ ...prev, onboarding_fee: platformSettings.owner_onboarding_fee.toString() }));
+        return;
+      }
+      
+      // Otherwise, dynamically determine fee based on selected property type
+      const pType = (formData.property_type || '').toLowerCase();
+      let fee = "0";
+      
+      if (['apartment', 'pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'hostel'].includes(pType)) {
+        fee = platformSettings.owner_apt_pg_fee?.toString() || "149";
+      } else if (['office', 'retail', 'warehouse', 'coworking', 'industrial', 'commercial', 'commercial_plot'].includes(pType)) {
+        fee = platformSettings.owner_commercial_fee?.toString() || "199";
+      } else {
+        // Default to residential (house, villa, plot, 1bhk, 2bhk, 3bhk, etc.)
+        fee = platformSettings.owner_residential_fee?.toString() || "99";
+      }
+      
+      setFormData(prev => ({ ...prev, onboarding_fee: fee }));
+    }
+  }, [formData.property_type, platformSettings]);
+
   const saveOfflineDraft = async (payload, files, audioBlob, signatureUrl) => {
     try {
       const key = "draft_" + Date.now();

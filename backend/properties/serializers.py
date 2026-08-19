@@ -179,8 +179,17 @@ class PropertySerializer(serializers.ModelSerializer):
         return PlatformSettings.load().buyer_unlock_fee
 
     def get_onboarding_fee(self, obj):
-        # Always return the current global fee so changes apply retroactively
-        return PlatformSettings.load().owner_onboarding_fee
+        settings = PlatformSettings.load()
+        if settings.owner_onboarding_fee > 0:
+            return settings.owner_onboarding_fee
+        
+        p_lower = str(obj.property_type or '').lower()
+        if p_lower in ['apartment', 'pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'hostel']:
+            return settings.owner_apt_pg_fee
+        elif p_lower in ['office', 'retail', 'warehouse', 'coworking', 'industrial', 'commercial', 'commercial_plot']:
+            return settings.owner_commercial_fee
+        else:
+            return settings.owner_residential_fee
 
     def get_display_title(self, obj):
         is_unlocked = self.get_is_unlocked(obj)
