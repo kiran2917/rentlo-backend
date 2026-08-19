@@ -1585,3 +1585,26 @@ class PGOccupancyUpdateView(views.APIView):
             'pg_rules': prop.pg_rules
         })
 
+class PropertyMediaDeleteView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            from media.models import PropertyMedia
+            media_item = PropertyMedia.objects.get(pk=pk)
+            prop = media_item.property
+            user = request.user
+            roles = user.roles if hasattr(user, 'roles') else [getattr(user, 'role', 'owner')]
+            
+            # Authorization: admin/moderator/agent can delete; owner can only delete their own
+            is_staff = any(r in roles for r in ['admin', 'moderator', 'agent'])
+            is_owner = (prop.owner == user or prop.agent == user)
+            
+            if not is_staff and not is_owner:
+                return Response({'detail': 'Not authorized to delete media for this property.'}, status=status.HTTP_403_FORBIDDEN)
+                
+            media_item.delete()
+            return Response({'detail': 'Media deleted successfully.'})
+        except PropertyMedia.DoesNotExist:
+            return Response({'detail': 'Media item not found.'}, status=status.HTTP_404_NOT_FOUND)
+

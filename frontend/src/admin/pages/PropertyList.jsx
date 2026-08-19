@@ -11,6 +11,7 @@ export const PropertyList = () => {
 
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPropertyForPhotos, setSelectedPropertyForPhotos] = useState(null);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,6 +48,40 @@ export const PropertyList = () => {
       toast.error("Network error fetching properties.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (mediaId) => {
+    if (!window.confirm("Are you sure you want to remove this photo?")) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/media/${mediaId}/`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        toast.success("Photo removed successfully!");
+        setSelectedPropertyForPhotos(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            media: prev.media.filter(m => m.id !== mediaId)
+          };
+        });
+        setProperties(prev => prev.map(p => {
+          if (p.id === selectedPropertyForPhotos?.id) {
+            return {
+              ...p,
+              media: p.media.filter(m => m.id !== mediaId)
+            };
+          }
+          return p;
+        }));
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error(errData.detail || "Failed to remove photo.");
+      }
+    } catch (err) {
+      toast.error("Network error removing photo.");
     }
   };
 
@@ -598,6 +633,14 @@ export const PropertyList = () => {
                               >
                                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                               </a>
+                              <button
+                                onClick={() => setSelectedPropertyForPhotos(p)}
+                                style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                                className="p-2 rounded-lg border hover:opacity-80 transition-all flex items-center justify-center cursor-pointer"
+                                title="Manage Photos"
+                              >
+                                <span className="material-symbols-outlined text-[18px]">photo_library</span>
+                              </button>
                               {p.status === "under_negotiation" && (
                                 <button
                                   onClick={() => handleUpdateStatus(p.id, "live")}
@@ -783,6 +826,14 @@ export const PropertyList = () => {
                             <span className="material-symbols-outlined text-[15px]">visibility</span>
                             View Page
                           </a>
+                          <button
+                            onClick={() => setSelectedPropertyForPhotos(p)}
+                            style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                            className="px-2.5 py-1.5 rounded-lg border hover:opacity-80 transition-all flex items-center justify-center gap-1 text-[11px] font-bold cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[15px]">photo_library</span>
+                            Photos
+                          </button>
                           
                           {p.status === "under_negotiation" && (
                             <button
@@ -869,6 +920,71 @@ export const PropertyList = () => {
           </div>
         )}
       </div>
+
+      {/* 🖼️ Manage Photos Modal */}
+      {selectedPropertyForPhotos && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300 animate-in zoom-in-95">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-6 py-5 border-b bg-slate-50">
+              <div>
+                <h3 className="font-extrabold text-[15px] text-slate-900">
+                  Manage Photos: Property #{selectedPropertyForPhotos.id}
+                </h3>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
+                  {selectedPropertyForPhotos.property_type?.toUpperCase()}
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedPropertyForPhotos(null)}
+                className="w-8 h-8 rounded-lg bg-white border shadow-sm flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 max-h-[350px] overflow-y-auto">
+              {selectedPropertyForPhotos.media && selectedPropertyForPhotos.media.length > 0 ? (
+                <div className="grid grid-cols-2 gap-4">
+                  {selectedPropertyForPhotos.media.map((m) => (
+                    <div key={m.id} className="relative group overflow-hidden rounded-xl border border-slate-100 shadow-xs">
+                      <img
+                        src={m.image_url}
+                        alt="Property"
+                        className="w-full h-28 object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePhoto(m.id)}
+                        className="absolute top-2 right-2 w-7 h-7 bg-red-600 hover:bg-red-500 text-white rounded-lg flex items-center justify-center shadow-md transition-all hover:scale-110 opacity-100 sm:opacity-0 group-hover:opacity-100 z-10 cursor-pointer"
+                        title="Delete Photo"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center text-slate-400 flex flex-col items-center gap-3">
+                  <span className="material-symbols-outlined text-[36px]">image_not_supported</span>
+                  <span className="text-[11px] font-bold uppercase tracking-widest">No photos uploaded</span>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 bg-slate-50 border-t flex justify-end">
+              <button
+                onClick={() => setSelectedPropertyForPhotos(null)}
+                className="h-9 px-4 rounded-xl border bg-white hover:bg-slate-50 text-[11px] font-extrabold uppercase tracking-widest text-slate-600 shadow-sm transition-all cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 };

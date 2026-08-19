@@ -117,6 +117,40 @@ export const ModerationQueue = () => {
     }
   };
 
+  const handleDeletePhoto = async (mediaId) => {
+    if (!window.confirm("Are you sure you want to remove this photo?")) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/media/${mediaId}/`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        toast.success("Photo removed successfully!");
+        setSelectedProperty(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            media: prev.media.filter(m => m.id !== mediaId)
+          };
+        });
+        setProperties(prev => prev.map(p => {
+          if (p.id === selectedProperty?.id) {
+            return {
+              ...p,
+              media: p.media.filter(m => m.id !== mediaId)
+            };
+          }
+          return p;
+        }));
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error(errData.detail || "Failed to remove photo.");
+      }
+    } catch (err) {
+      toast.error("Network error removing photo.");
+    }
+  };
+
   const filteredProperties = properties.filter((p) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
@@ -665,12 +699,21 @@ export const ModerationQueue = () => {
                   selectedProperty.media.length > 0 ? (
                     <div className="grid grid-cols-2 gap-4">
                       {selectedProperty.media.map((m) => (
-                        <img
-                          key={m.id}
-                          src={m.image_url}
-                          alt="Property"
-                          className="w-full h-36 object-cover rounded-xl border border-white shadow-sm hover:scale-105 transition-transform duration-300"
-                        />
+                        <div key={m.id} className="relative group overflow-hidden rounded-xl border border-white shadow-sm">
+                          <img
+                            src={m.image_url}
+                            alt="Property"
+                            className="w-full h-36 object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleDeletePhoto(m.id)}
+                            className="absolute top-2 right-2 w-7 h-7 bg-red-600 hover:bg-red-500 text-white rounded-lg flex items-center justify-center shadow-md transition-all hover:scale-110 opacity-100 sm:opacity-0 group-hover:opacity-100 z-10 cursor-pointer"
+                            title="Delete Photo"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">delete</span>
+                          </button>
+                        </div>
                       ))}
                     </div>
                   ) : (
