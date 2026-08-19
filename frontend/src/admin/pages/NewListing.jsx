@@ -1232,8 +1232,11 @@ export const NewListing = () => {
         if (rawData[field] === '' || rawData[field] == null) delete rawData[field];
       }
 
+      const pgSummary = formData.property_category === 'pg' ? calculatePgSummary(formData.pg_room_inventory) : null;
+
       const payload = {
         ...rawData,
+        price: pgSummary ? (pgSummary.minRent > 0 ? pgSummary.minRent.toString() : "8000") : rawData.price,
         pg_rules: formData.property_category === 'pg' ? { room_inventory: formData.pg_room_inventory } : rawData.pg_rules,
         exact_lat: position?.lat ? Number(position.lat.toFixed(8)) : undefined,
         exact_lng: position?.lng ? Number(position.lng.toFixed(8)) : undefined,
