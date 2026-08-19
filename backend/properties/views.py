@@ -576,13 +576,13 @@ class SettingsVersionView(views.APIView):
         })
 
 class RequestOTPView(views.APIView):
-    permission_classes = [IsAgent]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         return Response({'detail': 'OTP skipped', 'demo_code': '000000'})
 
 class VerifyOTPView(views.APIView):
-    permission_classes = [IsAgent]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         return Response({'detail': 'OTP verified successfully', 'verified': True})
