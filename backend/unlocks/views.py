@@ -20,6 +20,18 @@ try:
 except Exception:
     razorpay_client = None
 
+def razorpay_configured():
+    """Returns True only if real (non-placeholder) Razorpay credentials are set."""
+    key_id = getattr(settings, 'RAZORPAY_KEY_ID', '')
+    key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '')
+    if not razorpay_client:
+        return False
+    if not key_id or not key_secret:
+        return False
+    if 'REPLACE_WITH' in key_secret or 'dummy' in key_id or 'dummy' in key_secret:
+        return False
+    return True
+
 class InitiateUnlockView(views.APIView):
     permission_classes = [IsAuthenticated]
     throttle_scope = 'unlock_initiate'
@@ -112,8 +124,8 @@ class InitiateUnlockView(views.APIView):
         from properties.models import PlatformSettings
         ps = PlatformSettings.load()
 
-        # Check payment bypass mode or dev fallback mode
-        if ps.bypass_buyer_payment or not razorpay_client or getattr(settings, 'RAZORPAY_KEY_ID', 'dummy') == 'dummy':
+        # Check payment bypass mode or dev fallback mode (also bypass if Razorpay creds not configured)
+        if ps.bypass_buyer_payment or not razorpay_configured():
             unlock, _ = Unlock.objects.get_or_create(
                 buyer=buyer_user,
                 property=prop,
@@ -777,8 +789,8 @@ class InitiatePassPurchaseView(views.APIView):
         config = PASS_PRICING[pass_type]
 
         # Instant Bypass Mode if Admin enabled bypass or Razorpay not configured
-        # Instant Bypass Mode if Admin explicitly enabled bypass in PlatformSettings
-        if ps.bypass_buyer_payment:
+        # Instant Bypass Mode if Admin explicitly enabled bypass in PlatformSettings OR Razorpay not configured
+        if ps.bypass_buyer_payment or not razorpay_configured():
             sub, is_stacked = activate_or_stack_buyer_pass(request.user, pass_type, config['price'])
             return Response({
                 'bypassed': True,

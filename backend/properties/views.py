@@ -859,18 +859,6 @@ class InitiateOnboardingPaymentView(views.APIView):
 
     def post(self, request, pk):
         try:
-            import razorpay
-            from django.conf import settings
-            razorpay_client = razorpay.Client(
-                auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-            )
-        except Exception:
-            return Response(
-                {'detail': 'Razorpay is not configured on this server.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-        try:
             prop = Property.objects.get(pk=pk, owner=request.user)
         except Property.DoesNotExist:
             return Response(
@@ -898,7 +886,29 @@ class InitiateOnboardingPaymentView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Check if Razorpay credentials are properly configured
+        razorpay_key_id = getattr(settings, 'RAZORPAY_KEY_ID', '')
+        razorpay_key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '')
+        razorpay_ready = (
+            razorpay_key_id and razorpay_key_secret
+            and 'REPLACE_WITH' not in razorpay_key_secret
+            and 'dummy' not in razorpay_key_id
+        )
+
+        # If bypass_owner_payment or Razorpay not configured, mark as paid instantly
+        if platform_settings.bypass_owner_payment or not razorpay_ready:
+            prop.onboarding_payment_status = 'paid'
+            prop.onboarding_payment_method = 'bypass'
+            prop.save(update_fields=['onboarding_payment_status', 'onboarding_payment_method'])
+            return Response({
+                'bypassed': True,
+                'detail': 'Onboarding fee bypassed. Property is ready for submission.',
+                'property_id': prop.id,
+            })
+
         try:
+            import razorpay as rzp
+            razorpay_client = rzp.Client(auth=(razorpay_key_id, razorpay_key_secret))
             razorpay_order = razorpay_client.order.create({
                 'amount': int(fee * 100),  # convert to paise
                 'currency': 'INR',
@@ -914,7 +924,7 @@ class InitiateOnboardingPaymentView(views.APIView):
 
             return Response({
                 'order_id': razorpay_order['id'],
-                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'razorpay_key_id': razorpay_key_id,
                 'amount': int(fee * 100),
                 'currency': 'INR',
                 'property_id': prop.id,

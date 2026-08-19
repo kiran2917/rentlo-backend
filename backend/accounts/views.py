@@ -263,8 +263,8 @@ class BuyerRequestOTPView(APIView):
                 'require_otp': False
             })
             
-        # Generate cryptographically secure OTP
-        code = str(secrets.randbelow(900000) + 100000)
+        # Fixed demo OTP: always 000000 (no SMS gateway configured)
+        code = '000000'
         
         # Save OTP for verification
         obj, created = OTPVerification.objects.get_or_create(phone=phone, defaults={'code': code, 'expires_at': timezone.now() + timedelta(minutes=10)})
@@ -274,11 +274,10 @@ class BuyerRequestOTPView(APIView):
             obj.save()
             
         resp_data = {
-            'detail': 'OTP sent successfully',
-            'require_otp': True
+            'detail': 'OTP sent successfully. Use code 000000 to verify.',
+            'require_otp': True,
+            'demo_code': '000000'
         }
-        if settings.DEBUG or getattr(settings, 'otp_bypass_enabled', False):
-            resp_data['demo_code'] = code
 
         return Response(resp_data)
 
@@ -660,7 +659,8 @@ class ForgotPasswordRequestOTPView(APIView):
             return Response({'detail': 'No registered account found with this username or mobile number.'}, status=status.HTTP_404_NOT_FOUND)
 
         target_phone = user.phone or phone_or_user
-        code = str(secrets.randbelow(900000) + 100000)
+        # Fixed demo OTP: always 000000 (no SMS gateway configured)
+        code = '000000'
         from properties.models import OTPVerification
         obj, created = OTPVerification.objects.get_or_create(
             phone=target_phone,
@@ -673,9 +673,9 @@ class ForgotPasswordRequestOTPView(APIView):
 
         security_logger.info(f"Password reset OTP generated for user: {user.username}")
         return Response({
-            'detail': f'Password reset OTP sent for @{user.username}.',
+            'detail': f'Password reset OTP sent for @{user.username}. Use code 000000 to verify.',
             'phone': target_phone,
-            'demo_code': code
+            'demo_code': '000000'
         }, status=status.HTTP_200_OK)
 
 
