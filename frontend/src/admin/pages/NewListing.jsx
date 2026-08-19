@@ -884,6 +884,28 @@ export const NewListing = () => {
 
   const handleInputChange = (e) => {
     let { name, value, type } = e.target;
+    
+    // Global validation rules for maximum length input fields
+    const textFields = ["owner_name", "city_name_input", "locality_name_input", "state_name_input", "exact_address", "target_upi_id", "owner_password", "owner_phone"];
+    const numericFields = ["price", "carpet_area", "security_deposit", "maintenance_charges", "total_beds", "available_beds", "floor_number", "total_floors", "property_age", "bedrooms", "bathrooms", "balconies"];
+
+    if (textFields.includes(name) && value.length > 0) {
+      if (name === "owner_phone") value = value.slice(0, 10);
+      else if (name === "owner_name") value = value.slice(0, 50);
+      else if (name === "target_upi_id") value = value.slice(0, 50);
+      else if (name === "owner_password") value = value.slice(0, 50);
+      else if (name === "exact_address") value = value.slice(0, 1000);
+      else value = value.slice(0, 100);
+    }
+    
+    if (numericFields.includes(name) && value.length > 0) {
+      if (["floor_number", "total_floors", "bedrooms", "bathrooms", "balconies", "property_age"].includes(name)) {
+        value = value.slice(0, 3);
+      } else {
+        value = value.slice(0, 10);
+      }
+    }
+
     if (type === "number" && name !== "floor_number") {
       if (value !== "" && parseFloat(value) < 0) {
         value = "0";

@@ -1169,20 +1169,30 @@ export const OwnerNewListing = () => {
   const handleInputChange = (e) => {
     let { name, value } = e.target;
     
+    // Global validation rules for maximum length input fields
+    const descriptiveFields = ["description", "society", "street", "landmark", "title"];
+    if (name === "owner_phone" || name === "tenant_phone") {
+      value = value.replace(/[^0-9+]/g, '').slice(0, 10);
+    } else if (descriptiveFields.includes(name)) {
+      value = value.slice(0, 1000);
+    } else if (["price", "carpet_area", "security_deposit", "maintenance_charges", "total_beds", "available_beds"].includes(name)) {
+      value = value.slice(0, 10);
+    } else if (["floor_number", "total_floors", "bedrooms", "bathrooms", "balconies", "property_age"].includes(name)) {
+      value = value.slice(0, 3);
+    } else {
+      value = value.slice(0, 100);
+    }
+
     // Auto-capitalize first letter for text fields
     const textFields = ["owner_name", "society", "street", "landmark", "title", "description"];
     if (textFields.includes(name) && value.length > 0) {
       value = value.charAt(0).toUpperCase() + value.slice(1);
     }
     
-    // Scrub phone numbers
-    if (name === "owner_phone" || name === "tenant_phone") {
-      value = value.replace(/[^0-9+]/g, '');
-      if (name === "owner_phone") {
-        setOtpSent(false);
-        setOtpVerified(false);
-        setOtpCode("");
-      }
+    if (name === "owner_phone") {
+      setOtpSent(false);
+      setOtpVerified(false);
+      setOtpCode("");
     }
 
     setFormData((prev) => {
