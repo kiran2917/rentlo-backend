@@ -10,6 +10,8 @@ export const OwnerLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showNotificationBanner, setShowNotificationBanner] = useState(false);
+  const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
   
   const { t } = useTranslation();
 
@@ -40,9 +42,35 @@ export const OwnerLayout = () => {
   }, [profileMenuOpen]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setShowNotificationBanner(false);
+      return;
+    }
+
+    const checkPermissionState = () => {
+      if (!('Notification' in window)) return;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+      if (isIOS && !isStandalone) {
+        setBannerType("ios");
+        setShowNotificationBanner(true);
+      } else if (Notification.permission === "denied") {
+        setBannerType("blocked");
+        setShowNotificationBanner(true);
+      } else if (Notification.permission === "default") {
+        setBannerType("request");
+        setShowNotificationBanner(true);
+      } else {
+        setShowNotificationBanner(false);
+      }
+    };
+
+    checkPermissionState();
+    window.addEventListener("focus", checkPermissionState);
+
     if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission().catch(() => {});
+      Notification.requestPermission().then(checkPermissionState).catch(() => {});
     }
 
     let lastKnownIds = new Set();
@@ -85,7 +113,10 @@ export const OwnerLayout = () => {
 
     checkNotifications();
     const interval = setInterval(checkNotifications, 8000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", checkPermissionState);
+    };
   }, [user]);
 
   if (loading) {
@@ -216,6 +247,49 @@ export const OwnerLayout = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 md:ml-64 flex flex-col min-w-0 min-h-screen transition-colors duration-300" style={{ backgroundColor: "var(--bg)" }}>
+        {/* Notification Banner Warning */}
+        {showNotificationBanner && (
+          <div 
+            className="w-full px-4 py-2.5 text-center text-[12px] sm:text-[13px] font-extrabold flex items-center justify-center gap-2 border-b transition-all duration-300 animate-slide-down"
+            style={{
+              backgroundColor: bannerType === 'blocked' ? '#fef2f2' : '#fffbeb',
+              borderColor: bannerType === 'blocked' ? '#fecaca' : '#fef3c7',
+              color: bannerType === 'blocked' ? '#b91c1c' : '#b45309',
+            }}
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              {bannerType === 'blocked' ? 'notifications_off' : bannerType === 'ios' ? 'phone_iphone' : 'notifications_active'}
+            </span>
+            <span>
+              {bannerType === 'blocked' && (
+                <>🔔 Notifications are blocked! Please click the lock icon in your browser URL bar and change Notifications to "Allow" to receive alerts.</>
+              )}
+              {bannerType === 'request' && (
+                <>
+                  🔔 Enable notifications to receive instant updates. 
+                  <button 
+                    onClick={async () => {
+                      const res = await Notification.requestPermission();
+                      if (res === 'granted') {
+                        setShowNotificationBanner(false);
+                        window.location.reload();
+                      } else if (res === 'denied') {
+                        setBannerType('blocked');
+                      }
+                    }}
+                    className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-[11px] hover:opacity-90 transition-all cursor-pointer"
+                    style={{ backgroundColor: 'var(--accent)' }}
+                  >
+                    Enable Now
+                  </button>
+                </>
+              )}
+              {bannerType === 'ios' && (
+                <>📱 iPhone/iOS: Add this site to your Home Screen (Share and select "Add to Home Screen") to enable notifications.</>
+              )}
+            </span>
+          </div>
+        )}
         {/* Top Header Navbar with User Profile Pill in Right Corner */}
         <header
           className="h-14 border-b flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 shadow-sm transition-colors duration-300"
