@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         });
         if (!keyRes.ok) throw new Error("Failed to fetch VAPID public key");
         const keyData = await keyRes.json();
-        const public_key = keyData.public_key;
+        const public_key = keyData.public_key?.trim();
         if (!public_key) return;
 
         const padding = '='.repeat((4 - public_key.length % 4) % 4);
