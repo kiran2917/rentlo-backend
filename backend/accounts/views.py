@@ -211,13 +211,17 @@ class LogoutView(APIView):
                 pass
 
         response = Response({'detail': 'Successfully logged out.'})
-        # Delete cookies across all possible paths to clean up any legacy scoped cookies
+        # Clear cookies across all possible paths by setting value to empty string and max_age=0
         paths_to_clear = ['/', '/api/v1/accounts/', '/api/v1/auth/', None]
         for path_val in paths_to_clear:
             for cookie_name in ['access_token', 'refresh_token', 'token']:
-                response.delete_cookie(
+                response.set_cookie(
                     cookie_name,
+                    '',
+                    max_age=0,
+                    expires='Thu, 01 Jan 1970 00:00:00 GMT',
                     path=path_val,
+                    httponly=True,
                     samesite='None' if not settings.DEBUG else 'Lax',
                     secure=not settings.DEBUG,
                 )
