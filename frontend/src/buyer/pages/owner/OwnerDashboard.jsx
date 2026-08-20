@@ -76,7 +76,16 @@ export const OwnerDashboard = () => {
           )
         );
       } else {
-        toast.error("Failed to update property status.");
+        const errorData = await res.json().catch(() => ({}));
+        if (res.status === 402) {
+          toast.error(errorData.detail || "No active listing credits remaining.");
+          if (errorData.category) {
+            setSelectedPassCategory(errorData.category);
+          }
+          setShowCreditsModal(true);
+        } else {
+          toast.error(errorData.detail || "Failed to update property status.");
+        }
       }
     } catch {
       toast.error("Network error. Please try again.");

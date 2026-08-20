@@ -1506,13 +1506,67 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
         if new_status:
             if new_status not in VALID_STATUSES:
                 return Response({'detail': f'Invalid status: {new_status}'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Credit-based Relisting logic when transitioning to 'live'
+            if new_status == 'live' and instance.status in ['expired', 'rented', 'draft', 'rejected']:
+                if 'admin' not in roles and 'moderator' not in roles:
+                    # Determine target category
+                    prop_cat = instance.property_category
+                    prop_type = instance.property_type
+                    
+                    if prop_cat == 'pg' or prop_type in ['apartment', 'flat', 'pg_hostel']:
+                        target_cat = 'apartment'
+                    elif prop_cat == 'commercial' or prop_type in ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building']:
+                        target_cat = 'commercial'
+                    else:
+                        target_cat = 'residential'
+
+                    user_phone = getattr(user, 'phone', None)
+                    from django.db.models import Q
+                    from unlocks.models import OwnerListingPass
+                    
+                    pass_filter = Q(owner=user)
+                    if user_phone:
+                        pass_filter |= Q(owner__phone=user_phone)
+
+                    active_pass = OwnerListingPass.objects.filter(
+                        pass_filter,
+                        status='active',
+                        credits_remaining__gt=0
+                    ).filter(
+                        Q(category='all') | Q(category__iexact=target_cat)
+                    ).order_by('created_at').first()
+
+                    if not active_pass:
+                        return Response({
+                            'detail': f'No active listing credits found for {target_cat.capitalize()}. Please purchase listing credits to relist.',
+                            'requires_payment': True,
+                            'category': target_cat
+                        }, status=status.HTTP_402_PAYMENT_REQUIRED)
+
+                    # Consume 1 credit
+                    active_pass.credits_remaining -= 1
+                    if active_pass.credits_remaining <= 0:
+                        active_pass.status = 'depleted'
+                    active_pass.save()
+
             instance.status = new_status
             if new_status == 'under_negotiation':
                 instance.under_negotiation_since = timezone.now()
             else:
                 instance.under_negotiation_since = None
-            instance.save(update_fields=['status', 'under_negotiation_since'])
-            return Response({'detail': f'Status updated to {new_status}', 'status': instance.status})
+
+            # Reset expires_at to 60 days for PG, 30 days for others when going live
+            if new_status == 'live':
+                prop_cat = instance.property_category
+                prop_type = instance.property_type
+                if prop_cat == 'pg' or prop_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
+                    instance.expires_at = timezone.now() + timedelta(days=60)
+                else:
+                    instance.expires_at = timezone.now() + timedelta(days=30)
+
+            instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at'])
+            return Response({'detail': f'Status updated to {new_status}', 'status': instance.status, 'expires_at': instance.expires_at})
 
         # Fall back to standard partial update for other fields
         serializer = self.get_serializer(instance, data=request.data, partial=True)
