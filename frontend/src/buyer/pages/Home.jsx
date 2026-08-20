@@ -716,7 +716,7 @@ export const Home = () => {
                           </div>
                         ) : (
                           <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
-                            {prop.property_type}
+                            {prop.property_type ? t(`home.${prop.property_type}`, prop.property_type.replace('_', ' ')) : 'Property'}
                           </div>
                         )}
                       </div>
@@ -946,7 +946,7 @@ export const Home = () => {
                     <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/70 to-transparent pointer-events-none" />
 
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-slate-950/80 backdrop-blur-md text-white border border-slate-700/50 shadow-md">
-                      {prop.property_type ? prop.property_type.replace('_', ' ') : 'Property'}
+                      {prop.property_type ? t(`home.${prop.property_type}`, prop.property_type.replace('_', ' ')) : 'Property'}
                     </div>
 
                     {prop.is_verified && (

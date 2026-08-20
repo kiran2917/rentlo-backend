@@ -687,6 +687,8 @@ class PublicPropertyListView(generics.ListAPIView):
                 queryset = queryset.filter(property_type__in=['apartment', '1bhk', '2bhk', '3bhk', '4bhk', '5bhk', 'studio', 'builder_floor'])
             elif prop_type == 'house':
                 queryset = queryset.filter(property_type__in=['house', '1bhk', '2bhk', '3bhk', '4bhk', '5bhk'])
+            elif prop_type == 'pg':
+                queryset = queryset.filter(property_type__in=['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple'])
             else:
                 queryset = queryset.filter(property_type=prop_type)
             
