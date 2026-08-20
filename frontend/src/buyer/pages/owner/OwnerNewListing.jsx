@@ -269,9 +269,11 @@ export const OwnerNewListing = () => {
     const isPg = formData.property_category === "pg" || formData.property_type === "pg_hostel";
 
     if (isCommercial) {
+      const commDays = platformSettings?.validity_commercial_days || 30;
       return {
         categoryName: "Commercial Property",
         categoryTag: "COMMERCIAL",
+        validityDays: commDays,
         plans: [
           {
             id: "single",
@@ -280,7 +282,7 @@ export const OwnerNewListing = () => {
             count: 1,
             tag: "Standard",
             popular: false,
-            description: "Standard visibility for 1 commercial property."
+            description: `Live for ${commDays} days · Standard visibility for 1 commercial property.`
           },
           {
             id: "3pack",
@@ -289,7 +291,7 @@ export const OwnerNewListing = () => {
             count: 3,
             tag: "Featured",
             popular: true,
-            description: "Priority search placement & WhatsApp alerts to 500+ buyers."
+            description: `Live for ${commDays} days · Priority search placement & WhatsApp alerts to 500+ buyers.`
           },
           {
             id: "6pack",
@@ -298,14 +300,16 @@ export const OwnerNewListing = () => {
             count: 6,
             tag: "VIP Deal",
             popular: false,
-            description: "Dedicated concierge agent & homepage hero banner spotlight."
+            description: `Live for ${commDays} days · Dedicated concierge agent & homepage hero banner spotlight.`
           }
         ]
       };
     } else if (isPg) {
+      const pgDays = platformSettings?.validity_apt_pg_days || 60;
       return {
         categoryName: "PG & Hostel",
         categoryTag: "PG / HOSTEL",
+        validityDays: pgDays,
         plans: [
           {
             id: "single",
@@ -314,7 +318,7 @@ export const OwnerNewListing = () => {
             count: 1,
             tag: "Standard",
             popular: false,
-            description: "Standard listing visibility for 1 PG or Hostel."
+            description: `Live for ${pgDays} days · Standard listing visibility for 1 PG or Hostel.`
           },
           {
             id: "3pack",
@@ -323,7 +327,7 @@ export const OwnerNewListing = () => {
             count: 3,
             tag: "Featured",
             popular: true,
-            description: "Top search ranking & WhatsApp buyer broadcasts."
+            description: `Live for ${pgDays} days · Top search ranking & WhatsApp buyer broadcasts.`
           },
           {
             id: "6pack",
@@ -332,14 +336,16 @@ export const OwnerNewListing = () => {
             count: 6,
             tag: "VIP Deal",
             popular: false,
-            description: "Dedicated concierge agent & free verification."
+            description: `Live for ${pgDays} days · Dedicated concierge agent & free verification.`
           }
         ]
       };
     } else {
+      const resDays = platformSettings?.validity_residential_days || 30;
       return {
         categoryName: "Residential House / Villa",
         categoryTag: "RESIDENTIAL",
+        validityDays: resDays,
         plans: [
           {
             id: "single",
@@ -348,7 +354,7 @@ export const OwnerNewListing = () => {
             count: 1,
             tag: "Standard",
             popular: false,
-            description: "Standard visibility for 1 independent house, villa or plot."
+            description: `Live for ${resDays} days · Standard visibility for 1 independent house, villa or plot.`
           },
           {
             id: "3pack",
@@ -357,7 +363,7 @@ export const OwnerNewListing = () => {
             count: 3,
             tag: "Featured",
             popular: true,
-            description: "Top search placement & instant tenant alerts."
+            description: `Live for ${resDays} days · Top search placement & instant tenant alerts.`
           },
           {
             id: "6pack",
@@ -366,7 +372,7 @@ export const OwnerNewListing = () => {
             count: 6,
             tag: "VIP Deal",
             popular: false,
-            description: "Concierge support & homepage banner spotlight."
+            description: `Live for ${resDays} days · Concierge support & homepage banner spotlight.`
           }
         ]
       };
@@ -3524,7 +3530,7 @@ export const OwnerNewListing = () => {
                                   <span className="material-symbols-outlined text-orange-600 text-[20px]">home</span>
                                   Residential House / Villa
                                 </h4>
-                                <p className="text-[11px] text-slate-500 font-medium">₹{housePrice} per property (Unlimited Validity)</p>
+                                <p className="text-[11px] text-slate-500 font-medium">₹{housePrice} per property ({platformSettings?.validity_residential_days || 30}d Validity)</p>
                               </div>
                               <div className="flex items-center gap-3">
                                 <button
@@ -3615,7 +3621,7 @@ export const OwnerNewListing = () => {
                                   <span className="material-symbols-outlined text-orange-600 text-[20px]">storefront</span>
                                   Commercial Shop / Office
                                 </h4>
-                                <p className="text-[11px] text-slate-500 font-medium">₹{commercialPrice} per property (Unlimited Validity)</p>
+                                <p className="text-[11px] text-slate-500 font-medium">₹{commercialPrice} per property ({platformSettings?.validity_commercial_days || 30}d Validity)</p>
                               </div>
                               <div className="flex items-center gap-3">
                                 <button
