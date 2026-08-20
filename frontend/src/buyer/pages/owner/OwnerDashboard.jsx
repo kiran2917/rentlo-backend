@@ -614,9 +614,34 @@ export const OwnerDashboard = () => {
                 {/* Card Body */}
                 <div className="p-5 flex flex-col flex-1 gap-3">
                   <div>
-                    <h4 className="text-[15px] font-bold text-ink capitalize line-clamp-1">
-                      <Translate>{prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}{prop.property_type}</Translate>
-                    </h4>
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-[15px] font-bold text-ink capitalize line-clamp-1">
+                        <Translate>{prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}{prop.property_type}</Translate>
+                      </h4>
+                      {prop.status === "live" && prop.expires_at && (() => {
+                        const diffTime = new Date(prop.expires_at) - new Date();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays > 0) {
+                          return (
+                            <span 
+                              className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold tracking-wide whitespace-nowrap shrink-0 ${
+                                diffDays <= 10 
+                                  ? "bg-rose-500/10 text-rose-500 border border-rose-500/20 animate-pulse" 
+                                  : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                              }`}
+                            >
+                              ⏳ {diffDays} {diffDays === 1 ? "Day" : "Days"} Left
+                            </span>
+                          );
+                        } else {
+                          return (
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold tracking-wide bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap shrink-0">
+                              Expired ⚠️
+                            </span>
+                          );
+                        }
+                      })()}
+                    </div>
                     <p className="text-[12px] text-text-muted flex items-center gap-1 mt-0.5">
                       <span className="material-symbols-outlined text-[14px] text-emerald-500">location_on</span>
                       <Translate>{prop.locality_details?.name || "Locality"}</Translate>, <Translate>{prop.locality_details?.city_name || "City"}</Translate>

@@ -18,8 +18,12 @@ class PropertyReconfirmView(views.APIView):
         if prop.status != 'live':
             return Response({'detail': 'Only live properties can be reconfirmed.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Reset expires_at to 30 days from now
-        prop.expires_at = timezone.now() + timedelta(days=30)
+        if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
+            prop.expires_at = timezone.now() + timedelta(days=60)
+            msg = 'Property reconfirmed for 60 more days.'
+        else:
+            prop.expires_at = timezone.now() + timedelta(days=30)
+            msg = 'Property reconfirmed for 30 more days.'
         prop.save()
 
         # Mark related notifications as read
@@ -27,4 +31,4 @@ class PropertyReconfirmView(views.APIView):
         notifications = Notification.objects.filter(recipient=request.user, property=prop, is_read=False)
         notifications.update(is_read=True)
 
-        return Response({'detail': 'Property reconfirmed for 30 more days.', 'expires_at': prop.expires_at})
+        return Response({'detail': msg, 'expires_at': prop.expires_at})

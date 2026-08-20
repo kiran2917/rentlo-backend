@@ -38,7 +38,10 @@ class ModeratePropertyView(views.APIView):
                     return Response({'detail': 'Property already approved'}, status=status.HTTP_400_BAD_REQUEST)
 
                 prop.status = 'live'
-                prop.expires_at = timezone.now() + timedelta(days=30)
+                if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
+                    prop.expires_at = timezone.now() + timedelta(days=60)
+                else:
+                    prop.expires_at = timezone.now() + timedelta(days=30)
                 prop.rejection_reason = None
                 prop.reviewed_at = timezone.now()
                 prop.save()
