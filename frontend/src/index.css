@@ -1,5 +1,5 @@
 @import '@fontsource-variable/fraunces';
-@import url('https://fonts.googleapis.com/css2?family=Permanent-Marker&family=Rubik+Mono+One&family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Cinzel:wght@600;700;900&family=Orbitron:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik+Mono+One&family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Cinzel:wght@600;700;900&family=Orbitron:wght@700;900&display=swap');
  
 @tailwind base;
 @tailwind components;
