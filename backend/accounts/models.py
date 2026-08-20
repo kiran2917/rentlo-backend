@@ -98,3 +98,15 @@ class AgentKYC(models.Model):
         return f"KYC for {self.user.username} ({self.get_status_display()})"
 
 
+class PushSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='push_subscriptions')
+    endpoint = models.TextField(unique=True)
+    p256dh = models.CharField(max_length=255)
+    auth = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Push Subscription for {self.user.username} ({self.id})"
+
+

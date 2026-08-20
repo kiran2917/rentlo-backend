@@ -234,6 +234,15 @@ CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME', '')
 CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY', '')
 CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET', '')
 
+# Web Push VAPID Settings
+import base64
+VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY', '')
+_priv_b64 = os.getenv('VAPID_PRIVATE_KEY_B64', '')
+VAPID_PRIVATE_KEY = base64.b64decode(_priv_b64).decode() if _priv_b64 else ''
+VAPID_ADMIN_EMAIL = os.getenv('VAPID_ADMIN_EMAIL', 'mailto:admin@rentlo.in')
+if VAPID_ADMIN_EMAIL and not VAPID_ADMIN_EMAIL.startswith('mailto:'):
+    VAPID_ADMIN_EMAIL = f"mailto:{VAPID_ADMIN_EMAIL}"
+
 import mimetypes
 mimetypes.add_type('image/webp', '.webp', True)
 
