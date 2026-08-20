@@ -19,3 +19,6 @@ gunicorn>=21.2.0
 mutagen>=1.47.0
 imagehash>=4.3.1
 cloudinary>=1.36.0
+pywebpush>=2.4.0
+py-vapid>=1.9.4
+
