@@ -362,11 +362,16 @@ class BuyerRequestOTPView(APIView):
         from properties.models import PlatformSettings, OTPVerification
         phone = request.data.get('phone')
         intended_role = request.data.get('intended_role', 'buyer')
+        action = request.data.get('action')
         
         is_valid, phone_or_err = validate_indian_phone(phone)
         if not is_valid:
             return Response({'detail': phone_or_err}, status=status.HTTP_400_BAD_REQUEST)
         phone = phone_or_err
+
+        # Check if signing up but user already exists
+        if action == 'signup' and User.objects.filter(phone=phone).exists():
+            return Response({'detail': 'This mobile number is already registered. Please Sign In instead.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Determine if it's a login or signup
         is_signup = not User.objects.filter(phone=phone).exists()
