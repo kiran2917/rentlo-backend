@@ -39,28 +39,28 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
     residential: {
       title: "🏡 Residential (1RK, 1BHK, 2BHK, 3BHK, House)",
       packs: [
-        { name: "Single Listing", count: 1, price: resFee, badge: null, desc: "1-time property listing" },
-        { name: "3-Listing Pass", count: 3, price: res3, badge: "POPULAR", desc: `₹${Math.round(res3/3)} / listing · Save money` },
-        { name: "6-Listing Pass", count: 6, price: res6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(res6/6)} / listing + Featured Badge` },
-        { name: "10-Listing Pass", count: 10, price: res10, badge: "PRO AGENT 👑", desc: `₹${Math.round(res10/10)} / listing + Top Search Placement` },
+        { name: "Single Listing", count: 1, price: resFee, badge: null, desc: `1-time property listing · Live for ${settings?.validity_residential_days || 30} Days` },
+        { name: "3-Listing Pass", count: 3, price: res3, badge: "POPULAR", desc: `₹${Math.round(res3/3)} / listing · Live for ${settings?.validity_residential_days || 30} Days` },
+        { name: "6-Listing Pass", count: 6, price: res6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(res6/6)} / listing · Live for ${settings?.validity_residential_days || 30} Days` },
+        { name: "10-Listing Pass", count: 10, price: res10, badge: "PRO AGENT 👑", desc: `₹${Math.round(res10/10)} / listing · Live for ${settings?.validity_residential_days || 30} Days` },
       ]
     },
     pg_hostel: {
       title: "🛏️ PG & Hostel & Multi-Bed Rooms",
       packs: [
-        { name: "Single Listing", count: 1, price: aptFee, badge: null, desc: "1-time PG/Hostel listing" },
-        { name: "3-PG & Hostel Pass", count: 3, price: apt3, badge: "POPULAR", desc: `₹${Math.round(apt3/3)} / listing · Continuous leads` },
-        { name: "6-PG & Hostel Pass", count: 6, price: apt6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(apt6/6)} / listing + Featured Badge` },
-        { name: "10-PG & Hostel Pass", count: 10, price: apt10, badge: "PRO AGENT 👑", desc: `₹${Math.round(apt10/10)} / listing + Top Search Spot` },
+        { name: "Single Listing", count: 1, price: aptFee, badge: null, desc: `1-time PG/Hostel listing · Live for ${settings?.validity_apt_pg_days || 60} Days` },
+        { name: "3-PG & Hostel Pass", count: 3, price: apt3, badge: "POPULAR", desc: `₹${Math.round(apt3/3)} / listing · Live for ${settings?.validity_apt_pg_days || 60} Days` },
+        { name: "6-PG & Hostel Pass", count: 6, price: apt6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(apt6/6)} / listing · Live for ${settings?.validity_apt_pg_days || 60} Days` },
+        { name: "10-PG & Hostel Pass", count: 10, price: apt10, badge: "PRO AGENT 👑", desc: `₹${Math.round(apt10/10)} / listing · Live for ${settings?.validity_apt_pg_days || 60} Days` },
       ]
     },
     commercial: {
       title: "🏪 Commercial Shop, Office Space & Plot",
       packs: [
-        { name: "Single Commercial", count: 1, price: commFee, badge: null, desc: "1 Commercial Shop / Office listing" },
-        { name: "3-Commercial Pass", count: 3, price: comm3, badge: "POPULAR", desc: `₹${Math.round(comm3/3)} / listing · High returns` },
-        { name: "6-Commercial Pass", count: 6, price: comm6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(comm6/6)} / listing + Featured Badge` },
-        { name: "10-Commercial Pass", count: 10, price: comm10, badge: "PRO AGENT 👑", desc: `₹${Math.round(comm10/10)} / listing + Top Search Spot` },
+        { name: "Single Commercial", count: 1, price: commFee, badge: null, desc: `1 Commercial Shop/Office · Live for ${settings?.validity_commercial_days || 30} Days` },
+        { name: "3-Commercial Pass", count: 3, price: comm3, badge: "POPULAR", desc: `₹${Math.round(comm3/3)} / listing · Live for ${settings?.validity_commercial_days || 30} Days` },
+        { name: "6-Commercial Pass", count: 6, price: comm6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(comm6/6)} / listing · Live for ${settings?.validity_commercial_days || 30} Days` },
+        { name: "10-Commercial Pass", count: 10, price: comm10, badge: "PRO AGENT 👑", desc: `₹${Math.round(comm10/10)} / listing · Live for ${settings?.validity_commercial_days || 30} Days` },
       ]
     }
   };
