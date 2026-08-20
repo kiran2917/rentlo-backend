@@ -43,8 +43,10 @@ def _send_single_web_push(sub_id, payload_str, private_key, admin_email):
                 'sub': admin_email
             }
         )
+        logger.info(f"Web Push: Successfully sent push notification to {sub.user.username}'s endpoint {sub.endpoint[:40]}")
     except WebPushException as ex:
         if ex.response is not None and ex.response.status_code in [404, 410]:
+            logger.warning(f"Web Push: Subscription expired (status {ex.response.status_code}), removing from DB: {sub.endpoint[:40]}")
             sub.delete()
         else:
             logger.error("WebPush send failed: %s", ex)
@@ -57,16 +59,20 @@ def send_web_push_notification(sender, instance, created, **kwargs):
     if not created:
         return
 
+    logger.info(f"Web Push: Notification created for user {instance.recipient.username} (ID: {instance.recipient.id}, Message: {instance.message[:40]})")
+
     from django.conf import settings
     vapid_pub = getattr(settings, 'VAPID_PUBLIC_KEY', None)
     vapid_priv = getattr(settings, 'VAPID_PRIVATE_KEY', None)
     vapid_email = getattr(settings, 'VAPID_ADMIN_EMAIL', None)
 
     if not vapid_pub or not vapid_priv or not vapid_email:
+        logger.warning(f"Web Push: VAPID keys missing. pub: {bool(vapid_pub)}, priv: {bool(vapid_priv)}, email: {bool(vapid_email)}")
         return
 
     from accounts.models import PushSubscription
     subs = PushSubscription.objects.filter(user=instance.recipient)
+    logger.info(f"Web Push: Found {subs.count()} active subscriptions for user {instance.recipient.username}")
     if not subs.exists():
         return
 
@@ -85,6 +91,7 @@ def send_web_push_notification(sender, instance, created, **kwargs):
     payload_str = json.dumps(payload)
 
     for sub in subs:
+        logger.info(f"Web Push: Spawning background thread to send push to endpoint: {sub.endpoint[:60]}...")
         t = threading.Thread(
             target=_send_single_web_push,
             args=(sub.id, payload_str, vapid_priv, vapid_email)
