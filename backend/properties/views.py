@@ -624,6 +624,7 @@ class VerifyBuyerOTPView(views.APIView):
         response.set_cookie(
             'token',
             token.key,
+            path='/',
             httponly=True,
             samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG
