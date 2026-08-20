@@ -234,7 +234,7 @@ export const PlanSelectionModal = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ phone, intended_role: "buyer" })
+        body: JSON.stringify({ phone, intended_role: "buyer", action: "signup" })
       });
       const checkData = await checkRes.json();
 
