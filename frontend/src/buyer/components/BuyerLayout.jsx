@@ -402,7 +402,82 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     )}
                   </div>
 
-                  <div className="pt-1 border-t" style={{ borderColor: "var(--border)" }}>
+                  <div className="pt-1 border-t text-left" style={{ borderColor: "var(--border)" }}>
+                    <button
+                      onClick={async () => {
+                        try {
+                          if (!('serviceWorker' in navigator)) {
+                            alert("❌ Service Workers are not supported in this browser.");
+                            return;
+                          }
+                          if (!('PushManager' in window)) {
+                            alert("❌ Push Manager is not supported in this browser.");
+                            return;
+                          }
+                          
+                          alert("🔄 Requesting notification permission...");
+                          const permission = await Notification.requestPermission();
+                          alert(`Permission state is: ${permission}`);
+                          
+                          if (permission !== "granted") {
+                            alert("❌ Permission was not granted.");
+                            return;
+                          }
+                          
+                          alert("🔄 Getting Service Worker registration...");
+                          const registration = await navigator.serviceWorker.ready;
+                          alert(`SW Registration status: ${registration ? "Active" : "Null"}`);
+                          
+                          alert("🔄 Fetching VAPID key...");
+                          const keyRes = await fetch(`${import.meta.env.VITE_API_URL}/notifications/vapid-public-key/`, { credentials: "include" });
+                          const keyData = await keyRes.json();
+                          const public_key = keyData.public_key?.trim();
+                          alert(`VAPID public key loaded: ${public_key ? "Yes" : "No (Empty)"}`);
+                          
+                          if (!public_key) return;
+                          
+                          const padding = '='.repeat((4 - public_key.length % 4) % 4);
+                          const base64 = (public_key + padding).replace(/\-/g, '+').replace(/_/g, '/');
+                          const rawData = window.atob(base64);
+                          const outputArray = new Uint8Array(rawData.length);
+                          for (let i = 0; i < rawData.length; ++i) {
+                            outputArray[i] = rawData.charCodeAt(i);
+                          }
+                          
+                          alert("🔄 Subscribing to push manager...");
+                          let subscription = await registration.pushManager.getSubscription();
+                          if (!subscription) {
+                            subscription = await registration.pushManager.subscribe({
+                              userVisibleOnly: true,
+                              applicationServerKey: outputArray
+                            });
+                          }
+                          alert(`Push subscription token generated successfully!`);
+                          
+                          alert("🔄 Registering subscription with backend database...");
+                          const subRes = await fetch(`${import.meta.env.VITE_API_URL}/notifications/subscribe-web-push/`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify(subscription.toJSON())
+                          });
+                          
+                          if (subRes.ok) {
+                            alert("✅ Success! Web Push notifications registered successfully!");
+                            window.location.reload();
+                          } else {
+                            alert(`❌ Backend registration failed with status ${subRes.status}`);
+                          }
+                        } catch (err) {
+                          alert(`❌ Error occurred: ${err.message || err}`);
+                        }
+                      }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-extrabold transition-colors cursor-pointer text-emerald-600 hover:bg-emerald-500/10"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">build</span>
+                      Debug Notifications
+                    </button>
+
                     <button
                       onClick={logout}
                       className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] font-extrabold transition-colors cursor-pointer text-red-600 hover:bg-red-500/10"
