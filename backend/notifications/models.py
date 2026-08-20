@@ -29,6 +29,13 @@ def _send_single_web_push(sub_id, payload_str, private_key, admin_email):
         return
 
     try:
+        from py_vapid import Vapid
+        vapid_key = Vapid.from_pem(private_key.encode())
+    except Exception as ex:
+        logger.error("WebPush failed to load PEM private key: %s", ex)
+        return
+
+    try:
         webpush(
             subscription_info={
                 'endpoint': sub.endpoint,
@@ -38,7 +45,7 @@ def _send_single_web_push(sub_id, payload_str, private_key, admin_email):
                 }
             },
             data=payload_str,
-            vapid_private_key=private_key,
+            vapid_private_key=vapid_key,
             vapid_claims={
                 'sub': admin_email
             }
