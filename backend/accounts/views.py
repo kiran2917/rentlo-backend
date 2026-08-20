@@ -425,9 +425,9 @@ class BuyerVerifyOTPView(APIView):
             return Response({'detail': 'Phone number is required.'}, status=status.HTTP_400_BAD_REQUEST)
             
         is_signup = not User.objects.filter(phone=phone).exists()
-        settings = PlatformSettings.load()
+        platform_settings = PlatformSettings.load()
         
-        if settings.requires_otp(intended_role, is_signup) and not getattr(settings, 'otp_bypass_enabled', False):
+        if platform_settings.requires_otp(intended_role, is_signup) and not getattr(platform_settings, 'otp_bypass_enabled', False):
             from django.core.cache import cache
             from datetime import timedelta
 
