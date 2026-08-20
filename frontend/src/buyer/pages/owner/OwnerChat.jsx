@@ -17,6 +17,7 @@ export const OwnerChat = () => {
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
   const isInitialLoadRef = useRef(true);
+  const prevMessagesLengthRef = useRef(0);
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
@@ -103,6 +104,7 @@ export const OwnerChat = () => {
   useEffect(() => {
     if (!activeThread) return;
     isInitialLoadRef.current = true;
+    prevMessagesLengthRef.current = 0;
     fetchMessages(activeThread);
     pollRef.current = setInterval(() => {
       if (document.visibilityState === "visible") {
@@ -119,10 +121,15 @@ export const OwnerChat = () => {
       ? container.scrollHeight - container.scrollTop - container.clientHeight < 150
       : true;
 
-    if (isInitialLoadRef.current || isNearBottom) {
+    // Only scroll if it's the initial load, OR a new message has actually been added
+    const hasNewMessage = messages.length > prevMessagesLengthRef.current;
+
+    if (isInitialLoadRef.current || (hasNewMessage && isNearBottom)) {
       bottomRef.current?.scrollIntoView({ behavior: isInitialLoadRef.current ? "auto" : "smooth" });
       isInitialLoadRef.current = false;
     }
+
+    prevMessagesLengthRef.current = messages.length;
   }, [messages]);
 
   const sendMessage = async (e) => {
@@ -156,6 +163,43 @@ export const OwnerChat = () => {
       toast.error("Network error sending message.");
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    if (imageUrl.startsWith("data:image/")) {
+      const newTab = window.open();
+      if (newTab) {
+        newTab.document.write(`
+          <html>
+            <head>
+              <title>View Image</title>
+              <style>
+                body {
+                  margin: 0;
+                  background-color: #0b0f19;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                }
+                img {
+                  max-width: 100%;
+                  max-height: 100vh;
+                  object-fit: contain;
+                  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+                }
+              </style>
+            </head>
+            <body>
+              <img src="${imageUrl}" alt="Attachment" />
+            </body>
+          </html>
+        `);
+        newTab.document.close();
+      }
+    } else {
+      window.open(imageUrl, '_blank');
     }
   };
 
@@ -313,7 +357,7 @@ export const OwnerChat = () => {
                             src={msg.message}
                             alt="Attachment"
                             className="max-w-[200px] sm:max-w-[280px] rounded-lg object-contain cursor-pointer hover:opacity-95 transition-opacity"
-                            onClick={() => window.open(msg.message, '_blank')}
+                            onClick={() => handleImageClick(msg.message)}
                           />
                         ) : (
                           <p className="whitespace-pre-wrap">{msg.message}</p>

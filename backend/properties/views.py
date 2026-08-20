@@ -683,7 +683,12 @@ class PublicPropertyListView(generics.ListAPIView):
         # Filters
         prop_type = self.request.query_params.get('property_type')
         if prop_type:
-            queryset = queryset.filter(property_type=prop_type)
+            if prop_type == 'apartment':
+                queryset = queryset.filter(property_type__in=['apartment', '1bhk', '2bhk', '3bhk', '4bhk', '5bhk', 'studio', 'builder_floor'])
+            elif prop_type == 'house':
+                queryset = queryset.filter(property_type__in=['house', '1bhk', '2bhk', '3bhk', '4bhk', '5bhk'])
+            else:
+                queryset = queryset.filter(property_type=prop_type)
             
         min_price = self.request.query_params.get('min_price')
         if min_price:

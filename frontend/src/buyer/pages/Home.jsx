@@ -373,7 +373,8 @@ export const Home = () => {
     (l) => l.id.toString() === filters.locality,
   )?.name;
   const propertyTypes = [
-    "apartment", "house", "builder_floor", "studio", "pg", 
+    "1bhk", "2bhk", "3bhk", "4bhk", "5bhk", "studio",
+    "apartment", "house", "builder_floor", "pg", 
     "office", "retail", "warehouse", "coworking", "industrial"
   ];
 

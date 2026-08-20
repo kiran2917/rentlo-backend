@@ -34,6 +34,7 @@ def mask_phone_pii(phone):
 
 from django.db.models import Q
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -55,18 +56,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         if user:
             if not user.check_password(password):
-                raise serializers.ValidationError({
-                    'detail': 'Incorrect password. Please check your password or click Forgot Password.'
-                })
+                raise AuthenticationFailed(
+                    'Incorrect password. Please check your password or click Forgot Password.'
+                )
             if not user.is_active:
-                raise serializers.ValidationError({
-                    'detail': 'This account has been deactivated. Please contact support.'
-                })
+                raise AuthenticationFailed(
+                    'This account has been deactivated. Please contact support.'
+                )
             attrs['username'] = user.username
         else:
-            raise serializers.ValidationError({
-                'detail': 'No registered account found with this mobile number. Please Sign Up.'
-            })
+            raise AuthenticationFailed(
+                'No registered account found with this mobile number. Please Sign Up.'
+            )
 
         data = super().validate(attrs)
         data['role'] = self.user.role
@@ -174,11 +175,23 @@ class CustomTokenRefreshView(TokenRefreshView):
                 samesite='None' if not settings.DEBUG else 'Lax',
                 secure=not settings.DEBUG,
             )
+            # If SimpleJWT rotated the refresh token, store the new one in the cookie
+            refresh_token_rotated = response.data.get('refresh')
+            if refresh_token_rotated:
+                response.set_cookie(
+                    'refresh_token',
+                    refresh_token_rotated,
+                    max_age=3600 * 24 * 7, # 7 days
+                    httponly=True,
+                    samesite='None' if not settings.DEBUG else 'Lax',
+                    secure=not settings.DEBUG,
+                )
             if 'access' in response.data:
                 del response.data['access']
             if 'refresh' in response.data:
                 del response.data['refresh']
         return response
+
 
 class LogoutView(APIView):
     permission_classes = [AllowAny]
@@ -194,8 +207,22 @@ class LogoutView(APIView):
                 pass
 
         response = Response({'detail': 'Successfully logged out.'})
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        # Delete access and refresh tokens with correct SameSite/Secure parameters matching set_cookie
+        response.delete_cookie(
+            'access_token',
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+        response.delete_cookie(
+            'refresh_token',
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+        response.delete_cookie(
+            'token',
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
         return response
 
 
