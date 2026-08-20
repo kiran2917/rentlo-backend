@@ -108,7 +108,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             response.set_cookie(
                 'refresh_token',
                 refresh_token,
-                max_age=3600 * 24 * 7, # 7 days
+                max_age=3600 * 24 * 20, # 20 days
                 path='/',
                 httponly=True,
                 samesite='None' if not settings.DEBUG else 'Lax',
@@ -184,7 +184,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 response.set_cookie(
                     'refresh_token',
                     refresh_token_rotated,
-                    max_age=3600 * 24 * 7, # 7 days
+                    max_age=3600 * 24 * 20, # 20 days
                     path='/',
                     httponly=True,
                     samesite='None' if not settings.DEBUG else 'Lax',
@@ -525,7 +525,7 @@ class BuyerVerifyOTPView(APIView):
         response.set_cookie(
             'refresh_token',
             refresh_token,
-            max_age=3600 * 24 * 7,
+            max_age=3600 * 24 * 20,
             path='/',
             httponly=True,
             samesite='None' if not settings.DEBUG else 'Lax',
@@ -608,7 +608,7 @@ class CompleteRegistrationView(APIView):
             }
         })
         response.set_cookie('access_token', access_token, max_age=3600 * 24, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
-        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 7, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
+        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 20, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
         return response
 
 from .serializers import AgentSerializer
