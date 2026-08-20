@@ -122,8 +122,13 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
     }
+    // Clear user state immediately
     setUser(null);
-    window.location.reload();
+    // Clear any stored session data
+    try { localStorage.clear(); } catch (_) {}
+    try { sessionStorage.clear(); } catch (_) {}
+    // Hard redirect to home — do NOT reload() as that re-runs checkAuth with stale cookies
+    window.location.href = "/";
   };
 
   const authValue = React.useMemo(

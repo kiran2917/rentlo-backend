@@ -210,16 +210,19 @@ class LogoutView(APIView):
         # Delete access and refresh tokens with correct SameSite/Secure parameters matching set_cookie
         response.delete_cookie(
             'access_token',
+            path='/',
             samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG,
         )
         response.delete_cookie(
             'refresh_token',
+            path='/',
             samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG,
         )
         response.delete_cookie(
             'token',
+            path='/',
             samesite='None' if not settings.DEBUG else 'Lax',
             secure=not settings.DEBUG,
         )
