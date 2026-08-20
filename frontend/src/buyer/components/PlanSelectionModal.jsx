@@ -17,7 +17,7 @@ export const PlanSelectionModal = ({
   const [selectedPlan, setSelectedPlan] = useState("smart_79");
   const [settings, setSettings] = useState(null);
 
-  // Inline Auth State Machine: 'IDLE' | 'ENTER_PHONE' | 'ENTER_OTP' | 'COMPLETE_REGISTRATION' | 'ACTIVE_PASS_DETECTED'
+  // Inline Auth State Machine: 'IDLE' | 'ENTER_PHONE' | 'ENTER_PASSWORD' | 'FORGOT_PASSWORD' | 'ENTER_OTP' | 'COMPLETE_REGISTRATION' | 'ACTIVE_PASS_DETECTED'
   const [authStep, setAuthStep] = useState("IDLE");
   const [phone, setPhone] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -27,12 +27,16 @@ export const PlanSelectionModal = ({
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
   const [authedUser, setAuthedUser] = useState(null);
+  const [isExistingUser, setIsExistingUser] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     if (!isOpen) {
       setAuthStep("IDLE");
       setAuthError("");
       setAuthedUser(null);
+      setIsExistingUser(false);
+      setNewPassword("");
       return;
     }
     setLoadingSub(true);
@@ -213,6 +217,8 @@ export const PlanSelectionModal = ({
   };
 
   // --- INLINE AUTH HANDLERS ---
+
+  // Step 1: Check phone → route to password (existing) or OTP (new)
   const handleRequestOTP = async (e) => {
     e.preventDefault();
     if (!phone || phone.length < 10) {
@@ -223,33 +229,185 @@ export const PlanSelectionModal = ({
     setAuthLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/buyer-otp/request/`, {
+      // First check if the number is already registered
+      const checkRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/buyer-otp/request/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ phone, intended_role: "buyer" })
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setAuthError(data.detail || "Failed to request OTP.");
+      const checkData = await checkRes.json();
+
+      if (!checkRes.ok) {
+        // 400 with "already registered" means existing user → show password step
+        if (checkRes.status === 400 && checkData.detail?.includes("already registered")) {
+          setIsExistingUser(true);
+          setAuthStep("ENTER_PASSWORD");
+        } else {
+          setAuthError(checkData.detail || "Failed to verify phone number.");
+        }
         setAuthLoading(false);
         return;
       }
 
-      if (data.require_otp) {
+      // If backend says is_new_user or OTP was requested → show OTP step for new user
+      setIsExistingUser(false);
+      if (checkData.require_otp) {
         setAuthStep("ENTER_OTP");
       } else {
-        handleVerifyOTP("000000");
+        // OTP bypassed by admin → auto-verify
+        const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/buyer-otp/verify/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ phone, code: "000000", intended_role: "buyer" })
+        });
+        const verifyData = await verifyRes.json();
+        if (verifyRes.ok && verifyData.is_new_user) {
+          setRegistrationToken(verifyData.registration_token);
+          setAuthStep("COMPLETE_REGISTRATION");
+        } else if (verifyRes.ok) {
+          const authenticatedUser = verifyData.user || { phone };
+          setAuthedUser(authenticatedUser);
+          await checkAuth();
+          const subRes = await fetch(`${import.meta.env.VITE_API_URL}/my-subscription/`, { credentials: "include" }).then(r => r.ok ? r.json() : null);
+          if (subRes?.has_active_pass && subRes.credits_remaining > 0) {
+            setSub(subRes);
+            setAuthStep("ACTIVE_PASS_DETECTED");
+          } else {
+            setAuthStep("IDLE");
+            handleBuyPass(selectedPlan, authenticatedUser);
+          }
+        } else {
+          setAuthError(verifyData.detail || "Auto-verification failed.");
+        }
       }
     } catch (err) {
-      setAuthError("Network error sending OTP.");
+      setAuthError("Connection error. Please try again.");
     } finally {
       setAuthLoading(false);
     }
   };
 
-  const handleVerifyOTP = async (codeToVerify) => {
-    const code = codeToVerify || otpCode;
+  // Step 2a: Login with password (existing user)
+  const handlePasswordLogin = async (e) => {
+    e.preventDefault();
+    if (!password) {
+      setAuthError("Please enter your password.");
+      return;
+    }
+    setAuthError("");
+    setAuthLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: phone, password })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAuthError(data.detail || "Incorrect password. Please try again or use Forgot Password.");
+        setAuthLoading(false);
+        return;
+      }
+      const authenticatedUser = data.user || data;
+      setAuthedUser(authenticatedUser);
+      await checkAuth();
+      const subRes = await fetch(`${import.meta.env.VITE_API_URL}/my-subscription/`, { credentials: "include" }).then(r => r.ok ? r.json() : null);
+      if (subRes?.has_active_pass && subRes.credits_remaining > 0) {
+        setSub(subRes);
+        setAuthStep("ACTIVE_PASS_DETECTED");
+      } else {
+        setAuthStep("IDLE");
+        handleBuyPass(selectedPlan, authenticatedUser);
+      }
+    } catch (err) {
+      setAuthError("Connection error. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Step 2b: Forgot password → send OTP for reset
+  const handleForgotPassword = async () => {
+    setAuthError("");
+    setAuthLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/forgot-password/request-otp/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAuthStep("FORGOT_PASSWORD");
+        setOtpCode("");
+        setPassword("");
+      } else {
+        setAuthError(data.detail || "Failed to send reset OTP.");
+      }
+    } catch (err) {
+      setAuthError("Connection error. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Step 2b-2: Verify OTP + reset password
+  const handleForgotPasswordReset = async (e) => {
+    e.preventDefault();
+    if (!otpCode || otpCode.length < 6) { setAuthError("Please enter the 6-digit OTP."); return; }
+    if (!newPassword || newPassword.length < 6) { setAuthError("Password must be at least 6 characters."); return; }
+    setAuthError("");
+    setAuthLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/forgot-password/reset/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ phone, code: otpCode, new_password: newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) { setAuthError(data.detail || "Reset failed."); setAuthLoading(false); return; }
+      // Auto-login after reset
+      const loginRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: phone, password: newPassword })
+      });
+      const loginData = await loginRes.json();
+      if (loginRes.ok) {
+        const authenticatedUser = loginData.user || loginData;
+        setAuthedUser(authenticatedUser);
+        await checkAuth();
+        const subRes = await fetch(`${import.meta.env.VITE_API_URL}/my-subscription/`, { credentials: "include" }).then(r => r.ok ? r.json() : null);
+        if (subRes?.has_active_pass && subRes.credits_remaining > 0) {
+          setSub(subRes);
+          setAuthStep("ACTIVE_PASS_DETECTED");
+        } else {
+          setAuthStep("IDLE");
+          handleBuyPass(selectedPlan, authenticatedUser);
+        }
+      } else {
+        setAuthStep("ENTER_PASSWORD");
+        setPassword("");
+        setAuthError("Password reset successful! Please sign in with your new password.");
+      }
+    } catch (err) {
+      setAuthError("Connection error. Please try again.");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Step 2c: OTP verify (new user path)
+  const handleVerifyOTP = async () => {
+    if (!otpCode || otpCode.length < 6) {
+      setAuthError("Please enter the 6-digit OTP code.");
+      return;
+    }
     setAuthError("");
     setAuthLoading(true);
 
@@ -258,7 +416,7 @@ export const PlanSelectionModal = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ phone, code, intended_role: "buyer" })
+        body: JSON.stringify({ phone, code: otpCode, intended_role: "buyer" })
       });
       const data = await res.json();
       if (!res.ok) {
@@ -271,11 +429,9 @@ export const PlanSelectionModal = ({
         setRegistrationToken(data.registration_token);
         setAuthStep("COMPLETE_REGISTRATION");
       } else {
-        // Existing user logged in!
         const authenticatedUser = data.user || { id: 999, phone };
         setAuthedUser(authenticatedUser);
 
-        // Check if user has an active pass with credits
         const [subRes] = await Promise.all([
           fetch(`${import.meta.env.VITE_API_URL}/my-subscription/`, { credentials: "include" }).then(r => r.ok ? r.json() : null),
           checkAuth()
@@ -442,6 +598,131 @@ export const PlanSelectionModal = ({
               >
                 {authLoading ? "Checking Account..." : "Continue to Payment"}
                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ENTER PASSWORD (Existing User) */}
+        {authStep === "ENTER_PASSWORD" && (
+          <div className="py-4">
+            <button
+              onClick={() => { setAuthStep("ENTER_PHONE"); setPassword(""); setAuthError(""); }}
+              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+            >
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              Change Mobile Number
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
+                <span className="material-symbols-outlined text-[26px]">lock</span>
+              </div>
+              <h3 className="text-[20px] font-extrabold text-slate-900">Welcome Back!</h3>
+              <p className="text-[12px] text-slate-500 mt-1">
+                Your number <strong className="text-slate-800">+91 {phone}</strong> is already registered. Please sign in with your password.
+              </p>
+            </div>
+
+            {authError && (
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+                {authError}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordLogin} className="space-y-4">
+              <div>
+                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">Password *</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-blue-500"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--accent)" }}
+              >
+                {authLoading ? "Signing In..." : "Sign In & Continue"}
+                <span className="material-symbols-outlined text-[18px]">login</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={authLoading}
+                className="w-full text-[12px] font-bold text-blue-600 hover:underline text-center mt-1 cursor-pointer"
+              >
+                Forgot Password? Reset via OTP
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* FORGOT PASSWORD – OTP + New Password */}
+        {authStep === "FORGOT_PASSWORD" && (
+          <div className="py-4">
+            <button
+              onClick={() => { setAuthStep("ENTER_PASSWORD"); setOtpCode(""); setNewPassword(""); setAuthError(""); }}
+              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+            >
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              Back to Sign In
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-2 border border-orange-200">
+                <span className="material-symbols-outlined text-[26px]">key</span>
+              </div>
+              <h3 className="text-[20px] font-extrabold text-slate-900">Reset Password</h3>
+              <p className="text-[12px] text-slate-500 mt-1">
+                An OTP has been sent to <strong className="text-slate-800">+91 {phone}</strong>. Enter it below and set a new password.
+              </p>
+            </div>
+
+            {authError && (
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+                {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleForgotPasswordReset} className="space-y-4">
+              <div>
+                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">6-Digit OTP *</label>
+                <input
+                  type="text"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  placeholder="000000"
+                  maxLength={6}
+                  className="w-full h-12 text-center text-[20px] font-extrabold tracking-widest rounded-xl border border-slate-200 outline-none focus:border-orange-500"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">New Password *</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Set new password (min 6 chars)"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-orange-500"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "#ea580c" }}
+              >
+                {authLoading ? "Resetting..." : "Reset Password & Sign In"}
+                <span className="material-symbols-outlined text-[18px]">lock_reset</span>
               </button>
             </form>
           </div>
