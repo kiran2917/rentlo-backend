@@ -211,25 +211,16 @@ class LogoutView(APIView):
                 pass
 
         response = Response({'detail': 'Successfully logged out.'})
-        # Delete access and refresh tokens with correct SameSite/Secure parameters matching set_cookie
-        response.delete_cookie(
-            'access_token',
-            path='/',
-            samesite='None' if not settings.DEBUG else 'Lax',
-            secure=not settings.DEBUG,
-        )
-        response.delete_cookie(
-            'refresh_token',
-            path='/',
-            samesite='None' if not settings.DEBUG else 'Lax',
-            secure=not settings.DEBUG,
-        )
-        response.delete_cookie(
-            'token',
-            path='/',
-            samesite='None' if not settings.DEBUG else 'Lax',
-            secure=not settings.DEBUG,
-        )
+        # Delete cookies across all possible paths to clean up any legacy scoped cookies
+        paths_to_clear = ['/', '/api/v1/accounts/', '/api/v1/auth/', None]
+        for path_val in paths_to_clear:
+            for cookie_name in ['access_token', 'refresh_token', 'token']:
+                response.delete_cookie(
+                    cookie_name,
+                    path=path_val,
+                    samesite='None' if not settings.DEBUG else 'Lax',
+                    secure=not settings.DEBUG,
+                )
         return response
 
 
