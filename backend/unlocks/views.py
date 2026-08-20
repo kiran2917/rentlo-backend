@@ -312,6 +312,15 @@ class VerifyUnlockView(views.APIView):
                     message=f"Property unlocked successfully! Contact details for property #{prop.id} are now visible.",
                     property=prop
                 )
+
+                # Create system notification for owner/agent (new lead)
+                lead_recipient = prop.owner or prop.agent
+                if lead_recipient:
+                    Notification.objects.create(
+                        recipient=lead_recipient,
+                        message=f"🔥 New Lead: A buyer has unlocked contact details for your property {prop.property_type.replace('_', ' ').capitalize()} in {prop.locality.name if prop.locality else ''}!",
+                        property=prop
+                    )
                 # NOTE: Property stays 'live' — owner manually triggers Under Negotiation
                 # when they are actually in talks with this buyer.
 
@@ -430,6 +439,23 @@ class RazorpayWebhookView(views.APIView):
                         unlock.save()
                         # NOTE: Property stays 'live' — owner manually triggers Under Negotiation.
                         prop = unlock.property
+
+                        # Create system notification for unlock success
+                        from notifications.models import Notification
+                        Notification.objects.create(
+                            recipient=unlock.buyer,
+                            message=f"Property unlocked successfully! Contact details for property #{prop.id} are now visible.",
+                            property=prop
+                        )
+
+                        # Create system notification for owner/agent (new lead)
+                        lead_recipient = prop.owner or prop.agent
+                        if lead_recipient:
+                            Notification.objects.create(
+                                recipient=lead_recipient,
+                                message=f"🔥 New Lead: A buyer has unlocked contact details for your property {prop.property_type.replace('_', ' ').capitalize()} in {prop.locality.name if prop.locality else ''}!",
+                                property=prop
+                            )
 
                         # Auto-create earnings
                         prop = unlock.property
