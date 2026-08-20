@@ -85,6 +85,7 @@ export const Home = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const gridRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   const [viewMode, setViewMode] = useState("grid");
   const [filters, setFilters] = useState({
@@ -314,16 +315,20 @@ export const Home = () => {
     const controller = new AbortController();
     setPage(1);
     fetchProperties(1, filters, false, controller.signal);
-    const p = new URLSearchParams();
-    if (filters.property_type) p.append("property_type", filters.property_type);
-    if (filters.min_price) p.append("min_price", filters.min_price);
-    if (filters.max_price) p.append("max_price", filters.max_price);
-    if (filters.city_id) p.append("city_id", filters.city_id);
-    if (filters.locality) p.append("locality", filters.locality);
-    if (filters.lat) p.append("lat", filters.lat);
-    if (filters.lng) p.append("lng", filters.lng);
-    if (filters.radius_km) p.append("radius_km", filters.radius_km);
-    setSearchParams(p);
+    if (!isFirstRender.current) {
+      const p = new URLSearchParams();
+      if (filters.property_type) p.append("property_type", filters.property_type);
+      if (filters.min_price) p.append("min_price", filters.min_price);
+      if (filters.max_price) p.append("max_price", filters.max_price);
+      if (filters.city_id) p.append("city_id", filters.city_id);
+      if (filters.locality) p.append("locality", filters.locality);
+      if (filters.lat) p.append("lat", filters.lat);
+      if (filters.lng) p.append("lng", filters.lng);
+      if (filters.radius_km) p.append("radius_km", filters.radius_km);
+      setSearchParams(p);
+    } else {
+      isFirstRender.current = false;
+    }
     return () => controller.abort();
   }, [filters, setSearchParams]);
 
