@@ -76,8 +76,8 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Bypasses service worker cache for ALL API requests
-  if (url.pathname.startsWith('/api/')) {
+  // Only handle GET requests and exclude APIs
+  if (event.request.method !== 'GET' || url.pathname.startsWith('/api/')) {
     return;
   }
 
@@ -88,8 +88,11 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
         if (event.request.mode === 'navigate') {
-          return caches.match('/');
+          return caches.match('/').then((fallback) => {
+            return fallback || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/html' } });
+          });
         }
+        return new Response('Network error occurred', { status: 480 });
       });
     })
   );
