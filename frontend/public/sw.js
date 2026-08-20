@@ -42,8 +42,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'PropertyHub Alert 🔔';
   const options = {
     body: data.body || 'You have a new update on PropertyHub.',
-    icon: '/favicon.svg',
-    badge: '/favicon.svg',
+    icon: '/favicon.png',
+    badge: '/favicon.png',
     vibrate: [200, 100, 200],
     data: { url: data.url || '/' },
     actions: [
