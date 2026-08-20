@@ -30,6 +30,7 @@ export const BuyerLayout = () => {
     }
 
     let lastKnownIds = new Set();
+    let isFirstFetch = true;
 
     const checkNotifications = () => {
       fetch(`${import.meta.env.VITE_API_URL}/notifications/`, { credentials: "include" })
@@ -41,6 +42,13 @@ export const BuyerLayout = () => {
           if (Array.isArray(data)) {
             const unread = data.filter((n) => !n.is_read);
             setUnreadCount(unread.length);
+
+            // Seed initial notifications so old ones don't trigger alerts on load/login
+            if (isFirstFetch) {
+              data.forEach((n) => lastKnownIds.add(n.id));
+              isFirstFetch = false;
+              return;
+            }
 
             // Trigger OS System Tray Web Push Notification for newly detected unread items
             if ("Notification" in window && Notification.permission === "granted") {

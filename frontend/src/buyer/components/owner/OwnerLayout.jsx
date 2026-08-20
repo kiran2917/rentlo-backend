@@ -46,6 +46,7 @@ export const OwnerLayout = () => {
     }
 
     let lastKnownIds = new Set();
+    let isFirstFetch = true;
 
     const checkNotifications = () => {
       fetch(`${import.meta.env.VITE_API_URL}/notifications/`, { credentials: "include" })
@@ -54,6 +55,13 @@ export const OwnerLayout = () => {
           if (Array.isArray(data)) {
             const unread = data.filter((n) => !n.is_read);
             setUnreadCount(unread.length);
+
+            // Seed initial notifications so old ones don't trigger alerts on load/login
+            if (isFirstFetch) {
+              data.forEach((n) => lastKnownIds.add(n.id));
+              isFirstFetch = false;
+              return;
+            }
 
             if ("Notification" in window && Notification.permission === "granted") {
               unread.forEach((n) => {
