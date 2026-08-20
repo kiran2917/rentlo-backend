@@ -41,11 +41,10 @@ class ModeratePropertyView(views.APIView):
                 from properties.models import PlatformSettings
                 ps = PlatformSettings.load()
                 if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-                    prop.expires_at = timezone.now() + timedelta(days=ps.validity_apt_pg_days)
-                elif prop.property_category == 'commercial':
-                    prop.expires_at = timezone.now() + timedelta(days=ps.validity_commercial_days)
+                    pg_validity = ps.validity_apt_pg_1pack_days or ps.validity_apt_pg_days or 60
+                    prop.expires_at = timezone.now() + timedelta(days=pg_validity)
                 else:
-                    prop.expires_at = timezone.now() + timedelta(days=ps.validity_residential_days)
+                    prop.expires_at = None  # Active until rented!
                 prop.rejection_reason = None
                 prop.reviewed_at = timezone.now()
                 prop.save()

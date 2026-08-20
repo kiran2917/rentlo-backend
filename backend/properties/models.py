@@ -311,9 +311,13 @@ class PlatformSettings(models.Model):
 
     owner_combo_discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=15.00)
 
-    validity_residential_days = models.IntegerField(default=30)
+    validity_residential_days = models.IntegerField(default=0)  # 0 = Unlimited / Until Rented
     validity_apt_pg_days = models.IntegerField(default=60)
-    validity_commercial_days = models.IntegerField(default=30)
+    validity_apt_pg_1pack_days = models.IntegerField(default=60)
+    validity_apt_pg_3pack_days = models.IntegerField(default=60)
+    validity_apt_pg_6pack_days = models.IntegerField(default=90)
+    validity_apt_pg_10pack_days = models.IntegerField(default=180)
+    validity_commercial_days = models.IntegerField(default=0)  # 0 = Unlimited / Until Rented
 
     owner_onboarding_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     bypass_buyer_payment = models.BooleanField(default=False)

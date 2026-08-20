@@ -22,14 +22,12 @@ class PropertyReconfirmView(views.APIView):
         ps = PlatformSettings.load()
 
         if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-            days = ps.validity_apt_pg_days
-        elif prop.property_category == 'commercial':
-            days = ps.validity_commercial_days
+            days = ps.validity_apt_pg_1pack_days or ps.validity_apt_pg_days or 60
+            prop.expires_at = timezone.now() + timedelta(days=days)
+            msg = f'Property reconfirmed for {days} more days.'
         else:
-            days = ps.validity_residential_days
-
-        prop.expires_at = timezone.now() + timedelta(days=days)
-        msg = f'Property reconfirmed for {days} more days.'
+            prop.expires_at = None
+            msg = 'Property confirmed active until rented.'
         prop.save()
 
         # Mark related notifications as read

@@ -1098,6 +1098,10 @@ class PlatformSettingsView(views.APIView):
             # Validity durations
             'validity_residential_days': settings.validity_residential_days,
             'validity_apt_pg_days': settings.validity_apt_pg_days,
+            'validity_apt_pg_1pack_days': settings.validity_apt_pg_1pack_days,
+            'validity_apt_pg_3pack_days': settings.validity_apt_pg_3pack_days,
+            'validity_apt_pg_6pack_days': settings.validity_apt_pg_6pack_days,
+            'validity_apt_pg_10pack_days': settings.validity_apt_pg_10pack_days,
             'validity_commercial_days': settings.validity_commercial_days,
         }
 
@@ -1148,7 +1152,9 @@ class PlatformSettingsView(views.APIView):
             'owner_residential_fee', 'owner_apt_pg_fee', 'owner_commercial_fee', 'e_stamp_price',
             'bypass_buyer_payment', 'bypass_owner_payment', 'buyer_theme', 'dashboard_theme',
             'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements',
-            'validity_residential_days', 'validity_apt_pg_days', 'validity_commercial_days'
+            'validity_residential_days', 'validity_apt_pg_days',
+            'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
+            'validity_commercial_days'
         ]
         
         # 1. Audit Log Tracking: Compare old vs new BEFORE mutating (strict normalization)
@@ -1222,6 +1228,14 @@ class PlatformSettingsView(views.APIView):
             settings.validity_residential_days = int(request.data.get('validity_residential_days', settings.validity_residential_days))
         if 'validity_apt_pg_days' in request.data:
             settings.validity_apt_pg_days = int(request.data.get('validity_apt_pg_days', settings.validity_apt_pg_days))
+        if 'validity_apt_pg_1pack_days' in request.data:
+            settings.validity_apt_pg_1pack_days = int(request.data.get('validity_apt_pg_1pack_days', settings.validity_apt_pg_1pack_days))
+        if 'validity_apt_pg_3pack_days' in request.data:
+            settings.validity_apt_pg_3pack_days = int(request.data.get('validity_apt_pg_3pack_days', settings.validity_apt_pg_3pack_days))
+        if 'validity_apt_pg_6pack_days' in request.data:
+            settings.validity_apt_pg_6pack_days = int(request.data.get('validity_apt_pg_6pack_days', settings.validity_apt_pg_6pack_days))
+        if 'validity_apt_pg_10pack_days' in request.data:
+            settings.validity_apt_pg_10pack_days = int(request.data.get('validity_apt_pg_10pack_days', settings.validity_apt_pg_10pack_days))
         if 'validity_commercial_days' in request.data:
             settings.validity_commercial_days = int(request.data.get('validity_commercial_days', settings.validity_commercial_days))
         settings.buyer_theme = request.data.get('buyer_theme', settings.buyer_theme)
@@ -1576,11 +1590,10 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                 prop_cat = instance.property_category
                 prop_type = instance.property_type
                 if prop_cat == 'pg' or prop_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_apt_pg_days)
-                elif prop_cat == 'commercial':
-                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_commercial_days)
+                    pg_validity = ps.validity_apt_pg_1pack_days or ps.validity_apt_pg_days or 60
+                    instance.expires_at = timezone.now() + timedelta(days=pg_validity)
                 else:
-                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_residential_days)
+                    instance.expires_at = None  # Active until rented!
 
             instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at'])
             return Response({'detail': f'Status updated to {new_status}', 'status': instance.status, 'expires_at': instance.expires_at})
