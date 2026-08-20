@@ -1361,20 +1361,50 @@ class GenerateDescriptionView(views.APIView):
         pet_pol = str(data.get('pet_policy', ''))
         amenities = data.get('amenities', [])
 
-        parts = []
-        
+        # Create a deterministic seed based on inputs to ensure variety across listings
+        seed_source = f"{prop_type}_{bedrooms}_{price}_{area}_{furnishing}_{preferred_tenants}_{len(amenities)}"
+        seed_num = sum(ord(c) for c in seed_source)
+        import random
+        rng = random.Random(seed_num)
+
+        # Title formatting
         bhk_title = f"{bedrooms} BHK " if bedrooms else ""
-        title = f"Stunning {bhk_title}{prop_type.capitalize()}"
-        parts.append(f"Welcome to this {title}! This exceptional property is perfectly balanced for comfort, style, and modern living.")
-        
-        specs = []
-        if area: specs.append(f"a spacious carpet area of {area} sq.ft.")
-        if furnishing and furnishing != 'none': specs.append(f"is offered as {furnishing.replace('_', ' ')}")
-        if bathrooms: specs.append(f"includes {bathrooms} well-appointed bathroom(s)")
-        
-        if specs:
-            parts.append(f"Featuring {', '.join(specs)}, it is thoughtfully designed to cater to all your lifestyle needs.")
-            
+        title = f"{bhk_title}{prop_type.replace('_', ' ').title()}"
+
+        intros = [
+            f"Welcome to this gorgeous {title}! A perfect blend of comfort, convenience, and contemporary style.",
+            f"Discover your next home in this spectacular {title}, offering a vibrant and modern living experience.",
+            f"Experience premium living in this beautifully designed {title}, situated in a highly desirable neighborhood.",
+            f"Presenting a stunning, well-lit {title} that is thoughtfully crafted for a seamless modern lifestyle.",
+            f"Step into this elegant {title}, designed to deliver the utmost in relaxation, functionality, and charm."
+        ]
+        intro_part = rng.choice(intros)
+
+        # Furnishing formatting
+        furnishing_clean = furnishing.lower().replace('_', ' ') if furnishing else ""
+        if furnishing_clean == 'none' or not furnishing_clean:
+            furnishing_clean = "unfurnished"
+        elif furnishing_clean == 'semi furnished':
+            furnishing_clean = "semi-furnished"
+        elif furnishing_clean == 'fully furnished':
+            furnishing_clean = "fully-furnished"
+
+        specs_list = []
+        if area: specs_list.append(f"a spacious carpet area of {area} sq.ft.")
+        if furnishing_clean: specs_list.append(f"is offered as {furnishing_clean}")
+        if bathrooms: specs_list.append(f"includes {bathrooms} well-appointed bathroom(s)")
+
+        if specs_list:
+            spec_templates = [
+                f"Featuring {', '.join(specs_list)}, it is thoughtfully designed to cater to all your lifestyle needs.",
+                f"The property boasts {', '.join(specs_list)}, offering a bright and open atmosphere throughout.",
+                f"With {', '.join(specs_list)}, this home provides an ideal setting for relaxed everyday living.",
+                f"Designed to make optimal use of space, it features {', '.join(specs_list)} for maximum comfort."
+            ]
+            spec_part = rng.choice(spec_templates)
+        else:
+            spec_part = ""
+
         rules = []
         if preferred_tenants and preferred_tenants != 'any':
             tenant_str = 'Boys Only' if preferred_tenants == 'only_boys' else 'Girls Only' if preferred_tenants == 'only_girls' else preferred_tenants.replace('_', ' ').capitalize()
@@ -1384,9 +1414,17 @@ class GenerateDescriptionView(views.APIView):
             rules.append(f"Food Preference: {food_str}")
         if pet_pol and pet_pol != 'not_allowed':
             rules.append(f"Pet Policy: Allowed")
-            
+
         if rules:
-            parts.append(" | ".join(rules) + ".")
+            rules_str = " | ".join(rules)
+            rules_templates = [
+                f"The property follows a policy of {rules_str}.",
+                f"Key residency guidelines: {rules_str}.",
+                f"House rules and policies: {rules_str}."
+            ]
+            rules_part = rng.choice(rules_templates)
+        else:
+            rules_part = ""
 
         if amenities and isinstance(amenities, list) and len(amenities) > 0:
             am_names = [a.replace('_', ' ').title() for a in amenities[:6]]
@@ -1394,18 +1432,52 @@ class GenerateDescriptionView(views.APIView):
                 am_str = ", ".join(am_names[:-1]) + f", and {am_names[-1]}"
             else:
                 am_str = am_names[0]
-            parts.append(f"Residents will enjoy top-tier amenities including {am_str}.")
+                
+            amenities_templates = [
+                f"Residents will enjoy top-tier amenities including {am_str}.",
+                f"The community is equipped with excellent facilities such as {am_str} to elevate your lifestyle.",
+                f"Enhance your daily living experience with high-quality features, including {am_str}.",
+                f"Equipped with modern conveniences like {am_str}, the property ensures a highly convenient living environment."
+            ]
+            amenities_part = rng.choice(amenities_templates)
+        else:
+            amenities_part = ""
 
         if price:
             try:
                 formatted_price = f"₹{float(price):,.0f}"
             except Exception:
                 formatted_price = f"₹{price}"
-            parts.append(f"Priced at an attractive {formatted_price}/month, this listing represents an incredible rental opportunity.")
+                
+            price_templates = [
+                f"Offered at a competitive rate of {formatted_price}/month, it represents a remarkable value for the locality.",
+                f"Available for lease at {formatted_price} monthly, this property is an exceptional deal that won't stay on the market long.",
+                f"With an attractive monthly rent of {formatted_price}, this listing offers an unbeatable combination of quality and value.",
+                f"At just {formatted_price}/month, this home delivers premium specs in a prime residential spot."
+            ]
+            price_part = rng.choice(price_templates)
+        else:
+            price_part = ""
 
-        parts.append("Don't miss the chance to make this beautiful space your home. Contact us today to schedule a viewing!")
-        
-        final_text = "\n\n".join([parts[0], " ".join(parts[1:-1]), parts[-1]])
+        outros = [
+            "Schedule a private tour today and experience this lovely space in person!",
+            "Don't miss out on this fantastic opportunity. Contact us now to book your viewing slot!",
+            "Reach out today to coordinate a viewing and secure this beautiful home for yourself!",
+            "This listing is highly sought-after. Get in touch with us immediately to arrange a walk-through!"
+        ]
+        outro_part = rng.choice(outros)
+
+        body_parts = []
+        if spec_part: body_parts.append(spec_part)
+        if rules_part: body_parts.append(rules_part)
+        if amenities_part: body_parts.append(amenities_part)
+        if price_part: body_parts.append(price_part)
+
+        final_text = f"{intro_part}\n\n"
+        if body_parts:
+            final_text += " ".join(body_parts) + "\n\n"
+        final_text += outro_part
+
         return Response({'description': final_text})
 
 
