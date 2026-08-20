@@ -18,12 +18,18 @@ class PropertyReconfirmView(views.APIView):
         if prop.status != 'live':
             return Response({'detail': 'Only live properties can be reconfirmed.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        from properties.models import PlatformSettings
+        ps = PlatformSettings.load()
+
         if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-            prop.expires_at = timezone.now() + timedelta(days=60)
-            msg = 'Property reconfirmed for 60 more days.'
+            days = ps.validity_apt_pg_days
+        elif prop.property_category == 'commercial':
+            days = ps.validity_commercial_days
         else:
-            prop.expires_at = timezone.now() + timedelta(days=30)
-            msg = 'Property reconfirmed for 30 more days.'
+            days = ps.validity_residential_days
+
+        prop.expires_at = timezone.now() + timedelta(days=days)
+        msg = f'Property reconfirmed for {days} more days.'
         prop.save()
 
         # Mark related notifications as read

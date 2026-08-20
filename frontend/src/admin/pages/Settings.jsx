@@ -242,6 +242,11 @@ export const Settings = () => {
 
   const [ownerComboDiscount, setOwnerComboDiscount] = useState("15");
 
+  // Validity Duration States (in Days)
+  const [validityResDays, setValidityResDays] = useState("30");
+  const [validityAptPgDays, setValidityAptPgDays] = useState("60");
+  const [validityCommDays, setValidityCommDays] = useState("30");
+
   const [ownerOnboardingFee, setOwnerOnboardingFee] = useState("0");
   const [bypassBuyer, setBypassBuyer] = useState(false);
   const [bypassOwner, setBypassOwner] = useState(false);
@@ -418,6 +423,9 @@ export const Settings = () => {
         setOwnerComboDiscount(data.owner_combo_discount_percent != null ? data.owner_combo_discount_percent : "15");
 
         setOwnerOnboardingFee(data.owner_onboarding_fee != null ? data.owner_onboarding_fee : "0");
+        setValidityResDays(data.validity_residential_days != null ? data.validity_residential_days.toString() : "30");
+        setValidityAptPgDays(data.validity_apt_pg_days != null ? data.validity_apt_pg_days.toString() : "60");
+        setValidityCommDays(data.validity_commercial_days != null ? data.validity_commercial_days.toString() : "30");
         setBypassBuyer(data.bypass_buyer_payment || false);
         setBypassOwner(data.bypass_owner_payment || false);
         
@@ -513,6 +521,9 @@ export const Settings = () => {
           owner_combo_discount_percent: parseFloat(ownerComboDiscount) || 15,
 
           owner_onboarding_fee: parseFloat(ownerOnboardingFee) || 0,
+          validity_residential_days: parseInt(validityResDays) || 30,
+          validity_apt_pg_days: parseInt(validityAptPgDays) || 60,
+          validity_commercial_days: parseInt(validityCommDays) || 30,
           bypass_buyer_payment: bypassBuyer,
           bypass_owner_payment: bypassOwner,
           buyer_theme: buyerTheme,
@@ -753,8 +764,8 @@ export const Settings = () => {
               
               {/* Residential */}
               <div className="mb-6 p-5 rounded-2xl border border-border bg-surface-alt">
-                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏠 Independent House / Villa / Plot Pricing</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏠 Independent House / Villa / Plot Pricing & Expiration</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
                   <div>
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">1 Listing (₹)</label>
                     <input type="number" value={ownerResFee} onChange={(e) => setOwnerResFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
@@ -771,13 +782,17 @@ export const Settings = () => {
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">10 Pack (₹)</label>
                     <input type="number" value={ownerRes10Pack} onChange={(e) => setOwnerRes10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
                   </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-orange-500">Validity (Days)</label>
+                    <input type="number" value={validityResDays} onChange={(e) => setValidityResDays(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-surface font-black text-orange-400" />
+                  </div>
                 </div>
               </div>
 
               {/* Apartment / PG */}
               <div className="mb-6 p-5 rounded-2xl border border-border bg-surface-alt">
-                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏢 Apartment / Flat / PG Co-Living Pricing</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏢 Apartment / Flat / PG Co-Living Pricing & Expiration</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
                   <div>
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">1 Listing (₹)</label>
                     <input type="number" value={ownerAptPgFee} onChange={(e) => setOwnerAptPgFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
@@ -794,13 +809,17 @@ export const Settings = () => {
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">10 Pack (₹)</label>
                     <input type="number" value={ownerAptPg10Pack} onChange={(e) => setOwnerAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
                   </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-orange-500">Validity (Days)</label>
+                    <input type="number" value={validityAptPgDays} onChange={(e) => setValidityAptPgDays(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-surface font-black text-orange-400" />
+                  </div>
                 </div>
               </div>
 
               {/* Commercial */}
               <div className="p-5 rounded-2xl border border-border bg-surface-alt">
-                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏬 Commercial Space / Office / Warehouse Pricing</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <h3 className="text-[14px] font-extrabold text-ink mb-4">🏬 Commercial Space / Office / Warehouse Pricing & Expiration</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
                   <div>
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">1 Listing (₹)</label>
                     <input type="number" value={ownerCommFee} onChange={(e) => setOwnerCommFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
@@ -816,6 +835,10 @@ export const Settings = () => {
                   <div>
                     <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">10 Pack (₹)</label>
                     <input type="number" value={ownerComm10Pack} onChange={(e) => setOwnerComm10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-orange-500">Validity (Days)</label>
+                    <input type="number" value={validityCommDays} onChange={(e) => setValidityCommDays(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-surface font-black text-orange-400" />
                   </div>
                 </div>
               </div>

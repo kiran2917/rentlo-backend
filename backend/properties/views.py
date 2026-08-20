@@ -1094,6 +1094,11 @@ class PlatformSettingsView(views.APIView):
 
             # Owner Listing Verification
             'owner_listing_verification_method': settings.owner_listing_verification_method,
+
+            # Validity durations
+            'validity_residential_days': settings.validity_residential_days,
+            'validity_apt_pg_days': settings.validity_apt_pg_days,
+            'validity_commercial_days': settings.validity_commercial_days,
         }
 
         # Admin-only fields: bypass flags must never be exposed publicly
@@ -1142,7 +1147,8 @@ class PlatformSettingsView(views.APIView):
             'buyer_unlock_fee', 'buyer_pass_starter_price', 'buyer_pass_smart_price', 'buyer_pass_pro_price',
             'owner_residential_fee', 'owner_apt_pg_fee', 'owner_commercial_fee', 'e_stamp_price',
             'bypass_buyer_payment', 'bypass_owner_payment', 'buyer_theme', 'dashboard_theme',
-            'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements'
+            'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements',
+            'validity_residential_days', 'validity_apt_pg_days', 'validity_commercial_days'
         ]
         
         # 1. Audit Log Tracking: Compare old vs new BEFORE mutating (strict normalization)
@@ -1211,6 +1217,13 @@ class PlatformSettingsView(views.APIView):
 
         settings.owner_combo_discount_percent = request.data.get('owner_combo_discount_percent', settings.owner_combo_discount_percent)
         settings.owner_onboarding_fee = request.data.get('owner_onboarding_fee', settings.owner_onboarding_fee)
+        
+        if 'validity_residential_days' in request.data:
+            settings.validity_residential_days = int(request.data.get('validity_residential_days', settings.validity_residential_days))
+        if 'validity_apt_pg_days' in request.data:
+            settings.validity_apt_pg_days = int(request.data.get('validity_apt_pg_days', settings.validity_apt_pg_days))
+        if 'validity_commercial_days' in request.data:
+            settings.validity_commercial_days = int(request.data.get('validity_commercial_days', settings.validity_commercial_days))
         settings.buyer_theme = request.data.get('buyer_theme', settings.buyer_theme)
         settings.dashboard_theme = request.data.get('dashboard_theme', settings.dashboard_theme)
         if 'buyer_theme' in request.data:
@@ -1556,14 +1569,18 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
             else:
                 instance.under_negotiation_since = None
 
-            # Reset expires_at to 60 days for PG, 30 days for others when going live
+            # Reset expires_at dynamically from settings when going live
             if new_status == 'live':
+                from properties.models import PlatformSettings
+                ps = PlatformSettings.load()
                 prop_cat = instance.property_category
                 prop_type = instance.property_type
                 if prop_cat == 'pg' or prop_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-                    instance.expires_at = timezone.now() + timedelta(days=60)
+                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_apt_pg_days)
+                elif prop_cat == 'commercial':
+                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_commercial_days)
                 else:
-                    instance.expires_at = timezone.now() + timedelta(days=30)
+                    instance.expires_at = timezone.now() + timedelta(days=ps.validity_residential_days)
 
             instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at'])
             return Response({'detail': f'Status updated to {new_status}', 'status': instance.status, 'expires_at': instance.expires_at})
