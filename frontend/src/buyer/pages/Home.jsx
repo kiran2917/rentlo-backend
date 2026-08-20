@@ -366,7 +366,12 @@ export const Home = () => {
           }));
         },
         (error) => {
-          toast.error("Unable to detect location. Please allow browser location permission or select a city manually.");
+          toast.error("Unable to detect location. Please check browser location permissions and try again.");
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 60000
         }
       );
     } else {
