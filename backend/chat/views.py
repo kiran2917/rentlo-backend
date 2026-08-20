@@ -96,14 +96,18 @@ class ChatMessagesView(APIView):
 
 
 class ChatThreadsView(APIView):
-    """For owners: list all unique buyer threads across all their properties."""
+    """For owners: list all unique buyer threads across all their properties,
+    including buyers who unlocked their properties but haven't chatted yet.
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        # Get all messages where user is sender or recipient
+        from django.utils import timezone
+        
+        # 1. Fetch active chat threads
         messages = ChatMessage.objects.filter(
             Q(sender=request.user) | Q(recipient=request.user)
-        ).select_related('sender', 'recipient', 'property').order_by('-created_at')
+        ).select_related('sender', 'recipient', 'property', 'property__locality').order_by('-created_at')
 
         # Batch fetch unread counts grouped by property and sender to eliminate N+1 DB queries
         from django.db.models import Count
@@ -115,7 +119,7 @@ class ChatThreadsView(APIView):
         unread_map = { (item['property_id'], item['sender_id']): item['cnt'] for item in unread_counts_qs }
 
         seen = set()
-        threads = []
+        active_threads = []
         for m in messages:
             # The other party
             other = m.recipient if m.sender == request.user else m.sender
@@ -123,7 +127,7 @@ class ChatThreadsView(APIView):
             if key not in seen:
                 seen.add(key)
                 unread = unread_map.get((m.property_id, other.id), 0)
-                threads.append({
+                active_threads.append({
                     'property_id': m.property_id,
                     'property_title': m.property.property_type,
                     'property_locality': m.property.locality.name if m.property.locality else '',
@@ -132,8 +136,49 @@ class ChatThreadsView(APIView):
                     'last_message': m.message,
                     'last_message_time': m.created_at.isoformat(),
                     'unread_count': unread,
+                    'is_active_chat': True,
+                    'sort_time': m.created_at,
                 })
-        return Response(threads)
+
+        # 2. Fetch paid unlocks for the owner/agent properties
+        from unlocks.models import Unlock
+        unlocks = Unlock.objects.filter(
+            Q(property__owner=request.user) | Q(property__agent=request.user),
+            status='paid'
+        ).select_related('buyer', 'property', 'property__locality').order_by('-created_at')
+
+        unlock_threads = []
+        for u in unlocks:
+            key = (u.property_id, u.buyer_id)
+            if key not in seen:
+                seen.add(key)
+                unlock_threads.append({
+                    'property_id': u.property_id,
+                    'property_title': u.property.property_type,
+                    'property_locality': u.property.locality.name if u.property.locality else '',
+                    'other_user_id': u.buyer.id,
+                    'other_user_name': u.buyer.get_full_name() or u.buyer.username,
+                    'last_message': 'No messages yet. Click to start chatting!',
+                    'last_message_time': None,
+                    'unread_count': 0,
+                    'is_active_chat': False,
+                    'sort_time': u.created_at or u.unlocked_at,
+                })
+
+        # Sort active chats by sort_time descending, and unlock threads by sort_time descending
+        active_threads.sort(key=lambda x: x['sort_time'], reverse=True)
+        unlock_threads.sort(key=lambda x: x['sort_time'] if x['sort_time'] else timezone.now(), reverse=True)
+
+        combined_threads = active_threads + unlock_threads
+
+        # Clean up temporary sort keys before returning
+        for t in combined_threads:
+            if 'sort_time' in t:
+                del t['sort_time']
+            if 'is_active_chat' in t:
+                del t['is_active_chat']
+
+        return Response(combined_threads)
 
 
 class UnreadCountView(APIView):

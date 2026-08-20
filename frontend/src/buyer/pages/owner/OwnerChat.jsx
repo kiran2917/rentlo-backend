@@ -339,41 +339,53 @@ export const OwnerChat = () => {
                 backgroundPosition: "0 0, 12px 12px"
               }}
             >
-              {messages.map((msg) => {
-                const isMe = me && msg.sender_id === me.id;
-                return (
-                  <div key={msg.id} className={`flex w-full ${isMe ? "justify-end" : "justify-start"} animate-fade-in-up`}>
-                    <div className={`flex flex-col max-w-[78%] ${isMe ? "items-end" : "items-start"}`}>
-                      <div
-                        className={`relative px-3.5 py-2 rounded-2xl shadow-xs text-[13.5px] leading-relaxed ${
-                          isMe
-                            ? "bg-emerald-600 text-white rounded-tr-xs"
-                            : "bg-white border border-slate-200 text-slate-800 rounded-tl-xs"
-                        }`}
-                        style={!isMe ? { borderColor: "var(--border)" } : {}}
-                      >
-                        {msg.message?.startsWith("data:image/") ? (
-                          <img
-                            src={msg.message}
-                            alt="Attachment"
-                            className="max-w-[200px] sm:max-w-[280px] rounded-lg object-contain cursor-pointer hover:opacity-95 transition-opacity"
-                            onClick={() => handleImageClick(msg.message)}
-                          />
-                        ) : (
-                          <p className="whitespace-pre-wrap">{msg.message}</p>
-                        )}
-
-                        <div className={`flex items-center justify-end gap-0.5 mt-1 text-[8.5px] font-bold ${isMe ? "text-emerald-100/90" : "text-slate-400"}`}>
-                          <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-                          {isMe && (
-                            <span className="material-symbols-outlined text-[11px] font-black">done_all</span>
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center min-h-[300px] py-16 text-center animate-fade-in-up">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                    <span className="material-symbols-outlined text-[32px] text-emerald-500">waving_hand</span>
+                  </div>
+                  <p className="text-[14px] font-extrabold" style={{ color: "var(--ink)" }}>Say hello to {activeThread.other_user_name}!</p>
+                  <p className="text-[12px] font-medium mt-1.5 leading-relaxed max-w-xs" style={{ color: "var(--text-muted)" }}>
+                    This buyer recently unlocked your property details. You can now start the conversation directly.
+                  </p>
+                </div>
+              ) : (
+                messages.map((msg) => {
+                  const isMe = me && msg.sender_id === me.id;
+                  return (
+                    <div key={msg.id} className={`flex w-full ${isMe ? "justify-end" : "justify-start"} animate-fade-in-up`}>
+                      <div className={`flex flex-col max-w-[78%] ${isMe ? "items-end" : "items-start"}`}>
+                        <div
+                          className={`relative px-3.5 py-2 rounded-2xl shadow-xs text-[13.5px] leading-relaxed ${
+                            isMe
+                              ? "bg-emerald-600 text-white rounded-tr-xs"
+                              : "bg-white border border-slate-200 text-slate-800 rounded-tl-xs"
+                          }`}
+                          style={!isMe ? { borderColor: "var(--border)" } : {}}
+                        >
+                          {msg.message?.startsWith("data:image/") ? (
+                            <img
+                              src={msg.message}
+                              alt="Attachment"
+                              className="max-w-[200px] sm:max-w-[280px] rounded-lg object-contain cursor-pointer hover:opacity-95 transition-opacity"
+                              onClick={() => handleImageClick(msg.message)}
+                            />
+                          ) : (
+                            <p className="whitespace-pre-wrap">{msg.message}</p>
                           )}
+
+                          <div className={`flex items-center justify-end gap-0.5 mt-1 text-[8.5px] font-bold ${isMe ? "text-emerald-100/90" : "text-slate-400"}`}>
+                            <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                            {isMe && (
+                              <span className="material-symbols-outlined text-[11px] font-black">done_all</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
               <div ref={bottomRef}></div>
             </div>
 
