@@ -311,6 +311,10 @@ class PlatformSettings(models.Model):
 
     owner_combo_discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=15.00)
 
+    validity_residential_days = models.IntegerField(default=30)
+    validity_apt_pg_days = models.IntegerField(default=60)
+    validity_commercial_days = models.IntegerField(default=30)
+
     owner_onboarding_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     bypass_buyer_payment = models.BooleanField(default=False)
     bypass_owner_payment = models.BooleanField(default=False)
