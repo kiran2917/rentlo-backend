@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rentlo-cache-v4';
+const CACHE_NAME = 'rentlo-cache-v5';
 
 const APP_SHELL = [
   '/',
@@ -20,7 +20,9 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          return caches.delete(cacheName);
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
         })
       );
     })
@@ -28,28 +30,39 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Background Push Notification Listener (Triggers Native OS System Tray Alerts)
+// Background Push Notification Listener (Triggers Native OS System Tray Alerts with Vibration)
 self.addEventListener('push', (event) => {
   let data = {};
   if (event.data) {
     try {
       data = event.data.json();
     } catch {
-      data = { title: 'PropertyHub Notification 🔔', body: event.data.text() };
+      data = { title: 'Rentlo Alert 🔔', body: event.data.text() };
     }
   }
 
-  const title = data.title || 'PropertyHub Alert 🔔';
+  const title = data.title || 'Rentlo Alert 🔔';
   const options = {
-    body: data.body || 'You have a new update on PropertyHub.',
+    body: data.body || 'You have a new update on Rentlo.',
     icon: '/favicon.png',
     badge: '/favicon.png',
-    vibrate: [200, 100, 200],
+    vibrate: [300, 150, 300, 150, 300], // Distinct tactile vibration pattern
+    tag: data.tag || ('rentlo-alert-' + Date.now()),
+    renotify: true, // Forces device to vibrate/sound for every new alert
+    silent: false,
+    requireInteraction: false,
     data: { url: data.url || '/' },
     actions: [
       { action: 'open', title: 'View Details' }
     ]
   };
+
+  // Also broadcast to open tabs to vibrate foreground devices
+  self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    clientList.forEach((client) => {
+      client.postMessage({ type: 'NOTIFICATION_PUSH_RECEIVED', data });
+    });
+  });
 
   event.waitUntil(self.registration.showNotification(title, options));
 });

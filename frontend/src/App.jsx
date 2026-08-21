@@ -113,6 +113,28 @@ function App() {
       })
       .catch(err => console.error("Error fetching theme", err));
 
+    // Listen for Service Worker push events to trigger vibration
+    const handleMessage = (event) => {
+      if (event.data?.type === "NOTIFICATION_PUSH_RECEIVED") {
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+          try {
+            navigator.vibrate([300, 150, 300, 150, 300]);
+          } catch (e) {
+            // vibration not permitted or ignored
+          }
+        }
+      }
+    };
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", handleMessage);
+    }
+
+    return () => {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.removeEventListener("message", handleMessage);
+      }
+    };
   }, []);
 
   return (
