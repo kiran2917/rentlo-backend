@@ -116,6 +116,9 @@ export function playNotificationSound() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
     const ctx = new AudioContextClass();
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
 
     const now = ctx.currentTime;
 
