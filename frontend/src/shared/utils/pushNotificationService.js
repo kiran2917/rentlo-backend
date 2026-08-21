@@ -117,7 +117,7 @@ export function playNotificationSound() {
       // Cancel any currently playing speech to start this one immediately
       window.speechSynthesis.cancel();
       
-      const utterance = new SpeechSynthesisUtterance("Calling Mohith");
+      const utterance = new SpeechSynthesisUtterance("Message for Mohith");
       utterance.rate = 0.95; // Slightly natural pace
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
