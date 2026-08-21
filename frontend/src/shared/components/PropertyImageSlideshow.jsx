@@ -35,6 +35,10 @@ export const PropertyImageSlideshow = ({ media = [], propertyType = "", altText 
             src={imgSrc}
             alt={`${altText} - Image ${idx + 1}`}
             loading={idx === 0 ? "eager" : "lazy"}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f1f5f9'/%3E%3Cpath d='M200 120 l-40 40 v40 h80 v-40 z' fill='%23cbd5e1'/%3E%3Ctext x='50%25' y='65%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2394a3b8'%3EImage Not Available%3C/text%3E%3C/svg%3E";
+            }}
             className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${
               isActive
                 ? "opacity-100 scale-100 z-1"

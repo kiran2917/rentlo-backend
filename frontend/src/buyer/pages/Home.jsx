@@ -643,34 +643,6 @@ export const Home = () => {
                     : t("home.discoverProperties", "Discover Properties"))}
             </h2>
             <div className="flex flex-col items-end gap-3">
-              <div
-                className="flex p-1 rounded-xl border shadow-inner transition-all"
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.05)",
-                  borderColor: "rgba(0, 0, 0, 0.08)",
-                }}
-              >
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-extrabold transition-all duration-200 ${
-                    viewMode === "grid"
-                      ? "bg-white text-slate-900 shadow-md border border-slate-200/80 scale-[1.02]"
-                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[17px]">grid_view</span> {t("home.list", "List")}
-                </button>
-                <button
-                  onClick={() => setViewMode("map")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-extrabold transition-all duration-200 ${
-                    viewMode === "map"
-                      ? "bg-white text-slate-900 shadow-md border border-slate-200/80 scale-[1.02]"
-                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[17px]">map</span> {t("home.map", "Map")}
-                </button>
-              </div>
               <span
                 className="text-[11px] font-bold uppercase tracking-widest"
                 style={{ color: "var(--text-muted)" }}
@@ -682,8 +654,8 @@ export const Home = () => {
 
           {viewMode === "map" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
-              {/* LEFT COLUMN (5 Cols): Property List */}
-              <div className="lg:col-span-5 md:col-span-1 flex flex-col space-y-4 max-h-[750px] overflow-y-auto pr-1">
+              {/* LEFT COLUMN (5 Cols): Property List (Hidden on Mobile) */}
+              <div className="hidden lg:flex lg:col-span-5 flex-col space-y-4 max-h-[750px] overflow-y-auto pr-1">
                 <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm sticky top-0 z-20 backdrop-blur-md">
                   <div>
                     <h3 className="font-extrabold text-[15px] text-slate-900 flex items-center gap-2">
@@ -781,7 +753,7 @@ export const Home = () => {
               </div>
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
-              <div className="lg:col-span-7 md:col-span-1 h-[450px] md:h-[600px] lg:h-[750px] rounded-3xl overflow-hidden border border-slate-200/80 shadow-2xl relative sticky top-24">
+              <div className="lg:col-span-7 md:col-span-1 h-[75vh] md:h-[600px] lg:h-[750px] rounded-3xl overflow-hidden border border-slate-200/80 shadow-2xl relative sticky top-24">
                 {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
                 <div className="absolute top-4 left-4 z-[1000] bg-slate-950/90 backdrop-blur-md border border-slate-800 p-2.5 rounded-2xl shadow-2xl flex flex-wrap items-center gap-2 max-w-[calc(100%-12rem)]">
                   <div className="flex items-center gap-1.5 px-2 text-emerald-400 text-xs font-black uppercase tracking-wider">
@@ -962,7 +934,7 @@ export const Home = () => {
                     </div>
 
                     {prop.is_verified && (
-                      <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/20 backdrop-blur-md text-emerald-400 border border-emerald-500/30 shadow-md">
+                      <div className="absolute top-[42px] left-3 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/90 backdrop-blur-md text-white border border-emerald-400 shadow-[0_4px_12px_rgb(0,0,0,0.1)]">
                         <span className="material-symbols-outlined text-[13px]">verified</span>
                         Verified
                       </div>
