@@ -47,15 +47,17 @@ const MapDrawEvents = ({ isDrawingMode, drawnPolygon, setDrawnPolygon }) => {
 };
 
 const PropertyCardSkeleton = () => (
-  <div className="rounded-3xl overflow-hidden border shadow-sm p-0 flex flex-col h-full" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-    <div className="h-56 w-full animate-pulse" style={{ backgroundColor: "var(--surface-alt)" }}></div>
-    <div className="p-6 flex flex-col flex-grow justify-between gap-4">
+  <div className="rounded-3xl overflow-hidden border shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-0 flex flex-col h-full bg-surface border-border">
+    <div className="aspect-[4/3] w-full animate-pulse bg-surface-alt"></div>
+    <div className="p-4 flex flex-col flex-grow justify-between gap-4">
       <div className="space-y-3">
-        <div className="h-7 w-1/2 rounded-xl animate-pulse" style={{ backgroundColor: "var(--surface-alt)" }}></div>
-        <div className="h-4 w-2/3 rounded-lg animate-pulse" style={{ backgroundColor: "var(--surface-alt)" }}></div>
-        <div className="h-4 w-full rounded-lg animate-pulse" style={{ backgroundColor: "var(--surface-alt)" }}></div>
+        <div className="h-7 w-1/2 rounded-xl animate-pulse bg-surface-alt"></div>
+        <div className="h-4 w-3/4 rounded-lg animate-pulse bg-surface-alt"></div>
+        <div className="flex gap-2">
+          <div className="h-6 w-16 rounded-lg animate-pulse bg-surface-alt"></div>
+          <div className="h-6 w-16 rounded-lg animate-pulse bg-surface-alt"></div>
+        </div>
       </div>
-      <div className="h-11 w-full rounded-xl animate-pulse" style={{ backgroundColor: "var(--surface-alt)" }}></div>
     </div>
   </div>
 );
@@ -945,10 +947,10 @@ export const Home = () => {
                 <Link
                   key={prop.id}
                   to={`/property/${prop.id}`}
-                  className="reveal group rounded-3xl overflow-hidden flex flex-col cursor-pointer border border-border bg-surface shadow-card hover:-translate-y-1.5 hover:shadow-card-hover transition-all duration-300 h-full"
+                  className="reveal group rounded-3xl overflow-hidden flex flex-col cursor-pointer border border-border bg-surface shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-[0.98] transition-all duration-300 h-full"
                 >
                   <div
-                    className="relative h-56 w-full overflow-hidden"
+                    className="relative aspect-[4/3] w-full overflow-hidden"
                     style={{ backgroundColor: "var(--surface-alt)" }}
                   >
                     <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
@@ -967,17 +969,22 @@ export const Home = () => {
                     )}
 
                     <button
-                      onClick={(e) => toggleCompare(e, prop)}
-                      className="absolute bottom-3 right-3 w-8.5 h-8.5 rounded-full flex items-center justify-center backdrop-blur-md transition-all z-10 hover:scale-110 shadow-md cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (navigator.vibrate) navigator.vibrate(50);
+                        toggleCompare(e, prop);
+                      }}
+                      className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all z-10 active:scale-90 shadow-[0_4px_12px_rgb(0,0,0,0.1)] cursor-pointer"
                       style={{
-                        backgroundColor: compareList.find(p => p.id === prop.id) ? "var(--accent)" : "rgba(15, 23, 42, 0.7)",
-                        color: "white",
-                        border: "1px solid rgba(255,255,255,0.2)"
+                        backgroundColor: compareList.find(p => p.id === prop.id) ? "var(--accent)" : "rgba(255, 255, 255, 0.2)",
+                        color: compareList.find(p => p.id === prop.id) ? "white" : "var(--ink)",
+                        border: "1px solid rgba(255,255,255,0.4)"
                       }}
                       title={compareList.find(p => p.id === prop.id) ? "Remove from compare" : "Add to compare"}
                     >
-                      <span className="material-symbols-outlined text-[15px]">
-                        {compareList.find(p => p.id === prop.id) ? "check" : "compare_arrows"}
+                      <span className="material-symbols-outlined text-[18px]">
+                        {compareList.find(p => p.id === prop.id) ? "favorite" : "favorite"}
                       </span>
                     </button>
                   </div>
@@ -1010,47 +1017,65 @@ export const Home = () => {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {prop.bedrooms && (
-                          <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg border flex items-center gap-1" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
-                            <span className="material-symbols-outlined text-[13px] text-emerald-500">bed</span>
+                          <span className="text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">bed</span>
                             {prop.bedrooms} BHK
                           </span>
                         )}
                         {prop.bathrooms && (
-                          <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg border flex items-center gap-1" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
-                            <span className="material-symbols-outlined text-[13px] text-emerald-500">bathtub</span>
+                          <span className="text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">shower</span>
                             {prop.bathrooms} Bath
                           </span>
                         )}
                         {prop.carpet_area && (
-                          <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg border flex items-center gap-1" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
-                            <span className="material-symbols-outlined text-[13px] text-emerald-500">square_foot</span>
+                          <span className="text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">aspect_ratio</span>
                             {prop.carpet_area} sqft
                           </span>
                         )}
                       </div>
-
-                      <p
-                        className="text-[13px] font-medium leading-relaxed line-clamp-2"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        <Translate>{prop.description || "Contact owner for full property details and viewing availability."}</Translate>
-                      </p>
                     </div>
 
-                    <div className="h-11 rounded-xl bg-accent text-white font-extrabold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all hover:opacity-90">
-                      <span>View Details</span>
-                      <span className="material-symbols-outlined text-[16px] transition-transform duration-200 group-hover:translate-x-1">
-                        arrow_forward
-                      </span>
-                    </div>
+
                   </div>
                 </Link>
               ))
             )}
             </div>
           )}
+
+          {/* Floating Action Pill for Mobile Filters/Map */}
+          <div className="md:hidden sticky bottom-[80px] z-40 flex justify-center pointer-events-none pb-4">
+            <div className="bg-slate-900 text-white rounded-full px-5 py-2.5 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] pointer-events-auto backdrop-blur-md">
+              <button 
+                onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
+                className="flex items-center gap-2 text-[13px] font-bold active:scale-95 transition-transform"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {viewMode === "grid" ? "map" : "grid_view"}
+                </span>
+                {viewMode === "grid" ? "Map View" : "List View"}
+              </button>
+              <div className="w-[1px] h-4 bg-white/20"></div>
+              <button 
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  // Focus the first filter input to trigger mobile UI scroll
+                  setTimeout(() => {
+                    const firstFilter = document.querySelector('select[name="city_id"]');
+                    if (firstFilter) firstFilter.focus();
+                  }, 400);
+                }}
+                className="flex items-center gap-2 text-[13px] font-bold active:scale-95 transition-transform"
+              >
+                <span className="material-symbols-outlined text-[18px]">tune</span>
+                Filters
+              </button>
+            </div>
+          </div>
 
           {hasMore && (
             <div className="mt-12 text-center">
