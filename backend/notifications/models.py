@@ -84,21 +84,82 @@ def send_web_push_notification(sender, instance, created, **kwargs):
         return
 
     url = "/"
+    msg = instance.message.strip()
+    title = "Rentlo Alert 🔔"
+    body = msg
+
     if instance.property:
-        if instance.message.startswith("💬") or "message" in instance.message.lower() or "chat" in instance.message.lower():
-            url = f"/chat/{instance.property.id}"
+        prop = instance.property
+        prop_label = prop.property_type.replace('_', ' ').title() if prop.property_type else 'Property'
+        loc_name = prop.locality.name if prop.locality else ''
+
+        if "💬" in msg or "message" in msg.lower() or "chat" in msg.lower():
+            url = f"/chat/{prop.id}"
+            if "from " in msg and " regarding " in msg:
+                try:
+                    sender_part = msg.split("from ")[1].split(" regarding ")[0]
+                    content_part = msg.split("regarding ")[1]
+                    title = f"💬 Message from {sender_part}"
+                    body = f"Regarding {content_part}"
+                except Exception:
+                    title = "💬 New Message"
+                    body = msg
+            else:
+                title = "💬 New Chat Message"
+        elif "🗓️" in msg or "visit booking" in msg.lower() or "viewing" in msg.lower():
+            url = f"/owner/visits" if getattr(instance.recipient, 'is_owner', False) else f"/property/{prop.id}"
+            if "requested a viewing" in msg:
+                title = "🗓️ New Visit Request"
+                body = msg.replace("🗓️ New Visit Booking: ", "").replace("🗓️ ", "")
+            elif "approved" in msg.lower():
+                title = "🎉 Visit Confirmed!"
+                body = msg.replace("🎉 Visit Approved! ", "").replace("🎉 ", "")
+            elif "declined" in msg.lower() or "rejected" in msg.lower():
+                title = "📅 Visit Update"
+                body = msg.replace("❌ Visit Update: ", "").replace("❌ ", "")
+            else:
+                title = "📅 Visit Schedule Update"
+        elif "🔥" in msg or "new lead" in msg.lower():
+            url = f"/owner/leads" if getattr(instance.recipient, 'is_owner', False) else f"/property/{prop.id}"
+            title = "🔥 New Verified Lead!"
+            body = f"A buyer unlocked contact details for your {prop_label} in {loc_name}. Tap to connect."
+        elif "unlocked" in msg.lower():
+            url = f"/my-unlocks"
+            title = "🔑 Contact Unlocked!"
+            body = f"Owner contact details for {prop_label} #{prop.id} in {loc_name} are now visible."
+        elif "onboarding" in msg.lower():
+            url = f"/owner/dashboard"
+            title = "✅ Verification Payment Verified"
+            body = f"Payment received for {prop_label} #{prop.id}. Verification in progress."
+        elif "match" in msg.lower():
+            url = f"/property/{prop.id}"
+            title = "🔔 New Property Match!"
+            body = msg.replace("New property match: ", "").replace("🔔 ", "")
         else:
-            url = f"/property/{instance.property.id}"
+            url = f"/property/{prop.id}"
+    else:
+        if "credit pass" in msg.lower() or "buyer credit" in msg.lower():
+            url = "/my-unlocks"
+            title = "⭐ Pass Activated!"
+            body = msg.replace("Payment verified! ", "")
+        elif "listing credits" in msg.lower():
+            url = "/owner/dashboard"
+            title = "💎 Listing Credits Added!"
+            body = msg.replace("Payment verified! ", "")
+        elif "payment" in msg.lower():
+            title = "💳 Payment Confirmed"
+            body = msg
 
     payload = {
-        'title': 'Rentlo Alert 🔔',
-        'body': instance.message,
-        'url': url
+        'title': title,
+        'body': body,
+        'url': url,
+        'tag': f"rentlo-{instance.id}-{int(instance.created_at.timestamp())}"
     }
     payload_str = json.dumps(payload)
 
     for sub in subs:
-        logger.info(f"Web Push: Spawning background thread to send push to endpoint: {sub.endpoint[:60]}...")
+        logger.info(f"Web Push: Spawning background thread to send push ({title}) to endpoint: {sub.endpoint[:60]}...")
         t = threading.Thread(
             target=_send_single_web_push,
             args=(sub.id, payload_str, vapid_priv, vapid_email)
