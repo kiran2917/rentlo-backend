@@ -177,6 +177,26 @@ export const BuyerChat = () => {
     }
   };
 
+  if (!loading && !me) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-500">
+          <span className="material-symbols-outlined text-[36px]">lock</span>
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In to View Chat</h2>
+        <p className="text-sm text-slate-500 max-w-sm mb-6">
+          You received a message regarding this property. Please sign in to read and reply to messages.
+        </p>
+        <Link
+          to={`/login?redirect=/chat/${propertyId}`}
+          className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+        >
+          Sign In to Read Messages
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--bg)" }}>
       {/* Header */}

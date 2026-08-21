@@ -67,3 +67,25 @@ class SubscribeWebPushView(views.APIView):
             {'detail': 'Subscription registered successfully.'},
             status=status.HTTP_201_CREATED
         )
+
+
+class UnsubscribeWebPushView(views.APIView):
+    """
+    Endpoint to unregister a client's Web Push subscription upon logout.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        endpoint = request.data.get('endpoint')
+        if endpoint:
+            from accounts.models import PushSubscription
+            deleted_count, _ = PushSubscription.objects.filter(endpoint=endpoint).delete()
+            return Response({'detail': f'Removed {deleted_count} push subscriptions.'})
+        
+        # If user is authenticated and no specific endpoint passed, clean up their subscriptions
+        if request.user and request.user.is_authenticated:
+            from accounts.models import PushSubscription
+            deleted_count, _ = PushSubscription.objects.filter(user=request.user).delete()
+            return Response({'detail': f'Removed {deleted_count} push subscriptions for user.'})
+
+        return Response({'detail': 'No endpoint provided.'}, status=status.HTTP_200_OK)

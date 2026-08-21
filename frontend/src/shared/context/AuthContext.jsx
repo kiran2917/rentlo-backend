@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { subscribeUserToPush } from "../utils/pushNotificationService";
+import { subscribeUserToPush, unsubscribeUserFromPush } from "../utils/pushNotificationService";
 
 const AuthContext = createContext(undefined);
 
@@ -64,6 +64,11 @@ export const AuthProvider = ({ children }) => {
   }, [userId]);
 
   const logout = async () => {
+    try {
+      // 1. Disconnect device push notifications for this user
+      await unsubscribeUserFromPush();
+    } catch (_) {}
+
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/auth/logout/`, {
         method: "POST",

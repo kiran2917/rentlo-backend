@@ -76,6 +76,37 @@ export async function subscribeUserToPush() {
   return { success: true, permission: "granted", subscription };
 }
 
+export async function unsubscribeUserFromPush() {
+  if (!isPushNotificationSupported()) return;
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    if (!registration) return;
+
+    const subscription = await registration.pushManager.getSubscription();
+    if (subscription) {
+      const endpoint = subscription.endpoint;
+
+      // 1. Notify backend to remove this device endpoint
+      try {
+        await fetch(`${import.meta.env.VITE_API_URL}/notifications/unsubscribe-web-push/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ endpoint }),
+        });
+      } catch (e) {
+        console.warn("Backend unsubscribe failed:", e);
+      }
+
+      // 2. Unsubscribe locally in browser push manager
+      await subscription.unsubscribe();
+      console.log("Successfully unsubscribed device from Web Push.");
+    }
+  } catch (err) {
+    console.error("Error during push unsubscribe:", err);
+  }
+}
+
 export function playNotificationSound() {
   if (typeof window === "undefined") return;
   try {
