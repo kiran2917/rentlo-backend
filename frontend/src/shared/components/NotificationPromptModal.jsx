@@ -46,6 +46,11 @@ export const NotificationPromptModal = () => {
 
       const result = await subscribeUserToPush();
       if (result?.success) {
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+          try {
+            navigator.vibrate([300, 100, 300]);
+          } catch (_) {}
+        }
         toast.success("🔔 Notifications & Vibration Enabled!");
         setIsOpen(false);
       } else if (result?.permission === "denied") {
