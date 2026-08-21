@@ -227,7 +227,7 @@ export const OwnerLeads = () => {
 
       {/* Summary KPI Metrics Bar / Row */}
       {!loading && leads.length > 0 && (
-        <div className="flex md:grid md:grid-cols-4 overflow-x-auto snap-x hide-scrollbar gap-2 md:gap-3.5 mb-6 md:mb-8 pb-2 md:pb-0">
+        <div className="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-2 md:gap-3.5 mb-6 md:mb-8 pb-2 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
             <div className="hidden md:flex w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">groups</span>
@@ -278,7 +278,7 @@ export const OwnerLeads = () => {
 
       {/* Mobile Tab Navigation (Sticky) */}
       {!loading && leads.length > 0 && viewMode === "kanban" && (
-        <div className="md:hidden flex overflow-x-auto hide-scrollbar border-b border-slate-200 mb-6 sticky top-[56px] bg-[#fafafa] z-20 -mx-4 px-4 pt-2">
+        <div className="md:hidden flex overflow-x-auto border-b border-slate-200 mb-6 sticky top-[56px] bg-[#fafafa] z-20 -mx-4 px-4 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {columns.map((col) => {
             const isActive = activeMobileTab === col.id;
             const count = filteredLeads.filter((l) => l.lead_status === col.id).length;
@@ -286,7 +286,7 @@ export const OwnerLeads = () => {
               <button
                 key={`tab-${col.id}`}
                 onClick={() => setActiveMobileTab(col.id)}
-                className={`whitespace-nowrap px-4 py-3 text-[13px] font-bold border-b-2 transition-all flex items-center gap-2 ${
+                className={`shrink-0 whitespace-nowrap px-4 py-3 text-[13px] font-bold border-b-2 transition-all flex items-center gap-2 ${
                   isActive
                     ? "border-emerald-600 text-emerald-700"
                     : "border-transparent text-slate-500 hover:text-slate-700"
