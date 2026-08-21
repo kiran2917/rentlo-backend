@@ -15,6 +15,12 @@ export const NotificationPromptModal = () => {
     (typeof window !== "undefined" && window.location.pathname.startsWith("/owner"));
 
   useEffect(() => {
+    // ONLY prompt if the user is registered/logged in
+    if (!user) {
+      setIsOpen(false);
+      return;
+    }
+
     // Check permission state on screen load
     const state = getNotificationPermissionState();
     
@@ -22,7 +28,7 @@ export const NotificationPromptModal = () => {
     if (state !== "granted") {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 500);
+      }, 600);
       return () => clearTimeout(timer);
     }
   }, [user]);
@@ -61,7 +67,8 @@ export const NotificationPromptModal = () => {
     setIsOpen(false);
   };
 
-  if (!isOpen) return null;
+  // Only render for logged-in users who haven't enabled notifications yet
+  if (!user || !isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
