@@ -64,7 +64,7 @@
 
       if ('serviceWorker' in navigator) {
         const registerSW = () => {
-          navigator.serviceWorker.register('/sw.js?v=9').then(registration => {
+          navigator.serviceWorker.register('/sw.js?v=10').then(registration => {
             console.log('SW registered:', registration);
             registration.update();
           }).catch(registrationError => {

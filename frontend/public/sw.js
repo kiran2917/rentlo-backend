@@ -46,6 +46,7 @@ self.addEventListener('push', (event) => {
     body: data.body || 'You have a new update on Rentlo.',
     icon: '/favicon.png',
     badge: '/favicon.png',
+    sound: '/notification.mp3',
     vibrate: [500, 200, 500, 200, 500], // Strong high-intensity tactile vibration bursts (half-second pulses)
     tag: data.tag || ('rentlo-alert-' + Date.now()),
     renotify: true, // Forces phone hardware to re-buzz on every single notification
