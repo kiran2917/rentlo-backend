@@ -113,16 +113,17 @@ export async function unsubscribeUserFromPush() {
 export function playNotificationSound() {
   if (typeof window === "undefined") return;
   try {
-    if ('speechSynthesis' in window) {
-      // Cancel any currently playing speech to start this one immediately
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance("Message for Mohith");
-      utterance.rate = 0.95; // Slightly natural pace
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
+    const audio = new Audio('/notification.mp3');
+    audio.play().catch(e => {
+      // Fallback to speech synthesis if autoplay is strictly blocked
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance("Message for Mohith");
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+    });
   } catch (err) {
-    console.warn("Speech synthesis error:", err);
+    console.warn("Audio playback error:", err);
   }
 }
