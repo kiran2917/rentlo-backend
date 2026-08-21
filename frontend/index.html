@@ -57,6 +57,11 @@
 
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Prevent browser's automatic mini-infobar install banner from popping up
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+      });
+
       if ('serviceWorker' in navigator) {
         const registerSW = () => {
           navigator.serviceWorker.register('/sw.js').then(registration => {
