@@ -281,7 +281,7 @@ export const OwnerChat = () => {
       </div>
 
       {/* Main Chat Pane */}
-      <div className={`${!showChat ? 'hidden' : 'flex'} md:flex flex-1 flex-col`}>
+      <div className={`${!showChat ? 'hidden' : 'flex fixed inset-0 z-[60] bg-white'} md:relative md:flex flex-1 flex-col md:z-auto`}>
         {!activeThread ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center px-8" style={{ backgroundColor: "var(--surface-alt)" }}>
             <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
