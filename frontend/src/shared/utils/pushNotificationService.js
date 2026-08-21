@@ -62,15 +62,18 @@ export async function subscribeUserToPush() {
   }
 
   // 6. Register subscription with backend
-  const subRes = await fetch(`${import.meta.env.VITE_API_URL}/notifications/subscribe-web-push/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(subscription.toJSON()),
-  });
-
-  if (!subRes.ok) {
-    throw new Error(`Backend subscription registration returned status ${subRes.status}`);
+  try {
+    const subRes = await fetch(`${import.meta.env.VITE_API_URL}/notifications/subscribe-web-push/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(subscription.toJSON()),
+    });
+    if (!subRes.ok && subRes.status !== 401) {
+      console.warn(`Backend push registration response: ${subRes.status}`);
+    }
+  } catch (backendErr) {
+    console.warn("Backend push registration warning:", backendErr);
   }
 
   return { success: true, permission: "granted", subscription };

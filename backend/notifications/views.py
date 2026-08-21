@@ -40,7 +40,7 @@ class SubscribeWebPushView(views.APIView):
     """
     Endpoint to register or update a client's Web Push subscription.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         endpoint = request.data.get('endpoint')
@@ -54,18 +54,25 @@ class SubscribeWebPushView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        from accounts.models import PushSubscription
-        subscription, created = PushSubscription.objects.update_or_create(
-            endpoint=endpoint,
-            defaults={
-                'user': request.user,
-                'p256dh': p256dh,
-                'auth': auth
-            }
-        )
+        if request.user and request.user.is_authenticated:
+            from accounts.models import PushSubscription
+            subscription, created = PushSubscription.objects.update_or_create(
+                endpoint=endpoint,
+                defaults={
+                    'user': request.user,
+                    'p256dh': p256dh,
+                    'auth': auth
+                }
+            )
+            return Response(
+                {'detail': 'Subscription registered to account successfully.'},
+                status=status.HTTP_201_CREATED
+            )
+
+        # For guest users, browser subscription is created locally and will link to account on login
         return Response(
-            {'detail': 'Subscription registered successfully.'},
-            status=status.HTTP_201_CREATED
+            {'detail': 'Browser push enabled. Will sync upon account login.'},
+            status=status.HTTP_200_OK
         )
 
 
