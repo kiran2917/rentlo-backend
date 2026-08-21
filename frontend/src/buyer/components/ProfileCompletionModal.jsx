@@ -55,7 +55,7 @@ export const ProfileCompletionModal = ({ isOpen, onClose, onSuccess, user, check
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[13px] font-bold text-ink mb-1.5">First Name</label>
+            <label className="block text-sm font-bold text-ink mb-1.5">First Name</label>
             <input
               type="text"
               value={formData.first_name}
@@ -65,7 +65,7 @@ export const ProfileCompletionModal = ({ isOpen, onClose, onSuccess, user, check
             />
           </div>
           <div>
-            <label className="block text-[13px] font-bold text-ink mb-1.5">Last Name (Optional)</label>
+            <label className="block text-sm font-bold text-ink mb-1.5">Last Name (Optional)</label>
             <input
               type="text"
               value={formData.last_name}
@@ -75,7 +75,7 @@ export const ProfileCompletionModal = ({ isOpen, onClose, onSuccess, user, check
             />
           </div>
           <div>
-            <label className="block text-[13px] font-bold text-ink mb-1.5">Phone Number</label>
+            <label className="block text-sm font-bold text-ink mb-1.5">Phone Number</label>
             <input
               type="tel"
               value={formData.phone}

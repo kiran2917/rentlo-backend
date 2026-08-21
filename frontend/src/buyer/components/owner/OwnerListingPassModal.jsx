@@ -83,18 +83,18 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
           onClick={onClose}
           className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors"
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
+          <span className="material-symbols-outlined text-xl">close</span>
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-extrabold uppercase tracking-wider mb-2">
-            <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-extrabold uppercase tracking-wider mb-2">
+            <span className="material-symbols-outlined text-base">real_estate_agent</span>
             Owner Listing Packs & Passes
           </div>
-          <h2 className="text-[22px] sm:text-[26px] font-extrabold text-slate-900 leading-tight">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">
             Select Your Property Listing Package
           </h2>
-          <p className="text-[13px] text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Save up to 40% with listing passes. 100% direct tenant leads with 0% brokerage.
           </p>
         </div>
@@ -109,7 +109,7 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-[12px] font-extrabold transition-all duration-200 ${
+              className={`flex-1 min-w-[120px] py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all duration-200 ${
                 selectedTab === tab.id
                   ? "bg-white text-slate-900 shadow-sm scale-[1.02]"
                   : "text-slate-500 hover:text-slate-900"
@@ -128,32 +128,32 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
               className="p-5 rounded-2xl border-2 border-slate-200 hover:border-emerald-600 bg-white hover:bg-emerald-50/20 transition-all duration-200 flex flex-col justify-between relative group"
             >
               {pack.badge && (
-                <span className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-extrabold tracking-wider shadow-sm">
+                <span className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-extrabold tracking-wider shadow-sm">
                   {pack.badge}
                 </span>
               )}
 
               <div>
                 <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-extrabold text-[16px] text-slate-950">
+                  <h3 className="font-extrabold text-base text-slate-950">
                     {pack.name}
                   </h3>
-                  <span className="text-[20px] font-extrabold text-slate-900">
+                  <span className="text-xl font-extrabold text-slate-900">
                     ₹{pack.price}
                   </span>
                 </div>
 
-                <p className="text-[12px] text-slate-500 font-medium mb-4">
+                <p className="text-xs text-slate-500 font-medium mb-4">
                   {pack.desc}
                 </p>
               </div>
 
               <button
                 onClick={() => handleSelectPack(pack)}
-                className="w-full h-10 rounded-xl text-white text-[12px] font-extrabold transition-all shadow-sm flex items-center justify-center gap-1.5 hover:opacity-90 cursor-pointer"
+                className="w-full h-10 rounded-xl text-white text-xs font-extrabold transition-all shadow-sm flex items-center justify-center gap-1.5 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[16px]">add_task</span>
+                <span className="material-symbols-outlined text-base">add_task</span>
                 Buy {pack.name} (₹{pack.price})
               </button>
             </div>

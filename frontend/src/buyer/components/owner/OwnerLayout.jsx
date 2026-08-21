@@ -149,15 +149,15 @@ export const OwnerLayout = () => {
     <>
       {/* Brand Header - Compact Height */}
       <div className="px-4 mb-2 pb-2 border-b flex items-center justify-between flex-shrink-0" style={{ borderColor: "var(--border)" }}>
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
-            <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
+        <Link to="/" className="flex items-center gap-2 h-10">
+          <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
+            <span className="material-symbols-outlined text-base">real_estate_agent</span>
           </div>
           <div>
-            <span className="text-[16px] font-bold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
+            <span className="text-base font-bold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
               Rentlo
             </span>
-            <p className="text-[9px] font-extrabold uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--accent)" }}>
+            <p className="text-xs font-extrabold uppercase tracking-widest leading-none mt-1" style={{ color: "var(--accent)" }}>
               {isAgent ? t("owner.agentConsole", "Agent Console") : t("owner.ownerConsole", "Owner Console")}
             </p>
           </div>
@@ -165,13 +165,13 @@ export const OwnerLayout = () => {
       </div>
 
       {/* Top Action Button: Post New Listing - Compact Height */}
-      <div className="px-3 mb-2 flex-shrink-0">
+      <div className="px-4 mb-2 flex-shrink-0">
         <Link
           to="/owner/new-listing"
           onClick={onNavClick}
-          className="w-full h-9 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white flex items-center justify-center gap-2 text-[12px] font-extrabold shadow-md transition-all cursor-pointer"
+          className="w-full h-10 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white flex items-center justify-center gap-2 text-xs font-extrabold shadow-md transition-all cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[16px]">add_circle</span>
+          <span className="material-symbols-outlined text-base">add_circle</span>
           {t("owner.postNewListing", "Post New Listing")}
         </Link>
       </div>
@@ -187,7 +187,7 @@ export const OwnerLayout = () => {
               key={item.to}
               to={item.to}
               onClick={onNavClick}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200"
+              className="flex items-center gap-4 px-4 h-10 rounded-xl text-sm font-semibold transition-all duration-200"
               style={{
                 color: active ? "var(--accent)" : "var(--sidebar-ink)",
                 backgroundColor: active ? "var(--surface-alt)" : "transparent",
@@ -197,7 +197,7 @@ export const OwnerLayout = () => {
               }}
             >
               <span
-                className="material-symbols-outlined text-[20px]"
+                className="material-symbols-outlined text-xl"
                 style={{ color: active ? "var(--accent)" : "var(--sidebar-ink)" }}
               >
                 {item.icon}
@@ -216,7 +216,7 @@ export const OwnerLayout = () => {
     <div className={`${isChatRoute ? "h-[100dvh] overflow-hidden" : "min-h-screen"} flex font-sans transition-colors duration-300`} style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}>
       {/* Desktop Sidebar */}
       <aside
-        className="hidden md:flex fixed left-0 top-0 h-screen w-64 border-r flex-col py-2.5 z-30 transition-colors duration-300"
+        className="hidden md:flex fixed left-0 top-0 h-screen w-64 border-r flex-col py-2 z-30 transition-colors duration-300"
         style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)", color: "var(--sidebar-ink)" }}
       >
         <SidebarContent onNavClick={() => {}} />
@@ -232,17 +232,18 @@ export const OwnerLayout = () => {
 
       {/* Mobile Drawer */}
       <aside
-        className={`md:hidden fixed left-0 top-0 h-full w-[270px] z-50 flex flex-col py-3 border-r transition-transform duration-300 ${
+        className={`md:hidden fixed left-0 top-0 h-full w-[270px] z-50 flex flex-col py-4 border-r transition-transform duration-300 ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)", color: "var(--sidebar-ink)" }}
       >
+        {/* Close Button: 44px tap area to meet accessibility minimums */}
         <button
           onClick={() => setDrawerOpen(false)}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100"
+          className="absolute top-4 right-4 w-[44px] h-[44px] rounded-full flex items-center justify-center opacity-80 hover:opacity-100"
           style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)" }}
         >
-          <span className="material-symbols-outlined text-[18px]">close</span>
+          <span className="material-symbols-outlined text-lg">close</span>
         </button>
         <SidebarContent onNavClick={() => setDrawerOpen(false)} />
       </aside>
@@ -252,14 +253,14 @@ export const OwnerLayout = () => {
         {/* Notification Banner Warning */}
         {showNotificationBanner && (
           <div 
-            className="w-full px-4 py-2.5 text-center text-[12px] sm:text-[13px] font-extrabold flex items-center justify-center gap-2 border-b transition-all duration-300 animate-slide-down"
+            className="w-full px-4 py-2.5 text-center text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 border-b transition-all duration-300 animate-slide-down"
             style={{
               backgroundColor: bannerType === 'blocked' ? '#fef2f2' : '#fffbeb',
               borderColor: bannerType === 'blocked' ? '#fecaca' : '#fef3c7',
               color: bannerType === 'blocked' ? '#b91c1c' : '#b45309',
             }}
           >
-            <span className="material-symbols-outlined text-[18px]">
+            <span className="material-symbols-outlined text-lg">
               {bannerType === 'blocked' ? 'notifications_off' : bannerType === 'ios' ? 'phone_iphone' : 'notifications_active'}
             </span>
             <span>
@@ -279,7 +280,7 @@ export const OwnerLayout = () => {
                         setBannerType('blocked');
                       }
                     }}
-                    className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-[11px] hover:opacity-90 transition-all cursor-pointer"
+                    className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-xs hover:opacity-90 transition-all cursor-pointer"
                     style={{ backgroundColor: 'var(--accent)' }}
                   >
                     Enable Now
@@ -302,11 +303,11 @@ export const OwnerLayout = () => {
               className="md:hidden p-2 rounded-lg opacity-80 hover:opacity-100 transition-colors"
               onClick={() => setDrawerOpen(true)}
             >
-              <span className="material-symbols-outlined text-[24px]">menu</span>
+              <span className="material-symbols-outlined text-2xl">menu</span>
             </button>
             <div className="flex items-center gap-2 min-w-0">
-              <span className="material-symbols-outlined text-[20px] hidden sm:inline-block" style={{ color: "var(--accent)" }}>grid_view</span>
-              <h1 className="text-[14px] sm:text-[16px] font-black truncate whitespace-nowrap" style={{ color: "var(--ink)" }} title={
+              <span className="material-symbols-outlined text-xl hidden sm:inline-block" style={{ color: "var(--accent)" }}>grid_view</span>
+              <h1 className="text-sm sm:text-base font-black truncate whitespace-nowrap" style={{ color: "var(--ink)" }} title={
                 location.pathname.startsWith("/owner/leads")
                   ? "Leads & Contacts"
                   : location.pathname.startsWith("/owner/visits")
@@ -349,18 +350,18 @@ export const OwnerLayout = () => {
                 className="flex items-center gap-2 px-2.5 py-1 rounded-xl border bg-surface-alt hover:bg-surface-alt/80 border-border transition-all cursor-pointer select-none active:scale-95 shadow-sm"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
               >
-                <div className="w-7 h-7 rounded-full font-extrabold text-[12px] flex items-center justify-center border shadow-xs text-emerald-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-emerald-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
                   {ownerInitials}
                 </div>
                 <div className="text-left hidden sm:block">
-                  <span className="text-[12px] font-extrabold block leading-none" style={{ color: "var(--ink)" }}>
+                  <span className="text-xs font-extrabold block leading-none" style={{ color: "var(--ink)" }}>
                     {user.first_name || user.username || (isAgent ? t("owner.agentRole", "Agent") : t("owner.ownerRole", "Owner"))}
                   </span>
-                  <span className="text-[9px] font-bold uppercase tracking-widest block mt-0.5" style={{ color: "var(--accent-soft)" }}>
+                  <span className="text-xs font-bold uppercase tracking-widest block mt-0.5" style={{ color: "var(--accent-soft)" }}>
                     {user.phone || (isAgent ? t("owner.agentRole", "Agent") : t("owner.ownerRole", "Owner"))}
                   </span>
                 </div>
-                <span className="material-symbols-outlined text-[16px] text-slate-400 select-none">
+                <span className="material-symbols-outlined text-base text-slate-400 select-none">
                   {profileMenuOpen ? "keyboard_arrow_up" : "keyboard_arrow_down"}
                 </span>
               </button>
@@ -373,9 +374,9 @@ export const OwnerLayout = () => {
                   {/* Explore Marketplace Link */}
                   <Link
                     to="/"
-                    className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-extrabold text-slate-700 hover:bg-slate-50 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[18px] text-emerald-600">storefront</span>
+                    <span className="material-symbols-outlined text-lg text-emerald-600">storefront</span>
                     <span>Explore Marketplace</span>
                   </Link>
 
@@ -384,9 +385,9 @@ export const OwnerLayout = () => {
                   {/* Sign Out Button */}
                   <button
                     onClick={logout}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-extrabold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-extrabold text-red-600 hover:bg-red-50 transition-colors text-left cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[18px]">logout</span>
+                    <span className="material-symbols-outlined text-lg">logout</span>
                     <span>Sign Out</span>
                   </button>
                 </div>
@@ -416,8 +417,8 @@ export const OwnerLayout = () => {
               fontWeight: location.pathname === "/owner/dashboard" ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-[22px]">grid_view</span>
-            <span className="text-[9.5px] font-bold mt-0.5">Dashboard</span>
+            <span className="material-symbols-outlined text-xl">grid_view</span>
+            <span className="text-xs font-bold mt-0.5">Dashboard</span>
           </Link>
 
           {/* Tab 2: Leads */}
@@ -429,8 +430,8 @@ export const OwnerLayout = () => {
               fontWeight: location.pathname.startsWith("/owner/leads") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-[22px]">contacts</span>
-            <span className="text-[9.5px] font-bold mt-0.5">Leads</span>
+            <span className="material-symbols-outlined text-xl">contacts</span>
+            <span className="text-xs font-bold mt-0.5">Leads</span>
           </Link>
 
           {/* Tab 3: CENTER HERO (+) ACTION BUTTON - Post New Listing */}
@@ -445,9 +446,9 @@ export const OwnerLayout = () => {
                 borderColor: "var(--bg)",
               }}
             >
-              <span className="material-symbols-outlined text-[26px]">add</span>
+              <span className="material-symbols-outlined text-2xl">add</span>
             </div>
-            <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
               Add New
             </span>
           </Link>
@@ -461,11 +462,11 @@ export const OwnerLayout = () => {
               fontWeight: location.pathname.startsWith("/owner/chat") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-[22px]">forum</span>
+            <span className="material-symbols-outlined text-xl">forum</span>
             {unreadCount > 0 && (
               <span className="absolute top-2 right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             )}
-            <span className="text-[9.5px] font-bold mt-0.5">Chat</span>
+            <span className="text-xs font-bold mt-0.5">Chat</span>
           </Link>
 
           {/* Tab 5: Visits */}
@@ -477,8 +478,8 @@ export const OwnerLayout = () => {
               fontWeight: location.pathname.startsWith("/owner/visits") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-[22px]">calendar_month</span>
-            <span className="text-[9.5px] font-bold mt-0.5">Visits</span>
+            <span className="material-symbols-outlined text-xl">calendar_month</span>
+            <span className="text-xs font-bold mt-0.5">Visits</span>
           </Link>
         </nav>
       </main>

@@ -16,8 +16,8 @@ export const PropertyImageSlideshow = ({ media = [], propertyType = "", altText 
   if (!media || media.length === 0) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1 bg-slate-900">
-        <span className="material-symbols-outlined text-[42px] opacity-40">home_work</span>
-        <span className="text-[10.5px] font-extrabold uppercase tracking-wider opacity-60">Rentlo Verified</span>
+        <span className="material-symbols-outlined text-5xl opacity-40">home_work</span>
+        <span className="text-xs font-extrabold uppercase tracking-wider opacity-60">Rentlo Verified</span>
       </div>
     );
   }

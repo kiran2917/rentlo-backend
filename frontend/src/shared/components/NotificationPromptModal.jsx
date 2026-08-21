@@ -89,13 +89,13 @@ export const NotificationPromptModal = () => {
           aria-label="Close"
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[18px]">close</span>
+          <span className="material-symbols-outlined text-lg">close</span>
         </button>
 
         {/* Icon & Title */}
         <div className="flex items-center gap-3.5 mb-3 pr-8">
           <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30 shrink-0">
-            <span className="material-symbols-outlined text-[26px] text-white">
+            <span className="material-symbols-outlined text-2xl text-white">
               {isOwner ? "campaign" : "notifications_active"}
             </span>
             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-400 border-2 border-slate-900 rounded-full animate-ping"></span>
@@ -103,7 +103,7 @@ export const NotificationPromptModal = () => {
           </div>
 
           <div>
-            <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+            <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${
               isOwner ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
             }`}>
               {isOwner ? "Owner Portal Alert" : "Instant Property Alert"}
@@ -122,9 +122,9 @@ export const NotificationPromptModal = () => {
         </p>
 
         {/* 2 Simple Feature Cards */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-[11px]">
+        <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60">
-            <span className="material-symbols-outlined text-amber-400 text-[18px] shrink-0">
+            <span className="material-symbols-outlined text-amber-400 text-lg shrink-0">
               {isOwner ? "bolt" : "home_pin"}
             </span>
             <span className="text-slate-200 font-medium leading-tight">
@@ -133,7 +133,7 @@ export const NotificationPromptModal = () => {
           </div>
 
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60">
-            <span className="material-symbols-outlined text-emerald-400 text-[18px] shrink-0">vibration</span>
+            <span className="material-symbols-outlined text-emerald-400 text-lg shrink-0">vibration</span>
             <span className="text-slate-200 font-medium leading-tight">Vibration & Sound</span>
           </div>
         </div>
@@ -152,7 +152,7 @@ export const NotificationPromptModal = () => {
             </>
           ) : (
             <>
-              <span className="material-symbols-outlined text-[20px]">notifications_active</span>
+              <span className="material-symbols-outlined text-xl">notifications_active</span>
               <span>Turn On Notifications & Vibration</span>
             </>
           )}
@@ -170,7 +170,7 @@ export const NotificationPromptModal = () => {
         </div>
 
         {/* Subtle tip */}
-        <p className="text-[10px] text-slate-400 text-center mt-2.5 border-t border-slate-800 pt-2.5 leading-tight">
+        <p className="text-xs text-slate-400 text-center mt-2.5 border-t border-slate-800 pt-2.5 leading-tight">
           💡 Tap <strong>"Allow"</strong> on the popup prompt. (Ensure phone is not on Silent mode).
         </p>
       </div>

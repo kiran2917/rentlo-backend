@@ -505,20 +505,20 @@ export const PlanSelectionModal = ({
           onClick={onClose}
           className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors"
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
+          <span className="material-symbols-outlined text-xl">close</span>
         </button>
 
         {/* ACTIVE PASS DETECTED FOR RETURNING USER */}
         {authStep === "ACTIVE_PASS_DETECTED" && sub && (
           <div className="py-4 text-center">
             <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
-              <span className="material-symbols-outlined text-[32px]">verified_user</span>
+              <span className="material-symbols-outlined text-4xl">verified_user</span>
             </div>
 
-            <h3 className="text-[22px] font-extrabold text-slate-900 mb-1">
+            <h3 className="text-xl font-extrabold text-slate-900 mb-1">
               Welcome Back{user?.first_name ? `, ${user.first_name}` : ""}!
             </h3>
-            <p className="text-[13px] text-slate-600 font-medium mb-6">
+            <p className="text-sm text-slate-600 font-medium mb-6">
               You already have an active pass with <strong className="text-emerald-700">{sub.credits_remaining} Unlocks Remaining</strong>.
             </p>
 
@@ -526,20 +526,20 @@ export const PlanSelectionModal = ({
               <button
                 onClick={() => handleInstantUnlock(user || authedUser)}
                 disabled={purchasing}
-                className="w-full h-13 py-3 rounded-2xl text-white font-extrabold text-[14px] shadow-lg transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-13 py-3 rounded-2xl text-white font-extrabold text-sm shadow-lg transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[20px]">bolt</span>
+                <span className="material-symbols-outlined text-xl">bolt</span>
                 {purchasing ? "Unlocking..." : "Use 1 Existing Credit (₹0 Payment Needed)"}
               </button>
 
               <button
                 onClick={() => handleBuyPass(selectedPlan, user || authedUser)}
                 disabled={purchasing}
-                className="w-full h-13 py-3 rounded-2xl text-white font-extrabold text-[13px] transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-13 py-3 rounded-2xl text-white font-extrabold text-sm transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
                 Buy Selected {PLANS.find(p => p.id === selectedPlan)?.name} (Stack +{PLANS.find(p => p.id === selectedPlan)?.unlocks} Credits)
               </button>
             </div>
@@ -551,40 +551,40 @@ export const PlanSelectionModal = ({
           <div className="py-4">
             <button
               onClick={() => setAuthStep("IDLE")}
-              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+              className="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span className="material-symbols-outlined text-base">arrow_back</span>
               Back to Plan Selection
             </button>
 
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
-                <span className="material-symbols-outlined text-[26px]">phone_iphone</span>
+                <span className="material-symbols-outlined text-2xl">phone_iphone</span>
               </div>
-              <h3 className="text-[20px] font-extrabold text-slate-900">Enter Your Mobile Number</h3>
-              <p className="text-[12px] text-slate-500 mt-1">
+              <h3 className="text-xl font-extrabold text-slate-900">Enter Your Mobile Number</h3>
+              <p className="text-xs text-slate-500 mt-1">
                 Enter mobile number to continue payment for your selected plan (₹{PLANS.find(p => p.id === selectedPlan)?.price}).
               </p>
             </div>
 
             {authError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-bold border border-red-200 text-center">
                 {authError}
               </div>
             )}
 
             <form onSubmit={handleRequestOTP} className="space-y-4">
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">Mobile Number *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Mobile Number *</label>
                 <div className="flex items-center gap-2 border border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus-within:bg-white focus-within:border-amber-500">
-                  <span className="text-[13px] font-extrabold text-slate-500">+91</span>
+                  <span className="text-sm font-extrabold text-slate-500">+91</span>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter 10-digit mobile"
                     maxLength={10}
-                    className="w-full bg-transparent outline-none font-bold text-[14px] text-slate-900"
+                    className="w-full bg-transparent outline-none font-bold text-sm text-slate-900"
                     autoFocus
                   />
                 </div>
@@ -593,11 +593,11 @@ export const PlanSelectionModal = ({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-12 rounded-xl text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
                 {authLoading ? "Checking Account..." : "Continue to Payment"}
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
               </button>
             </form>
           </div>
@@ -608,37 +608,37 @@ export const PlanSelectionModal = ({
           <div className="py-4">
             <button
               onClick={() => { setAuthStep("ENTER_PHONE"); setPassword(""); setAuthError(""); }}
-              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+              className="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span className="material-symbols-outlined text-base">arrow_back</span>
               Change Mobile Number
             </button>
 
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-2 border border-blue-200">
-                <span className="material-symbols-outlined text-[26px]">lock</span>
+                <span className="material-symbols-outlined text-2xl">lock</span>
               </div>
-              <h3 className="text-[20px] font-extrabold text-slate-900">Welcome Back!</h3>
-              <p className="text-[12px] text-slate-500 mt-1">
+              <h3 className="text-xl font-extrabold text-slate-900">Welcome Back!</h3>
+              <p className="text-xs text-slate-500 mt-1">
                 Your number <strong className="text-slate-800">+91 {phone}</strong> is already registered. Please sign in with your password.
               </p>
             </div>
 
             {authError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-bold border border-red-200 text-center">
                 {authError}
               </div>
             )}
 
             <form onSubmit={handlePasswordLogin} className="space-y-4">
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">Password *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Password *</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-blue-500"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm font-bold outline-none focus:border-blue-500"
                   autoFocus
                 />
               </div>
@@ -646,18 +646,18 @@ export const PlanSelectionModal = ({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-12 rounded-xl text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
                 {authLoading ? "Signing In..." : "Sign In & Continue"}
-                <span className="material-symbols-outlined text-[18px]">login</span>
+                <span className="material-symbols-outlined text-lg">login</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleForgotPassword}
                 disabled={authLoading}
-                className="w-full text-[12px] font-bold text-blue-600 hover:underline text-center mt-1 cursor-pointer"
+                className="w-full text-xs font-bold text-blue-600 hover:underline text-center mt-1 cursor-pointer"
               >
                 Forgot Password? Reset via OTP
               </button>
@@ -670,59 +670,59 @@ export const PlanSelectionModal = ({
           <div className="py-4">
             <button
               onClick={() => { setAuthStep("ENTER_PASSWORD"); setOtpCode(""); setNewPassword(""); setAuthError(""); }}
-              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+              className="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span className="material-symbols-outlined text-base">arrow_back</span>
               Back to Sign In
             </button>
 
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto mb-2 border border-orange-200">
-                <span className="material-symbols-outlined text-[26px]">key</span>
+                <span className="material-symbols-outlined text-2xl">key</span>
               </div>
-              <h3 className="text-[20px] font-extrabold text-slate-900">Reset Password</h3>
-              <p className="text-[12px] text-slate-500 mt-1">
+              <h3 className="text-xl font-extrabold text-slate-900">Reset Password</h3>
+              <p className="text-xs text-slate-500 mt-1">
                 An OTP has been sent to <strong className="text-slate-800">+91 {phone}</strong>. Enter it below and set a new password.
               </p>
             </div>
 
             {authError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-bold border border-red-200 text-center">
                 {authError}
               </div>
             )}
 
             <form onSubmit={handleForgotPasswordReset} className="space-y-4">
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">6-Digit OTP *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">6-Digit OTP *</label>
                 <input
                   type="text"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
                   placeholder="000000"
                   maxLength={6}
-                  className="w-full h-12 text-center text-[20px] font-extrabold tracking-widest rounded-xl border border-slate-200 outline-none focus:border-orange-500"
+                  className="w-full h-12 text-center text-xl font-extrabold tracking-widest rounded-xl border border-slate-200 outline-none focus:border-orange-500"
                   autoFocus
                 />
               </div>
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">New Password *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">New Password *</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Set new password (min 6 chars)"
-                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-orange-500"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm font-bold outline-none focus:border-orange-500"
                 />
               </div>
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-12 rounded-xl text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "#ea580c" }}
               >
                 {authLoading ? "Resetting..." : "Reset Password & Sign In"}
-                <span className="material-symbols-outlined text-[18px]">lock_reset</span>
+                <span className="material-symbols-outlined text-lg">lock_reset</span>
               </button>
             </form>
           </div>
@@ -732,41 +732,41 @@ export const PlanSelectionModal = ({
           <div className="py-4">
             <button
               onClick={() => setAuthStep("ENTER_PHONE")}
-              className="text-[12px] font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
+              className="text-xs font-bold text-amber-700 hover:underline flex items-center gap-1 mb-4"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span className="material-symbols-outlined text-base">arrow_back</span>
               Change Mobile Number
             </button>
 
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-2 border border-amber-200">
-                <span className="material-symbols-outlined text-[26px]">mark_email_read</span>
+                <span className="material-symbols-outlined text-2xl">mark_email_read</span>
               </div>
-              <h3 className="text-[20px] font-extrabold text-slate-900">Verify OTP Code</h3>
-              <p className="text-[12px] text-slate-500 mt-1">
+              <h3 className="text-xl font-extrabold text-slate-900">Verify OTP Code</h3>
+              <p className="text-xs text-slate-500 mt-1">
                 Enter the verification code sent to <strong className="text-slate-900">+91 {phone}</strong>
               </p>
-              <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-[11px]">
+              <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">
                 Demo Mode Code: 000000
               </span>
             </div>
 
             {authError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-bold border border-red-200 text-center">
                 {authError}
               </div>
             )}
 
             <form onSubmit={(e) => { e.preventDefault(); handleVerifyOTP(); }} className="space-y-4">
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">6-Digit OTP *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">6-Digit OTP *</label>
                 <input
                   type="text"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
                   placeholder="000000"
                   maxLength={6}
-                  className="w-full h-12 text-center text-[20px] font-extrabold tracking-widest rounded-xl border border-slate-200 outline-none focus:border-amber-500"
+                  className="w-full h-12 text-center text-xl font-extrabold tracking-widest rounded-xl border border-slate-200 outline-none focus:border-amber-500"
                   autoFocus
                 />
               </div>
@@ -774,11 +774,11 @@ export const PlanSelectionModal = ({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-12 rounded-xl text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
                 {authLoading ? "Verifying..." : "Verify & Continue"}
-                <span className="material-symbols-outlined text-[18px]">verified</span>
+                <span className="material-symbols-outlined text-lg">verified</span>
               </button>
             </form>
           </div>
@@ -788,54 +788,54 @@ export const PlanSelectionModal = ({
           <div className="py-4">
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2 border border-emerald-200">
-                <span className="material-symbols-outlined text-[26px]">person_add</span>
+                <span className="material-symbols-outlined text-2xl">person_add</span>
               </div>
-              <h3 className="text-[20px] font-extrabold text-slate-900">Create Buyer Account</h3>
-              <p className="text-[12px] text-slate-500 mt-1">
+              <h3 className="text-xl font-extrabold text-slate-900">Create Buyer Account</h3>
+              <p className="text-xs text-slate-500 mt-1">
                 Welcome to Rentlo! Please enter your name and set a password to complete your account.
               </p>
             </div>
 
             {authError && (
-              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-[12px] font-bold border border-red-200 text-center">
+              <div className="p-3 mb-4 rounded-xl bg-red-50 text-red-700 text-xs font-bold border border-red-200 text-center">
                 {authError}
               </div>
             )}
 
             <form onSubmit={handleCompleteRegistration} className="space-y-4">
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">Full Name (Mandatory) *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Full Name (Mandatory) *</label>
                 <input
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="e.g. Mohith Kumar"
                   required
-                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-amber-500"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm font-bold outline-none focus:border-amber-500"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-extrabold text-slate-600 uppercase block mb-1">Set Password (Mandatory) *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Set Password (Mandatory) *</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Set your account password"
                   required
-                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-[13px] font-bold outline-none focus:border-amber-500"
+                  className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm font-bold outline-none focus:border-amber-500"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full h-12 rounded-xl text-white font-extrabold text-[13px] shadow-lg transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+                className="w-full h-12 rounded-xl text-white font-extrabold text-sm shadow-lg transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
                 {authLoading ? "Creating Account..." : "Complete & Open Payment Gateway"}
-                <span className="material-symbols-outlined text-[18px]">lock_open</span>
+                <span className="material-symbols-outlined text-lg">lock_open</span>
               </button>
             </form>
           </div>
@@ -846,20 +846,20 @@ export const PlanSelectionModal = ({
           <>
             <div className="text-center mb-6">
               <div
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider mb-2 border shadow-sm"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider mb-2 border shadow-sm"
                 style={{
                   backgroundColor: "color-mix(in srgb, var(--accent) 12%, transparent)",
                   borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)",
                   color: "var(--accent)",
                 }}
               >
-                <span className="material-symbols-outlined text-[16px]">stars</span>
+                <span className="material-symbols-outlined text-base">stars</span>
                 Choose Your Unlock Plan
               </div>
-              <h2 className="text-[22px] sm:text-[26px] font-extrabold leading-tight" style={{ color: "var(--ink)" }}>
+              <h2 className="text-xl sm:text-2xl font-extrabold leading-tight" style={{ color: "var(--ink)" }}>
                 Unlock Direct Owner Contacts
               </h2>
-              <p className="text-[13px] font-medium mt-1" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm font-medium mt-1" style={{ color: "var(--text-muted)" }}>
                 Get instant owner phone numbers, exact location pin, &amp; legal rental agreements.
               </p>
             </div>
@@ -875,16 +875,16 @@ export const PlanSelectionModal = ({
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-xl text-white flex items-center justify-center font-bold text-[18px] shadow-md"
+                    className="w-12 h-12 rounded-xl text-white flex items-center justify-center font-bold text-lg shadow-md"
                     style={{ backgroundColor: "var(--accent)" }}
                   >
                     {sub.credits_remaining}
                   </div>
                   <div className="text-left">
-                    <h4 className="font-extrabold text-[14px]" style={{ color: "var(--ink)" }}>
+                    <h4 className="font-extrabold text-sm" style={{ color: "var(--ink)" }}>
                       You have {sub.credits_remaining} Active Credit{sub.credits_remaining === 1 ? "" : "s"}!
                     </h4>
-                    <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
+                    <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
                       Use 1 credit to unlock this owner instantly (₹0 Payment Needed)
                     </p>
                   </div>
@@ -892,13 +892,13 @@ export const PlanSelectionModal = ({
                 <button
                   onClick={() => handleInstantUnlock(user)}
                   disabled={purchasing}
-                  className="w-full sm:w-auto h-11 px-5 rounded-xl font-extrabold text-[13px] transition-all shadow-md hover:scale-[1.02] flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+                  className="w-full sm:w-auto h-11 px-5 rounded-xl font-extrabold text-sm transition-all shadow-md hover:scale-[1.02] flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
                   style={{
                     backgroundColor: "var(--accent)",
                     color: "var(--btn-text, #ffffff)",
                   }}
                 >
-                  <span className="material-symbols-outlined text-[18px]">bolt</span>
+                  <span className="material-symbols-outlined text-lg">bolt</span>
                   {purchasing ? "Unlocking..." : "1-Click Instant Unlock"}
                 </button>
               </div>
@@ -924,7 +924,7 @@ export const PlanSelectionModal = ({
                   >
                     {plan.badge && (
                       <span
-                        className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-white text-[10px] font-extrabold tracking-wider shadow-md"
+                        className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full text-white text-xs font-extrabold tracking-wider shadow-md"
                         style={{ backgroundColor: "var(--accent)" }}
                       >
                         {plan.badge}
@@ -933,31 +933,31 @@ export const PlanSelectionModal = ({
 
                     <div>
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-[11px] font-extrabold uppercase" style={{ color: "var(--text-muted)" }}>
+                        <span className="text-xs font-extrabold uppercase" style={{ color: "var(--text-muted)" }}>
                           {plan.tag}
                         </span>
-                        <span className="text-[22px] font-extrabold" style={{ color: "var(--ink)" }}>
+                        <span className="text-xl font-extrabold" style={{ color: "var(--ink)" }}>
                           ₹{plan.price}
                         </span>
                       </div>
 
-                      <h3 className="font-extrabold text-[16px] mb-1" style={{ color: "var(--ink)" }}>
+                      <h3 className="font-extrabold text-base mb-1" style={{ color: "var(--ink)" }}>
                         {plan.name}
                       </h3>
 
-                      <p className="text-[12px] font-medium mb-3 leading-snug" style={{ color: "var(--text-muted)" }}>
+                      <p className="text-xs font-medium mb-3 leading-snug" style={{ color: "var(--text-muted)" }}>
                         {plan.description}
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t flex items-center justify-between text-[12px]" style={{ borderColor: "var(--border)" }}>
+                    <div className="pt-3 border-t flex items-center justify-between text-xs" style={{ borderColor: "var(--border)" }}>
                       <span className="font-extrabold flex items-center gap-1" style={{ color: "var(--accent)" }}>
-                        <span className="material-symbols-outlined text-[16px]">lock_open</span>
+                        <span className="material-symbols-outlined text-base">lock_open</span>
                         {plan.unlocks} {plan.unlocks === 1 ? "Unlock" : "Unlocks"}
                       </span>
                       {plan.agreements > 0 && (
                         <span
-                          className="font-bold text-[11px] px-2 py-0.5 rounded-md border"
+                          className="font-bold text-xs px-2 py-0.5 rounded-md border"
                           style={{
                             backgroundColor: "color-mix(in srgb, var(--accent) 15%, transparent)",
                             borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)",
@@ -977,13 +977,13 @@ export const PlanSelectionModal = ({
             <button
               onClick={() => handleBuyPass(selectedPlan, user)}
               disabled={purchasing}
-              className="w-full h-14 rounded-2xl text-[15px] font-extrabold transition-all shadow-xl hover:scale-[1.01] flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
+              className="w-full h-14 rounded-2xl text-base font-extrabold transition-all shadow-xl hover:scale-[1.01] flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
               style={{
                 backgroundColor: "var(--accent)",
                 color: "var(--btn-text, #ffffff)",
               }}
             >
-              <span className="material-symbols-outlined text-[20px]">shopping_bag</span>
+              <span className="material-symbols-outlined text-xl">shopping_bag</span>
               {purchasing
                 ? "Processing Payment..."
                 : `Pay ₹${PLANS.find((p) => p.id === selectedPlan)?.price} & Get ${PLANS.find((p) => p.id === selectedPlan)?.name}`}

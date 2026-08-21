@@ -50,7 +50,7 @@ export const NotFound = () => {
           className="px-6 py-3 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 transition-all hover:opacity-90 shadow-lg"
           style={{ backgroundColor: "var(--accent)", boxShadow: "0 4px 16px rgba(5,150,105,0.3)" }}
         >
-          <span className="material-symbols-outlined text-[18px]">home</span>
+          <span className="material-symbols-outlined text-lg">home</span>
           Back to Home
         </Link>
         <button
@@ -62,7 +62,7 @@ export const NotFound = () => {
             backgroundColor: "var(--surface)",
           }}
         >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span className="material-symbols-outlined text-lg">arrow_back</span>
           Go Back
         </button>
       </div>

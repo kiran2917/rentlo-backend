@@ -221,14 +221,14 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       {/* Notification Banner Warning */}
       {showNotificationBanner && (
         <div 
-          className="w-full px-4 py-2.5 text-center text-[12px] sm:text-[13px] font-extrabold flex items-center justify-center gap-2 border-b transition-all duration-300 animate-slide-down"
+          className="w-full px-4 py-2 text-center text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 border-b transition-all duration-300 animate-slide-down"
           style={{
             backgroundColor: bannerType === 'blocked' ? '#fef2f2' : '#fffbeb',
             borderColor: bannerType === 'blocked' ? '#fecaca' : '#fef3c7',
             color: bannerType === 'blocked' ? '#b91c1c' : '#b45309',
           }}
         >
-          <span className="material-symbols-outlined text-[18px]">
+          <span className="material-symbols-outlined text-lg">
             {bannerType === 'blocked' ? 'notifications_off' : bannerType === 'ios' ? 'phone_iphone' : 'notifications_active'}
           </span>
           <span>
@@ -248,7 +248,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                       setBannerType('blocked');
                     }
                   }}
-                  className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-[11px] hover:opacity-90 transition-all cursor-pointer"
+                  className="ml-2 px-4 h-10 flex items-center justify-center rounded-lg text-white font-extrabold text-xs hover:opacity-90 transition-all cursor-pointer"
                   style={{ backgroundColor: 'var(--accent)' }}
                 >
                   Enable Now
@@ -272,11 +272,11 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       >
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-4 group h-10">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
-              <span className="material-symbols-outlined text-[18px] text-white" data-weight="fill">real_estate_agent</span>
+              <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
             </div>
-            <span className="text-[20px] font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>Rentlo</span>
+            <span className="text-xl font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>Rentlo</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -285,12 +285,12 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-[13px] font-semibold transition-colors duration-200 flex items-center gap-1.5"
+                className="text-sm font-semibold transition-colors duration-200 flex items-center gap-2 h-10"
                 style={{ color: location.pathname === link.to ? "var(--accent)" : "var(--header-ink)" }}
               >
                 {link.label}
                 {link.badge > 0 && (
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style={{ backgroundColor: "var(--accent)" }}>
+                  <span className="px-2 py-1 rounded text-xs font-bold text-white" style={{ backgroundColor: "var(--accent)" }}>
                     {link.badge}
                   </span>
                 )}
@@ -303,14 +303,14 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             {user?.roles?.includes("owner") && (
               <Link
                 to="/owner/dashboard"
-                className="h-9 px-3.5 rounded-xl text-[12px] font-extrabold flex items-center gap-1.5 border transition-all hover:opacity-90 shadow-sm"
+                className="h-10 px-4 rounded-xl text-xs font-extrabold flex items-center gap-2 border transition-all hover:opacity-90 shadow-sm"
                 style={{
                   backgroundColor: "color-mix(in srgb, var(--accent) 15%, transparent)",
                   borderColor: "color-mix(in srgb, var(--accent) 35%, transparent)",
                   color: "var(--accent)"
                 }}
               >
-                <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
+                <span className="material-symbols-outlined text-base">real_estate_agent</span>
                 {t("nav.ownerPortal", "Owner Portal")}
               </Link>
             )}
@@ -323,23 +323,24 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             {/* User Profile Avatar Dropdown */}
             {user ? (
               <div className="relative group">
+                {/* ⚠️ FLAG: Avatar button is potentially < 44px total hit area. Added h-10 to enforce minimum. */}
                 <button
-                  className="flex items-center gap-2 p-1 pl-1 pr-2.5 rounded-full border transition-all cursor-pointer"
+                  className="flex items-center gap-2 p-1 pl-1 pr-2 h-10 rounded-full border transition-all cursor-pointer"
                   style={{
                     backgroundColor: "rgba(255,255,255,0.06)",
                     borderColor: "rgba(255,255,255,0.15)"
                   }}
                 >
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-extrabold text-white uppercase shadow-sm"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-white uppercase shadow-sm"
                     style={{ backgroundColor: "var(--accent)" }}
                   >
                     {(user.first_name ? user.first_name.charAt(0) : (user.username && user.username.startsWith("buyer_") ? "B" : user.username?.charAt(0) || "U"))}
                   </div>
-                  <span className="text-[12px] font-bold" style={{ color: "var(--header-ink)" }}>
+                  <span className="text-xs font-bold" style={{ color: "var(--header-ink)" }}>
                     {user.first_name ? user.first_name.split(" ")[0] : "Account"}
                   </span>
-                  <span className="material-symbols-outlined text-[16px]" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <span className="material-symbols-outlined text-base" style={{ color: "rgba(255,255,255,0.6)" }}>
                     expand_more
                   </span>
                 </button>
@@ -353,10 +354,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   }}
                 >
                   <div className="px-4 py-3 border-b" style={{ borderColor: "var(--border)" }}>
-                    <p className="text-[13px] font-extrabold truncate capitalize" style={{ color: "var(--ink)" }}>
+                    <p className="text-sm font-extrabold truncate capitalize" style={{ color: "var(--ink)" }}>
                       {user.first_name ? `${user.first_name} ${user.last_name || ""}`.trim() : user.username}
                     </p>
-                    <p className="text-[11px] font-mono mt-0.5 truncate" style={{ color: "var(--text-muted)" }}>
+                    <p className="text-xs font-mono mt-0.5 truncate" style={{ color: "var(--text-muted)" }}>
                       {user.phone || "Verified User"}
                     </p>
                   </div>
@@ -364,39 +365,39 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   <div className="py-1">
                     <Link
                       to="/my-unlocks"
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-semibold transition-colors hover:bg-black/5"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
                       style={{ color: "var(--ink)" }}
                     >
-                      <span className="material-symbols-outlined text-[18px]" style={{ color: "var(--accent)" }}>lock_open</span>
+                      <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>lock_open</span>
                       {t("nav.myUnlocks", "My Unlocks")}
                     </Link>
 
                     <Link
                       to="/saved-searches"
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-semibold transition-colors hover:bg-black/5"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
                       style={{ color: "var(--ink)" }}
                     >
-                      <span className="material-symbols-outlined text-[18px]" style={{ color: "var(--accent)" }}>bookmark</span>
+                      <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>bookmark</span>
                       {t("nav.savedSearches", "Saved Searches")}
                     </Link>
 
                     {(user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent")) && (
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-semibold transition-colors hover:bg-black/5"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
                         style={{ color: "var(--ink)" }}
                       >
-                        <span className="material-symbols-outlined text-[18px]" style={{ color: "var(--accent)" }}>admin_panel_settings</span>
+                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>admin_panel_settings</span>
                         Admin Console
                       </Link>
                     )}
                     {user.roles?.includes("owner") && (
                       <Link
                         to="/owner/dashboard"
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-semibold transition-colors hover:bg-black/5"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
                         style={{ color: "var(--ink)" }}
                       >
-                        <span className="material-symbols-outlined text-[18px]" style={{ color: "var(--accent)" }}>dashboard</span>
+                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>dashboard</span>
                         {t("nav.ownerDashboard", "Owner Dashboard")}
                       </Link>
                     )}
@@ -405,9 +406,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   <div className="pt-1 border-t text-left" style={{ borderColor: "var(--border)" }}>
                     <button
                       onClick={logout}
-                      className="w-full flex items-center gap-2.5 px-4 py-3 text-[13px] font-extrabold transition-colors cursor-pointer text-red-600 hover:bg-red-500/10"
+                      className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-extrabold transition-colors cursor-pointer text-red-600 hover:bg-red-500/10"
                     >
-                      <span className="material-symbols-outlined text-[18px]">logout</span>
+                      <span className="material-symbols-outlined text-lg">logout</span>
                       {t("nav.signOut", "Sign Out")}
                     </button>
                   </div>
@@ -417,10 +418,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               <button
                 type="button"
                 onClick={() => setShowAuthRoleModal(true)}
-                className="h-9 px-4 rounded-xl text-[12px] font-extrabold flex items-center gap-1.5 transition-all text-white shadow-md hover:opacity-90 cursor-pointer"
+                className="h-9 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all text-white shadow-md hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[16px]">login</span>
+                <span className="material-symbols-outlined text-base">login</span>
                 {t("nav.signIn", "Sign In")}
               </button>
             )}
@@ -429,13 +430,13 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           {/* Mobile: user avatar + hamburger */}
           <div className="md:hidden flex items-center gap-3">
             {user && (
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[12px] font-bold uppercase" style={{ color: "var(--accent)" }}>
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold uppercase" style={{ color: "var(--accent)" }}>
                 {(user.first_name || "U").charAt(0)}
               </div>
             )}
             <LanguageToggle />
             <button type="button" aria-label="Open Mobile Menu" onClick={() => setMobileMenuOpen(true)} className="p-2 rounded-lg" style={{ color: "var(--header-ink)" }}>
-              <span className="material-symbols-outlined text-[26px]">menu</span>
+              <span className="material-symbols-outlined text-2xl">menu</span>
             </button>
           </div>
         </div>
@@ -455,20 +456,20 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         <div className="flex items-center justify-between px-5 mb-8">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
-              <span className="material-symbols-outlined text-[15px] text-white">real_estate_agent</span>
+              <span className="material-symbols-outlined text-base text-white">real_estate_agent</span>
             </div>
-            <span className="text-[16px] font-bold" style={{ color: "var(--header-ink)" }}>Rentlo</span>
+            <span className="text-base font-bold" style={{ color: "var(--header-ink)" }}>Rentlo</span>
           </div>
           <button onClick={() => setMobileMenuOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "var(--header-ink)" }}>
-            <span className="material-symbols-outlined text-[18px]">close</span>
+            <span className="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
         {/* User Info */}
         {user && (
           <div className="mx-5 mb-6 p-4 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-            <p className="text-[14px] font-bold" style={{ color: "var(--header-ink)" }}>{user.username}</p>
-            <p className="text-[11px] font-medium" style={{ color: "var(--accent)" }}>{user.roles?.join(", ") || "Buyer"}</p>
+            <p className="text-sm font-bold" style={{ color: "var(--header-ink)" }}>{user.username}</p>
+            <p className="text-xs font-medium" style={{ color: "var(--accent)" }}>{user.roles?.join(", ") || "Buyer"}</p>
           </div>
         )}
 
@@ -478,16 +479,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             <Link
               key={link.to}
               to={link.to}
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[14px] font-semibold transition-all"
+              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
               style={{
                 color: location.pathname === link.to ? "var(--accent)" : "rgba(255,255,255,0.75)",
                 backgroundColor: location.pathname === link.to ? "var(--nav-active-bg)" : "transparent",
               }}
             >
-              <span className="material-symbols-outlined text-[20px]" style={{ color: location.pathname === link.to ? "var(--accent)" : "rgba(255,255,255,0.5)" }}>{link.icon}</span>
+              <span className="material-symbols-outlined text-xl" style={{ color: location.pathname === link.to ? "var(--accent)" : "rgba(255,255,255,0.5)" }}>{link.icon}</span>
               {link.label}
               {link.badge > 0 && (
-                <span className="ml-auto px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style={{ backgroundColor: "var(--accent)" }}>{link.badge}</span>
+                <span className="ml-auto px-1.5 py-0.5 rounded text-xs font-bold text-white" style={{ backgroundColor: "var(--accent)" }}>{link.badge}</span>
               )}
             </Link>
           ))}
@@ -495,20 +496,20 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           {(user?.roles?.includes("admin") || user?.roles?.includes("moderator") || user?.roles?.includes("agent")) && (
             <Link
               to="/admin"
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[14px] font-semibold transition-all"
+              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
               style={{ color: "var(--accent)", backgroundColor: "var(--nav-active-bg)" }}
             >
-              <span className="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+              <span className="material-symbols-outlined text-xl">admin_panel_settings</span>
               Admin Console
             </Link>
           )}
           {user?.roles?.includes("owner") && (
             <Link
               to="/owner/dashboard"
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[14px] font-semibold transition-all"
+              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
               style={{ color: "var(--accent)", backgroundColor: "var(--nav-active-bg)" }}
             >
-              <span className="material-symbols-outlined text-[20px]">dashboard</span>
+              <span className="material-symbols-outlined text-xl">dashboard</span>
               Owner Dashboard
             </Link>
           )}
@@ -520,10 +521,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           {user && (
             <button
               onClick={() => { logout(); setMobileMenuOpen(false); }}
-              className="w-full h-12 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-colors text-red-600 hover:bg-red-500/10"
+              className="w-full h-12 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-colors text-red-600 hover:bg-red-500/10"
               style={{ border: "1px solid var(--border)", backgroundColor: "var(--surface-alt)" }}
             >
-              <span className="material-symbols-outlined text-[18px]">logout</span>
+              <span className="material-symbols-outlined text-lg">logout</span>
               Sign Out
             </button>
           )}
@@ -561,7 +562,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               ✕
             </button>
             <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-[24px] text-emerald-600">gavel</span>
+              <span className="material-symbols-outlined text-2xl text-emerald-600">gavel</span>
               <h3 className="text-lg font-extrabold text-slate-900">{legalModal.title}</h3>
             </div>
             <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6 whitespace-pre-line">
@@ -586,33 +587,33 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--accent)" }}>
-                  <span className="material-symbols-outlined text-[18px] text-white">real_estate_agent</span>
+                  <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
                 </div>
-                <span className="text-[18px] font-black tracking-tight" style={{ color: "var(--ink)" }}>Rentlo</span>
+                <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>Rentlo</span>
               </div>
-              <p className="text-[13px] font-medium leading-relaxed" style={{ color: "var(--text-muted)" }}>
+              <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 {t("footer.desc", "Zero-Brokerage Real Estate Ecosystem. Directly connecting buyers, tenants, and property owners across India.")}
               </p>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
+              <p className="text-xs font-bold uppercase tracking-wider text-emerald-600">
                 {t("footer.dpdpCompliant", "• DPDP Act 2023 Compliant Baseline")}
               </p>
             </div>
 
             {/* Col 2: Login Portals */}
             <div>
-              <h4 className="text-[12px] font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
                 {t("footer.accessPortals", "Access Portals & Login")}
               </h4>
-              <ul className="space-y-2.5 text-[13px] font-semibold" style={{ color: "var(--text-muted)" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
                 <li>
                   <Link to="/login" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600">person</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600">person</span>
                     {t("footer.tenantLogin", "Tenant & Buyer Login")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/owner/login" className="flex items-center gap-2 hover:text-amber-500 transition-colors">
-                    <span className="material-symbols-outlined text-[16px] text-amber-500">add_home</span>
+                    <span className="material-symbols-outlined text-base text-amber-500">add_home</span>
                     {t("footer.ownerLogin", "Landlord & Owner Login")}
                   </Link>
                 </li>
@@ -621,13 +622,13 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 3: Platform Features */}
             <div>
-              <h4 className="text-[12px] font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
                 {t("footer.platformServices", "Platform Services")}
               </h4>
-              <ul className="space-y-2.5 text-[13px] font-semibold" style={{ color: "var(--text-muted)" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
                 <li>
                   <Link to="/" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600">home_work</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600">home_work</span>
                     {t("footer.exploreCatalog", "Explore Property Catalog")}
                   </Link>
                 </li>
@@ -635,13 +636,13 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   <>
                     <li>
                       <Link to="/my-unlocks" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
-                        <span className="material-symbols-outlined text-[16px] text-emerald-600">lock_open</span>
+                        <span className="material-symbols-outlined text-base text-emerald-600">lock_open</span>
                         {t("footer.myUnlocks", "My Contact Unlocks")}
                       </Link>
                     </li>
                     <li>
                       <Link to="/saved-searches" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
-                        <span className="material-symbols-outlined text-[16px] text-emerald-600">bookmark</span>
+                        <span className="material-symbols-outlined text-base text-emerald-600">bookmark</span>
                         {t("footer.savedSearches", "Saved Search Alerts")}
                       </Link>
                     </li>
@@ -649,7 +650,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 )}
                 <li>
                   <Link to="/pricing" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600">confirmation_number</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600">confirmation_number</span>
                     {t("footer.buyerPasses", "Buyer Credit Passes & Pricing")}
                   </Link>
                 </li>
@@ -658,16 +659,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 4: Trust & Legal */}
             <div>
-              <h4 className="text-[12px] font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
                 {t("footer.legalGovernance", "Legal & Governance")}
               </h4>
-              <ul className="space-y-2.5 text-[13px] font-semibold" style={{ color: "var(--text-muted)" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.privacy)}
                     className="footer-plain-btn hover:text-emerald-600 font-semibold"
                   >
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">privacy_tip</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600 shrink-0">privacy_tip</span>
                     {t("footer.privacyPolicy", "Privacy Policy (v1.0)")}
                   </button>
                 </li>
@@ -676,7 +677,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     onClick={() => setLegalModal(legalPolicies.terms)}
                     className="footer-plain-btn hover:text-emerald-600 font-semibold"
                   >
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">gavel</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600 shrink-0">gavel</span>
                     {t("footer.termsOfService", "Terms of Service & Fair Usage")}
                   </button>
                 </li>
@@ -685,7 +686,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     onClick={() => setLegalModal(legalPolicies.dpdp)}
                     className="footer-plain-btn hover:text-emerald-600 font-semibold"
                   >
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">shield</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600 shrink-0">shield</span>
                     {t("footer.dpdpRetention", "DPDP Act Data Retention Boundary")}
                   </button>
                 </li>
@@ -694,7 +695,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     onClick={() => setLegalModal(legalPolicies.zero_brokerage)}
                     className="footer-plain-btn hover:text-emerald-600 font-semibold"
                   >
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">verified_user</span>
+                    <span className="material-symbols-outlined text-base text-emerald-600 shrink-0">verified_user</span>
                     {t("footer.zeroBrokerage", "Zero Brokerage Protection")}
                   </button>
                 </li>
@@ -703,7 +704,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           </div>
 
 
-          <div className="pt-6 pb-16 md:pb-0 text-center text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
+          <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium" style={{ color: "var(--text-muted)" }}>
             <p>{t("footer.copyright", "Rentlo Technologies © 2026. All rights reserved.")}</p>
           </div>
         </div>
@@ -728,8 +729,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname === "/" ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-[22px]">storefront</span>
-          <span className="text-[9.5px] font-bold mt-0.5">Explore</span>
+          <span className="material-symbols-outlined text-xl">storefront</span>
+          <span className="text-xs font-bold mt-0.5">Explore</span>
         </Link>
 
         {/* Tab 2: Passes / Pricing */}
@@ -741,8 +742,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname.startsWith("/pricing") ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-[22px]">confirmation_number</span>
-          <span className="text-[9.5px] font-bold mt-0.5">Passes</span>
+          <span className="material-symbols-outlined text-xl">confirmation_number</span>
+          <span className="text-xs font-bold mt-0.5">Passes</span>
         </Link>
 
         {/* Tab 3: CENTER HERO (+) ACTION BUTTON - Post New Listing */}
@@ -757,9 +758,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               borderColor: "var(--bg)",
             }}
           >
-            <span className="material-symbols-outlined text-[26px]">add</span>
+            <span className="material-symbols-outlined text-2xl">add</span>
           </div>
-          <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
             Post Ad
           </span>
         </Link>
@@ -773,8 +774,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname.startsWith("/my-unlocks") ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-[22px]">lock_open</span>
-          <span className="text-[9.5px] font-bold mt-0.5">Unlocks</span>
+          <span className="material-symbols-outlined text-xl">lock_open</span>
+          <span className="text-xs font-bold mt-0.5">Unlocks</span>
         </Link>
 
         {/* Tab 5: Owner / Agent Portal or Sign Out */}
@@ -804,23 +805,23 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             if (!user) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-[22px]">person</span>
-                  <span className="text-[9.5px] font-bold mt-0.5">Login</span>
+                  <span className="material-symbols-outlined text-xl">person</span>
+                  <span className="text-xs font-bold mt-0.5">Login</span>
                 </>
               );
             } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.roles?.includes("owner")) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-[22px]">admin_panel_settings</span>
-                  <span className="text-[9.5px] font-bold mt-0.5">Console</span>
+                  <span className="material-symbols-outlined text-xl">admin_panel_settings</span>
+                  <span className="text-xs font-bold mt-0.5">Console</span>
                 </>
               );
             } else {
               // Pure buyer - sign out
               return (
                 <>
-                  <span className="material-symbols-outlined text-[22px] text-red-500">logout</span>
-                  <span className="text-[9.5px] font-bold mt-0.5 text-red-500">Sign Out</span>
+                  <span className="material-symbols-outlined text-xl text-red-500">logout</span>
+                  <span className="text-xs font-bold mt-0.5 text-red-500">Sign Out</span>
                 </>
               );
             }

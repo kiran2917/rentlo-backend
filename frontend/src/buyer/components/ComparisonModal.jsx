@@ -42,7 +42,7 @@ export const ComparisonModal = ({ properties, onClose, onRemove }) => {
                 className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black text-white flex items-center justify-center z-10 transition-colors"
                 title="Remove from comparison"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-lg">close</span>
               </button>
 
               <div className="h-48 w-full bg-gray-200 relative">

@@ -52,7 +52,7 @@ export const ConfirmDialog = ({
           }}
         >
           <span
-            className="material-symbols-outlined text-[28px]"
+            className="material-symbols-outlined text-3xl"
             style={{ color: danger ? "#DC2626" : "var(--accent)" }}
           >
             {icon}

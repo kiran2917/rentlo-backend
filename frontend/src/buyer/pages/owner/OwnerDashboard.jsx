@@ -416,10 +416,10 @@ export const OwnerDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Banner & Action Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 bg-gradient-to-r from-emerald-900/10 via-surface to-surface border border-emerald-500/20 p-6 md:p-7 rounded-3xl shadow-sm relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-surface to-surface border border-emerald-500/20 p-6 md:p-6 rounded-3xl shadow-sm relative overflow-hidden">
         <div className="space-y-1 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[11px] font-bold tracking-wide uppercase mb-1">
-            <span className="material-symbols-outlined text-[14px]">real_estate_agent</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold tracking-wide uppercase mb-1">
+            <span className="material-symbols-outlined text-sm">real_estate_agent</span>
             <Translate>Owner Console</Translate>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink">
@@ -430,13 +430,13 @@ export const OwnerDashboard = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 relative z-10">
+        <div className="flex items-center gap-4 relative z-10">
           <button
             type="button"
             onClick={() => setShowCreditsModal(true)}
-            className="px-4 py-3 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-800 rounded-2xl text-[13px] font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
+            className="px-4 py-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-800 rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
           >
-            <span className="material-symbols-outlined text-[20px] text-emerald-600">stars</span>
+            <span className="material-symbols-outlined text-xl text-emerald-600">stars</span>
             {ownerCredits?.total_credits_remaining > 0 ? (
               <>
                 {ownerCredits.total_credits_remaining} <Translate>Listing Credit</Translate>
@@ -449,9 +449,9 @@ export const OwnerDashboard = () => {
 
           <Link
             to="/owner/new-listing"
-            className="px-5 py-3 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white rounded-2xl text-[13.5px] font-extrabold shadow-md transition-all duration-200 flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="px-4 py-4 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white rounded-2xl text-[13.5px] font-extrabold shadow-md transition-all duration-200 flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">add_circle</span>
+            <span className="material-symbols-outlined text-lg">add_circle</span>
             <Translate>Post New Property</Translate>
           </Link>
         </div>
@@ -487,10 +487,10 @@ export const OwnerDashboard = () => {
         ].map((kpi, idx) => (
           <div
             key={idx}
-            className="bg-surface border border-border p-5 rounded-2xl flex items-center justify-between hover-lift shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+            className="bg-surface border border-border p-4 rounded-2xl flex items-center justify-between hover-lift shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
           >
             <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
+              <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
                 <Translate>{kpi.label}</Translate>
               </span>
               <p className="text-2xl md:text-3xl font-extrabold text-ink group-hover:text-emerald-600 transition-colors">
@@ -498,7 +498,7 @@ export const OwnerDashboard = () => {
               </p>
             </div>
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-md transition-transform duration-300 group-hover:scale-110 ${kpi.color}`}>
-              <span className="material-symbols-outlined text-[24px]">{kpi.icon}</span>
+              <span className="material-symbols-outlined text-2xl">{kpi.icon}</span>
             </div>
           </div>
         ))}
@@ -506,7 +506,7 @@ export const OwnerDashboard = () => {
 
       {/* Filter Tabs & Search Controls */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 custom-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 custom-scrollbar">
           {[
             { id: "all", label: "All Properties" },
             { id: "live", label: "🟢 Live" },
@@ -531,7 +531,7 @@ export const OwnerDashboard = () => {
 
         {/* Quick Search */}
         <div className="relative w-full sm:w-64">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-text-muted pointer-events-none">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg text-text-muted pointer-events-none">
             search
           </span>
           <input
@@ -539,23 +539,23 @@ export const OwnerDashboard = () => {
             placeholder="Search properties or ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 h-10 rounded-xl bg-surface border border-border text-[12.5px] font-medium outline-none focus:border-emerald-500 transition-colors"
+            className="w-full pl-8 pr-4 py-2 h-10 rounded-xl bg-surface border border-border text-[12.5px] font-medium outline-none focus:border-emerald-500 transition-colors"
           />
         </div>
       </div>
 
       {/* Main Content Area */}
       {loading ? (
-        <div className="flex flex-col justify-center items-center py-24 gap-3">
+        <div className="flex flex-col justify-center items-center py-24 gap-4">
           <div className="w-10 h-10 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
-          <p className="text-[13px] font-medium text-text-muted">Fetching your listings...</p>
+          <p className="text-sm font-medium text-text-muted">Fetching your listings...</p>
         </div>
       ) : filteredProperties.length === 0 ? (
         <div className="bg-surface border border-border rounded-3xl p-12 flex flex-col items-center justify-center text-center shadow-sm">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
             <span className="material-symbols-outlined text-[36px]">real_estate_agent</span>
           </div>
-          <h3 className="text-xl font-bold text-ink mb-1.5">No properties found</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No properties found</h3>
           <p className="text-sm text-text-muted max-w-md mb-6">
             {selectedStatusFilter !== "all" || searchQuery
               ? "No properties match your active filter criteria."
@@ -563,7 +563,7 @@ export const OwnerDashboard = () => {
           </p>
           <Link
             to="/owner/new-listing"
-            className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-2xl text-[13px] font-bold shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
+            className="px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-2xl text-sm font-bold shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
           >
             List Your First Property
           </Link>
@@ -592,38 +592,38 @@ export const OwnerDashboard = () => {
 
                   {/* Status Badge */}
                   <div
-                    className={`absolute top-3.5 left-3.5 px-3 py-1 rounded-xl text-[10.5px] font-bold tracking-wide backdrop-blur-md shadow-md ${sc.color}`}
+                    className={`absolute top-4 left-4 px-4 py-1 rounded-xl text-[10.5px] font-bold tracking-wide backdrop-blur-md shadow-md ${sc.color}`}
                   >
                     <Translate>{sc.label}</Translate>
                   </div>
 
                   {/* Contact Unlocks Badge */}
                   {unlockCount > 0 && (
-                    <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-orange-500 to-amber-500 backdrop-blur-md text-white rounded-xl text-[10.5px] font-extrabold shadow-lg">
-                      <span className="material-symbols-outlined text-[13px]">contacts</span>
+                    <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-1 bg-gradient-to-r from-orange-500 to-amber-500 backdrop-blur-md text-white rounded-xl text-[10.5px] font-extrabold shadow-lg">
+                      <span className="material-symbols-outlined text-sm">contacts</span>
                       {unlockCount} <Translate>{unlockCount === 1 ? "buyer" : "buyers"} contacted</Translate>
                     </div>
                   )}
 
                   {/* Bottom Image Overlay Details */}
-                  <div className="absolute bottom-3 left-3.5 right-3.5 text-white flex items-end justify-between">
+                  <div className="absolute bottom-4 left-4 right-4 text-white flex items-end justify-between">
                     <div>
                       <p className="text-2xl font-black drop-shadow-md">
                         ₹{parseFloat(prop.price).toLocaleString("en-IN")}
-                        <span className="text-[12px] font-normal text-white/80">/mo</span>
+                        <span className="text-xs font-normal text-white/80">/mo</span>
                       </p>
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-black/50 backdrop-blur text-white/90 border border-white/20">
+                    <span className="text-xs font-bold px-2 py-1 rounded-md bg-black/50 backdrop-blur text-white/90 border border-white/20">
                       ID #{prop.id}
                     </span>
                   </div>
                 </div>
 
                 {/* Card Body */}
-                <div className="p-5 flex flex-col flex-1 gap-3">
+                <div className="p-4 flex flex-col flex-1 gap-4">
                   <div>
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-[15px] font-bold text-ink capitalize line-clamp-1">
+                      <h4 className="text-base font-bold text-ink capitalize line-clamp-1">
                         <Translate>{prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}{prop.property_type}</Translate>
                       </h4>
                       {prop.status === "live" && prop.expires_at && (() => {
@@ -632,7 +632,7 @@ export const OwnerDashboard = () => {
                         if (diffDays > 0) {
                           return (
                             <span 
-                              className={`px-2 py-0.5 rounded-lg text-[10px] font-extrabold tracking-wide whitespace-nowrap shrink-0 ${
+                              className={`px-2 py-1 rounded-lg text-xs font-extrabold tracking-wide whitespace-nowrap shrink-0 ${
                                 diffDays <= 10 
                                   ? "bg-rose-500/10 text-rose-500 border border-rose-500/20 animate-pulse" 
                                   : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
@@ -643,15 +643,15 @@ export const OwnerDashboard = () => {
                           );
                         } else {
                           return (
-                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-extrabold tracking-wide bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap shrink-0">
+                            <span className="px-2 py-1 rounded-lg text-xs font-extrabold tracking-wide bg-rose-500/15 text-rose-500 border border-rose-500/30 whitespace-nowrap shrink-0">
                               Expired ⚠️
                             </span>
                           );
                         }
                       })()}
                     </div>
-                    <p className="text-[12px] text-text-muted flex items-center gap-1 mt-0.5">
-                      <span className="material-symbols-outlined text-[14px] text-emerald-500">location_on</span>
+                    <p className="text-xs text-text-muted flex items-center gap-1 mt-1">
+                      <span className="material-symbols-outlined text-sm text-emerald-500">location_on</span>
                       <Translate>{prop.locality_details?.name || "Locality"}</Translate>, <Translate>{prop.locality_details?.city_name || "City"}</Translate>
                     </p>
                   </div>
@@ -663,19 +663,19 @@ export const OwnerDashboard = () => {
                     (prop.property_type && prop.property_type.startsWith("pg"))) && (
                     <div className="p-4 rounded-2xl bg-slate-950 text-white shadow-md border border-slate-800 space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[16px]">hotel</span>
+                        <span className="text-xs font-black uppercase tracking-wider text-orange-400 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-base">hotel</span>
                           PG / Hostel Room Tracker
                         </span>
                       </div>
 
                       {/* Visual Bed Occupancy & Resident Tracker */}
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-[11px] font-extrabold text-slate-400 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[15px] text-emerald-400">group</span>
+                        <span className="text-xs font-extrabold text-slate-400 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-base text-emerald-400">group</span>
                           Occupied: <strong className="text-white">{Math.max(0, (prop.total_beds || 0) - (prop.available_beds || 0))} Persons</strong>
                         </span>
-                        <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                        <span className="text-xs font-black px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                           {prop.available_beds || 0} / {prop.total_beds || 0} Beds Available
                         </span>
                       </div>
@@ -718,7 +718,7 @@ export const OwnerDashboard = () => {
                           return (
                             <div className="space-y-2 pt-2 border-t border-slate-800">
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                <span className="text-xs font-black uppercase tracking-wider text-slate-400">
                                   Mark Bed Check-In / Check-Out
                                 </span>
                                 <button
@@ -741,9 +741,9 @@ export const OwnerDashboard = () => {
                                       }
                                     });
                                   }}
-                                  className="text-[10px] font-extrabold text-orange-400 hover:text-orange-300 flex items-center gap-0.5 cursor-pointer"
+                                  className="text-xs font-extrabold text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
                                 >
-                                  <span className="material-symbols-outlined text-[13px]">edit_note</span>
+                                  <span className="material-symbols-outlined text-sm">edit_note</span>
                                   Configure Inventory
                                 </button>
                               </div>
@@ -756,33 +756,33 @@ export const OwnerDashboard = () => {
                                   return (
                                     <div key={t.key} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-900 border border-slate-800/90 hover:border-slate-700 transition-all">
                                       <div className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[17px] text-orange-400">{t.icon}</span>
+                                        <span className="material-symbols-outlined text-lg text-orange-400">{t.icon}</span>
                                         <div>
-                                          <div className="text-[11px] font-black text-white">{t.label}</div>
+                                          <div className="text-xs font-black text-white">{t.label}</div>
                                           <div className="text-[9.5px] font-extrabold text-slate-400">
                                             <span className={openBeds > 0 ? "text-emerald-400 font-black" : "text-red-400 font-black"}>{openBeds} Open</span> / {totBeds} Total Beds
                                           </div>
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-1.5">
+                                      <div className="flex items-center gap-2">
                                         <button
                                           type="button"
                                           onClick={() => handlePGOccupancy(prop.id, "rent_bed", { room_type: t.key })}
                                           disabled={openBeds <= 0}
-                                          className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[9.5px] font-black flex items-center gap-0.5 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
+                                          className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[9.5px] font-black flex items-center gap-1 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
                                           title={`Mark 1 bed rented under ${t.label}`}
                                         >
-                                          <span className="material-symbols-outlined text-[13px]">person_add</span>
+                                          <span className="material-symbols-outlined text-sm">person_add</span>
                                           + Rent
                                         </button>
                                         <button
                                           type="button"
                                           onClick={() => handlePGOccupancy(prop.id, "vacate_bed", { room_type: t.key })}
                                           disabled={openBeds >= totBeds}
-                                          className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[9.5px] font-black flex items-center gap-0.5 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
+                                          className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[9.5px] font-black flex items-center gap-1 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
                                           title={`Mark 1 bed vacated under ${t.label}`}
                                         >
-                                          <span className="material-symbols-outlined text-[13px]">person_remove</span>
+                                          <span className="material-symbols-outlined text-sm">person_remove</span>
                                           - Vacate
                                         </button>
                                       </div>
@@ -796,24 +796,24 @@ export const OwnerDashboard = () => {
 
                         // Fallback controls if no custom room_inventory setup yet
                         return (
-                          <div className="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-800">
+                          <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-800">
                             <button
                               type="button"
                               onClick={() => handlePGOccupancy(prop.id, "rent_bed")}
                               disabled={prop.available_beds <= 0}
-                              className="px-2 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center gap-1 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                              className="px-2 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-1 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               title="Record 1 resident check-in (marks 1 bed rented)"
                             >
-                              <span className="material-symbols-outlined text-[14px]">person_add</span>
+                              <span className="material-symbols-outlined text-sm">person_add</span>
                               + Resident Came
                             </button>
                             <button
                               type="button"
                               onClick={() => handlePGOccupancy(prop.id, "vacate_bed")}
-                              className="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-black flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                              className="px-2 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-black flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
                               title="Record 1 resident check-out (marks 1 bed free)"
                             >
-                              <span className="material-symbols-outlined text-[14px]">person_remove</span>
+                              <span className="material-symbols-outlined text-sm">person_remove</span>
                               - Resident Left
                             </button>
                             <button
@@ -836,10 +836,10 @@ export const OwnerDashboard = () => {
                                   }
                                 });
                               }}
-                              className="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-orange-400 border border-orange-500/30 text-[10px] font-extrabold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                              className="px-2 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-orange-400 border border-orange-500/30 text-xs font-extrabold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
                               title="Edit total & available bed capacity"
                             >
-                              <span className="material-symbols-outlined text-[13px]">edit_note</span>
+                              <span className="material-symbols-outlined text-sm">edit_note</span>
                               Edit Beds
                             </button>
                           </div>
@@ -849,9 +849,9 @@ export const OwnerDashboard = () => {
                   )}
 
                   {prop.status === "live" && unlockCount > 0 && (
-                    <div className="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400">
+                    <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400">
                       <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
-                        <span className="material-symbols-outlined text-[16px] flex-shrink-0 mt-0.5 text-orange-500">notifications_active</span>
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-orange-500">notifications_active</span>
                         <span>
                           <strong>{unlockCount} {unlockCount === 1 ? "buyer has" : "buyers have"} unlocked your contact details.</strong> Click <em>"I'm In Talks"</em> when negotiating to pause new unlocks.
                         </span>
@@ -860,9 +860,9 @@ export const OwnerDashboard = () => {
                   )}
 
                   {prop.status === "under_negotiation" && (
-                    <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300">
+                    <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300">
                       <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
-                        <span className="material-symbols-outlined text-[16px] flex-shrink-0 mt-0.5 text-purple-500">pause_circle</span>
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-purple-500">pause_circle</span>
                         <span>
                           Unlocks are currently <strong>paused</strong> for negotiation. Mark it <strong>Rented</strong> when finalized, or <strong>Reopen</strong> if talks fall through.
                         </span>
@@ -871,9 +871,9 @@ export const OwnerDashboard = () => {
                   )}
 
                   {prop.status === "rented" && (
-                    <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-300">
+                    <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-300">
                       <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
-                        <span className="material-symbols-outlined text-[16px] flex-shrink-0 mt-0.5 text-blue-500">check_circle</span>
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-blue-500">check_circle</span>
                         <span>
                           Property is marked as rented. Click <strong>Relist</strong> whenever it becomes available again.
                         </span>
@@ -882,9 +882,9 @@ export const OwnerDashboard = () => {
                   )}
 
                   {prop.status === "rejected" && (
-                    <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300">
+                    <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300">
                       <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
-                        <span className="material-symbols-outlined text-[16px] flex-shrink-0 mt-0.5 text-rose-500">cancel</span>
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-rose-500">cancel</span>
                         <span>
                           <strong>Listing Rejected by Moderation:</strong> {prop.rejection_reason || "Admin requested corrections to listing details."}
                         </span>
@@ -893,15 +893,15 @@ export const OwnerDashboard = () => {
                   )}
 
                   {/* Action Buttons Section */}
-                  <div className="mt-auto pt-3 border-t border-border space-y-2">
+                  <div className="mt-auto pt-4 border-t border-border space-y-2">
                     <div className="flex flex-col gap-2">
                       {/* Live → Under Negotiation */}
                       {prop.status === "live" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "under_negotiation")}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 text-[12px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          className="w-full px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
-                          <span className="material-symbols-outlined text-[16px]">handshake</span>
+                          <span className="material-symbols-outlined text-base">handshake</span>
                           I'm In Talks — Pause Unlocks
                         </button>
                       )}
@@ -911,16 +911,16 @@ export const OwnerDashboard = () => {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleStatusUpdate(prop.id, "rented")}
-                            className="flex-1 px-3 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                            className="flex-1 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                           >
-                            <span className="material-symbols-outlined text-[15px]">home</span>
+                            <span className="material-symbols-outlined text-base">home</span>
                             Deal Done — Rented
                           </button>
                           <button
                             onClick={() => handleStatusUpdate(prop.id, "live")}
-                            className="flex-1 px-3 py-2 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-slate-600 dark:text-slate-300 border border-slate-500/30 text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                            className="flex-1 px-4 py-2 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-slate-600 dark:text-slate-300 border border-slate-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                           >
-                            <span className="material-symbols-outlined text-[15px]">replay</span>
+                            <span className="material-symbols-outlined text-base">replay</span>
                             Deal Fell Through
                           </button>
                         </div>
@@ -930,9 +930,9 @@ export const OwnerDashboard = () => {
                       {prop.status === "live" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "rented")}
-                          className="w-full px-3 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-[11.5px] font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                          className="w-full px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-[11.5px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
                         >
-                          <span className="material-symbols-outlined text-[15px]">key</span>
+                          <span className="material-symbols-outlined text-base">key</span>
                           Mark as Rented
                         </button>
                       )}
@@ -941,9 +941,9 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "live")}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[12px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          className="w-full px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
-                          <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+                          <span className="material-symbols-outlined text-base">restart_alt</span>
                           Relist — Available Again
                         </button>
                       )}
@@ -952,22 +952,22 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <Link
                           to={`/property/${prop.id}/lease`}
-                          className="w-full px-3 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-[12px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                          className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                         >
-                          <span className="material-symbols-outlined text-[16px]">description</span>
+                          <span className="material-symbols-outlined text-base">description</span>
                           Draft Official Lease Agreement
                         </Link>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between pt-1">
-                      <span className="text-[11px] font-medium text-text-muted">Status: {sc.label}</span>
+                      <span className="text-xs font-medium text-text-muted">Status: {sc.label}</span>
                       <Link
                         to={`/property/${prop.id}`}
-                        className="text-[12px] font-extrabold text-emerald-500 hover:underline flex items-center gap-1"
+                        className="text-xs font-extrabold text-emerald-500 hover:underline flex items-center gap-1"
                       >
                         View listing
-                        <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
                       </Link>
                     </div>
                   </div>
@@ -984,9 +984,9 @@ export const OwnerDashboard = () => {
           <div className="rounded-3xl max-w-5xl w-full p-4 sm:p-8 shadow-2xl relative max-h-[85vh] sm:max-h-[90vh] overflow-y-auto scrollbar-none animate-in fade-in zoom-in-95 duration-200" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", border: "1px solid var(--border)" }}>
             {/* Header */}
             <div className="flex items-center justify-between pb-6 border-b" style={{ borderColor: "var(--border)" }}>
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 shadow-lg shadow-emerald-500/25">
-                  <span className="material-symbols-outlined text-[28px] font-black">workspace_premium</span>
+                  <span className="material-symbols-outlined text-3xl font-black">workspace_premium</span>
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
@@ -1002,14 +1002,14 @@ export const OwnerDashboard = () => {
                 onClick={() => setShowCreditsModal(false)}
                 className="w-10 h-10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer border" style={{ backgroundColor: "var(--surface-alt)", color: "var(--text-muted)", borderColor: "var(--border)" }}
               >
-                <span className="material-symbols-outlined text-[22px]">close</span>
+                <span className="material-symbols-outlined text-xl">close</span>
               </button>
             </div>
 
             {/* Current Balance & Active Credits Banner */}
-            <div className="my-6 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #059669 0%, #0d9488 100%)", boxShadow: "0 4px 24px rgba(5,150,105,0.25)" }}>
+            <div className="my-6 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #059669 0%, #0d9488 100%)", boxShadow: "0 4px 24px rgba(5,150,105,0.25)" }}>
               <div className="relative z-10 space-y-2">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
+                  <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
                   <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                   Active Balance
                 </div>
@@ -1046,9 +1046,9 @@ export const OwnerDashboard = () => {
                       return (
                         <div
                           key={pass.id}
-                          className="px-3 py-1.5 rounded-xl text-[11px] font-extrabold flex items-center gap-2" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}
+                          className="px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}
                         >
-                          <span className="material-symbols-outlined text-[16px] text-white">{icon}</span>
+                          <span className="material-symbols-outlined text-base text-white">{icon}</span>
                           <span>{catLabel}:</span>
                           <span className="font-black text-white">
                             {pass.credits_remaining} / {pass.credits_total} Credits
@@ -1058,7 +1058,7 @@ export const OwnerDashboard = () => {
                     })}
                   </div>
                 ) : (
-                  <p className="text-[12px] font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>
                     No active pass credits available. Select a category below to refill listing credits!
                   </p>
                 )}
@@ -1067,9 +1067,9 @@ export const OwnerDashboard = () => {
               <Link
                 to="/owner/new-listing"
                 onClick={() => setShowCreditsModal(false)}
-                className="px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-emerald-300/40"
+                className="px-4 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-emerald-300/40"
               >
-                <span className="material-symbols-outlined text-[18px]">add_circle</span>
+                <span className="material-symbols-outlined text-lg">add_circle</span>
                 Publish Listing Now
               </Link>
             </div>
@@ -1079,15 +1079,15 @@ export const OwnerDashboard = () => {
               <div className="space-y-4 animate-in fade-in duration-300">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2" style={{ color: "#0F172A" }}>
-                    <span className="material-symbols-outlined text-emerald-400 text-[20px]">category</span>
+                    <span className="material-symbols-outlined text-emerald-400 text-xl">category</span>
                     Select Property Category For Refill Plans:
                   </h4>
-                  <span className="text-[11px] font-bold" style={{ color: "#64748B" }}>
+                  <span className="text-xs font-bold" style={{ color: "#64748B" }}>
                     Prices dynamically customized per property category
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {Object.keys(CATEGORY_PLANS).map((catKey) => {
                     const catObj = CATEGORY_PLANS[catKey];
                     const isSelected = selectedPassCategory === catKey;
@@ -1103,10 +1103,10 @@ export const OwnerDashboard = () => {
                         }`}
                         style={isSelected ? { backgroundColor: "#f0fdf4", borderColor: "#059669", boxShadow: "0 4px 16px rgba(5,150,105,0.15)", ringColor: "rgba(5,150,105,0.3)" } : { backgroundColor: "#f8fafc", borderColor: "#e2e8f0", color: "#475569" }}
                       >
-                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <div className="flex items-center justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2">
                             <span
-                              className={`material-symbols-outlined text-[22px] ${
+                              className={`material-symbols-outlined text-xl ${
                                 isSelected ? "text-emerald-600" : "text-slate-400"
                               }`}
                             >
@@ -1118,7 +1118,7 @@ export const OwnerDashboard = () => {
                             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-xs shadow-emerald-400"></span>
                           )}
                         </div>
-                        <p className="text-[11px] leading-relaxed line-clamp-2 opacity-80">{catObj.description}</p>
+                        <p className="text-xs leading-relaxed line-clamp-2 opacity-80">{catObj.description}</p>
                       </button>
                     );
                   })}
@@ -1129,24 +1129,24 @@ export const OwnerDashboard = () => {
             {/* Available Refill Passes Store */}
             {selectedPassCategory && (
               <div className="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3" style={{ borderBottom: "1px solid #e2e8f0" }}>
-                  <div className="flex flex-col items-start gap-2.5 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4" style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <div className="flex flex-col items-start gap-2 w-full">
                     <button
                       type="button"
                       onClick={() => setSelectedPassCategory(null)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-[11px] font-extrabold uppercase tracking-widest text-slate-700 transition-all cursor-pointer shadow-sm hover:scale-102 w-fit"
+                      className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-extrabold uppercase tracking-widest text-slate-700 transition-all cursor-pointer shadow-sm hover:scale-102 w-fit"
                     >
-                      <span className="material-symbols-outlined text-[15px] font-black">arrow_back</span>
+                      <span className="material-symbols-outlined text-base font-black">arrow_back</span>
                       Back
                     </button>
                     <div className="flex items-start gap-2 pt-1">
-                      <span className="material-symbols-outlined text-orange-400 text-[20px] shrink-0 mt-0.5">shopping_bag</span>
+                      <span className="material-symbols-outlined text-orange-400 text-xl shrink-0 mt-1">shopping_bag</span>
                       <h4 className="text-sm font-black uppercase tracking-wider leading-snug" style={{ color: "#0F172A" }}>
                         {CATEGORY_PLANS[selectedPassCategory]?.label} Listing Passes
                       </h4>
                     </div>
                   </div>
-                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 w-fit self-end sm:self-auto">
+                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 w-fit self-end sm:self-auto">
                     ⚡ Instant Activation
                   </span>
                 </div>
@@ -1156,7 +1156,7 @@ export const OwnerDashboard = () => {
                   {CATEGORY_PLANS[selectedPassCategory]?.plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`p-5 rounded-3xl border transition-all duration-300 flex flex-col justify-between relative ${
+                      className={`p-4 rounded-3xl border transition-all duration-300 flex flex-col justify-between relative ${
                         plan.highlight
                           ? "border-2"
                           : "hover:border-emerald-300"
@@ -1165,11 +1165,11 @@ export const OwnerDashboard = () => {
                     >
                       {plan.badge && (
                         <div className="flex items-center justify-between gap-1 mb-2">
-                          <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" style={{ backgroundColor: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
+                          <span className="px-2 py-1 rounded-full text-xs font-black uppercase tracking-wider" style={{ backgroundColor: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
                             {plan.badge}
                           </span>
                           {plan.saveBadge && (
-                            <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" style={{ backgroundColor: "#dcfce7", color: "#059669", border: "1px solid #bbf7d0" }}>
+                            <span className="px-2 py-1 rounded-full text-xs font-black uppercase tracking-wider" style={{ backgroundColor: "#dcfce7", color: "#059669", border: "1px solid #bbf7d0" }}>
                               {plan.saveBadge}
                             </span>
                           )}
@@ -1179,22 +1179,22 @@ export const OwnerDashboard = () => {
                       <div className="space-y-3">
                         <h5 className="text-base font-black" style={{ color: "#0F172A" }}>{plan.name}</h5>
 
-                        <div className="flex items-baseline gap-1.5">
+                        <div className="flex items-baseline gap-2">
                           <span className="text-3xl font-black" style={{ color: "#0F172A" }}>₹{plan.price}</span>
                           {plan.originalPrice && (
                             <span className="text-xs line-through font-bold" style={{ color: "#94a3b8" }}>
                               ₹{plan.originalPrice}
                             </span>
                           )}
-                          <span className="text-[11px] font-medium ml-auto" style={{ color: "#64748b" }}>
+                          <span className="text-xs font-medium ml-auto" style={{ color: "#64748b" }}>
                             ({plan.credits} {plan.credits === 1 ? "Credit" : "Credits"})
                           </span>
                         </div>
 
                         <ul className="space-y-2 pt-2" style={{ borderTop: "1px solid #e2e8f0" }}>
                           {plan.features.map((feat, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[11px] font-medium leading-tight" style={{ color: "#475569" }}>
-                              <span className="material-symbols-outlined text-[14px] text-emerald-400 shrink-0 mt-0.5">
+                            <li key={i} className="flex items-start gap-2 text-xs font-medium leading-tight" style={{ color: "#475569" }}>
+                              <span className="material-symbols-outlined text-sm text-emerald-400 shrink-0 mt-1">
                                 check_circle
                               </span>
                               <span>{feat}</span>
@@ -1207,7 +1207,7 @@ export const OwnerDashboard = () => {
                         type="button"
                         disabled={buyingPassLoading}
                         onClick={() => handleBuyPass(plan.id, selectedPassCategory)}
-                        className={`w-full mt-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                        className={`w-full mt-4 py-4 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
                           plan.highlight
                             ? "shadow-md"
                             : ""
@@ -1216,7 +1216,7 @@ export const OwnerDashboard = () => {
                       >
                         {buyingPassLoading ? (
                           <>
-                            <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                            <span className="material-symbols-outlined text-base animate-spin">progress_activity</span>
                             Processing...
                           </>
                         ) : (
@@ -1230,15 +1230,15 @@ export const OwnerDashboard = () => {
             )}
 
             {/* Footer Trust Badges */}
-            <div className="mt-8 pt-5 flex flex-wrap items-center justify-between gap-3 text-[11px] font-bold" style={{ borderTop: "1px solid #e2e8f0", color: "#64748b" }}>
-              <span className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-emerald-400">bolt</span> Instant Credit Activation
+            <div className="mt-8 pt-4 flex flex-wrap items-center justify-between gap-4 text-xs font-bold" style={{ borderTop: "1px solid #e2e8f0", color: "#64748b" }}>
+              <span className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-emerald-400">bolt</span> Instant Credit Activation
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-emerald-400">all_inclusive</span> Credits Never Expire
+              <span className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-emerald-400">all_inclusive</span> Credits Never Expire
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-emerald-400">verified_user</span> 100% Secure Razorpay Checkout
+              <span className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-emerald-400">verified_user</span> 100% Secure Razorpay Checkout
               </span>
             </div>
           </div>
@@ -1251,10 +1251,10 @@ export const OwnerDashboard = () => {
           <div className="rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto scrollbar-thin border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
             <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-orange-500 text-[26px]">hotel</span>
+                <span className="material-symbols-outlined text-orange-500 text-2xl">hotel</span>
                 <div>
                   <h3 className="font-extrabold text-lg" style={{ color: "var(--ink)" }}>Configure Room Sharing & Bed Tracker</h3>
-                  <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>Listing #{editingBedProp.id} • Customize room types, room counts, and per-bed rents.</p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>Listing #{editingBedProp.id} • Customize room types, room counts, and per-bed rents.</p>
                 </div>
               </div>
               <button
@@ -1263,7 +1263,7 @@ export const OwnerDashboard = () => {
                 className="transition-colors border w-8 h-8 rounded-full flex items-center justify-center"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--text-muted)" }}
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-xl">close</span>
               </button>
             </div>
 
@@ -1306,7 +1306,7 @@ export const OwnerDashboard = () => {
             >
               {/* Room Categories Configurator */}
               <div className="space-y-3">
-                <label className="block text-[11px] font-black text-orange-500 uppercase tracking-wider">
+                <label className="block text-xs font-black text-orange-500 uppercase tracking-wider">
                   Room Types Available in this Property
                 </label>
 
@@ -1335,7 +1335,7 @@ export const OwnerDashboard = () => {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-2.5 cursor-pointer">
+                        <label className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="checkbox"
                             checked={item.enabled}
@@ -1353,21 +1353,21 @@ export const OwnerDashboard = () => {
                             className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 border-gray-300"
                             style={{ accentColor: "var(--accent)" }}
                           />
-                          <span className="material-symbols-outlined text-[20px] text-orange-500">{type.icon}</span>
+                          <span className="material-symbols-outlined text-xl text-orange-500">{type.icon}</span>
                           <span className="text-sm font-extrabold" style={{ color: "var(--ink)" }}>{type.label}</span>
                         </label>
 
                         {item.enabled && (
-                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full text-orange-500 border border-orange-500/30" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)" }}>
+                          <span className="text-xs font-bold px-2 py-1 rounded-full text-orange-500 border border-orange-500/30" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)" }}>
                             {item.rooms * (item.beds_per_room || type.defaultBeds)} Beds Total
                           </span>
                         )}
                       </div>
 
                       {item.enabled && (
-                        <div className="grid grid-cols-3 gap-3 pt-3.5 mt-3 border-t" style={{ borderColor: "var(--border)" }}>
+                        <div className="grid grid-cols-3 gap-4 pt-4 mt-4 border-t" style={{ borderColor: "var(--border)" }}>
                           <div>
-                            <label className="block text-[10px] font-bold mb-1" style={{ color: "var(--text-muted)" }}>
+                            <label className="block text-xs font-bold mb-1" style={{ color: "var(--text-muted)" }}>
                               Number of Rooms
                             </label>
                             <input
@@ -1389,13 +1389,13 @@ export const OwnerDashboard = () => {
                                   },
                                 }));
                               }}
-                              className="w-full px-3 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
+                              className="w-full px-4 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
                               style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
                             />
                           </div>
 
                           <div>
-                            <label className="block text-[10px] font-bold mb-1" style={{ color: "var(--text-muted)" }}>
+                            <label className="block text-xs font-bold mb-1" style={{ color: "var(--text-muted)" }}>
                               Available Free Beds
                             </label>
                             <input
@@ -1413,13 +1413,13 @@ export const OwnerDashboard = () => {
                                   },
                                 }));
                               }}
-                              className="w-full px-3 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
+                              className="w-full px-4 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
                               style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
                             />
                           </div>
 
                           <div>
-                            <label className="block text-[10px] font-bold mb-1" style={{ color: "var(--text-muted)" }}>
+                            <label className="block text-xs font-bold mb-1" style={{ color: "var(--text-muted)" }}>
                               Rent per Bed (₹)
                             </label>
                             <input
@@ -1436,7 +1436,7 @@ export const OwnerDashboard = () => {
                                   },
                                 }));
                               }}
-                              className="w-full px-3 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
+                              className="w-full px-4 py-2 border rounded-xl text-xs font-bold focus:border-orange-500 outline-none"
                               style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
                             />
                           </div>
@@ -1464,17 +1464,17 @@ export const OwnerDashboard = () => {
                 return (
                   <div className="p-4 rounded-2xl border flex items-center justify-between text-xs font-extrabold flex-wrap gap-2 shadow-md" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                     <span className="flex items-center gap-2 text-emerald-600">
-                      <span className="material-symbols-outlined text-[20px]">equalizer</span>
+                      <span className="material-symbols-outlined text-xl">equalizer</span>
                       <span>Inventory Calculation:</span>
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-lg border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
+                      <span className="px-2 py-1 rounded-lg border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
                         {totBeds} Total Beds
                       </span>
-                      <span className="px-2.5 py-1 rounded-lg border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
+                      <span className="px-2 py-1 rounded-lg border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
                         {occupied} Occupied
                       </span>
-                      <span className="px-2.5 py-1 rounded-lg border text-emerald-600" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+                      <span className="px-2 py-1 rounded-lg border text-emerald-600" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
                         {openBeds} Free
                       </span>
                     </div>
@@ -1482,11 +1482,11 @@ export const OwnerDashboard = () => {
                 );
               })()}
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-end gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => setEditingBedProp(null)}
-                  className="px-4 py-2.5 rounded-xl border text-xs font-extrabold transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl border text-xs font-extrabold transition-all cursor-pointer"
                   style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--text-muted)" }}
                 >
                   Cancel
@@ -1494,14 +1494,14 @@ export const OwnerDashboard = () => {
                 <button
                   type="submit"
                   disabled={updatingBeds}
-                  className="px-5 py-2.5 rounded-xl text-white text-xs font-black transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl text-white text-xs font-black transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-2"
                   style={{ backgroundColor: "var(--accent)" }}
                 >
                   {updatingBeds ? (
                     <>Saving Configuration...</>
                   ) : (
                     <>
-                      <span className="material-symbols-outlined text-[16px]">save</span>
+                      <span className="material-symbols-outlined text-base">save</span>
                       Save Room Inventory
                     </>
                   )}

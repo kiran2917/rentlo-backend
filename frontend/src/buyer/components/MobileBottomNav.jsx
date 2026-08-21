@@ -51,7 +51,7 @@ export const MobileBottomNav = () => {
           <Link
             key={tab.to}
             to={tab.to}
-            className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-[10px] font-bold transition-all"
+            className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-xs font-bold transition-all"
             style={{
               color: isActive ? "var(--accent)" : "var(--text-muted)",
             }}

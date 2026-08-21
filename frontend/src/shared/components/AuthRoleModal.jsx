@@ -28,20 +28,20 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
           className="absolute top-5 right-5 w-9 h-9 rounded-full opacity-70 hover:opacity-100 flex items-center justify-center transition-all cursor-pointer"
           style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)" }}
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
+          <span className="material-symbols-outlined text-xl">close</span>
         </button>
 
         {/* Modal Header */}
         <div className="text-center mb-8">
           <span
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest mb-3 shadow-xs border"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest mb-3 shadow-xs border"
             style={{
               backgroundColor: "rgba(16, 185, 129, 0.12)",
               color: "var(--accent)",
               borderColor: "var(--border)",
             }}
           >
-            <span className="material-symbols-outlined text-[15px]">lock_open</span>
+            <span className="material-symbols-outlined text-base">lock_open</span>
             AUTHENTICATION PORTAL
           </span>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight" style={{ color: "var(--ink)" }}>
@@ -67,10 +67,10 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                 className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-xs"
                 style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", color: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[28px]">real_estate_agent</span>
+                <span className="material-symbols-outlined text-3xl">real_estate_agent</span>
               </div>
               <span
-                className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
+                className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
                 style={{ backgroundColor: "var(--surface)", color: "var(--accent)", borderColor: "var(--border)" }}
               >
                 OWNER &amp; AGENT
@@ -93,7 +93,7 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                   color: "var(--btn-text, #ffffff)",
                 }}
               >
-                <span className="material-symbols-outlined text-[16px]">login</span>
+                <span className="material-symbols-outlined text-base">login</span>
                 Sign In as Owner
               </button>
               <button
@@ -124,10 +124,10 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                 className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-xs"
                 style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", color: "var(--accent)" }}
               >
-                <span className="material-symbols-outlined text-[28px]">home_pin</span>
+                <span className="material-symbols-outlined text-3xl">home_pin</span>
               </div>
               <span
-                className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
+                className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
                 style={{ backgroundColor: "var(--surface)", color: "var(--accent)", borderColor: "var(--border)" }}
               >
                 TENANT &amp; BUYER
@@ -150,7 +150,7 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                   color: "var(--btn-text, #ffffff)",
                 }}
               >
-                <span className="material-symbols-outlined text-[16px]">login</span>
+                <span className="material-symbols-outlined text-base">login</span>
                 Sign In as Tenant
               </button>
               <button
