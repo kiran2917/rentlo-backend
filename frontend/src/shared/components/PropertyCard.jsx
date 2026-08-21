@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PropertyImageSlideshow } from '../../buyer/components/PropertyImageSlideshow';
-import { Translate } from '../Translate';
+import { PropertyImageSlideshow } from './PropertyImageSlideshow';
+import { Translate } from './Translate';
 
 export const PropertyCard = ({
   prop,
