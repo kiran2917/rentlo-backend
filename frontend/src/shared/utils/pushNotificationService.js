@@ -113,39 +113,16 @@ export async function unsubscribeUserFromPush() {
 export function playNotificationSound() {
   if (typeof window === "undefined") return;
   try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
-    const ctx = new AudioContextClass();
-    if (ctx.state === 'suspended') {
-      ctx.resume();
+    if ('speechSynthesis' in window) {
+      // Cancel any currently playing speech to start this one immediately
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance("Calling Mohith");
+      utterance.rate = 0.95; // Slightly natural pace
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
     }
-
-    const now = ctx.currentTime;
-
-    // First pleasant chime tone (High G5)
-    const osc1 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    osc1.type = "sine";
-    osc1.frequency.setValueAtTime(783.99, now);
-    gain1.gain.setValueAtTime(0.2, now);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.3);
-
-    // Second pleasant chime tone (High C6)
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-    osc2.type = "sine";
-    osc2.frequency.setValueAtTime(1046.50, now + 0.12);
-    gain2.gain.setValueAtTime(0.25, now + 0.12);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(now + 0.12);
-    osc2.stop(now + 0.6);
   } catch (err) {
-    // Ignore audio error if user hasn't interacted
+    console.warn("Speech synthesis error:", err);
   }
 }
