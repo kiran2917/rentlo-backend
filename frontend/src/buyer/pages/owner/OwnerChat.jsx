@@ -204,7 +204,7 @@ export const OwnerChat = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-112px)] md:h-[calc(100vh-100px)] flex md:rounded-3xl overflow-hidden md:border md:shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+    <div className="h-full w-full flex md:rounded-3xl overflow-hidden md:border md:shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
       {/* Thread List Sidebar */}
       <div className={`${showChat ? 'hidden' : 'flex'} md:flex w-full md:w-80 flex-shrink-0 border-r flex-col`} style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}>
         <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
@@ -295,7 +295,7 @@ export const OwnerChat = () => {
         ) : (
           <>
             {/* Chat Header */}
-            <div className="px-4 py-3 border-b flex items-center justify-between sticky top-0 z-10 shadow-xs" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+            <div className="px-4 py-3 border-b flex items-center justify-between sticky top-0 z-20 shadow-xs bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-3 min-w-0">
                 <button
                   onClick={() => setShowChat(false)}
@@ -389,7 +389,7 @@ export const OwnerChat = () => {
               <div ref={bottomRef}></div>
             </div>
 
-            <div className="px-4 py-3 border-t relative z-10 bg-white" style={{ borderColor: "var(--border)" }}>
+            <div className="px-4 py-3 border-t sticky bottom-0 z-20 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
               <input
                 type="file"
                 ref={fileInputRef}

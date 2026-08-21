@@ -210,8 +210,10 @@ export const OwnerLayout = () => {
     </>
   );
 
+  const isChatRoute = location.pathname.startsWith("/owner/chat");
+
   return (
-    <div className="min-h-screen flex font-sans transition-colors duration-300" style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}>
+    <div className={`${isChatRoute ? "h-[100dvh] overflow-hidden" : "min-h-screen"} flex font-sans transition-colors duration-300`} style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}>
       {/* Desktop Sidebar */}
       <aside
         className="hidden md:flex fixed left-0 top-0 h-screen w-64 border-r flex-col py-2.5 z-30 transition-colors duration-300"
@@ -246,7 +248,7 @@ export const OwnerLayout = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 flex flex-col min-w-0 min-h-screen transition-colors duration-300" style={{ backgroundColor: "var(--bg)" }}>
+      <main className={`flex-1 md:ml-64 flex flex-col min-w-0 transition-colors duration-300 ${isChatRoute ? "h-full overflow-hidden" : "min-h-screen"}`} style={{ backgroundColor: "var(--bg)" }}>
         {/* Notification Banner Warning */}
         {showNotificationBanner && (
           <div 
@@ -393,7 +395,7 @@ export const OwnerLayout = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-auto p-4 md:p-8 pb-24 md:pb-8">
+        <div className={`flex-1 overflow-auto ${isChatRoute ? "p-0" : "p-4 md:p-8 pb-24 md:pb-8"}`}>
           <Outlet />
         </div>
 

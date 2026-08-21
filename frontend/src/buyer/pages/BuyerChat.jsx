@@ -198,9 +198,9 @@ export const BuyerChat = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--bg)" }}>
+    <div className="h-full w-full flex flex-col bg-white relative">
       {/* Header */}
-      <div className="px-4 py-3 border-b flex items-center gap-3 sticky top-0 z-10 shadow-xs" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+      <div className="px-4 py-3 border-b flex items-center gap-3 sticky top-0 z-20 shadow-xs bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
         <Link
           to={`/property/${propertyId}`}
           className="p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
@@ -295,7 +295,7 @@ export const BuyerChat = () => {
         </div>
         <div ref={bottomRef}></div>
       </div>
-      <div className="px-4 py-3 border-t relative z-10 bg-white" style={{ borderColor: "var(--border)" }}>
+      <div className="px-4 py-3 border-t sticky bottom-0 z-20 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
         <input
           type="file"
           ref={fileInputRef}

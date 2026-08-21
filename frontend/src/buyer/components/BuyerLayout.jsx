@@ -217,7 +217,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
   ];
 
   return (
-    <div style={{ backgroundColor: "var(--bg)" }} className="min-h-screen flex flex-col text-ink font-sans">
+    <div style={{ backgroundColor: "var(--bg)" }} className={`${isChatRoute ? "h-[100dvh] overflow-hidden" : "min-h-screen"} flex flex-col text-ink font-sans`}>
       {/* Notification Banner Warning */}
       {showNotificationBanner && (
         <div 
@@ -531,7 +531,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       </div>
 
       {/* Content */}
-      <main className="flex-grow w-full flex flex-col">
+      <main className={`flex-grow w-full flex flex-col ${isChatRoute ? "overflow-hidden" : ""}`}>
         <Outlet />
       </main>
 
