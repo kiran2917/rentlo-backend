@@ -7,6 +7,7 @@ export const OwnerLeads = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPropFilter, setSelectedPropFilter] = useState("all");
   const [viewMode, setViewMode] = useState("kanban"); // 'kanban' | 'table'
+  const [activeMobileTab, setActiveMobileTab] = useState("new");
 
   useEffect(() => {
     let timeoutId;
@@ -96,6 +97,7 @@ export const OwnerLeads = () => {
   };
 
   const [dealClosedModalLead, setDealClosedModalLead] = useState(null);
+  const [statusModalLead, setStatusModalLead] = useState(null);
 
   const columns = [
     {
@@ -158,7 +160,7 @@ export const OwnerLeads = () => {
           <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">
             Leads & Contacts Board
           </h2>
-          <p className="text-xs md:text-sm font-medium text-slate-500 mt-1">
+          <p className="text-xs md:text-sm font-medium text-slate-500 mt-1 hidden md:block">
             Drag & drop buyer inquiries between status columns, or tap quick actions to message prospective tenants on WhatsApp.
           </p>
         </div>
@@ -166,7 +168,7 @@ export const OwnerLeads = () => {
         {/* Filter Controls & View Switcher */}
         <div className="flex items-center gap-3">
           {/* View Switcher Toggle */}
-          <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200">
+          <div className="hidden md:flex bg-slate-100 p-1 rounded-xl items-center gap-1 border border-slate-200">
             <button
               type="button"
               onClick={() => setViewMode("kanban")}
@@ -225,52 +227,78 @@ export const OwnerLeads = () => {
 
       {/* Summary KPI Metrics Bar / Row */}
       {!loading && leads.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-black">
+        <div className="flex md:grid md:grid-cols-4 overflow-x-auto snap-x hide-scrollbar gap-2 md:gap-3.5 mb-6 md:mb-8 pb-2 md:pb-0">
+          <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">groups</span>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Inquiries</p>
-              <h4 className="text-xl font-black text-slate-900">{filteredLeads.length}</h4>
+            <div className="flex items-center gap-1.5 md:block">
+              <p className="text-[10px] md:text-[11px] font-bold text-slate-500 md:text-slate-400 uppercase md:tracking-wider">Total Inquiries<span className="md:hidden">:</span></p>
+              <h4 className="text-[11px] md:text-xl font-black text-slate-900">{filteredLeads.length}</h4>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center font-black">
+          <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">forum</span>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">In Discussion</p>
-              <h4 className="text-xl font-black text-slate-900">
+            <div className="flex items-center gap-1.5 md:block">
+              <p className="text-[10px] md:text-[11px] font-bold text-slate-500 md:text-slate-400 uppercase md:tracking-wider">In Discussion<span className="md:hidden">:</span></p>
+              <h4 className="text-[11px] md:text-xl font-black text-slate-900">
                 {filteredLeads.filter((l) => l.lead_status === "contacted").length}
               </h4>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-black">
+          <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">workspace_premium</span>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Deals Closed</p>
-              <h4 className="text-xl font-black text-purple-600">
+            <div className="flex items-center gap-1.5 md:block">
+              <p className="text-[10px] md:text-[11px] font-bold text-slate-500 md:text-slate-400 uppercase md:tracking-wider">Deals Closed<span className="md:hidden">:</span></p>
+              <h4 className="text-[11px] md:text-xl font-black text-purple-600">
                 {filteredLeads.filter((l) => l.lead_status === "rented").length}
               </h4>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center font-black">
+          <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">do_not_disturb_on</span>
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rejected</p>
-              <h4 className="text-xl font-black text-slate-900">
+            <div className="flex items-center gap-1.5 md:block">
+              <p className="text-[10px] md:text-[11px] font-bold text-slate-500 md:text-slate-400 uppercase md:tracking-wider">Rejected<span className="md:hidden">:</span></p>
+              <h4 className="text-[11px] md:text-xl font-black text-slate-900">
                 {filteredLeads.filter((l) => l.lead_status === "rejected").length}
               </h4>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Mobile Tab Navigation (Sticky) */}
+      {!loading && leads.length > 0 && viewMode === "kanban" && (
+        <div className="md:hidden flex overflow-x-auto hide-scrollbar border-b border-slate-200 mb-6 sticky top-[56px] bg-[#fafafa] z-20 -mx-4 px-4 pt-2">
+          {columns.map((col) => {
+            const isActive = activeMobileTab === col.id;
+            const count = filteredLeads.filter((l) => l.lead_status === col.id).length;
+            return (
+              <button
+                key={`tab-${col.id}`}
+                onClick={() => setActiveMobileTab(col.id)}
+                className={`whitespace-nowrap px-4 py-3 text-[13px] font-bold border-b-2 transition-all flex items-center gap-2 ${
+                  isActive
+                    ? "border-emerald-600 text-emerald-700"
+                    : "border-transparent text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                {col.title.replace(' 🎉', '')}
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -371,15 +399,17 @@ export const OwnerLeads = () => {
         </div>
       ) : (
         /* Kanban Board View */
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="flex flex-col md:grid md:grid-cols-2 xl:grid-cols-4 gap-0 md:gap-5">
           {columns.map((col) => {
             const columnLeads = filteredLeads.filter((l) => l.lead_status === col.id);
+            const isMobileActive = activeMobileTab === col.id;
+
             return (
               <div
                 key={col.id}
                 onDragOver={onDragOver}
                 onDrop={(e) => onDrop(e, col.id)}
-                className={`rounded-3xl p-5 border bg-slate-50/70 ${col.accentBorder} min-h-[520px] transition-all flex flex-col`}
+                className={`${isMobileActive ? 'flex w-full' : 'hidden'} md:flex rounded-3xl p-4 md:p-5 border bg-slate-50/70 ${col.accentBorder} min-h-[520px] transition-all flex-col`}
               >
                 {/* Column Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-4">
@@ -473,49 +503,19 @@ export const OwnerLeads = () => {
                           </div>
 
                           {/* Quick Action Chips (Touch-Friendly Move Buttons) */}
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-slate-100">
+                          <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-100">
                             <span className="text-[10px] font-bold text-slate-400">
                               {lead.created_at ? new Date(lead.created_at).toLocaleDateString() : "Recent"}
                             </span>
 
-                            <div className="flex items-center gap-1 flex-wrap">
-                              {col.id !== "new" && (
-                                <button
-                                  type="button"
-                                  onClick={() => updateLeadStatus(lead.id, "new")}
-                                  className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-[10px] font-extrabold whitespace-nowrap cursor-pointer transition-colors"
-                                >
-                                  ← New
-                                </button>
-                              )}
-                              {col.id !== "contacted" && (
-                                <button
-                                  type="button"
-                                  onClick={() => updateLeadStatus(lead.id, "contacted")}
-                                  className="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-[10px] font-extrabold whitespace-nowrap cursor-pointer transition-colors"
-                                >
-                                  → Talks
-                                </button>
-                              )}
-                              {col.id !== "rented" && (
-                                <button
-                                  type="button"
-                                  onClick={() => updateLeadStatus(lead.id, "rented")}
-                                  className="px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-md text-[10px] font-black whitespace-nowrap cursor-pointer transition-colors shadow-2xs"
-                                >
-                                  🎉 Rented
-                                </button>
-                              )}
-                              {col.id !== "rejected" && (
-                                <button
-                                  type="button"
-                                  onClick={() => updateLeadStatus(lead.id, "rejected")}
-                                  className="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md text-[10px] font-extrabold whitespace-nowrap cursor-pointer transition-colors"
-                                >
-                                  ✕ Reject
-                                </button>
-                              )}
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setStatusModalLead(lead)}
+                              className="px-3 py-1.5 bg-white border border-slate-200 hover:border-slate-300 shadow-xs rounded-lg text-slate-700 text-[11px] font-extrabold flex items-center gap-1 transition-all cursor-pointer"
+                            >
+                              Update Status
+                              <span className="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+                            </button>
                           </div>
                         </div>
                       );
@@ -578,6 +578,55 @@ export const OwnerLeads = () => {
             >
               Done / Close Window
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Sheet Modal for Status Update */}
+      {statusModalLead && (
+        <div className="fixed inset-0 z-[100] flex flex-col justify-end md:items-center md:justify-center p-0 md:p-4 animate-fade-in" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="w-full md:max-w-md bg-white rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom-full md:zoom-in-95 duration-200">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="text-[15px] font-black text-slate-900">Update Lead Status</h3>
+                <p className="text-[11px] font-medium text-slate-500 mt-0.5">For {statusModalLead.user_name || "Buyer"}</p>
+              </div>
+              <button
+                onClick={() => setStatusModalLead(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold transition-all cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-3">
+              {columns.map((col) => {
+                const isActive = statusModalLead.lead_status === col.id;
+                return (
+                  <button
+                    key={`status-${col.id}`}
+                    onClick={() => {
+                      updateLeadStatus(statusModalLead.id, col.id);
+                      setStatusModalLead(null);
+                    }}
+                    className={`w-full flex items-center justify-between px-4 py-3.5 mb-1.5 rounded-xl border-2 transition-all cursor-pointer ${
+                      isActive 
+                        ? `bg-slate-50 ${col.accentBorder}` 
+                        : "border-transparent hover:bg-slate-50 text-slate-600"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`text-[13px] font-extrabold ${isActive ? 'text-slate-900' : 'text-slate-600'}`}>
+                        {col.badge}
+                      </span>
+                    </div>
+                    {isActive && (
+                      <span className="material-symbols-outlined text-[18px] text-slate-900">check_circle</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
