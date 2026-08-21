@@ -44,6 +44,7 @@ import { AgentManagement } from "./admin/pages/AgentManagement";
 import { AdminCRM } from "./admin/pages/AdminCRM";
 import { NotFound } from "./shared/pages/NotFound";
 import { NotificationPromptModal } from "./shared/components/NotificationPromptModal";
+import { playNotificationSound } from "./shared/utils/pushNotificationService";
 
 function KeyboardDismissHandler() {
   const location = useLocation();
@@ -113,9 +114,10 @@ function App() {
       })
       .catch(err => console.error("Error fetching theme", err));
 
-    // Listen for Service Worker push events to trigger vibration
+    // Listen for Service Worker push events to trigger vibration and chime sound
     const handleMessage = (event) => {
       if (event.data?.type === "NOTIFICATION_PUSH_RECEIVED") {
+        playNotificationSound();
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
           try {
             navigator.vibrate([300, 150, 300, 150, 300]);
