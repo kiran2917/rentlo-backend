@@ -210,7 +210,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
     { to: "/pricing", label: t("nav.passes", "Passes & Pricing"), icon: "confirmation_number" },
     ...(user
       ? [
-          { to: "/saved-searches", label: t("nav.savedSearches", "Saved Searches"), icon: "bookmark", badge: unreadCount },
+          { to: "/saved-searches", label: t("nav.savedSearches", "Saved Searches"), icon: "bookmark" },
           { to: "/my-unlocks", label: t("nav.myUnlocks", "My Unlocks"), icon: "lock_open" },
         ]
       : []),
@@ -777,7 +777,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           <span className="text-[9.5px] font-bold mt-0.5">Unlocks</span>
         </Link>
 
-        {/* Tab 5: Owner / Agent Portal */}
+        {/* Tab 5: Owner / Agent Portal or Sign Out */}
         <button
           type="button"
           onClick={() => {
@@ -787,7 +787,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               } else if (user.roles?.includes("owner")) {
                 navigate("/owner/dashboard");
               } else {
-                navigate("/my-unlocks");
+                logout();
+                navigate("/");
               }
             } else {
               setShowAuthRoleModal(true);
@@ -799,8 +800,31 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-[22px]">person</span>
-          <span className="text-[9.5px] font-bold mt-0.5">{user ? "Console" : "Login"}</span>
+          {(() => {
+            if (!user) {
+              return (
+                <>
+                  <span className="material-symbols-outlined text-[22px]">person</span>
+                  <span className="text-[9.5px] font-bold mt-0.5">Login</span>
+                </>
+              );
+            } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.roles?.includes("owner")) {
+              return (
+                <>
+                  <span className="material-symbols-outlined text-[22px]">admin_panel_settings</span>
+                  <span className="text-[9.5px] font-bold mt-0.5">Console</span>
+                </>
+              );
+            } else {
+              // Pure buyer - sign out
+              return (
+                <>
+                  <span className="material-symbols-outlined text-[22px] text-red-500">logout</span>
+                  <span className="text-[9.5px] font-bold mt-0.5 text-red-500">Sign Out</span>
+                </>
+              );
+            }
+          })()}
         </button>
       </nav>
       )}
