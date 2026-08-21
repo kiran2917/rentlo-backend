@@ -43,6 +43,7 @@ import { SubAdminManagement } from "./admin/pages/SubAdminManagement";
 import { AgentManagement } from "./admin/pages/AgentManagement";
 import { AdminCRM } from "./admin/pages/AdminCRM";
 import { NotFound } from "./shared/pages/NotFound";
+import { NotificationPromptModal } from "./shared/components/NotificationPromptModal";
 
 function KeyboardDismissHandler() {
   const location = useLocation();
@@ -117,6 +118,7 @@ function App() {
   return (
     <AuthProvider>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <NotificationPromptModal />
       <BrowserRouter>
         <KeyboardDismissHandler />
         <ThemeSyncHandler />
