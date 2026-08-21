@@ -120,7 +120,7 @@ function App() {
         playNotificationSound();
         if (typeof navigator !== "undefined" && "vibrate" in navigator) {
           try {
-            navigator.vibrate([300, 150, 300, 150, 300]);
+            navigator.vibrate([150, 100, 150, 200, 250]);
           } catch (e) {
             // vibration not permitted or ignored
           }

@@ -39,7 +39,7 @@ export const NotificationPromptModal = () => {
       // Trigger instant vibration pulse & audio chime
       if (typeof navigator !== "undefined" && "vibrate" in navigator) {
         try {
-          navigator.vibrate([500, 200, 500, 200, 500]);
+          navigator.vibrate([150, 100, 150, 200, 250]);
         } catch (_) {}
       }
       playNotificationSound();
