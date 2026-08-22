@@ -13,7 +13,7 @@ export const PropertyImageSlideshow = ({ media = [], propertyType = "", altText 
     return () => clearInterval(interval);
   }, [media]);
 
-  if (!media || media.length === 0) {
+  if (!media || !Array.isArray(media) || media.length === 0) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1 bg-slate-900">
         <span className="material-symbols-outlined text-5xl opacity-40">home_work</span>

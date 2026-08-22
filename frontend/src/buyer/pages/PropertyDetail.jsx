@@ -992,7 +992,7 @@ export const PropertyDetail = () => {
                 Amenities
               </h2>
               <div className="flex flex-wrap gap-3">
-                {property.amenities.map(amenity => (
+                {Array.isArray(property.amenities) && property.amenities.map(amenity => (
                   <span
                     key={amenity}
                     className="px-4 py-2.5 rounded-xl text-[13px] font-semibold"
@@ -1833,7 +1833,7 @@ export const PropertyDetail = () => {
           </div>
           
           {/* Thumbnails */}
-          {property.media.length > 1 && (
+          {Array.isArray(property.media) && property.media.length > 1 && (
             <div className="w-full max-w-4xl overflow-x-auto pb-8 px-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-center gap-3">
                 {property.media.map((m, idx) => (
