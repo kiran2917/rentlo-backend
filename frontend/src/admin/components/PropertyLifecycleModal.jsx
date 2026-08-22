@@ -36,7 +36,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
       } catch (err) {
         console.error(err);
         toast.error("Failed to load property lifecycle data.");
-        onClose();
+        // We removed onClose() here so the modal stays open to show the error state
       } finally {
         setLoading(false);
       }
@@ -70,10 +70,18 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
           </button>
         </div>
 
-        {loading || !data ? (
+        {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-[400px]">
             <div className="w-8 h-8 rounded-full border-4 border-brand-200 border-t-brand-600 animate-spin"></div>
             <p className="text-slate-500 mt-4 font-medium animate-pulse">Gathering lifecycle data...</p>
+          </div>
+        ) : !data ? (
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[400px]">
+            <span className="material-symbols-outlined text-[48px] text-red-400 mb-4">error</span>
+            <p className="text-slate-600 font-medium">Failed to load property lifecycle data.</p>
+            <p className="text-sm text-slate-500 mt-2 max-w-sm text-center">
+              Make sure your backend database migrations are applied!
+            </p>
           </div>
         ) : (
           <>
