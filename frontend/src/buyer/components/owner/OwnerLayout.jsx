@@ -12,10 +12,16 @@ export const OwnerLayout = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
+  const [platformSettings, setPlatformSettings] = useState(null);
   
   const { t } = useTranslation();
 
   useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+      .then((res) => res.json())
+      .then((data) => setPlatformSettings(data))
+      .catch((err) => console.error("Error fetching settings", err));
+
     const applyDashTheme = (themeName) => {
       const formatted = `theme-${themeName.replace(/_/g, '-')}`;
       document.body.className = formatted;
@@ -148,14 +154,18 @@ export const OwnerLayout = () => {
   const SidebarContent = ({ onNavClick }) => (
     <>
       {/* Brand Header - Compact Height */}
-      <div className="px-4 mb-2 pb-2 border-b flex items-center justify-between flex-shrink-0" style={{ borderColor: "var(--border)" }}>
-        <Link to="/" className="flex items-center gap-2 h-10">
-          <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
-            <span className="material-symbols-outlined text-base">real_estate_agent</span>
-          </div>
+      <div className="px-4 mb-3 pb-3 border-b flex-shrink-0" style={{ borderColor: "var(--border)" }}>
+        <Link to="/" className="flex items-center gap-3">
+          {platformSettings?.company_logo_url ? (
+            <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
+          ) : (
+            <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
+              <span className="material-symbols-outlined text-base">real_estate_agent</span>
+            </div>
+          )}
           <div>
             <span className="text-base font-bold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
-              Rentlo
+              {platformSettings?.company_name || "Rentlo"}
             </span>
             <p className="text-xs font-extrabold uppercase tracking-widest leading-none mt-1" style={{ color: "var(--accent)" }}>
               {isAgent ? t("owner.agentConsole", "Agent Console") : t("owner.ownerConsole", "Owner Console")}

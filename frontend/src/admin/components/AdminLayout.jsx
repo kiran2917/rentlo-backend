@@ -9,8 +9,14 @@ export const AdminLayout = ({ children, activeTab }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showKycModal, setShowKycModal] = useState(false);
+  const [platformSettings, setPlatformSettings] = useState(null);
 
   React.useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+      .then((res) => res.json())
+      .then((data) => setPlatformSettings(data))
+      .catch((err) => console.error("Error fetching settings", err));
+      
     const applyDashTheme = (themeName) => {
       const formatted = `theme-${themeName.replace(/_/g, '-')}`;
       document.body.className = formatted;
@@ -83,12 +89,16 @@ export const AdminLayout = ({ children, activeTab }) => {
       {/* Brand Header - Compact Height */}
       <div className="px-4 mb-2 pb-2 border-b" style={{ borderColor: "var(--border)" }}>
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
-            <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
-          </div>
+          {platformSettings?.company_logo_url ? (
+            <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
+          ) : (
+            <div className="w-7 h-7 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
+              <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
+            </div>
+          )}
           <div>
             <span className="text-[16px] font-extrabold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
-              Rentlo
+              {platformSettings?.company_name || "Rentlo"}
             </span>
             <p className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--accent-soft)" }}>
               {user?.role?.toUpperCase() || "ADMIN"} CONSOLE
@@ -190,10 +200,14 @@ export const AdminLayout = ({ children, activeTab }) => {
         style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)", color: "var(--sidebar-ink)" }}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: "var(--accent)" }}>
-            <span className="material-symbols-outlined text-[15px]">real_estate_agent</span>
-          </div>
-          <span className="text-[16px] font-bold" style={{ color: "var(--sidebar-ink)" }}>Rentlo</span>
+          {platformSettings?.company_logo_url ? (
+            <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
+          ) : (
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: "var(--accent)" }}>
+              <span className="material-symbols-outlined text-[15px]">real_estate_agent</span>
+            </div>
+          )}
+          <span className="text-[16px] font-bold" style={{ color: "var(--sidebar-ink)" }}>{platformSettings?.company_name || "Rentlo"}</span>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-full font-extrabold text-[11px] flex items-center justify-center border" style={{ backgroundColor: "var(--surface-alt)", color: "var(--accent)", borderColor: "var(--border)" }}>

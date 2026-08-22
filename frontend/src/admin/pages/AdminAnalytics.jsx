@@ -38,7 +38,7 @@ export const AdminAnalytics = () => {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/cities/`)
       .then((res) => res.json())
-      .then((data) => setCities(Array.isArray(data) ? data : []))
+      .then((data) => setCities(Array.isArray(data) ? data : (data.results || [])))
       .catch((err) => console.error("Error fetching cities:", err));
   }, []);
 
