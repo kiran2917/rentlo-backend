@@ -252,9 +252,10 @@ export const Home = () => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/cities/?has_properties=true`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
-        setCities(data);
-        if (data.length === 1 && !filters.city_id)
-          setFilters((p) => ({ ...p, city_id: data[0].id.toString() }));
+        const cityData = Array.isArray(data) ? data : [];
+        setCities(cityData);
+        if (cityData.length === 1 && !filters.city_id)
+          setFilters((p) => ({ ...p, city_id: cityData[0].id.toString() }));
       })
       .catch(err => { if (err.name !== 'AbortError') console.error(err); });
       
@@ -275,7 +276,7 @@ export const Home = () => {
 
     fetch(url, { signal: controller.signal })
       .then((r) => r.json())
-      .then(setLocalities)
+      .then((data) => setLocalities(Array.isArray(data) ? data : []))
       .catch(err => { if (err.name !== 'AbortError') console.error(err); });
 
     return () => controller.abort();
@@ -299,8 +300,9 @@ export const Home = () => {
       );
       if (res.ok) {
         const data = await res.json();
+        const results = Array.isArray(data.results) ? data.results : [];
         setProperties((prev) =>
-          append ? [...prev, ...data.results] : data.results,
+          append ? [...prev, ...results] : results,
         );
         setHasMore(data.next !== null);
       } else {
