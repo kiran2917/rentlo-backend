@@ -23,6 +23,27 @@ class CommissionRule(models.Model):
         return f"{agent_str} - {self.city.name} - {self.get_rule_type_display()}"
 
 
+class AgentPayoutBatch(models.Model):
+    STATUS_CHOICES = (
+        ('processing', 'Processing'),
+        ('paid', 'Paid'),
+    )
+    
+    agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payout_batches')
+    cycle_start_date = models.DateField()
+    cycle_end_date = models.DateField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='processing')
+    
+    utr_number = models.CharField(max_length=100, blank=True, null=True, help_text="Bank transaction reference for payout")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    paid_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='payouts_processed')
+    
+    def __str__(self):
+        return f"{self.agent.username} | {self.cycle_start_date} to {self.cycle_end_date} | ₹{self.total_amount} ({self.status})"
+
 class EarningEntry(models.Model):
     SOURCE_TYPE_CHOICES = (
         ('listing_approved', 'Listing Approved'),
@@ -40,6 +61,7 @@ class EarningEntry(models.Model):
     source_type = models.CharField(max_length=50, choices=SOURCE_TYPE_CHOICES)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payout_batch = models.ForeignKey(AgentPayoutBatch, on_delete=models.SET_NULL, null=True, blank=True, related_name='entries')
     
     created_at = models.DateTimeField(auto_now_add=True)
     paid_at = models.DateTimeField(null=True, blank=True)

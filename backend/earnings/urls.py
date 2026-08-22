@@ -5,7 +5,10 @@ from .views import (
     EarningEntryListView,
     ApproveEarningView,
     MarkPaidEarningView,
-    AgentEarningsSummaryView
+    AgentEarningsSummaryView,
+    AgentPayoutBatchListView,
+    MarkPayoutBatchPaidView,
+    AgentPayoutBatchReceiptView
 )
 
 urlpatterns = [
@@ -15,4 +18,7 @@ urlpatterns = [
     path('<int:id>/approve/', ApproveEarningView.as_view(), name='earning-approve'),
     path('<int:id>/mark-paid/', MarkPaidEarningView.as_view(), name='earning-mark-paid'),
     path('agents/<int:id>/earnings-summary/', AgentEarningsSummaryView.as_view(), name='agent-earnings-summary'),
+    path('payout-batches/', AgentPayoutBatchListView.as_view(), name='payout-batch-list'),
+    path('payout-batches/<int:id>/mark-paid/', MarkPayoutBatchPaidView.as_view(), name='payout-batch-mark-paid'),
+    path('payout-batches/<int:id>/receipt/', AgentPayoutBatchReceiptView.as_view(), name='payout-batch-receipt'),
 ]

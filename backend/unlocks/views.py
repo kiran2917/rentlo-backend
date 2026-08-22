@@ -1232,4 +1232,295 @@ class GenerateReceiptView(views.APIView):
         """
         return HttpResponse(html_content, content_type="text/html")
 
+        except Unlock.DoesNotExist:
+            return Response({'detail': 'Unlock record not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        if unlock.status != 'paid':
+            return Response({'detail': 'Only paid unlocks can be refunded.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not unlock.gateway_txn_id:
+            return Response({'detail': 'Cannot refund an unlock that has no gateway transaction ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not razorpay_client:
+            return Response({'detail': 'Razorpay client is not configured.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            # Initiate Razorpay refund
+            refund_amount_paise = int(unlock.amount * 100)
+            refund_response = razorpay_client.payment.refund(
+                unlock.gateway_txn_id,
+                {
+                    'amount': refund_amount_paise,
+                    'notes': {
+                        'unlock_id': str(unlock.id),
+                        'refunded_by': str(request.user.id)
+                    }
+                }
+            )
+            
+            # Update unlock status to refunded
+            unlock.status = 'refunded'
+            unlock.save(update_fields=['status'])
+
+            # Log the audit message
+            audit_logger = logging.getLogger('audit')
+            audit_logger.info(f"Refund initiated for unlock {unlock.id} (Transaction: {unlock.gateway_txn_id}) by user {request.user.username} (ID: {request.user.id}). Razorpay Refund ID: {refund_response.get('id')}")
+
+            return Response({
+                'detail': 'Refund initiated successfully via Razorpay.',
+                'refund_id': refund_response.get('id'),
+                'status': 'refunded'
+            })
+        except Exception as e:
+            logger.error(f"Razorpay refund failed for unlock {unlock.id}: {str(e)}", exc_info=True)
+            return Response({
+                'detail': f'Razorpay refund initiation failed: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GenerateReceiptView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, txn_id):
+        from unlocks.models import Unlock, BuyerSubscription, OwnerListingPass
+        from django.http import HttpResponse
+
+        # 1. Search across transactions
+        item = None
+        txn_type = ""
+        description = ""
+        date = None
+        amount = 0
+        user = None
+
+        unlock = Unlock.objects.filter(gateway_txn_id=txn_id).first()
+        if unlock:
+            if unlock.buyer != request.user and not request.user.is_staff:
+                return Response({'detail': 'Unauthorized.'}, status=status.HTTP_403_FORBIDDEN)
+            item = unlock
+            txn_type = "Property Contact Unlock"
+            description = f"Contact unlock for Property #{unlock.property.id}"
+            date = unlock.unlocked_at or unlock.created_at
+            amount = unlock.amount
+            user = unlock.buyer
+        else:
+            sub = BuyerSubscription.objects.filter(gateway_txn_id=txn_id).first()
+            if sub:
+                if sub.buyer != request.user and not request.user.is_staff:
+                    return Response({'detail': 'Unauthorized.'}, status=status.HTTP_403_FORBIDDEN)
+                item = sub
+                txn_type = "Buyer Credit Pass"
+                description = f"Refill Pass: {sub.get_pass_type_display()}"
+                date = sub.created_at
+                amount = sub.amount_paid
+                user = sub.buyer
+            else:
+                owner_pass = OwnerListingPass.objects.filter(gateway_txn_id=txn_id).first()
+                if owner_pass:
+                    if owner_pass.owner != request.user and not request.user.is_staff:
+                        return Response({'detail': 'Unauthorized.'}, status=status.HTTP_403_FORBIDDEN)
+                    item = owner_pass
+                    txn_type = "Owner Listing Pass"
+                    description = f"Refill Pass: {owner_pass.plan_id} ({owner_pass.credits_total} Listing Credits)"
+                    date = owner_pass.created_at
+                    amount = owner_pass.amount_paid
+                    user = owner_pass.owner
+
+        if not item:
+            return Response({'detail': 'Transaction not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        formatted_date = date.strftime('%B %d, %Y %I:%M %p') if date else "N/A"
+
+        # Build a beautiful, print-ready HTML Invoice
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Invoice - {txn_id}</title>
+            <style>
+                body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 40px; line-height: 1.6; background-color: #fafafa; }}
+                .invoice-box {{ max-width: 800px; margin: auto; padding: 40px; border: 1px solid #eee; box-shadow: 0 10px 25px rgba(0,0,0,0.05); background-color: #fff; border-radius: 20px; }}
+                .header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 30px; margin-bottom: 30px; }}
+                .logo {{ font-size: 24px; font-weight: 800; color: #059669; text-decoration: none; display: flex; align-items: center; }}
+                .invoice-title {{ font-size: 20px; font-weight: 800; text-transform: uppercase; tracking-wider: 1px; color: #0f172a; }}
+                .info-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }}
+                .info-section h4 {{ margin: 0 0 10px 0; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }}
+                .info-section p {{ margin: 0; font-size: 14px; font-weight: 600; color: #0f172a; }}
+                table {{ width: 100%; border-collapse: collapse; margin-bottom: 40px; }}
+                th {{ text-align: left; padding: 15px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }}
+                td {{ padding: 20px 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #334155; }}
+                .total-section {{ display: flex; justify-content: flex-end; margin-top: 30px; }}
+                .total-box {{ border-top: 2px solid #059669; padding-top: 15px; width: 250px; text-align: right; }}
+                .total-row {{ display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }}
+                .grand-total {{ font-size: 20px; font-weight: 800; color: #059669; margin-top: 10px; }}
+                .footer {{ text-align: center; color: #94a3b8; font-size: 12px; border-top: 1px solid #f1f5f9; padding-top: 30px; margin-top: 50px; }}
+                .print-btn {{ display: block; width: 150px; margin: 30px auto 0 auto; padding: 10px 20px; background-color: #059669; color: white; text-align: center; border-radius: 10px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; }}
+                @media print {{
+                    body {{ background-color: #fff; padding: 0; }}
+                    .invoice-box {{ border: none; box-shadow: none; padding: 0; }}
+                    .print-btn {{ display: none; }}
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="invoice-box">
+                <div class="header">
+                    <div class="logo">Rentlo</div>
+                    <div class="invoice-title">Tax Invoice / Receipt</div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-section">
+                        <h4>Billed To</h4>
+                        <p>{user.first_name or user.username}</p>
+                        <p style="font-weight: 500; color: #64748b;">Phone: {user.phone or 'Verified User'}</p>
+                    </div>
+                    <div class="info-section" style="text-align: right;">
+                        <h4>Invoice Details</h4>
+                        <p>Transaction ID: {txn_id}</p>
+                        <p style="font-weight: 500; color: #64748b;">Date: {formatted_date}</p>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Description</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{txn_type} — {description}</td>
+                            <td style="text-align: right; font-weight: 600;">₹{amount}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="total-section">
+                    <div class="total-box">
+                        <div class="total-row" style="color: #64748b;">
+                            <span>Subtotal:</span>
+                            <span>₹{amount}</span>
+                        </div>
+                        <div class="total-row" style="color: #64748b;">
+                            <span>GST (18%):</span>
+                            <span>₹0.00 (Inclusive)</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span>Total Paid:</span>
+                            <span>₹{amount}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <p>Rentlo Technologies Private Limited</p>
+                    <p style="font-size: 10px; margin-top: 5px;">This is a computer-generated document and requires no physical signature.</p>
+                </div>
+            </div>
+
+            <button onclick="window.print()" class="print-btn">Print Invoice</button>
+        </body>
+        </html>
+        """
+        return HttpResponse(html_content, content_type="text/html")
+
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import inch
+
+class OwnerListingPassReceiptView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            listing_pass = OwnerListingPass.objects.get(id=id)
+            if listing_pass.owner != request.user:
+                return Response({'detail': 'Unauthorized.'}, status=status.HTTP_403_FORBIDDEN)
+                
+            from properties.models import PlatformSettings
+            import urllib.request
+            import tempfile
+            import os
+            from PIL import Image
+            
+            settings = PlatformSettings.load()
+            
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="Receipt_{listing_pass.id}.pdf"'
+            
+            p = canvas.Canvas(response, pagesize=A4)
+            width, height = A4
+            
+            # Header Layout
+            current_y = height - 1 * inch
+            
+            # Draw Logo (Left side)
+            if settings.company_logo_url:
+                try:
+                    req = urllib.request.Request(settings.company_logo_url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req) as u:
+                        raw_data = u.read()
+                    
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
+                        tmp.write(raw_data)
+                        tmp_path = tmp.name
+                    
+                    with Image.open(tmp_path) as img:
+                        img_width, img_height = img.size
+                        aspect = img_height / float(img_width)
+                        
+                    target_width = 1.5 * inch
+                    target_height = target_width * aspect
+                    
+                    p.drawImage(tmp_path, 1 * inch, current_y - target_height + 0.25 * inch, width=target_width, height=target_height, mask='auto')
+                    os.unlink(tmp_path)
+                except Exception as e:
+                    print("Logo fetch error:", e)
+            
+            # Draw Title (Right side)
+            p.setFont("Helvetica-Bold", 24)
+            p.drawRightString(width - 1 * inch, current_y, "Payment Receipt")
+            
+            current_y -= 0.6 * inch
+            
+            # Draw Company Name
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(1 * inch, current_y, settings.company_name)
+            
+            current_y -= 0.5 * inch
+            
+            p.setFont("Helvetica", 12)
+            p.drawString(1 * inch, current_y, f"Pass ID: {listing_pass.id}")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Customer: {listing_pass.owner.get_full_name()} ({listing_pass.owner.username})")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Plan: {listing_pass.credits_purchased} Credit(s) Pass")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Total Amount Paid: INR {listing_pass.amount_paid}")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Status: {listing_pass.status.upper()}")
+            
+            if listing_pass.status == 'active' or listing_pass.status == 'depleted':
+                current_y -= 0.3 * inch
+                p.drawString(1 * inch, current_y, f"Paid On: {listing_pass.created_at.strftime('%Y-%m-%d %H:%M')}")
+                
+            if listing_pass.utr:
+                current_y -= 0.3 * inch
+                p.drawString(1 * inch, current_y, f"Transaction Ref (UTR): {listing_pass.utr}")
+                
+            p.line(1 * inch, current_y - 0.5 * inch, width - 1 * inch, current_y - 0.5 * inch)
+            
+            current_y -= 1 * inch
+            p.setFont("Helvetica-Oblique", 10)
+            p.drawString(1 * inch, current_y, f"This is a computer-generated receipt by {settings.company_name} and does not require a physical signature.")
+            
+            p.showPage()
+            p.save()
+            return response
+            
+        except OwnerListingPass.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)

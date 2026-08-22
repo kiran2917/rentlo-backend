@@ -251,6 +251,12 @@ export const Settings = () => {
   const [ownerOnboardingFee, setOwnerOnboardingFee] = useState("0");
   const [bypassBuyer, setBypassBuyer] = useState(false);
   const [bypassOwner, setBypassOwner] = useState(false);
+  
+  // Branding
+  const [companyName, setCompanyName] = useState("Rentlo Technologies Private Limited");
+  const [companyLogoUrl, setCompanyLogoUrl] = useState("");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+
   const [buyerTheme, setBuyerTheme] = useState(() => localStorage.getItem("rentlo_buyer_theme") || "emerald_minimal");
   const [dashboardTheme, setDashboardTheme] = useState(() => localStorage.getItem("rentlo_dashboard_theme") || "emerald_minimal");
   const [buyerGateway, setBuyerGateway] = useState("razorpay");
@@ -401,6 +407,9 @@ export const Settings = () => {
       if (res.ok) {
         const data = await res.json();
         setUpiId(data.default_upi_id || "");
+        setCompanyName(data.company_name || "Rentlo Technologies Private Limited");
+        setCompanyLogoUrl(data.company_logo_url || "");
+        
         setBuyerUnlockFee(data.buyer_unlock_fee != null ? data.buyer_unlock_fee : "14");
         setBuyerPassStarter(data.buyer_pass_starter_price != null ? data.buyer_pass_starter_price : "39");
         setBuyerPassSmart(data.buyer_pass_smart_price != null ? data.buyer_pass_smart_price : "79");
@@ -500,6 +509,8 @@ export const Settings = () => {
         },
         body: JSON.stringify({
           default_upi_id: upiId,
+          company_name: companyName,
+          company_logo_url: companyLogoUrl,
           buyer_unlock_fee: parseFloat(buyerUnlockFee) || 14,
           buyer_pass_starter_price: parseFloat(buyerPassStarter) || 39,
           buyer_pass_smart_price: parseFloat(buyerPassSmart) || 79,
@@ -1729,6 +1740,88 @@ export const Settings = () => {
                 Platform Theme & Design System
               </h2>
               <div className="space-y-8">
+                {/* 0. COMPANY BRANDING */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="material-symbols-outlined text-purple-500 text-[20px]">store</span>
+                    <h3 className="text-[15px] font-extrabold text-ink">Company Branding</h3>
+                    <span className="text-[11px] font-medium text-text-muted">(Applies to PDF receipts and reports)</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-surface-alt/40 border border-border/60">
+                    <div className="space-y-2">
+                      <label className="text-[13px] font-bold text-slate-700 block">Company Name</label>
+                      <input
+                        type="text"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-[14px] bg-white transition-all shadow-sm"
+                        placeholder="e.g. Rentlo Technologies Private Limited"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[13px] font-bold text-slate-700 block">Company Logo</label>
+                      <div className="flex items-center gap-4">
+                        {companyLogoUrl ? (
+                          <div className="relative h-12 w-32 border border-slate-200 rounded-lg overflow-hidden bg-white flex items-center justify-center p-1">
+                            <img src={companyLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                            <button
+                              onClick={() => setCompanyLogoUrl("")}
+                              className="absolute top-0 right-0 bg-red-500/80 hover:bg-red-500 text-white rounded-bl-lg p-0.5 transition-colors"
+                              title="Remove Logo"
+                            >
+                              <span className="material-symbols-outlined text-[14px]">close</span>
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="h-12 w-32 border border-dashed border-slate-300 rounded-lg bg-slate-50 flex items-center justify-center">
+                            <span className="text-[11px] text-slate-400 font-medium">No logo</span>
+                          </div>
+                        )}
+                        
+                        <label className="px-4 py-2 bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-[13px] font-bold cursor-pointer transition-colors shadow-sm flex items-center gap-2">
+                          {uploadingLogo ? (
+                            <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
+                          ) : (
+                            <span className="material-symbols-outlined text-[16px]">upload</span>
+                          )}
+                          {uploadingLogo ? "Uploading..." : "Upload Logo"}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              setUploadingLogo(true);
+                              try {
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/media/upload/`, {
+                                  method: "POST",
+                                  body: formData,
+                                });
+                                if (uploadRes.ok) {
+                                  const data = await uploadRes.json();
+                                  setCompanyLogoUrl(data.public_url);
+                                  toast.success("Logo uploaded successfully");
+                                } else {
+                                  toast.error("Failed to upload logo");
+                                }
+                              } catch (err) {
+                                toast.error("Error uploading logo");
+                              } finally {
+                                setUploadingLogo(false);
+                                e.target.value = ""; // Reset input
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* 1. BUYER MARKETPLACE THEME SELECTION */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">

@@ -1088,6 +1088,8 @@ class PlatformSettingsView(views.APIView):
         settings = PlatformSettings.load()
         data = {
             'default_upi_id': settings.default_upi_id,
+            'company_name': settings.company_name,
+            'company_logo_url': settings.company_logo_url,
             'buyer_unlock_fee': settings.buyer_unlock_fee,
             'buyer_pass_starter_price': settings.buyer_pass_starter_price,
             'buyer_pass_smart_price': settings.buyer_pass_smart_price,
@@ -1246,6 +1248,8 @@ class PlatformSettingsView(views.APIView):
 
         # 2. Mutate settings fields
         settings.default_upi_id = request.data.get('default_upi_id', settings.default_upi_id)
+        settings.company_name = request.data.get('company_name', settings.company_name)
+        settings.company_logo_url = request.data.get('company_logo_url', settings.company_logo_url)
         settings.buyer_unlock_fee = request.data.get('buyer_unlock_fee', settings.buyer_unlock_fee)
         settings.buyer_pass_starter_price = request.data.get('buyer_pass_starter_price', settings.buyer_pass_starter_price)
         settings.buyer_pass_smart_price = request.data.get('buyer_pass_smart_price', settings.buyer_pass_smart_price)

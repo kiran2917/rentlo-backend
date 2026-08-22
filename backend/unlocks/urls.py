@@ -3,7 +3,8 @@ from .views import (
     InitiateUnlockView, PropertyFullDetailsView, MyUnlocksView, SubmitFeedbackView, 
     VerifyUnlockView, AdminUnlockListView, AdminUnlockActionView, AdminFeedbackListView,
     MySubscriptionView, InitiatePassPurchaseView, VerifyPassPurchaseView, ExtendPassValidityView,
-    AdminCreateManualTransactionView, InitiateRefundView, GenerateReceiptView
+    AdminCreateManualTransactionView, InitiateRefundView, GenerateReceiptView,
+    OwnerListingPassReceiptView
 )
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path('unlocks/<int:id>/refund/', InitiateRefundView.as_view(), name='initiate-refund'),
     
     path('payments/<str:txn_id>/receipt/', GenerateReceiptView.as_view(), name='generate-receipt'),
+    path('owner-passes/<int:id>/receipt/', OwnerListingPassReceiptView.as_view(), name='owner-pass-receipt'),
 
     path('pass/initiate/', InitiatePassPurchaseView.as_view(), name='initiate-pass-purchase'),
     path('pass/verify/', VerifyPassPurchaseView.as_view(), name='verify-pass-purchase'),

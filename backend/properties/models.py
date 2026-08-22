@@ -1,6 +1,13 @@
 from django.db import models
 from accounts.models import User
 
+from django.core.validators import MinValueValidator, RegexValidator
+
+phone_regex = RegexValidator(
+    regex=r'^\+?1?\d{9,15}$',
+    message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+)
+
 class City(models.Model):
     name = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
@@ -73,7 +80,7 @@ class Property(models.Model):
     ownership_document = models.FileField(upload_to='ownership_docs/', null=True, blank=True)
 
     owner_name = models.CharField(max_length=255)
-    owner_phone = models.CharField(max_length=20)
+    owner_phone = models.CharField(max_length=20, validators=[phone_regex])
     has_whatsapp = models.BooleanField(default=True)
     
     locality = models.ForeignKey(Locality, on_delete=models.SET_NULL, null=True, blank=True, related_name='properties')
@@ -82,7 +89,7 @@ class Property(models.Model):
     exact_lng = models.DecimalField(max_digits=11, decimal_places=8)
     exact_address = models.TextField(null=True, blank=True)
     
-    price = models.DecimalField(max_digits=14, decimal_places=2)
+    price = models.DecimalField(max_digits=14, decimal_places=2, validators=[MinValueValidator(0)])
     property_category = models.CharField(max_length=20, choices=PROPERTY_CATEGORY_CHOICES, default='residential')
     property_type = models.CharField(max_length=20, choices=PROPERTY_TYPES)
     description = models.TextField()
@@ -286,6 +293,10 @@ class PlatformSettingsAuditLog(models.Model):
 
 class PlatformSettings(models.Model):
     default_upi_id = models.CharField(max_length=255, default='rentlo@ybl')
+    
+    # Custom Branding
+    company_name = models.CharField(max_length=255, default='Rentlo Technologies Private Limited')
+    company_logo_url = models.URLField(max_length=500, blank=True, null=True)
     
     # Dynamic Buyer Unlock & Pass Prices
     buyer_unlock_fee = models.DecimalField(max_digits=10, decimal_places=2, default=14.00)

@@ -1099,6 +1099,13 @@ export const OwnerDashboard = () => {
                           <span className="font-black text-white">
                             {pass.credits_remaining} / {pass.credits_total} Credits
                           </span>
+                          <button
+                            onClick={() => window.open(`http://127.0.0.1:8000/api/v1/properties/owner-passes/${pass.id}/receipt/`, "_blank")}
+                            className="ml-2 bg-emerald-500/20 hover:bg-emerald-500/40 text-white p-1 rounded-lg transition-colors flex items-center justify-center"
+                            title="Download Receipt"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">download</span>
+                          </button>
                         </div>
                       );
                     })}

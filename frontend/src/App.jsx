@@ -34,6 +34,7 @@ import { ModerationQueue } from "./admin/pages/ModerationQueue";
 import { FraudFlags } from "./admin/pages/FraudFlags";
 import { AdminAnalytics } from "./admin/pages/AdminAnalytics";
 import { Earnings as AdminEarnings } from "./admin/pages/Earnings";
+import { AgentPayouts } from "./admin/pages/AgentPayouts";
 import { CommissionRules } from "./admin/pages/CommissionRules";
 import { Settings as AdminSettings } from "./admin/pages/Settings";
 import { PropertyList } from "./admin/pages/PropertyList";
@@ -201,8 +202,9 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/payments" element={<AdminPayments />} />
             <Route path="/admin/earnings" element={<AdminEarnings />} />
+            <Route path="/admin/payouts" element={<AgentPayouts />} />
             <Route path="/admin/team" element={<SubAdminManagement />} />
             <Route path="/admin/agents" element={<AgentManagement />} />
             <Route path="/admin/commission-rules" element={<CommissionRules />} />

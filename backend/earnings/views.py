@@ -1,9 +1,10 @@
 from rest_framework import generics, views, status
 from rest_framework.response import Response
 from django.utils import timezone
+from datetime import timedelta
 from django.db import transaction
-from .models import CommissionRule, EarningEntry
-from .serializers import CommissionRuleSerializer, EarningEntrySerializer
+from .models import CommissionRule, EarningEntry, AgentPayoutBatch
+from .serializers import CommissionRuleSerializer, EarningEntrySerializer, AgentPayoutBatchSerializer
 from accounts.permissions import IsAdmin
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
@@ -88,15 +89,187 @@ class AgentEarningsSummaryView(views.APIView):
         pending_total = entries.filter(status='pending').aggregate(total=Sum('amount'))['total'] or 0
         approved_total = entries.filter(status='approved').aggregate(total=Sum('amount'))['total'] or 0
         paid_total = entries.filter(status='paid').aggregate(total=Sum('amount'))['total'] or 0
-
-        # Optional: return a small snippet of recent history, or they could hit another endpoint for full history.
-        # But the prompt says "showing their own EarningEntry history and running totals ... pulled from GET /api/v1/agents/{id}/earnings-summary"
         
-        serializer = EarningEntrySerializer(entries, many=True)
+        # Calculate next payout date (Next Monday)
+        today = timezone.now().date()
+        days_ahead = 0 - today.weekday() # Monday is 0
+        if days_ahead <= 0: # Target next week if today is Monday or later
+            days_ahead += 7
+        next_payout_date = today + timedelta(days=days_ahead)
+
+        # Get latest payout batches
+        batches = AgentPayoutBatch.objects.filter(agent_id=id).order_by('-created_at')
+        batch_serializer = AgentPayoutBatchSerializer(batches, many=True)
+        
+        serializer = EarningEntrySerializer(entries[:20], many=True) # Return only recent 20 for history
 
         return Response({
             'pending_total': pending_total,
             'approved_total': approved_total,
             'paid_total': paid_total,
+            'wallet_balance': pending_total + approved_total, # Unpaid active earnings
+            'next_payout_date': next_payout_date.isoformat(),
+            'payout_batches': batch_serializer.data,
             'history': serializer.data
         })
+
+class AgentPayoutBatchListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AgentPayoutBatchSerializer
+
+    def get_queryset(self):
+        queryset = AgentPayoutBatch.objects.all().order_by('-created_at')
+        
+        # If admin, see all (unless agent_id filtered)
+        # If agent, only see their own
+        if self.request.user.role == 'admin':
+            agent_id = self.request.query_params.get('agent')
+            if agent_id:
+                queryset = queryset.filter(agent_id=agent_id)
+        else:
+            queryset = queryset.filter(agent=self.request.user)
+            
+        status_param = self.request.query_params.get('status')
+        if status_param:
+            queryset = queryset.filter(status=status_param)
+            
+        return queryset
+
+class MarkPayoutBatchPaidView(views.APIView):
+    permission_classes = [IsAdmin]
+
+    def patch(self, request, id):
+        utr_number = request.data.get('utr_number')
+        if not utr_number:
+            return Response({'detail': 'UTR number is required to mark as paid.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            with transaction.atomic():
+                batch = AgentPayoutBatch.objects.select_for_update().get(id=id)
+                if batch.status == 'paid':
+                    return Response({'detail': 'Batch is already paid.'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                batch.status = 'paid'
+                batch.utr_number = utr_number
+                batch.paid_at = timezone.now()
+                batch.paid_by = request.user
+                batch.save()
+                
+                # Cascade update to all entries
+                batch.entries.update(
+                    status='paid',
+                    paid_at=timezone.now(),
+                    paid_by=request.user,
+                    notes=f"Paid via Batch #{batch.id}, UTR: {utr_number}"
+                )
+                
+                # Trigger SMS notification asynchronously
+                from notifications.tasks import send_payout_sms_async
+                if batch.agent.phone:
+                    send_payout_sms_async.delay(
+                        phone=batch.agent.phone,
+                        amount=float(batch.total_amount),
+                        utr_number=utr_number
+                    )
+                
+                return Response(AgentPayoutBatchSerializer(batch).data)
+        except AgentPayoutBatch.DoesNotExist:
+            return Response({'detail': 'Payout batch not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import inch
+
+class AgentPayoutBatchReceiptView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        try:
+            batch = AgentPayoutBatch.objects.get(id=id)
+            if request.user.role == 'agent' and batch.agent != request.user:
+                return Response({'detail': 'Unauthorized.'}, status=status.HTTP_403_FORBIDDEN)
+                
+            from properties.models import PlatformSettings
+            import urllib.request
+            import tempfile
+            import os
+            from PIL import Image
+            
+            settings = PlatformSettings.load()
+            
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="Settlement_Statement_{batch.id}.pdf"'
+            
+            p = canvas.Canvas(response, pagesize=A4)
+            width, height = A4
+            
+            # Header Layout
+            current_y = height - 1 * inch
+            
+            # Draw Logo (Left side)
+            if settings.company_logo_url:
+                try:
+                    req = urllib.request.Request(settings.company_logo_url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req) as u:
+                        raw_data = u.read()
+                    
+                    # Save to temp file since reportlab handles files better than bytesio sometimes
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
+                        tmp.write(raw_data)
+                        tmp_path = tmp.name
+                    
+                    # Use PIL to get dimensions to maintain aspect ratio
+                    with Image.open(tmp_path) as img:
+                        img_width, img_height = img.size
+                        aspect = img_height / float(img_width)
+                        
+                    target_width = 1.5 * inch
+                    target_height = target_width * aspect
+                    
+                    p.drawImage(tmp_path, 1 * inch, current_y - target_height + 0.25 * inch, width=target_width, height=target_height, mask='auto')
+                    os.unlink(tmp_path)
+                except Exception as e:
+                    print("Logo fetch error:", e)
+                    
+            # Draw Title (Right side)
+            p.setFont("Helvetica-Bold", 24)
+            p.drawRightString(width - 1 * inch, current_y, "Settlement Statement")
+            
+            current_y -= 0.6 * inch
+            
+            # Draw Company Name
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(1 * inch, current_y, settings.company_name)
+            
+            current_y -= 0.5 * inch
+            
+            p.setFont("Helvetica", 12)
+            p.drawString(1 * inch, current_y, f"Batch ID: {batch.id}")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Agent: {batch.agent.get_full_name()} ({batch.agent.username})")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Cycle Dates: {batch.cycle_start_date} to {batch.cycle_end_date}")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Total Amount: INR {batch.total_amount}")
+            current_y -= 0.3 * inch
+            p.drawString(1 * inch, current_y, f"Status: {batch.status.upper()}")
+            
+            if batch.status == 'paid':
+                current_y -= 0.3 * inch
+                p.drawString(1 * inch, current_y, f"Paid On: {batch.paid_at.strftime('%Y-%m-%d %H:%M') if batch.paid_at else 'N/A'}")
+                current_y -= 0.3 * inch
+                p.drawString(1 * inch, current_y, f"UTR Number: {batch.utr_number}")
+                
+            p.line(1 * inch, current_y - 0.5 * inch, width - 1 * inch, current_y - 0.5 * inch)
+            
+            current_y -= 1 * inch
+            p.setFont("Helvetica-Oblique", 10)
+            p.drawString(1 * inch, current_y, f"This is a computer-generated statement by {settings.company_name} and does not require a physical signature.")
+            
+            p.showPage()
+            p.save()
+            return response
+            
+        except AgentPayoutBatch.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)

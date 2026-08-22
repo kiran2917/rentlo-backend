@@ -29,4 +29,8 @@ app.conf.beat_schedule = {
         'task': 'unlocks.tasks.expire_passes',
         'schedule': crontab(hour=1, minute=0), # Run daily at 1:00 AM
     },
+    'generate-weekly-agent-payouts': {
+        'task': 'earnings.tasks.generate_weekly_payouts',
+        'schedule': crontab(hour=2, minute=0, day_of_week=1), # Run every Monday at 2:00 AM
+    },
 }

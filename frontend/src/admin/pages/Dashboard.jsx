@@ -210,16 +210,21 @@ export const Dashboard = () => {
         >
           <div className="flex justify-between items-start mb-6 relative z-10">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-emerald-600 bg-emerald-50 border border-emerald-100 shadow-sm group-hover:scale-110 transition-transform">
-              <span className="material-symbols-outlined text-[24px]">payments</span>
+              <span className="material-symbols-outlined text-[24px]">{agentEarnings ? "account_balance_wallet" : "payments"}</span>
             </div>
-            <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-extrabold uppercase tracking-wider">Revenue</span>
+            <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-extrabold uppercase tracking-wider">{agentEarnings ? "Wallet" : "Revenue"}</span>
           </div>
           <h3 className="text-[11px] font-extrabold mb-1.5 uppercase tracking-widest relative z-10" style={{ color: "var(--text-muted)" }}>
-            {agentEarnings ? "My Earnings" : "Total Platform Revenue"}
+            {agentEarnings ? "Wallet Balance (Unpaid)" : "Total Platform Revenue"}
           </h3>
           <p className="text-[32px] font-extrabold text-emerald-600 tracking-tight relative z-10 leading-none">
-            ₹{agentEarnings ? (agentEarnings.total_earnings || 0).toLocaleString("en-IN") : metrics.totalEarnings.toLocaleString("en-IN")}
+            ₹{agentEarnings ? (agentEarnings.wallet_balance || 0).toLocaleString("en-IN") : metrics.totalEarnings.toLocaleString("en-IN")}
           </p>
+          {agentEarnings && agentEarnings.next_payout_date && (
+            <p className="text-[11px] font-medium mt-4 relative z-10" style={{ color: "var(--text-muted)" }}>
+              Next Payout: <strong style={{ color: "var(--ink)" }}>{new Date(agentEarnings.next_payout_date).toLocaleDateString()}</strong>
+            </p>
+          )}
         </div>
 
         {/* KPI 4: Total Unlocks */}
@@ -413,6 +418,92 @@ export const Dashboard = () => {
           </div>
         </div>
       </section>
+
+      {/* Agent Payouts History (Only for Agents) */}
+      {user?.role === "agent" && agentEarnings?.payout_batches && (
+        <section className="mb-8">
+          <div
+            className="rounded-3xl shadow-sm border overflow-hidden"
+            style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+          >
+            <div className="p-6 border-b" style={{ borderColor: "var(--border)" }}>
+              <h2 className="text-[16px] font-bold tracking-tight" style={{ color: "var(--ink)" }}>
+                My Payout History
+              </h2>
+              <p className="text-[12px] font-medium mt-1" style={{ color: "var(--text-muted)" }}>
+                Track your weekly settlements and bank transfers.
+              </p>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b" style={{ borderColor: "var(--border)" }}>
+                    <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-wider text-text-muted">Cycle Dates</th>
+                    <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-wider text-text-muted">Amount</th>
+                    <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-wider text-text-muted">Status</th>
+                    <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-wider text-text-muted">UTR / Transaction ID</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y text-[13px] font-medium" style={{ borderColor: "var(--border)", color: "var(--ink)" }}>
+                  {agentEarnings.payout_batches.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-12 text-center text-slate-500">
+                        No payout history yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    agentEarnings.payout_batches.map((batch) => (
+                      <tr key={batch.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-4">
+                          <span className="font-bold text-slate-500">
+                            {new Date(batch.cycle_start_date).toLocaleDateString()} - {new Date(batch.cycle_end_date).toLocaleDateString()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-black text-emerald-600">
+                          ₹{parseFloat(batch.total_amount).toLocaleString("en-IN")}
+                        </td>
+                        <td className="px-6 py-4">
+                          {batch.status === "paid" ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-700">
+                              <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                              PAID
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-700">
+                              <span className="material-symbols-outlined text-[14px]">hourglass_empty</span>
+                              PROCESSING
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          {batch.utr_number ? (
+                            <div className="flex flex-col gap-2 items-start">
+                              <span className="font-mono text-[12px] text-slate-600 font-bold bg-slate-100 px-2 py-1 rounded">
+                                {batch.utr_number}
+                              </span>
+                              <button 
+                                onClick={() => window.open(`http://127.0.0.1:8000/api/v1/earnings/payout-batches/${batch.id}/receipt/`, "_blank")}
+                                className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">download</span>
+                                Download Statement
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-[11px] font-medium text-slate-400">Waiting for transfer...</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      )}
+
     </AdminLayout>
   );
 };

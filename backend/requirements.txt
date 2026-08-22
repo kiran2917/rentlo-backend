@@ -21,4 +21,5 @@ imagehash>=4.3.1
 cloudinary>=1.36.0
 pywebpush>=2.4.0
 py-vapid>=1.9.4
+reportlab>=4.1.0
 
