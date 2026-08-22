@@ -483,7 +483,7 @@ export const Dashboard = () => {
                                 {batch.utr_number}
                               </span>
                               <button 
-                                onClick={() => window.open(`http://127.0.0.1:8000/api/v1/earnings/payout-batches/${batch.id}/receipt/`, "_blank")}
+                                onClick={() => window.open(`${import.meta.env.VITE_API_URL}/earnings/payout-batches/${batch.id}/receipt/`, "_blank")}
                                 className="flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:text-blue-800 transition-colors"
                               >
                                 <span className="material-symbols-outlined text-[14px]">download</span>
