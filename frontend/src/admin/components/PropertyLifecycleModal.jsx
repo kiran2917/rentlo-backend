@@ -26,9 +26,8 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
     const fetchLifecycleData = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("access_token");
         const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/${propertyId}/lifecycle/`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch lifecycle data");
         const json = await res.json();
