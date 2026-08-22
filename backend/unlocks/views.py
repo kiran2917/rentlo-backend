@@ -1305,7 +1305,7 @@ class OwnerListingPassReceiptView(views.APIView):
             current_y -= 0.3 * inch
             p.drawString(1 * inch, current_y, f"Customer: {listing_pass.owner.get_full_name()} ({listing_pass.owner.username})")
             current_y -= 0.3 * inch
-            p.drawString(1 * inch, current_y, f"Plan: {listing_pass.credits_purchased} Credit(s) Pass")
+            p.drawString(1 * inch, current_y, f"Plan: {listing_pass.credits_total} Credit(s) Pass")
             current_y -= 0.3 * inch
             p.drawString(1 * inch, current_y, f"Total Amount Paid: INR {listing_pass.amount_paid}")
             current_y -= 0.3 * inch
