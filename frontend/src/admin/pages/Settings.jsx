@@ -1804,7 +1804,7 @@ export const Settings = () => {
                                 });
                                 if (uploadRes.ok) {
                                   const data = await uploadRes.json();
-                                  setCompanyLogoUrl(data.public_url);
+                                  setCompanyLogoUrl(data.full_url);
                                   toast.success("Logo uploaded successfully");
                                 } else {
                                   toast.error("Failed to upload logo");
