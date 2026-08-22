@@ -20,14 +20,20 @@ export const AdminLocations = () => {
   const fetchCities = async () => {
     try {
       const r = await fetch(`${import.meta.env.VITE_API_URL}/properties/cities/`);
-      if (r.ok) setCities(await r.json());
+      if (r.ok) {
+        const data = await r.json();
+        setCities(Array.isArray(data) ? data : []);
+      }
     } catch {}
   };
 
   const fetchLocalities = async (cityId) => {
     try {
       const r = await fetch(`${import.meta.env.VITE_API_URL}/properties/cities/${cityId}/localities/`);
-      if (r.ok) setLocalities(await r.json());
+      if (r.ok) {
+        const data = await r.json();
+        setLocalities(Array.isArray(data) ? data : []);
+      }
     } catch {}
   };
 

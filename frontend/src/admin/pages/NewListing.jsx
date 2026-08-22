@@ -415,10 +415,11 @@ export const NewListing = () => {
       fetch(`${import.meta.env.VITE_API_URL}/properties/cities/`)
         .then((res) => res.json())
         .then((data) => {
-          let availableCities = data;
+          const safeData = Array.isArray(data) ? data : [];
+          let availableCities = safeData;
           const userRoles = user.roles || [user.role];
           if (userRoles.includes("agent")) {
-            availableCities = data.filter((city) =>
+            availableCities = safeData.filter((city) =>
               user.assigned_cities?.includes(city.id),
             );
           }
@@ -440,7 +441,7 @@ export const NewListing = () => {
         `${import.meta.env.VITE_API_URL}/properties/cities/${formData.city_id}/localities/`,
       )
         .then((res) => res.json())
-        .then((data) => setLocalities(data))
+        .then((data) => setLocalities(Array.isArray(data) ? data : []))
         .catch((err) => console.error(err));
 
       fetch(

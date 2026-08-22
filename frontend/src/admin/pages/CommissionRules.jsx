@@ -32,9 +32,13 @@ export const CommissionRules = () => {
           credentials: "include",
         }),
       ]);
-      setRules(await rulesRes.json());
-      setCities(await citiesRes.json());
-      setAgents((await agentsRes.json()).filter((a) => a.role === "agent"));
+      const rulesData = await rulesRes.json();
+      setRules(Array.isArray(rulesData) ? rulesData : []);
+      const citiesData = await citiesRes.json();
+      setCities(Array.isArray(citiesData) ? citiesData : []);
+      const agentsData = await agentsRes.json();
+      const safeAgentsData = Array.isArray(agentsData) ? agentsData : [];
+      setAgents(safeAgentsData.filter((a) => a.role === "agent"));
     } catch (e) {
       toast.error("Failed to load data");
     } finally {
