@@ -202,7 +202,6 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route path="/admin/payments" element={<AdminPayments />} />
             <Route path="/admin/earnings" element={<AdminEarnings />} />
             <Route path="/admin/payouts" element={<AgentPayouts />} />
             <Route path="/admin/team" element={<SubAdminManagement />} />
