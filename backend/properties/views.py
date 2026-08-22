@@ -1944,6 +1944,19 @@ class PropertyMediaDeleteView(views.APIView):
         except PropertyMedia.DoesNotExist:
             return Response({'detail': 'Media item not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+from django.core.management import call_command
+from rest_framework.response import Response
+
+class TriggerMigrationView(views.APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        try:
+            call_command('migrate')
+            return Response({"status": "Success", "message": "Migrations applied successfully."})
+        except Exception as e:
+            return Response({"status": "Error", "message": str(e)}, status=500)
+
 class PropertyLifecycleView(views.APIView):
     permission_classes = [IsAuthenticated]
 
