@@ -40,7 +40,7 @@ class AnalyticsSummaryView(views.APIView):
         
         passes_this_month = OwnerListingPass.objects.filter(status__in=['active', 'depleted'], created_at__gte=start_of_month)
         if city_id:
-            passes_this_month = passes_this_month.filter(owner__assigned_cities__id=city_id)
+            passes_this_month = passes_this_month.filter(owner__owned_properties__locality__city_id=city_id).distinct()
         total_revenue += passes_this_month.aggregate(total=Sum('amount_paid'))['total'] or 0
 
         unlocks_all_time_qs = Unlock.objects.filter(unlock_filter, status='paid')
@@ -49,7 +49,7 @@ class AnalyticsSummaryView(views.APIView):
         
         passes_all_time = OwnerListingPass.objects.filter(status__in=['active', 'depleted'])
         if city_id:
-            passes_all_time = passes_all_time.filter(owner__assigned_cities__id=city_id)
+            passes_all_time = passes_all_time.filter(owner__owned_properties__locality__city_id=city_id).distinct()
         total_revenue_all_time += passes_all_time.aggregate(total=Sum('amount_paid'))['total'] or 0
 
         # 3. Chart: Unlocks per day over the last 30 days
