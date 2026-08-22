@@ -49,11 +49,14 @@ export const ModerationQueue = () => {
       );
       if (res.ok) {
         const data = await res.json();
-        const sorted = data.sort(
+        const arr = Array.isArray(data) ? data : data.results || [];
+        const sorted = arr.sort(
           (a, b) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
         );
         setProperties(sorted);
+      } else {
+        toast.error("Failed to load moderation queue");
       }
     } catch (err) {
       toast.error("Failed to load moderation queue");
