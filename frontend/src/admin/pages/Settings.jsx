@@ -1799,6 +1799,7 @@ export const Settings = () => {
                                 formData.append("file", file);
                                 const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/media/upload/`, {
                                   method: "POST",
+                                  credentials: "include",
                                   body: formData,
                                 });
                                 if (uploadRes.ok) {
