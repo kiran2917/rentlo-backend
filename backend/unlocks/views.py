@@ -1259,74 +1259,124 @@ class OwnerListingPassReceiptView(views.APIView):
             response = HttpResponse(content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="Receipt_{listing_pass.id}.pdf"'
             
-            p = canvas.Canvas(response, pagesize=A4)
-            width, height = A4
+            from reportlab.lib import colors
+            from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image as RLImage
+            from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+            from reportlab.lib.enums import TA_CENTER, TA_RIGHT
             
-            # Header Layout
-            current_y = height - 1 * inch
+            doc = SimpleDocTemplate(response, pagesize=A4, rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40)
+            elements = []
+            styles = getSampleStyleSheet()
             
-            # Draw Logo (Left side)
+            # Logo & Header
+            logo = None
             if settings.company_logo_url:
                 try:
+                    import io
                     req = urllib.request.Request(settings.company_logo_url, headers={'User-Agent': 'Mozilla/5.0'})
                     with urllib.request.urlopen(req) as u:
                         raw_data = u.read()
                     
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
-                        tmp.write(raw_data)
-                        tmp_path = tmp.name
-                    
-                    with Image.open(tmp_path) as img:
+                    img_io = io.BytesIO(raw_data)
+                    with Image.open(img_io) as img:
                         img_width, img_height = img.size
                         aspect = img_height / float(img_width)
                         
-                    target_width = 1.5 * inch
+                    target_width = 1.8 * inch
                     target_height = target_width * aspect
+                    if target_height > 1 * inch:
+                        target_height = 1 * inch
+                        target_width = target_height / aspect
                     
-                    p.drawImage(tmp_path, 1 * inch, current_y - target_height + 0.25 * inch, width=target_width, height=target_height, mask='auto')
-                    os.unlink(tmp_path)
+                    img_io.seek(0)
+                    logo = RLImage(img_io, width=target_width, height=target_height)
                 except Exception as e:
                     print("Logo fetch error:", e)
+                    
+            title_style = ParagraphStyle(name='TitleRight', parent=styles['Heading1'], alignment=TA_RIGHT, fontSize=20, textColor=colors.HexColor("#1e293b"))
+            title_p = Paragraph("PAYMENT RECEIPT", title_style)
             
-            # Draw Title (Right side)
-            p.setFont("Helvetica-Bold", 24)
-            p.drawRightString(width - 1 * inch, current_y, "Payment Receipt")
-            
-            current_y -= 0.6 * inch
-            
-            # Draw Company Name
-            p.setFont("Helvetica-Bold", 12)
-            p.drawString(1 * inch, current_y, settings.company_name)
-            
-            current_y -= 0.5 * inch
-            
-            p.setFont("Helvetica", 12)
-            p.drawString(1 * inch, current_y, f"Pass ID: {listing_pass.id}")
-            current_y -= 0.3 * inch
-            p.drawString(1 * inch, current_y, f"Customer: {listing_pass.owner.get_full_name()} ({listing_pass.owner.username})")
-            current_y -= 0.3 * inch
-            p.drawString(1 * inch, current_y, f"Plan: {listing_pass.credits_total} Credit(s) Pass")
-            current_y -= 0.3 * inch
-            p.drawString(1 * inch, current_y, f"Total Amount Paid: INR {listing_pass.amount_paid}")
-            current_y -= 0.3 * inch
-            p.drawString(1 * inch, current_y, f"Status: {listing_pass.status.upper()}")
-            
-            if listing_pass.status == 'active' or listing_pass.status == 'depleted':
-                current_y -= 0.3 * inch
-                p.drawString(1 * inch, current_y, f"Paid On: {listing_pass.created_at.strftime('%Y-%m-%d %H:%M')}")
+            if logo:
+                header_table = Table([[logo, title_p]], colWidths=[2.5*inch, None])
+            else:
+                header_table = Table([["", title_p]], colWidths=[2.5*inch, None])
                 
+            header_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ]))
+            elements.append(header_table)
+            elements.append(Spacer(1, 0.4*inch))
+            
+            # Company Details & Invoice Info
+            comp_style = ParagraphStyle(name='CompStyle', fontSize=10, textColor=colors.HexColor("#475569"), leading=14)
+            info_style = ParagraphStyle(name='InfoStyle', fontSize=10, textColor=colors.HexColor("#475569"), alignment=TA_RIGHT, leading=14)
+            
+            company_details = f"<b>{settings.company_name or 'Rentlo Technologies'}</b><br/>"
+            
+            invoice_info = f"<b>Receipt No:</b> RCPT-{listing_pass.id}<br/>"
+            if listing_pass.status in ['active', 'depleted'] and listing_pass.created_at:
+                invoice_info += f"<b>Date:</b> {listing_pass.created_at.strftime('%B %d, %Y')}<br/>"
             if listing_pass.utr:
-                current_y -= 0.3 * inch
-                p.drawString(1 * inch, current_y, f"Transaction Ref (UTR): {listing_pass.utr}")
+                invoice_info += f"<b>UTR / Ref:</b> {listing_pass.utr}<br/>"
                 
-            p.line(1 * inch, current_y - 0.5 * inch, width - 1 * inch, current_y - 0.5 * inch)
+            info_table = Table([[Paragraph(company_details, comp_style), Paragraph(invoice_info, info_style)]])
+            info_table.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+                ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]))
+            elements.append(info_table)
+            elements.append(Spacer(1, 0.4*inch))
             
-            current_y -= 1 * inch
-            p.setFont("Helvetica-Oblique", 10)
-            p.drawString(1 * inch, current_y, f"This is a computer-generated receipt by {settings.company_name} and does not require a physical signature.")
+            # Customer Details
+            cust_header = Paragraph("<b>BILLED TO:</b>", ParagraphStyle(name='CustHeader', fontSize=10, textColor=colors.HexColor("#94a3b8"), spaceAfter=6))
+            elements.append(cust_header)
             
-            p.showPage()
-            p.save()
+            cust_name = f"<b>{listing_pass.owner.get_full_name() or listing_pass.owner.username}</b>"
+            cust_contact = listing_pass.owner.phone if hasattr(listing_pass.owner, 'phone') and listing_pass.owner.phone else getattr(listing_pass.owner, 'email', '')
+            cust_details = f"{cust_name}<br/>{cust_contact}"
+            elements.append(Paragraph(cust_details, comp_style))
+            elements.append(Spacer(1, 0.5*inch))
+            
+            # Line Items Table
+            table_data = [
+                ["DESCRIPTION", "QTY", "AMOUNT (INR)"]
+            ]
+            
+            plan_name = f"{listing_pass.credits_total} Credit(s) Owner Listing Pass"
+            table_data.append([plan_name, "1", f"{listing_pass.amount_paid}"])
+            
+            # Add a row for total
+            table_data.append(["", "TOTAL PAID", f"{listing_pass.amount_paid}"])
+            
+            item_table = Table(table_data, colWidths=[4.2*inch, 1*inch, 2*inch])
+            item_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#f1f5f9")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor("#475569")),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+                ('TOPPADDING', (0, 0), (-1, 0), 10),
+                ('BOTTOMPADDING', (0, 1), (-1, -1), 12),
+                ('TOPPADDING', (0, 1), (-1, -1), 12),
+                ('LINEBELOW', (0, 0), (-1, -2), 1, colors.HexColor("#e2e8f0")),
+                ('FONTNAME', (1, -1), (1, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (2, -1), (2, -1), 'Helvetica-Bold'),
+                ('TEXTCOLOR', (1, -1), (2, -1), colors.HexColor("#1e293b")),
+                ('LINEABOVE', (1, -1), (2, -1), 1, colors.HexColor("#cbd5e1")),
+            ]))
+            elements.append(item_table)
+            
+            elements.append(Spacer(1, 1*inch))
+            
+            footer_text = f"This is a computer-generated receipt by {settings.company_name or 'Rentlo Technologies'} and does not require a physical signature."
+            elements.append(Paragraph(footer_text, ParagraphStyle(name='Footer', fontSize=8, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER)))
+            
+            doc.build(elements)
             return response
             
         except OwnerListingPass.DoesNotExist:
