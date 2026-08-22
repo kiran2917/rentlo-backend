@@ -52,7 +52,7 @@ export const UTRVerifications = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setUnlocks(data);
+        setUnlocks(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       toast.error("Failed to fetch unlocks");

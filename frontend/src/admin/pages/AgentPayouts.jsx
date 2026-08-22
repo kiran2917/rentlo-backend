@@ -38,7 +38,7 @@ export const AgentPayouts = () => {
       );
       if (res.ok) {
         const data = await res.json();
-        setBatches(data);
+        setBatches(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       toast.error("Failed to fetch payout batches");

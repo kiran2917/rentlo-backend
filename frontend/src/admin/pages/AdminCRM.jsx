@@ -37,7 +37,7 @@ export const AdminCRM = () => {
       const res = await fetch(url, { credentials: "include" });
       if (res.ok) {
         const data = await res.json();
-        setUsers(data);
+        setUsers(Array.isArray(data) ? data : []);
       } else {
         toast.error("Failed to load CRM user data.");
       }
