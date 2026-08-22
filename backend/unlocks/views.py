@@ -1240,6 +1240,9 @@ class OwnerListingPassReceiptView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id):
+        from .models import OwnerListingPass
+        from django.http import HttpResponse
+        
         try:
             listing_pass = OwnerListingPass.objects.get(id=id)
             if listing_pass.owner != request.user:
