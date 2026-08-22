@@ -596,12 +596,38 @@ class AdminUnlockSerializer(serializers.ModelSerializer):
             return fn if fn else obj.property.owner.username
         return ''
 
-class AdminUnlockListView(generics.ListAPIView):
+class AdminUnlockListView(views.APIView):
     permission_classes = [IsAdminOrModerator]
-    serializer_class = AdminUnlockSerializer
 
-    def get_queryset(self):
-        return Unlock.objects.exclude(payment_method='razorpay').order_by('-id')
+    def get(self, request):
+        unlocks = Unlock.objects.all().order_by('-id')
+        unlocks_data = AdminUnlockSerializer(unlocks, many=True).data
+        
+        from .models import OwnerListingPass
+        passes = OwnerListingPass.objects.all().order_by('-id')
+        passes_data = []
+        for p in passes:
+            passes_data.append({
+                'id': f"pass_{p.id}",
+                'buyer_name': p.owner.username,
+                'buyer_role': getattr(p.owner, 'role', 'owner'),
+                'buyer_full_name': p.owner.get_full_name() or 'Unknown Name',
+                'buyer_is_active': getattr(p.owner, 'is_active', True),
+                'property_id': None,
+                'property_title': f"{p.credits_total} Credit(s) Pass",
+                'property_owner_username': p.owner.username,
+                'property_owner_fullname': p.owner.get_full_name() or 'Unknown Name',
+                'property_owner_is_active': getattr(p.owner, 'is_active', True),
+                'amount': float(p.amount_paid) if p.amount_paid else 0.0,
+                'payment_method': p.payment_method,
+                'utr': p.utr,
+                'status': 'paid' if p.status in ['active', 'depleted'] else p.status,
+                'unlocked_at': p.created_at.isoformat() if p.created_at else None
+            })
+            
+        combined = list(unlocks_data) + passes_data
+        combined.sort(key=lambda x: str(x.get('unlocked_at') or ''), reverse=True)
+        return Response(combined)
 
 class AdminCreateManualTransactionView(views.APIView):
     """Allows Admin to record and immediately approve a manual transaction."""
@@ -659,6 +685,37 @@ class AdminUnlockActionView(views.APIView):
 
     def patch(self, request, id):
         action = request.data.get('action')
+        id_str = str(id)
+        
+        if id_str.startswith('pass_'):
+            real_id = int(id_str.replace('pass_', ''))
+            from .models import OwnerListingPass
+            try:
+                pass_obj = OwnerListingPass.objects.get(id=real_id)
+                if action == 'approve':
+                    pass_obj.status = 'active'
+                    pass_obj.save()
+                    return Response({'detail': 'Approved'})
+                elif action == 'reject':
+                    pass_obj.status = 'failed'
+                    pass_obj.save()
+                    return Response({'detail': 'Rejected'})
+                elif action == 'ban':
+                    pass_obj.status = 'failed'
+                    pass_obj.save()
+                    user = pass_obj.owner
+                    user.is_active = False
+                    user.save()
+                    return Response({'detail': f'User "{user.username}" Banned.'})
+                elif action == 'unban':
+                    user = pass_obj.owner
+                    user.is_active = True
+                    user.save()
+                    return Response({'detail': f'User "{user.username}" Unbanned.'})
+                return Response({'detail': 'Invalid action'}, status=400)
+            except OwnerListingPass.DoesNotExist:
+                return Response({'detail': 'Not found'}, status=404)
+
         try:
             unlock = Unlock.objects.get(id=id)
         except Unlock.DoesNotExist:

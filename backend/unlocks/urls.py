@@ -9,7 +9,7 @@ from .views import (
 
 urlpatterns = [
     path('unlocks/admin/list/', AdminUnlockListView.as_view(), name='admin-unlock-list'),
-    path('unlocks/admin/<int:id>/action/', AdminUnlockActionView.as_view(), name='admin-unlock-action'),
+    path('unlocks/admin/<str:id>/action/', AdminUnlockActionView.as_view(), name='admin-unlock-action'),
     path('unlocks/admin/manual-transaction/', AdminCreateManualTransactionView.as_view(), name='admin-manual-transaction'),
     path('unlocks/admin/feedbacks/', AdminFeedbackListView.as_view(), name='admin-feedback-list'),
 

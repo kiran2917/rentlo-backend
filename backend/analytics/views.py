@@ -32,13 +32,25 @@ class AnalyticsSummaryView(views.APIView):
         total_live = Property.objects.filter(property_filter, status='live').count()
 
         # 2. Total unlocks and revenue this month + all time
+        from unlocks.models import OwnerListingPass
+        
         unlocks_this_month = Unlock.objects.filter(unlock_filter, status='paid', unlocked_at__gte=start_of_month)
         total_unlocks = unlocks_this_month.count()
         total_revenue = unlocks_this_month.aggregate(total=Sum('amount'))['total'] or 0
+        
+        passes_this_month = OwnerListingPass.objects.filter(status__in=['active', 'depleted'], created_at__gte=start_of_month)
+        if city_id:
+            passes_this_month = passes_this_month.filter(owner__assigned_cities__id=city_id)
+        total_revenue += passes_this_month.aggregate(total=Sum('amount_paid'))['total'] or 0
 
         unlocks_all_time_qs = Unlock.objects.filter(unlock_filter, status='paid')
         total_unlocks_all_time = unlocks_all_time_qs.count()
         total_revenue_all_time = unlocks_all_time_qs.aggregate(total=Sum('amount'))['total'] or 0
+        
+        passes_all_time = OwnerListingPass.objects.filter(status__in=['active', 'depleted'])
+        if city_id:
+            passes_all_time = passes_all_time.filter(owner__assigned_cities__id=city_id)
+        total_revenue_all_time += passes_all_time.aggregate(total=Sum('amount_paid'))['total'] or 0
 
         # 3. Chart: Unlocks per day over the last 30 days
         unlocks_last_30 = Unlock.objects.filter(unlock_filter, status='paid', unlocked_at__gte=thirty_days_ago) \

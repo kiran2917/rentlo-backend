@@ -239,6 +239,9 @@ export const Dashboard = () => {
             <span className="px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 text-[10px] font-extrabold uppercase tracking-wider">Unlocks</span>
           </div>
           <h3 className="text-[11px] font-extrabold mb-1.5 uppercase tracking-widest relative z-10" style={{ color: "var(--text-muted)" }}>Total Unlocks</h3>
+          <p className="text-[32px] font-extrabold text-purple-600 tracking-tight relative z-10 leading-none">
+            {metrics.totalUnlocks}
+          </p>
         </div>
       </section>
 
