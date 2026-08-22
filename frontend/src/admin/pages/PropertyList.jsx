@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AdminLayout } from "../components/AdminLayout";
 import { useAuth } from "../../shared/context/AuthContext";
 import { toast } from "react-toastify";
+import { PropertyLifecycleModal } from "../components/PropertyLifecycleModal";
 
 export const PropertyList = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export const PropertyList = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPropertyForPhotos, setSelectedPropertyForPhotos] = useState(null);
+  const [selectedPropertyForLifecycle, setSelectedPropertyForLifecycle] = useState(null);
   const [expandedRow, setExpandedRow] = useState(null);
 
   // Filters State
@@ -599,16 +601,14 @@ export const PropertyList = () => {
                           {/* 7. Actions */}
                           <td className="py-4 px-6 text-right">
                             <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-                              <a
-                                href={`/property/${p.id}`}
-                                target="_blank"
-                                rel="noreferrer"
+                              <button
+                                onClick={() => setSelectedPropertyForLifecycle(p.id)}
                                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
-                                className="p-2 rounded-lg border hover:opacity-80 transition-all flex items-center justify-center"
-                                title="View Property Detail Page"
+                                className="p-2 rounded-lg border hover:opacity-80 transition-all flex items-center justify-center cursor-pointer"
+                                title="View Property Lifecycle & Audit Log"
                               >
                                 <span className="material-symbols-outlined text-[18px]">visibility</span>
-                              </a>
+                              </button>
                               <button
                                 onClick={() => setSelectedPropertyForPhotos(p)}
                                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
@@ -837,16 +837,15 @@ export const PropertyList = () => {
                         </span>
                         
                         <div className="flex items-center gap-2">
-                          <a
-                            href={`/property/${p.id}`}
-                            target="_blank"
-                            rel="noreferrer"
+                          <button
+                            onClick={() => setSelectedPropertyForLifecycle(p.id)}
                             style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
                             className="px-2.5 py-1.5 rounded-lg border hover:opacity-80 transition-all flex items-center justify-center gap-1 text-[11px] font-bold"
+                            title="View Property Lifecycle & Audit Log"
                           >
                             <span className="material-symbols-outlined text-[15px]">visibility</span>
-                            View Page
-                          </a>
+                            Lifecycle
+                          </button>
                           <button
                             onClick={() => setSelectedPropertyForPhotos(p)}
                             style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
@@ -1006,6 +1005,13 @@ export const PropertyList = () => {
           </div>
         </div>
       )}
+
+      {/* Lifecycle & Audit Log Modal */}
+      <PropertyLifecycleModal
+        isOpen={!!selectedPropertyForLifecycle}
+        propertyId={selectedPropertyForLifecycle}
+        onClose={() => setSelectedPropertyForLifecycle(null)}
+      />
     </AdminLayout>
   );
 };

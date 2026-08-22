@@ -11,7 +11,7 @@ from .views import (
     PropertyDetailUpdateView, RegistrationConfigView, CreateRegistrationOrderView, OwnerCreditsView,
     InitiateOwnerPassOrderView, VerifyOwnerPassOrderView,
     SettingsVersionView, EstimatePriceView, CalculateListingFeeView,
-    PlatformSettingsAuditLogListView, PGOccupancyUpdateView, PropertyMediaDeleteView
+    PlatformSettingsAuditLogListView, PGOccupancyUpdateView, PropertyMediaDeleteView, PropertyLifecycleView
 )
 from .reconfirm_view import PropertyReconfirmView
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('create-registration-order/', CreateRegistrationOrderView.as_view(), name='create-registration-order'),
     path('', PropertyListCreateView.as_view(), name='property-list-create'),
     path('<int:pk>/', PropertyDetailUpdateView.as_view(), name='property-detail-update'),
+    path('<int:pk>/lifecycle/', PropertyLifecycleView.as_view(), name='property-lifecycle'),
     path('media/<int:pk>/', PropertyMediaDeleteView.as_view(), name='property-media-delete'),
     path('<int:pk>/update-occupancy/', PGOccupancyUpdateView.as_view(), name='update-occupancy'),
     path('<int:pk>/reconfirm/', PropertyReconfirmView.as_view(), name='property-reconfirm'),

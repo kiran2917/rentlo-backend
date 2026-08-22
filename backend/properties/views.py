@@ -1626,6 +1626,7 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                         active_pass.status = 'depleted'
                     active_pass.save()
 
+            old_status = instance.status
             instance.status = new_status
             if new_status == 'under_negotiation':
                 instance.under_negotiation_since = timezone.now()
@@ -1645,6 +1646,17 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                     instance.expires_at = None  # Active until rented!
 
             instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at'])
+            
+            if old_status != new_status:
+                from properties.models import PropertyAuditLog
+                PropertyAuditLog.objects.create(
+                    property=instance,
+                    changed_by=request.user,
+                    field_name='status',
+                    old_value=str(old_status),
+                    new_value=str(new_status)
+                )
+
             return Response({'detail': f'Status updated to {new_status}', 'status': instance.status, 'expires_at': instance.expires_at})
 
         # Fall back to standard partial update for other fields
@@ -1654,7 +1666,29 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data)
 
     def perform_update(self, serializer):
+        instance = serializer.instance
+        user = self.request.user
+        
+        changes = []
+        for attr, value in serializer.validated_data.items():
+            old_value = getattr(instance, attr, None)
+            if old_value != value:
+                changes.append({
+                    'field_name': attr,
+                    'old_value': str(old_value),
+                    'new_value': str(value)
+                })
+        
         serializer.save()
+        
+        if changes:
+            from properties.models import PropertyAuditLog
+            for change in changes:
+                PropertyAuditLog.objects.create(
+                    property=instance,
+                    changed_by=user,
+                    **change
+                )
 
 
 class EstimatePriceView(views.APIView):
@@ -1909,4 +1943,51 @@ class PropertyMediaDeleteView(views.APIView):
             return Response({'detail': 'Media deleted successfully.'})
         except PropertyMedia.DoesNotExist:
             return Response({'detail': 'Media item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+class PropertyLifecycleView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user = request.user
+        roles = user.roles if hasattr(user, 'roles') else [getattr(user, 'role', 'owner')]
+        
+        try:
+            property_instance = Property.objects.get(pk=pk)
+        except Property.DoesNotExist:
+            return Response({'detail': 'Property not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if 'admin' not in roles and 'moderator' not in roles and property_instance.owner != user and property_instance.agent != user:
+            raise PermissionDenied("Not authorized to view lifecycle for this property.")
+
+        property_data = PropertySerializer(property_instance, context={'request': request}).data
+
+        from unlocks.models import Unlock
+        unlocks = Unlock.objects.filter(property=property_instance).select_related('buyer').order_by('-created_at')
+        unlock_data = [{
+            'id': u.id,
+            'buyer_name': f"{u.buyer.first_name} {u.buyer.last_name}".strip() or u.buyer.username,
+            'buyer_phone': u.buyer.phone,
+            'amount': str(u.amount),
+            'status': u.status,
+            'lead_status': u.lead_status,
+            'created_at': u.created_at,
+            'unlocked_at': u.unlocked_at
+        } for u in unlocks]
+
+        from properties.models import PropertyAuditLog
+        audit_logs = PropertyAuditLog.objects.filter(property=property_instance).select_related('changed_by').order_by('-changed_at')
+        audit_data = [{
+            'id': al.id,
+            'field_name': al.field_name,
+            'old_value': al.old_value,
+            'new_value': al.new_value,
+            'changed_by': al.changed_by.username if al.changed_by else 'System',
+            'changed_at': al.changed_at
+        } for al in audit_logs]
+
+        return Response({
+            'property': property_data,
+            'unlocks': unlock_data,
+            'audit_logs': audit_data
+        })
 

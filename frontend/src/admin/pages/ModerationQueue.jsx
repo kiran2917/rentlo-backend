@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { AdminLayout } from "../components/AdminLayout";
+import { PropertyLifecycleModal } from "../components/PropertyLifecycleModal";
 
 // Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -29,6 +30,7 @@ export const ModerationQueue = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [imageModalUrl, setImageModalUrl] = useState(null);
+  const [selectedPropertyForLifecycle, setSelectedPropertyForLifecycle] = useState(null);
   const itemsPerPage = 10;
   const detailPanelRef = useRef(null);
 
@@ -340,6 +342,17 @@ export const ModerationQueue = () => {
                         <td className="py-5 px-6 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
+                              className="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-600 hover:bg-slate-100 transition-all shadow-sm"
+                              title="View Property Lifecycle & Audit Log"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPropertyForLifecycle(p.id);
+                              }}
+                            >
+                              <span className="material-symbols-outlined text-[16px]">visibility</span>
+                              Lifecycle
+                            </button>
+                            <button
                               className="flex items-center gap-1.5 px-4 py-2 bg-white/80 border border-white rounded-xl text-[12px] font-bold uppercase tracking-widest text-orange-600 hover:bg-orange-50 hover:text-orange-700 transition-all shadow-sm hover:shadow-md"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -443,6 +456,18 @@ export const ModerationQueue = () => {
                         <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-amber-50/80 text-amber-700 border border-amber-200/50">
                           Pending
                         </span>
+                        
+                        <button
+                          className="flex items-center gap-1 px-2.5 py-1 bg-white border border-border rounded-lg text-[10px] font-bold uppercase text-slate-600 shadow-xs hover:bg-slate-50 cursor-pointer"
+                          title="View Property Lifecycle & Audit Log"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedPropertyForLifecycle(p.id);
+                          }}
+                        >
+                          <span className="material-symbols-outlined text-[14px]">visibility</span>
+                          Lifecycle
+                        </button>
                         
                         <button
                           className="flex items-center gap-1 px-2.5 py-1 bg-white border border-border rounded-lg text-[10px] font-bold uppercase text-orange-600 shadow-xs hover:bg-orange-50 cursor-pointer"
@@ -894,6 +919,13 @@ export const ModerationQueue = () => {
           </div>
         </div>
       )}
+
+      {/* Lifecycle & Audit Log Modal */}
+      <PropertyLifecycleModal
+        isOpen={!!selectedPropertyForLifecycle}
+        propertyId={selectedPropertyForLifecycle}
+        onClose={() => setSelectedPropertyForLifecycle(null)}
+      />
     </AdminLayout>
   );
 };
