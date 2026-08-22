@@ -44,7 +44,7 @@ export const SubAdminManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setSubAdmins(data);
+        setSubAdmins(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       console.error(e);

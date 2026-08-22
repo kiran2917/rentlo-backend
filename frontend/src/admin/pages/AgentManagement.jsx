@@ -32,7 +32,8 @@ export const AgentManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setAgents(data.filter(u => u.roles?.includes("agent") || u.role === "agent"));
+        const safeData = Array.isArray(data) ? data : [];
+        setAgents(safeData.filter(u => u.roles?.includes("agent") || u.role === "agent"));
       }
     } catch (e) {
       console.error(e);
@@ -49,7 +50,7 @@ export const AgentManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setAgentKycs(data);
+        setAgentKycs(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       console.error(e);

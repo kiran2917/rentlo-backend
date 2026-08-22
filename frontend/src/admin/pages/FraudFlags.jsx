@@ -26,8 +26,9 @@ export const FraudFlags = () => {
         });
       }
       if (res.ok) {
-        const users = await res.json();
-        const flagged = users
+        const data = await res.json();
+        const safeData = Array.isArray(data) ? data : [];
+        const flagged = safeData
           .map((u) => ({
             ...u,
             fraud_flags: u.fraud_flags ?? u.fraud_flag_count ?? 0,
@@ -51,7 +52,7 @@ export const FraudFlags = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setFeedbacks(data);
+        setFeedbacks(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       toast.error("Failed to fetch buyer contact feedbacks");
