@@ -21,6 +21,17 @@ export const BuyerLayout = () => {
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
   
+  const [platformSettings, setPlatformSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if(data) setPlatformSettings(data);
+      })
+      .catch(err => console.error("Failed to fetch platform settings", err));
+  }, []);
+
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -273,10 +284,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-4 group h-10">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
-              <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>Rentlo</span>
+            {platformSettings?.company_logo_url ? (
+              <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[140px] object-contain" />
+            ) : (
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
+                <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
+              </div>
+            )}
+            <span className="text-xl font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>
+              {platformSettings?.company_name || "Rentlo"}
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -455,10 +472,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         {/* Close + Logo */}
         <div className="flex items-center justify-between px-5 mb-8">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
-              <span className="material-symbols-outlined text-base text-white">real_estate_agent</span>
-            </div>
-            <span className="text-base font-bold" style={{ color: "var(--header-ink)" }}>Rentlo</span>
+            {platformSettings?.company_logo_url ? (
+              <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
+            ) : (
+              <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--accent)" }}>
+                <span className="material-symbols-outlined text-base text-white">real_estate_agent</span>
+              </div>
+            )}
+            <span className="text-base font-bold" style={{ color: "var(--header-ink)" }}>
+              {platformSettings?.company_name || "Rentlo"}
+            </span>
           </div>
           <button onClick={() => setMobileMenuOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "var(--header-ink)" }}>
             <span className="material-symbols-outlined text-lg">close</span>
@@ -586,10 +609,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             {/* Col 1: Brand Info */}
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--accent)" }}>
-                  <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
-                </div>
-                <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>Rentlo</span>
+                {platformSettings?.company_logo_url ? (
+                  <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
+                ) : (
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--accent)" }}>
+                    <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
+                  </div>
+                )}
+                <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>
+                  {platformSettings?.company_name || "Rentlo"}
+                </span>
               </div>
               <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 {t("footer.desc", "Zero-Brokerage Real Estate Ecosystem. Directly connecting buyers, tenants, and property owners across India.")}
@@ -705,7 +734,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
 
           <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium" style={{ color: "var(--text-muted)" }}>
-            <p>{t("footer.copyright", "Rentlo Technologies © 2026. All rights reserved.")}</p>
+            <p>{t("footer.copyright", `${platformSettings?.company_name || "Rentlo Technologies"} © 2026. All rights reserved.`)}</p>
           </div>
         </div>
       </footer>
