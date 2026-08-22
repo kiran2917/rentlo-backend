@@ -39,7 +39,7 @@ export const Earnings = () => {
       );
       if (res.ok) {
         const data = await res.json();
-        setEntries(data);
+        setEntries(Array.isArray(data) ? data : []);
       }
     } catch (e) {
       toast.error("Failed to fetch earnings");
