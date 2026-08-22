@@ -18,6 +18,11 @@ export const OwnerDashboard = () => {
   const [buyingPassLoading, setBuyingPassLoading] = useState(false);
   const [selectedPassCategory, setSelectedPassCategory] = useState(null);
   const [platformSettings, setPlatformSettings] = useState(null);
+  
+  const [showUpiModal, setShowUpiModal] = useState(false);
+  const [upiOrderData, setUpiOrderData] = useState(null);
+  const [utrNumber, setUtrNumber] = useState("");
+  const [isVerifyingUtr, setIsVerifyingUtr] = useState(false);
 
   const [editingBedProp, setEditingBedProp] = useState(null);
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
@@ -272,6 +277,41 @@ export const OwnerDashboard = () => {
     },
   };
 
+  const handleUpiSubmit = async (e) => {
+    e.preventDefault();
+    if (!utrNumber || utrNumber.length < 8) {
+      toast.error("Please enter a valid UTR number.");
+      return;
+    }
+    setIsVerifyingUtr(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/owner-passes/verify/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          plan_id: upiOrderData.plan_id,
+          category: selectedPassCategory,
+          credits_count: upiOrderData.credits_count,
+          payment_method: 'upi',
+          utr: utrNumber
+        })
+      });
+      const verifyData = await res.json();
+      if (res.ok) {
+        toast.success(`🎉 ${verifyData.detail || "Pass activated successfully!"}`);
+        setShowUpiModal(false);
+        fetchProperties();
+      } else {
+        toast.error(verifyData.detail || "Payment verification failed");
+      }
+    } catch (err) {
+      toast.error("Verification error: " + err.message);
+    } finally {
+      setIsVerifyingUtr(false);
+    }
+  };
+
   const handleBuyPass = async (planId, passCategory = selectedPassCategory) => {
     setBuyingPassLoading(true);
     try {
@@ -292,6 +332,12 @@ export const OwnerDashboard = () => {
       if (data.bypassed) {
         toast.success(`🎉 Pass activated! ${data.detail || "Credits added."}`);
         fetchProperties();
+        return;
+      }
+
+      if (data.payment_gateway === 'upi') {
+        setUpiOrderData(data);
+        setShowUpiModal(true);
         return;
       }
 
@@ -1507,6 +1553,65 @@ export const OwnerDashboard = () => {
                   )}
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showUpiModal && upiOrderData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95">
+            <button
+              onClick={() => setShowUpiModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+            <div className="text-center mb-6 mt-4">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+                <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
+              <p className="text-sm font-medium text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                Please scan the QR code below using any UPI app (GPay, PhonePe, Paytm) to pay <strong className="text-slate-800">₹{upiOrderData.amount}</strong>.
+              </p>
+            </div>
+
+            <div className="flex justify-center mb-6">
+              <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm inline-block">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                    `upi://pay?pa=${upiOrderData.upi_merchant_id || 'merchant@upi'}&pn=Rentlo&am=${upiOrderData.amount}&cu=INR`
+                  )}`}
+                  alt="UPI QR Code"
+                  className="w-48 h-48 rounded-lg"
+                />
+              </div>
+            </div>
+
+            <form onSubmit={handleUpiSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1 text-left">Enter 12-Digit UTR Number *</label>
+                <input
+                  type="text"
+                  value={utrNumber}
+                  onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, ''))}
+                  placeholder="e.g. 325412345678"
+                  maxLength={20}
+                  required
+                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-emerald-500 transition-all"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isVerifyingUtr}
+                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-emerald-600"
+              >
+                {isVerifyingUtr ? "Verifying..." : "Submit UTR & Activate"}
+                <span className="material-symbols-outlined text-lg">check_circle</span>
+              </button>
             </form>
           </div>
         </div>

@@ -432,6 +432,26 @@ class InitiateOwnerPassOrderView(views.APIView):
                 'credits_remaining': p.credits_remaining
             })
 
+        if getattr(ps, 'owner_payment_gateway', 'razorpay') == 'upi':
+            from unlocks.models import OwnerListingPass
+            p = OwnerListingPass.objects.create(
+                owner=request.user,
+                plan_id=plan_id,
+                category=category,
+                credits_total=credits_count,
+                credits_remaining=credits_count,
+                amount_paid=price,
+                status='pending',
+                payment_method='upi'
+            )
+            return Response({
+                'payment_gateway': 'upi',
+                'amount': price,
+                'upi_merchant_id': ps.default_upi_id or 'merchant@upi',
+                'plan_id': plan_id,
+                'credits_count': credits_count
+            })
+
         amount_paise = int(price * 100)
         try:
             import razorpay
@@ -447,6 +467,7 @@ class InitiateOwnerPassOrderView(views.APIView):
                 }
             })
             return Response({
+                'payment_gateway': 'razorpay',
                 'order_id': order['id'],
                 'amount': amount_paise,
                 'key_id': settings.RAZORPAY_KEY_ID,
@@ -461,12 +482,36 @@ class VerifyOwnerPassOrderView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        order_id = request.data.get('order_id')
-        payment_id = request.data.get('payment_id')
-        signature = request.data.get('signature')
+        payment_method = request.data.get('payment_method', 'razorpay')
         plan_id = request.data.get('plan_id', '3pack')
         category = request.data.get('category', 'apartment')
         credits_count = int(request.data.get('credits_count', 3))
+
+        if payment_method == 'upi':
+            utr = request.data.get('utr')
+            if not utr:
+                return Response({'detail': 'UTR is required for UPI payments.'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                from unlocks.models import OwnerListingPass
+                p = OwnerListingPass.objects.filter(
+                    owner=request.user, 
+                    plan_id=plan_id, 
+                    category=category, 
+                    status='pending', 
+                    payment_method='upi'
+                ).latest('id')
+                
+                # Instantly activate for MVP
+                p.utr = utr
+                p.status = 'active'
+                p.save()
+                return Response({'detail': 'Pass activated successfully via UPI!'})
+            except OwnerListingPass.DoesNotExist:
+                return Response({'detail': 'No pending pass found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        order_id = request.data.get('order_id')
+        payment_id = request.data.get('payment_id')
+        signature = request.data.get('signature')
 
         if not all([order_id, payment_id, signature]):
             return Response({'detail': 'Missing payment details'}, status=status.HTTP_400_BAD_REQUEST)

@@ -118,7 +118,16 @@ class OwnerListingPass(models.Model):
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     order_id = models.CharField(max_length=100, blank=True, null=True)
     gateway_txn_id = models.CharField(max_length=100, blank=True, null=True)
-    status = models.CharField(max_length=20, default='active') # 'active', 'depleted', 'expired'
+    status = models.CharField(max_length=20, default='active') # 'pending', 'active', 'depleted', 'expired'
+    
+    PAYMENT_CHOICES = [
+        ('razorpay', 'Razorpay'),
+        ('upi', 'Direct UPI'),
+        ('bypass', 'Bypassed')
+    ]
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='razorpay')
+    utr = models.CharField(max_length=50, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
 
