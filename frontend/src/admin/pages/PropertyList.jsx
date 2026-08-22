@@ -966,12 +966,12 @@ export const PropertyList = () => {
 
             {/* Modal Body */}
             <div className="p-6 max-h-[350px] overflow-y-auto">
-              {selectedPropertyForPhotos.media && selectedPropertyForPhotos.media.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4">
+              {Array.isArray(selectedPropertyForPhotos.media) && selectedPropertyForPhotos.media.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {selectedPropertyForPhotos.media.map((m) => (
                     <div key={m.id} className="relative group overflow-hidden rounded-xl border border-slate-100 shadow-xs">
                       <img
-                        src={m.image_url}
+                        src={m.thumbnail_url || m.image_url}
                         alt="Property"
                         className="w-full h-28 object-cover hover:scale-105 transition-transform duration-300"
                       />

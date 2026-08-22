@@ -720,7 +720,7 @@ export const PropertyDetail = () => {
                     <div className="flex items-center gap-2 flex-wrap text-[12px] font-extrabold text-amber-900 bg-amber-50 px-4 py-2 rounded-xl border border-amber-200 w-fit">
                       <span className="material-symbols-outlined text-[16px] text-amber-600">schedule</span>
                       <span>Included Meals:</span>
-                      {(property.pg_food_provided && property.pg_food_provided.length > 0
+                      {(Array.isArray(property.pg_food_provided) && property.pg_food_provided.length > 0
                         ? property.pg_food_provided
                         : ["Morning (Breakfast)", "Afternoon (Lunch)", "Night (Dinner)"]
                       ).map((m) => (
@@ -1249,7 +1249,7 @@ export const PropertyDetail = () => {
                 </div>
 
                 {/* Visit Slots */}
-                {visitSlots.length > 0 && (
+                {Array.isArray(visitSlots) && visitSlots.length > 0 && (
                   <div className="mt-6">
                     <h4 className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--text-muted)" }}>
                       🗓️ Available Visit Slots
@@ -1702,7 +1702,7 @@ export const PropertyDetail = () => {
       </main>
 
       {/* Similar Properties (Full Width Section) */}
-      {similarProperties.length > 0 && (
+      {Array.isArray(similarProperties) && similarProperties.length > 0 && (
         <section className="w-full max-w-[1600px] mx-auto px-4 md:px-10 py-16 border-t" style={{ borderColor: "var(--border)" }}>
           <h2 className="font-display font-semibold text-[28px] mb-8" style={{ color: "var(--ink)" }}>
             Similar Properties You Might Like
