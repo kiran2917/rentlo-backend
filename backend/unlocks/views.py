@@ -174,15 +174,29 @@ class InitiateUnlockView(views.APIView):
                 'unlock_id': unlock.id
             })
 
+        unlock_price = float(ps.buyer_unlock_fee)
+        amount = int(unlock_price * 100)
+        currency = 'INR'
+
+        if getattr(ps, 'buyer_payment_gateway', 'razorpay') == 'upi':
+            Unlock.objects.create(
+                buyer=buyer_user,
+                property=prop,
+                amount=unlock_price,
+                status='pending',
+                payment_method='upi'
+            )
+            return Response({
+                'payment_gateway': 'upi',
+                'amount': unlock_price,
+                'upi_merchant_id': ps.default_upi_id or 'merchant@upi'
+            })
+
         if not razorpay_configured():
             return Response(
                 {'detail': 'Payment gateway is not configured or credentials are invalid. Please contact the support team.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-        unlock_price = float(ps.buyer_unlock_fee)
-        amount = int(unlock_price * 100)
-        currency = 'INR'
 
         try:
             # Create Razorpay order using the most current credentials (DB preferred over env)
@@ -219,20 +233,6 @@ class InitiateUnlockView(views.APIView):
             return Response({
                 'detail': 'Payment gateway configuration error. Please contact the support team.'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            # Direct UPI flow
-            Unlock.objects.create(
-                buyer=buyer_user,
-                property=prop,
-                amount=unlock_price,
-                status='pending',
-                payment_method='upi'
-            )
-            return Response({
-                'payment_gateway': 'upi',
-                'amount': unlock_price,
-                'upi_merchant_id': platform_settings.default_upi_id or 'merchant@upi'
-            })
 
 class VerifyUnlockView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -845,9 +845,7 @@ class InitiatePassPurchaseView(views.APIView):
 
         config = PASS_PRICING[pass_type]
 
-        # Instant Bypass Mode if Admin enabled bypass or Razorpay not configured
-        # Instant Bypass Mode if Admin explicitly enabled bypass in PlatformSettings OR Razorpay not configured
-        if ps.bypass_buyer_payment or not razorpay_configured():
+        if ps.bypass_buyer_payment:
             sub, is_stacked = activate_or_stack_buyer_pass(request.user, pass_type, config['price'])
             return Response({
                 'bypassed': True,
@@ -856,6 +854,24 @@ class InitiatePassPurchaseView(views.APIView):
                 'pass_type': pass_type,
                 'credits_remaining': sub.credits_remaining
             })
+
+        if getattr(ps, 'buyer_payment_gateway', 'razorpay') == 'upi':
+            sub = BuyerSubscription.objects.create(
+                buyer=request.user,
+                pass_type=pass_type,
+                amount_paid=config['price'],
+                status='pending',
+                payment_method='upi'
+            )
+            return Response({
+                'payment_gateway': 'upi',
+                'amount': config['price'],
+                'upi_merchant_id': ps.default_upi_id or 'merchant@upi',
+                'pass_type': pass_type
+            })
+
+        if not razorpay_configured():
+            return Response({'detail': 'Payment gateway is not configured.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         amount = int(config['price'] * 100)
 
@@ -889,10 +905,50 @@ class VerifyPassPurchaseView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        payment_method = request.data.get('payment_method', 'razorpay')
+        pass_type = request.data.get('pass_type', 'starter_39')
+
+        if payment_method == 'upi':
+            utr = request.data.get('utr')
+            if not utr:
+                return Response({'detail': 'UTR number is required for UPI payments.'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                sub = BuyerSubscription.objects.filter(
+                    buyer=request.user, 
+                    pass_type=pass_type, 
+                    status='pending', 
+                    payment_method='upi'
+                ).latest('id')
+                
+                from properties.models import PlatformSettings
+                ps = PlatformSettings.load()
+                PASS_PRICING = {
+                    'single_14': {'price': float(ps.buyer_unlock_fee), 'credits': 1, 'agreements': 0, 'days': 1},
+                    'starter_39': {'price': float(ps.buyer_pass_starter_price), 'credits': 3, 'agreements': 0, 'days': 15},
+                    'smart_79': {'price': float(ps.buyer_pass_smart_price), 'credits': 6, 'agreements': 1, 'days': 30},
+                    'pro_129': {'price': float(ps.buyer_pass_pro_price), 'credits': 10, 'agreements': 3, 'days': 45},
+                }
+                config = PASS_PRICING[pass_type]
+                
+                # Instantly activate based on user preference for MVP
+                sub.utr = utr
+                sub.status = 'active'
+                sub.credits_remaining = config['credits']
+                sub.agreement_credits_remaining = config['agreements']
+                from datetime import timedelta
+                sub.expires_at = timezone.now() + timedelta(days=config['days'])
+                sub.save()
+                
+                return Response({
+                    'detail': 'Pass activated successfully via UPI!',
+                    'credits_remaining': sub.credits_remaining
+                })
+            except BuyerSubscription.DoesNotExist:
+                return Response({'detail': 'No pending pass purchase found.'}, status=status.HTTP_404_NOT_FOUND)
+
         if not razorpay_client:
             return Response({'detail': 'Razorpay not configured on server.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        pass_type = request.data.get('pass_type', 'starter_39')
         razorpay_payment_id = request.data.get('razorpay_payment_id')
         razorpay_order_id = request.data.get('razorpay_order_id')
         razorpay_signature = request.data.get('razorpay_signature')

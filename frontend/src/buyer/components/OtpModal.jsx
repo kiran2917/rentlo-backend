@@ -14,7 +14,7 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer" }) => {
   const [requireOtp, setRequireOtp] = useState(true);
   const [demoCode, setDemoCode] = useState("");
   const [registrationToken, setRegistrationToken] = useState("");
-  const [dpdpConsent, setDpdpConsent] = useState(true);
+  const [dpdpConsent, setDpdpConsent] = useState(false);
 
   // The backend determines if OTP is required for this specific phone/role combo
   // during the /auth/buyer-otp/request/ call.
@@ -41,6 +41,10 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer" }) => {
     fetchSettings();
   }, [intendedRole]);
   const handlePhoneSubmit = async () => {
+    if (!dpdpConsent) {
+      setOtpError("Please accept the Privacy Policy.");
+      return;
+    }
     setOtpLoading(true);
     setOtpError("");
     try {

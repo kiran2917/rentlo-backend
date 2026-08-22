@@ -12,6 +12,7 @@ export const PropertyList = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPropertyForPhotos, setSelectedPropertyForPhotos] = useState(null);
+  const [expandedRow, setExpandedRow] = useState(null);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
@@ -498,46 +499,21 @@ export const PropertyList = () => {
                       const mediaUrl = p.media && p.media.length > 0 ? p.media[0].thumbnail_url || p.media[0].image_url : null;
 
                       return (
-                        <tr key={p.id} className="transition-colors hover:opacity-90">
-                          {/* 1. Property Details */}
-                          <td className="py-4 px-6">
-                            <div className="flex items-center gap-3.5">
-                              {mediaUrl ? (
-                                <img
-                                  src={mediaUrl}
-                                  alt="Property Thumbnail"
-                                  className="w-12 h-12 rounded-xl object-cover border shadow-sm flex-shrink-0"
-                                  style={{ borderColor: "var(--border)" }}
-                                />
-                              ) : (
-                                <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
-                                  <span className="material-symbols-outlined text-[24px]">home</span>
-                                </div>
-                              )}
-                              <div>
-                                <div className="font-extrabold text-[14px]" style={{ color: "var(--ink)" }}>
-                                  #{p.id} — {p.bedrooms ? `${p.bedrooms} BHK ` : ""}{p.property_type ? p.property_type.toUpperCase() : "PROPERTY"}
-                                </div>
-                                <div className="text-[12px] font-medium flex items-center gap-1 mt-0.5" style={{ color: "var(--text-muted)" }}>
-                                  <span className="material-symbols-outlined text-[14px]">location_on</span>
-                                  {p.locality_details?.name || "Locality"}, {p.locality_details?.city_name || "City"}
-                                </div>
-                                {(p.property_category === 'pg' || p.property_type?.includes('pg')) && (
-                                  <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                                      Capacity: {p.total_beds || 0} Beds
-                                    </span>
-                                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-                                      {Math.max(0, (p.total_beds || 0) - (p.available_beds || 0))} Persons Residing
-                                    </span>
-                                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                                      {p.available_beds || 0} Beds Free
-                                    </span>
-                                  </div>
-                                )}
+                        <React.Fragment key={p.id}>
+                          <tr 
+                            onClick={() => setExpandedRow(expandedRow === p.id ? null : p.id)}
+                            className="transition-colors hover:opacity-90 hover:bg-slate-50 cursor-pointer"
+                          >
+                            {/* 1. Property Details (Simplified) */}
+                            <td className="py-4 px-6">
+                              <div className="font-extrabold text-[14px]" style={{ color: "var(--ink)" }}>
+                                #{p.id} — {p.display_title || `${p.bedrooms ? `${p.bedrooms} BHK ` : ""}${p.property_type ? p.property_type.toUpperCase() : "PROPERTY"}`}
                               </div>
-                            </div>
-                          </td>
+                              <div className="text-[12px] font-medium flex items-center gap-1 mt-0.5" style={{ color: "var(--text-muted)" }}>
+                                <span className="material-symbols-outlined text-[14px]">location_on</span>
+                                {p.locality_details?.name || "Locality"}, {p.locality_details?.city_name || "City"}
+                              </div>
+                            </td>
 
                           {/* 2. Owner Information */}
                           <td className="py-4 px-6">
@@ -622,7 +598,7 @@ export const PropertyList = () => {
 
                           {/* 7. Actions */}
                           <td className="py-4 px-6 text-right">
-                            <div className="flex items-center justify-end gap-2">
+                            <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                               <a
                                 href={`/property/${p.id}`}
                                 target="_blank"
@@ -680,7 +656,52 @@ export const PropertyList = () => {
                             </div>
                           </td>
                         </tr>
-                      );
+                        {expandedRow === p.id && (
+                          <tr className="bg-slate-50 border-b">
+                            <td colSpan="7" className="p-6">
+                              <div className="flex flex-col md:flex-row gap-6 items-start">
+                                {mediaUrl ? (
+                                  <img
+                                    src={mediaUrl}
+                                    alt="Property Thumbnail"
+                                    className="w-32 h-32 rounded-xl object-cover border shadow-sm flex-shrink-0"
+                                    style={{ borderColor: "var(--border)" }}
+                                  />
+                                ) : (
+                                  <div className="w-32 h-32 rounded-xl bg-orange-500/10 text-orange-500 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
+                                    <span className="material-symbols-outlined text-[32px]">home</span>
+                                  </div>
+                                )}
+                                
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-slate-800 mb-2">Additional Details</h4>
+                                  {(p.property_category === 'pg' || p.property_type?.includes('pg')) && (
+                                    <div className="flex items-center gap-2 flex-wrap mb-3">
+                                      <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                                        Capacity: {p.total_beds || 0} Beds
+                                      </span>
+                                      <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                                        {Math.max(0, (p.total_beds || 0) - (p.available_beds || 0))} Persons Residing
+                                      </span>
+                                      <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                                        {p.available_beds || 0} Beds Free
+                                      </span>
+                                    </div>
+                                  )}
+                                  <p className="text-sm text-slate-600 mb-4">{p.description || "No description provided."}</p>
+                                  
+                                  <div className="flex gap-4">
+                                    <a href={`/property/${p.id}`} target="_blank" rel="noreferrer" className="text-emerald-600 text-xs font-bold hover:underline flex items-center gap-1">
+                                      View Full Public Page <span className="material-symbols-outlined text-sm">open_in_new</span>
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
                     })}
                   </tbody>
                 </table>

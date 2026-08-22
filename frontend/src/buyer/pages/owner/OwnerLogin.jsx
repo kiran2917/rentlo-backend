@@ -43,7 +43,7 @@ export const OwnerLogin = () => {
   const [fullName, setFullName] = useState("");
   const [newRegPassword, setNewRegPassword] = useState("");
   const [demoCode, setDemoCode] = useState("");
-  const [dpdpConsent, setDpdpConsent] = useState(true);
+  const [dpdpConsent, setDpdpConsent] = useState(false);
 
   // Forgot Password State
   const [forgotStep, setForgotStep] = useState(1);

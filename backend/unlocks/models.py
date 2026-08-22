@@ -78,6 +78,14 @@ class BuyerSubscription(models.Model):
     gateway_txn_id = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     
+    PAYMENT_CHOICES = [
+        ('razorpay', 'Razorpay'),
+        ('upi', 'Direct UPI'),
+        ('bypass', 'Bypassed')
+    ]
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='razorpay')
+    utr = models.CharField(max_length=50, blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
     extension_used = models.BooleanField(default=False)

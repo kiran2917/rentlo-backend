@@ -17,7 +17,6 @@ export const PlanSelectionModal = ({
   const [selectedPlan, setSelectedPlan] = useState("smart_79");
   const [settings, setSettings] = useState(null);
 
-  // Inline Auth State Machine: 'IDLE' | 'ENTER_PHONE' | 'ENTER_PASSWORD' | 'FORGOT_PASSWORD' | 'ENTER_OTP' | 'COMPLETE_REGISTRATION' | 'ACTIVE_PASS_DETECTED'
   const [authStep, setAuthStep] = useState("IDLE");
   const [phone, setPhone] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -30,6 +29,11 @@ export const PlanSelectionModal = ({
   const [isExistingUser, setIsExistingUser] = useState(false);
   const [newPassword, setNewPassword] = useState("");
 
+  // UPI State
+  const [showUpiScreen, setShowUpiScreen] = useState(false);
+  const [upiOrderData, setUpiOrderData] = useState(null);
+  const [utrNumber, setUtrNumber] = useState("");
+
   useEffect(() => {
     if (!isOpen) {
       setAuthStep("IDLE");
@@ -37,6 +41,9 @@ export const PlanSelectionModal = ({
       setAuthedUser(null);
       setIsExistingUser(false);
       setNewPassword("");
+      setShowUpiScreen(false);
+      setUtrNumber("");
+      setUpiOrderData(null);
       return;
     }
     setLoadingSub(true);
@@ -122,6 +129,9 @@ export const PlanSelectionModal = ({
         onSuccessUnlock(data);
         onClose();
         window.location.reload();
+      } else if (res.ok && data.payment_gateway === 'upi') {
+        setUpiOrderData({ ...data, pass_type: 'single_14' });
+        setShowUpiScreen(true);
       } else {
         handleApiError(res, data, "Failed to unlock property. Please check your credit balance.");
       }
@@ -157,6 +167,14 @@ export const PlanSelectionModal = ({
       // If server returned bypass mode (dev mode / payment bypass or stacked)
       if (orderData.bypassed) {
         handleInstantUnlock(activeUser);
+        return;
+      }
+      
+      // If server returns Direct UPI gateway
+      if (orderData.payment_gateway === 'upi') {
+        setUpiOrderData(orderData);
+        setShowUpiScreen(true);
+        setPurchasing(false);
         return;
       }
 
@@ -213,6 +231,69 @@ export const PlanSelectionModal = ({
     } catch (err) {
       handleApiError(null, err, "Failed to connect to payment gateway.");
       setPurchasing(false);
+    }
+  };
+
+  const handleSubmitUtr = async (e) => {
+    e.preventDefault();
+    if (!utrNumber || utrNumber.length < 8) {
+      toast.error("Please enter a valid UTR number.");
+      return;
+    }
+    setPurchasing(true);
+    
+    const isSingleUnlock = upiOrderData.pass_type === 'single_14' && !upiOrderData.order_id;
+    
+    if (isSingleUnlock) {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/${propertyId}/unlock/verify/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    payment_method: 'upi',
+                    utr: utrNumber,
+                    property_id: propertyId
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success("Payment verified! Unlocking property...");
+                onSuccessUnlock(data);
+                onClose();
+                window.location.reload();
+            } else {
+                handleApiError(res, data, "UTR Verification failed.");
+            }
+        } catch (err) {
+            handleApiError(null, err, "Network error.");
+        } finally {
+            setPurchasing(false);
+        }
+    } else {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/pass/verify/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    pass_type: upiOrderData.pass_type,
+                    payment_method: 'upi',
+                    utr: utrNumber
+                })
+            });
+            const verifyData = await res.json();
+            if (res.ok) {
+                toast.success("Pass activated successfully!");
+                handleInstantUnlock(user || authedUser);
+            } else {
+                handleApiError(res, verifyData, "UTR Verification failed.");
+            }
+        } catch (err) {
+            handleApiError(null, err, "Network error.");
+        } finally {
+            setPurchasing(false);
+        }
     }
   };
 
@@ -841,8 +922,71 @@ export const PlanSelectionModal = ({
           </div>
         )}
 
+        {/* DIRECT UPI SCREEN */}
+        {authStep === "IDLE" && showUpiScreen && (
+          <div className="py-4">
+            <button
+              onClick={() => { setShowUpiScreen(false); setUpiOrderData(null); }}
+              className="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4 transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base">arrow_back</span>
+              Cancel & Go Back
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+                <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
+              <p className="text-sm font-medium text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                Please scan the QR code below using any UPI app (GPay, PhonePe, Paytm) to pay <strong className="text-slate-800">₹{upiOrderData?.amount}</strong>.
+              </p>
+            </div>
+
+            <div className="flex justify-center mb-6">
+              <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm inline-block">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                    `upi://pay?pa=${upiOrderData?.upi_merchant_id || 'merchant@upi'}&pn=Rentlo&am=${upiOrderData?.amount}&cu=INR`
+                  )}`}
+                  alt="UPI QR Code"
+                  className="w-48 h-48 rounded-lg"
+                />
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmitUtr} className="space-y-4">
+              <div>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Enter 12-Digit UTR Number *</label>
+                <input
+                  type="text"
+                  value={utrNumber}
+                  onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, ''))}
+                  placeholder="e.g. 325412345678"
+                  maxLength={20}
+                  required
+                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-emerald-500 transition-all"
+                  autoFocus
+                />
+                <p className="text-[10px] text-slate-400 font-medium text-center mt-2">
+                  You can find the UTR (Transaction ID) in your UPI app's payment history.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={purchasing}
+                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-emerald-600"
+              >
+                {purchasing ? "Verifying..." : "Submit UTR & Activate"}
+                <span className="material-symbols-outlined text-lg">check_circle</span>
+              </button>
+            </form>
+          </div>
+        )}
+
         {/* DEFAULT PLAN SELECTION STEP */}
-        {authStep === "IDLE" && (
+        {authStep === "IDLE" && !showUpiScreen && (
           <>
             <div className="text-center mb-6">
               <div

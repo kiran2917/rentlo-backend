@@ -48,16 +48,15 @@ const MapDrawEvents = ({ isDrawingMode, drawnPolygon, setDrawnPolygon }) => {
 };
 
 const PropertyCardSkeleton = () => (
-  <div className="rounded-3xl overflow-hidden border shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-0 flex flex-col h-full bg-surface border-border">
-    <div className="aspect-[4/3] w-full animate-pulse bg-surface-alt"></div>
-    <div className="p-4 flex flex-col flex-grow justify-between gap-4">
-      <div className="space-y-3">
-        <div className="h-7 w-1/2 rounded-xl animate-pulse bg-surface-alt"></div>
-        <div className="h-4 w-3/4 rounded-lg animate-pulse bg-surface-alt"></div>
-        <div className="flex gap-2">
-          <div className="h-6 w-16 rounded-lg animate-pulse bg-surface-alt"></div>
-          <div className="h-6 w-16 rounded-lg animate-pulse bg-surface-alt"></div>
-        </div>
+  <div className="rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full bg-white border-slate-200">
+    <div className="aspect-[4/3] w-full bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+    <div className="p-4 flex flex-col gap-4">
+      <div className="h-7 w-1/2 rounded-lg bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+      <div className="h-4 w-3/4 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+      <div className="flex gap-2">
+        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
       </div>
     </div>
   </div>
@@ -323,7 +322,8 @@ export const Home = () => {
       if (filters.property_type) p.append("property_type", filters.property_type);
       if (filters.min_price) p.append("min_price", filters.min_price);
       if (filters.max_price) p.append("max_price", filters.max_price);
-      if (filters.city_id) p.append("city_id", filters.city_id);
+      // city_id is hidden from URL for security/cleanliness per user request
+      // if (filters.city_id) p.append("city_id", filters.city_id);
       if (filters.locality) p.append("locality", filters.locality);
       if (filters.lat) p.append("lat", filters.lat);
       if (filters.lng) p.append("lng", filters.lng);
@@ -349,7 +349,7 @@ export const Home = () => {
       if (name === "city_id" || name === "locality") {
         next.lat = "";
         next.lng = "";
-        next.radius_km = "";
+        // Do not clear radius_km so user can use distance radius around a city/locality
       }
       return next;
     });
@@ -458,7 +458,7 @@ export const Home = () => {
                     <select
                       value={filters.city_id}
                       onChange={(e) => handleFilterChange("city_id", e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-8 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyCity", "Any City")}</option>
                       {cities.map((c) => (
@@ -479,7 +479,7 @@ export const Home = () => {
                     <select
                       value={filters.locality}
                       onChange={(e) => handleFilterChange("locality", e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-8 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyLocality", "Any Locality")}</option>
                       {localities.map((l) => (
@@ -500,7 +500,7 @@ export const Home = () => {
                     <select
                       value={filters.property_type}
                       onChange={(e) => handleFilterChange("property_type", e.target.value)}
-                      className="w-full pl-8 pr-8 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-8 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyType", "Any Type")}</option>
                       {propertyTypes.map((p) => (
@@ -536,7 +536,7 @@ export const Home = () => {
                           placeholder={t("home.minPrice", "Min Price ₹")}
                           value={filters.min_price}
                           onChange={(e) => setFilters(prev => ({ ...prev, min_price: e.target.value }))}
-                          className="w-full pl-8 pr-4 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
+                          className="w-full pl-8 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
                         />
                       </div>
                       <span className="text-slate-400 font-extrabold text-sm">-</span>
@@ -547,7 +547,7 @@ export const Home = () => {
                           placeholder={t("home.maxPrice", "Max Price ₹")}
                           value={filters.max_price}
                           onChange={(e) => setFilters(prev => ({ ...prev, max_price: e.target.value }))}
-                          className="w-full pl-8 pr-4 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
+                          className="w-full pl-8 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
                         />
                       </div>
                     </div>
@@ -557,7 +557,7 @@ export const Home = () => {
                       <select
                         value={getBudgetOptionValue()}
                         onChange={(e) => handleBudgetOptionChange(e.target.value)}
-                        className="w-full pl-8 pr-8 py-2 sm:py-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                        className="w-full pl-8 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
                       >
                         <option value="">{t("home.anyBudget", "Any Budget")}</option>
                         <option value="1000-3000">{t("home.1kTo3k", "₹1k to ₹3k")}</option>
@@ -577,10 +577,10 @@ export const Home = () => {
                 </div>
 
                 {/* Save Search Button */}
-                <div className="lg:col-span-2 flex flex-col justify-end">
+                <div className="lg:col-span-2 flex flex-col justify-end mt-2 lg:mt-0 w-full">
                   <button
                     onClick={handleSaveSearch}
-                    className="h-11 sm:h-12 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-0.5 cursor-pointer"
+                    className="w-full h-11 sm:h-12 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-lg">
                       {saveSuccess ? "bookmark_added" : "bookmark_add"}
@@ -612,7 +612,7 @@ export const Home = () => {
                   <select
                     value={filters.radius_km}
                     onChange={(e) => handleFilterChange("radius_km", e.target.value)}
-                    disabled={!filters.lat}
+                    disabled={!filters.lat && !filters.city_id}
                     className="px-4 py-2 rounded-xl text-xs sm:text-xs font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
                   >
                     <option value="">{t("home.anyDistance", "Any Distance")}</option>
