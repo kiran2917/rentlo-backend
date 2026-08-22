@@ -429,7 +429,8 @@ class InitiateOwnerPassOrderView(views.APIView):
             return Response({
                 'bypassed': True,
                 'detail': f'{credits_count} listing credits added to your account!',
-                'credits_remaining': p.credits_remaining
+                'credits_remaining': p.credits_remaining,
+                'pass_id': p.id
             })
 
         if getattr(ps, 'owner_payment_gateway', 'razorpay') == 'upi':
@@ -505,7 +506,7 @@ class VerifyOwnerPassOrderView(views.APIView):
                 p.utr = utr
                 p.status = 'active'
                 p.save()
-                return Response({'detail': 'Pass activated successfully via UPI!'})
+                return Response({'detail': 'Pass activated successfully via UPI!', 'pass_id': p.id})
             except OwnerListingPass.DoesNotExist:
                 return Response({'detail': 'No pending pass found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -552,7 +553,8 @@ class VerifyOwnerPassOrderView(views.APIView):
 
             return Response({
                 'detail': f'Payment verified! {credits_count} listing credits added to your account.',
-                'credits_remaining': p.credits_remaining
+                'credits_remaining': p.credits_remaining,
+                'pass_id': p.id
             })
         except Exception as e:
             return Response({'detail': f'Payment verification failed: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

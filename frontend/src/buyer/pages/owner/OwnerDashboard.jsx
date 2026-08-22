@@ -23,6 +23,7 @@ export const OwnerDashboard = () => {
   const [upiOrderData, setUpiOrderData] = useState(null);
   const [utrNumber, setUtrNumber] = useState("");
   const [isVerifyingUtr, setIsVerifyingUtr] = useState(false);
+  const [successPassId, setSuccessPassId] = useState(null);
 
   const [editingBedProp, setEditingBedProp] = useState(null);
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
@@ -299,7 +300,11 @@ export const OwnerDashboard = () => {
       });
       const verifyData = await res.json();
       if (res.ok) {
-        toast.success(`🎉 ${verifyData.detail || "Pass activated successfully!"}`);
+        if (verifyData.pass_id) {
+          setSuccessPassId(verifyData.pass_id);
+        } else {
+          toast.success(`🎉 ${verifyData.detail || "Pass activated successfully!"}`);
+        }
         setShowUpiModal(false);
         fetchProperties();
       } else {
@@ -330,7 +335,11 @@ export const OwnerDashboard = () => {
       const data = await res.json();
 
       if (data.bypassed) {
-        toast.success(`🎉 Pass activated! ${data.detail || "Credits added."}`);
+        if (data.pass_id) {
+          setSuccessPassId(data.pass_id);
+        } else {
+          toast.success(`🎉 Pass activated! ${data.detail || "Credits added."}`);
+        }
         fetchProperties();
         return;
       }
@@ -372,7 +381,11 @@ export const OwnerDashboard = () => {
 
             if (verifyRes.ok) {
               const verifyData = await verifyRes.json();
-              toast.success(`🎉 ${verifyData.detail}`);
+              if (verifyData.pass_id) {
+                setSuccessPassId(verifyData.pass_id);
+              } else {
+                toast.success(`🎉 ${verifyData.detail}`);
+              }
               fetchProperties();
             } else {
               toast.error("Payment verification failed. If money was deducted, credits will be added automatically.");
@@ -1100,7 +1113,7 @@ export const OwnerDashboard = () => {
                             {pass.credits_remaining} / {pass.credits_total} Credits
                           </span>
                           <button
-                            onClick={() => window.open(`${import.meta.env.VITE_API_URL}/properties/owner-passes/${pass.id}/receipt/`, "_blank")}
+                            onClick={() => window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${pass.id}/receipt/`, "_blank")}
                             className="ml-2 bg-emerald-500/20 hover:bg-emerald-500/40 text-white p-1 rounded-lg transition-colors flex items-center justify-center"
                             title="Download Receipt"
                           >
@@ -1620,6 +1633,40 @@ export const OwnerDashboard = () => {
                 <span className="material-symbols-outlined text-lg">check_circle</span>
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Success Modal */}
+      {successPassId && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+          <div className="bg-surface rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden animate-fade-in border border-border">
+            <div className="p-8 flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-[40px]">check_circle</span>
+              </div>
+              <h3 className="text-2xl font-black text-ink tracking-tight mb-2">Payment Successful!</h3>
+              <p className="text-sm text-text-muted mb-8">
+                Your listing pass has been activated successfully. You can now download your receipt or continue to your dashboard.
+              </p>
+              
+              <div className="w-full space-y-3">
+                <button
+                  onClick={() => {
+                    window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${successPassId}/receipt/`, "_blank");
+                  }}
+                  className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined">download</span>
+                  Download Receipt
+                </button>
+                <button
+                  onClick={() => setSuccessPassId(null)}
+                  className="w-full h-12 bg-surface-alt hover:bg-slate-100 dark:hover:bg-slate-800 text-ink font-bold rounded-xl transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
