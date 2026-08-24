@@ -629,7 +629,7 @@ export const OwnerDashboard = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {filteredProperties.map((prop) => {
             const sc =
               statusConfig[prop.status] || {
@@ -1039,7 +1039,7 @@ export const OwnerDashboard = () => {
       )}
 
       {/* Owner Passes & Credits Management Modal */}
-      {showCreditsModal && (
+      {showCreditsModal && createPortal(
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto pt-14 pb-20 sm:items-center sm:py-8" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
           <div className="rounded-3xl max-w-5xl w-full p-4 sm:p-8 shadow-2xl relative max-h-[85vh] sm:max-h-[90vh] overflow-y-auto scrollbar-none animate-in fade-in zoom-in-95 duration-200" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", border: "1px solid var(--border)" }}>
             {/* Header */}
@@ -1310,7 +1310,7 @@ export const OwnerDashboard = () => {
             </div>
           </div>
         </div>
-      )}
+      , document.getElementById('root'))}
 
       {/* Edit Bed Capacity & Room Inventory Configurator Modal */}
       {editingBedProp && createPortal(
