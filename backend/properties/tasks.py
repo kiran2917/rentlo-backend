@@ -9,7 +9,21 @@ def expire_old_properties():
     now = timezone.now()
     # Find all live properties where expires_at < now
     expired_props = Property.objects.filter(status='live', expires_at__lt=now)
-    count = expired_props.update(status='expired')
+    count = 0
+    from properties.models import PropertyAuditLog
+    for prop in expired_props:
+        old_status = prop.status
+        prop.status = 'expired'
+        prop.save(update_fields=['status'])
+        
+        PropertyAuditLog.objects.create(
+            property=prop,
+            changed_by=None,
+            field_name='status',
+            old_value=str(old_status),
+            new_value='expired'
+        )
+        count += 1
     return f"Expired {count} properties."
 
 @shared_task

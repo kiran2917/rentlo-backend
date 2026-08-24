@@ -37,6 +37,7 @@ class ModeratePropertyView(views.APIView):
                 if prop.status == 'live':
                     return Response({'detail': 'Property already approved'}, status=status.HTTP_400_BAD_REQUEST)
 
+                old_status = prop.status
                 prop.status = 'live'
                 from properties.models import PlatformSettings
                 ps = PlatformSettings.load()
@@ -49,6 +50,16 @@ class ModeratePropertyView(views.APIView):
                 prop.reviewed_at = timezone.now()
                 prop.save()
                 ModerationLog.objects.create(property=prop, moderator=request.user, action='approved', notes=notes)
+                
+                from properties.models import PropertyAuditLog
+                PropertyAuditLog.objects.create(
+                    property=prop,
+                    changed_by=request.user,
+                    field_name='status',
+                    old_value=str(old_status),
+                    new_value='live'
+                )
+                
                 audit_logger.info(f"Property {prop.id} approved by moderator {request.user.username}")
 
                 # Auto-create earnings
@@ -80,11 +91,22 @@ class ModeratePropertyView(views.APIView):
             return Response({'detail': 'Property approved successfully'})
 
         elif action == 'reject':
+            old_status = prop.status
             prop.status = 'rejected'
             prop.rejection_reason = notes
             prop.reviewed_at = timezone.now()
             prop.save()
             ModerationLog.objects.create(property=prop, moderator=request.user, action='rejected', notes=notes)
+            
+            from properties.models import PropertyAuditLog
+            PropertyAuditLog.objects.create(
+                property=prop,
+                changed_by=request.user,
+                field_name='status',
+                old_value=str(old_status),
+                new_value='rejected'
+            )
+            
             audit_logger.info(f"Property {prop.id} rejected by moderator {request.user.username}. Reason: {notes}")
             return Response({'detail': 'Property rejected successfully'})
 
@@ -97,11 +119,22 @@ class ModeratePropertyView(views.APIView):
                 target_username = target_user.username
 
             # Also reject the property if it's fraudulent
+            old_status = prop.status
             prop.status = 'rejected'
             prop.rejection_reason = f"Flagged for fraud: {notes}"
             prop.reviewed_at = timezone.now()
             prop.save()
             ModerationLog.objects.create(property=prop, moderator=request.user, action='rejected', notes=f"FRAUD FLAG: {notes}")
+            
+            from properties.models import PropertyAuditLog
+            PropertyAuditLog.objects.create(
+                property=prop,
+                changed_by=request.user,
+                field_name='status',
+                old_value=str(old_status),
+                new_value='rejected'
+            )
+            
             audit_logger.info(f"FRAUD FLAG: Property {prop.id} and User {target_username} flagged by {request.user.username}")
             return Response({'detail': 'Listing flagged for fraud and property rejected.'})
 

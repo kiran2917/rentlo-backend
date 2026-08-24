@@ -65,9 +65,19 @@ class InitiateUnlockView(views.APIView):
             if prop.status == 'under_negotiation':
                 from datetime import timedelta
                 if prop.under_negotiation_since and (timezone.now() - prop.under_negotiation_since) > timedelta(hours=48):
+                    old_status = prop.status
                     prop.status = 'live'
                     prop.under_negotiation_since = None
                     prop.save(update_fields=['status', 'under_negotiation_since'])
+                    
+                    from properties.models import PropertyAuditLog
+                    PropertyAuditLog.objects.create(
+                        property=prop,
+                        changed_by=None,
+                        field_name='status',
+                        old_value=str(old_status),
+                        new_value='live'
+                    )
                 else:
                     return Response({'detail': 'This property is currently under negotiation. Contact unlocks are temporarily paused for 48 hours to protect your payment.'}, status=status.HTTP_400_BAD_REQUEST)
 
