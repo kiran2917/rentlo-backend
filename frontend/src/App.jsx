@@ -61,33 +61,6 @@ function KeyboardDismissHandler() {
   return null;
 }
 
-function ThemeSyncHandler() {
-  const location = useLocation();
-
-  const applyTheme = () => {
-    const isDashboardPath = location.pathname.startsWith('/admin') || 
-      (location.pathname.startsWith('/owner') && location.pathname !== '/owner/login');
-
-    const dbTheme = localStorage.getItem("rentlo_dashboard_theme") || "emerald_minimal";
-    const buyTheme = localStorage.getItem("rentlo_buyer_theme") || "emerald_minimal";
-    const activeTheme = isDashboardPath ? dbTheme : buyTheme;
-
-    document.body.className = `theme-${activeTheme.replace(/_/g, '-')}`;
-    document.body.style.backgroundColor = "var(--bg)";
-    document.body.style.color = "var(--ink)";
-  };
-
-  useEffect(() => {
-    applyTheme();
-  }, [location.pathname]);
-
-  useEffect(() => {
-    window.addEventListener("themeChange", applyTheme);
-    return () => window.removeEventListener("themeChange", applyTheme);
-  }, []);
-
-  return null;
-}
 
 function App() {
   const lastUpdatedRef = useRef(null);
@@ -95,26 +68,7 @@ function App() {
   useEffect(() => {
     const isDashboardPath = window.location.pathname.startsWith('/admin') || (window.location.pathname.startsWith('/owner') && window.location.pathname !== '/owner/login');
 
-    // Initial fetch to sync and apply theme
-    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.buyer_theme) {
-          localStorage.setItem("rentlo_buyer_theme", data.buyer_theme);
-        }
-        if (data.dashboard_theme) {
-          localStorage.setItem("rentlo_dashboard_theme", data.dashboard_theme);
-        }
-        const activeTheme = isDashboardPath 
-          ? (data.dashboard_theme || localStorage.getItem("rentlo_dashboard_theme") || "emerald_minimal")
-          : (data.buyer_theme || localStorage.getItem("rentlo_buyer_theme") || "emerald_minimal");
-        
-        document.body.className = `theme-${activeTheme.replace(/_/g, '-')}`;
-        document.body.style.backgroundColor = "var(--bg)";
-        document.body.style.color = "var(--ink)";
-      })
-      .catch(err => console.error("Error fetching theme", err));
-
+    
     // Listen for Service Worker push events to trigger vibration and chime sound
     const handleMessage = (event) => {
       if (event.data?.type === "NOTIFICATION_PUSH_RECEIVED") {
@@ -146,8 +100,7 @@ function App() {
       <NotificationPromptModal />
       <BrowserRouter>
         <KeyboardDismissHandler />
-        <ThemeSyncHandler />
-        <Routes>
+                <Routes>
           {/* BUYER / OWNER AUTHENTICATION ROUTES */}
           <Route path="/login" element={<BuyerLogin />} />
           <Route path="/buyer/login" element={<BuyerLogin />} />
