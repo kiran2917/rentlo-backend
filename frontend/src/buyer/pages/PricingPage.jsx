@@ -232,9 +232,9 @@ export const PricingPage = () => {
         <div 
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[12px] font-extrabold uppercase tracking-widest mb-4 border"
           style={{ 
-            backgroundColor: "color-mix(in srgb, var(--accent) 12%, transparent)", 
-            borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)",
-            color: "var(--accent)"
+            backgroundColor: "rgba(0,0,0,0.06)", 
+            borderColor: "rgba(0,0,0,0.15)",
+            color: "#000000"
           }}
         >
           <span className="material-symbols-outlined text-[18px]">verified</span>
@@ -261,14 +261,14 @@ export const PricingPage = () => {
               }`}
               style={{
                 backgroundColor: "var(--surface)",
-                borderColor: plan.badge ? "var(--accent)" : "var(--border)",
-                boxShadow: plan.badge ? "0 10px 30px -10px color-mix(in srgb, var(--accent) 30%, transparent)" : undefined
+                borderColor: plan.badge ? "#000000" : "var(--border)",
+                boxShadow: plan.badge ? "0 10px 30px -10px rgba(0,0,0,0.2)" : undefined
               }}
             >
               {plan.badge && (
                 <span 
                   className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[11px] font-extrabold tracking-wider shadow-md"
-                  style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+                  style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
                 >
                   {plan.badge}
                 </span>
@@ -299,7 +299,7 @@ export const PricingPage = () => {
                 <ul className="space-y-3 mb-8 border-t pt-6" style={{ borderColor: "var(--border)" }}>
                   {plan.features.map((feat, i) => (
                     <li key={i} className="flex items-center gap-2.5 text-[13px] font-medium" style={{ color: "var(--ink)" }}>
-                      <span className="material-symbols-outlined text-[18px] shrink-0" style={{ color: "var(--accent)" }}>
+                      <span className="material-symbols-outlined text-[18px] shrink-0" style={{ color: "#000000" }}>
                         check_circle
                       </span>
                       {feat}
@@ -316,11 +316,7 @@ export const PricingPage = () => {
                     ? "opacity-75 cursor-not-allowed"
                     : "hover:opacity-90"
                 }`}
-                style={
-                  plan.badge
-                    ? { backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }
-                    : { backgroundColor: "var(--ink)", color: "var(--surface)" }
-                }
+                style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
               >
                 {purchasingPlanId === plan.id ? (
                   <>
