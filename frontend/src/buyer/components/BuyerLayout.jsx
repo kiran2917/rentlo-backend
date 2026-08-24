@@ -585,9 +585,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             >
               ✕
             </button>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-2xl text-slate-800">gavel</span>
-              <h3 className="text-lg font-extrabold text-slate-900">{legalModal.title}</h3>
+            <div className="flex items-start gap-3 mb-4 pr-10">
+              <span className="material-symbols-outlined text-2xl text-slate-800 mt-0.5">gavel</span>
+              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">{legalModal.title}</h3>
             </div>
             <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6 whitespace-pre-line">
               {legalModal.content}
