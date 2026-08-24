@@ -445,115 +445,18 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             )}
           </div>
 
-          {/* Mobile: user avatar + hamburger */}
-          <div className="md:hidden flex items-center gap-3">
+          {/* Mobile: language toggle only (bottom nav handles all navigation) */}
+          <div className="md:hidden flex items-center gap-2">
             {user && (
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold uppercase" style={{ color: "#FFFFFF" }}>
                 {(user.first_name || "U").charAt(0)}
               </div>
             )}
             <LanguageToggle />
-            <button type="button" aria-label="Open Mobile Menu" onClick={() => setMobileMenuOpen(true)} className="p-2 rounded-lg" style={{ color: "var(--header-ink)" }}>
-              <span className="material-symbols-outlined text-2xl">menu</span>
-            </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-      )}
-
-      {/* Mobile Drawer */}
-      <div
-        className={`md:hidden fixed top-0 right-0 h-full w-[280px] z-[70] flex flex-col py-6 transition-transform duration-300 ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
-        style={{ backgroundColor: "var(--header-bg)", borderLeft: "1px solid rgba(255,255,255,0.08)" }}
-      >
-        {/* Close + Logo */}
-        <div className="flex items-center justify-between px-5 mb-8">
-          <div className="flex items-center gap-2">
-            {platformSettings?.company_logo_url ? (
-              <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
-            ) : (
-              <div className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#FFFFFF" }}>
-                <span className="material-symbols-outlined text-base text-white">real_estate_agent</span>
-              </div>
-            )}
-            <span className="text-base font-bold" style={{ color: "var(--header-ink)" }}>
-              {platformSettings?.company_name || "Rentlo"}
-            </span>
-          </div>
-          <button onClick={() => setMobileMenuOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "var(--header-ink)" }}>
-            <span className="material-symbols-outlined text-lg">close</span>
-          </button>
-        </div>
-
-        {/* User Info */}
-        {user && (
-          <div className="mx-5 mb-6 p-4 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-            <p className="text-sm font-bold" style={{ color: "var(--header-ink)" }}>{user.username}</p>
-            <p className="text-xs font-medium" style={{ color: "#FFFFFF" }}>{user.roles?.join(", ") || "Buyer"}</p>
-          </div>
-        )}
-
-        {/* Nav Links */}
-        <div className="flex-1 px-4 space-y-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
-              style={{
-                color: location.pathname === link.to ? "#FFFFFF" : "rgba(255,255,255,0.75)",
-                backgroundColor: location.pathname === link.to ? "var(--nav-active-bg)" : "transparent",
-              }}
-            >
-              <span className="material-symbols-outlined text-lg" style={{ color: location.pathname === link.to ? "#FFFFFF" : "rgba(255,255,255,0.5)" }}>{link.icon}</span>
-              {link.label}
-              {link.badge > 0 && (
-                <span className="ml-auto px-1.5 py-0.5 rounded text-xs font-bold text-white" style={{ backgroundColor: "#FFFFFF" }}>{link.badge}</span>
-              )}
-            </Link>
-          ))}
- 
-          {(user?.roles?.includes("admin") || user?.roles?.includes("moderator") || user?.roles?.includes("agent")) && (
-            <Link
-              to="/admin"
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
-              style={{ color: "#FFFFFF", backgroundColor: "var(--nav-active-bg)" }}
-            >
-              <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
-              Admin Console
-            </Link>
-          )}
-          {user?.roles?.includes("owner") && (
-            <Link
-              to="/owner/dashboard"
-              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
-              style={{ color: "#FFFFFF", backgroundColor: "var(--nav-active-bg)" }}
-            >
-              <span className="material-symbols-outlined text-lg">dashboard</span>
-              Owner Dashboard
-            </Link>
-          )}
-        </div>
-
-        {/* Bottom CTAs */}
-        <div className="px-4 mt-4 space-y-3">
-
-          {user && (
-            <button
-              onClick={() => { logout(); setMobileMenuOpen(false); }}
-              className="w-full h-12 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-colors text-red-600 hover:bg-red-500/10"
-              style={{ border: "1px solid var(--border)", backgroundColor: "var(--surface-alt)" }}
-            >
-              <span className="material-symbols-outlined text-lg">logout</span>
-              Sign Out
-            </button>
-          )}
-        </div>
-      </div>
 
       {/* Content */}
       <main className={`flex-grow w-full flex flex-col ${isChatRoute ? "overflow-hidden" : ""}`}>

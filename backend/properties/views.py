@@ -28,7 +28,8 @@ class CityListCreateView(generics.ListCreateAPIView):
         qs = City.objects.filter(is_active=True)
         has_props = self.request.query_params.get('has_properties')
         if has_props == 'true':
-            qs = qs.filter(localities__properties__isnull=False).distinct()
+            # Only show cities that have at least one LIVE property
+            qs = qs.filter(localities__properties__status='live').distinct()
         return qs.order_by('name')
 
 class CityDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -47,7 +48,8 @@ class LocalityListCreateView(generics.ListCreateAPIView):
             qs = qs.filter(city_id=city_id)
         has_props = self.request.query_params.get('has_properties')
         if has_props == 'true':
-            qs = qs.filter(properties__isnull=False).distinct()
+            # Only show localities that have at least one LIVE property
+            qs = qs.filter(properties__status='live').distinct()
         return qs.order_by('name')
 
 class LocalityDetailView(generics.RetrieveUpdateDestroyAPIView):
