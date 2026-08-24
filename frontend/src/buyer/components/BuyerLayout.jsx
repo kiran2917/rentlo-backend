@@ -617,33 +617,33 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
                   </div>
                 )}
-                <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>
+                <span className="text-lg font-black tracking-tight" className="text-white">
                   {platformSettings?.company_name || "Rentlo"}
                 </span>
               </div>
-              <p className="text-sm font-medium leading-relaxed" style={{ color: "#9CA3AF" }}>
+              <p className="text-sm font-medium leading-relaxed" className="text-gray-300">
                 {t("footer.desc", "Zero-Brokerage Real Estate Ecosystem. Directly connecting buyers, tenants, and property owners across India.")}
               </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-emerald-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-white">
                 {t("footer.dpdpCompliant", "• DPDP Act 2023 Compliant Baseline")}
               </p>
             </div>
 
             {/* Col 2: Login Portals */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
                 {t("footer.accessPortals", "Access Portals & Login")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "#9CA3AF" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
                 <li>
-                  <Link to="/login" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-                    <span className="material-symbols-outlined text-base text-emerald-500">person</span>
+                  <Link to="/login" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">person</span>
                     {t("footer.tenantLogin", "Tenant & Buyer Login")}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/owner/login" className="flex items-center gap-2 hover:text-amber-500 transition-colors">
-                    <span className="material-symbols-outlined text-base text-amber-500">add_home</span>
+                  <Link to="/owner/login" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">add_home</span>
                     {t("footer.ownerLogin", "Landlord & Owner Login")}
                   </Link>
                 </li>
@@ -652,35 +652,35 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 3: Platform Features */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
                 {t("footer.platformServices", "Platform Services")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "#9CA3AF" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
                 <li>
-                  <Link to="/" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-                    <span className="material-symbols-outlined text-base text-emerald-500">home_work</span>
+                  <Link to="/" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">home_work</span>
                     {t("footer.exploreCatalog", "Explore Property Catalog")}
                   </Link>
                 </li>
                 {user && (
                   <>
                     <li>
-                      <Link to="/my-unlocks" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-                        <span className="material-symbols-outlined text-base text-emerald-500">lock_open</span>
+                      <Link to="/my-unlocks" className="flex items-center gap-2 hover:text-white transition-colors">
+                        <span className="material-symbols-outlined text-base text-white">lock_open</span>
                         {t("footer.myUnlocks", "My Contact Unlocks")}
                       </Link>
                     </li>
                     <li>
-                      <Link to="/saved-searches" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-                        <span className="material-symbols-outlined text-base text-emerald-500">bookmark</span>
+                      <Link to="/saved-searches" className="flex items-center gap-2 hover:text-white transition-colors">
+                        <span className="material-symbols-outlined text-base text-white">bookmark</span>
                         {t("footer.savedSearches", "Saved Search Alerts")}
                       </Link>
                     </li>
                   </>
                 )}
                 <li>
-                  <Link to="/pricing" className="flex items-center gap-2 hover:text-emerald-500 transition-colors">
-                    <span className="material-symbols-outlined text-base text-emerald-500">confirmation_number</span>
+                  <Link to="/pricing" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">confirmation_number</span>
                     {t("footer.buyerPasses", "Buyer Credit Passes & Pricing")}
                   </Link>
                 </li>
@@ -689,43 +689,43 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 4: Trust & Legal */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" style={{ color: "var(--ink)" }}>
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
                 {t("footer.legalGovernance", "Legal & Governance")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" style={{ color: "#9CA3AF" }}>
+              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.privacy)}
-                    className="footer-plain-btn hover:text-emerald-500 font-semibold"
+                    className="footer-plain-btn hover:text-white font-semibold"
                   >
-                    <span className="material-symbols-outlined text-base text-emerald-500 shrink-0">privacy_tip</span>
+                    <span className="material-symbols-outlined text-base text-white shrink-0">privacy_tip</span>
                     {t("footer.privacyPolicy", "Privacy Policy (v1.0)")}
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.terms)}
-                    className="footer-plain-btn hover:text-emerald-500 font-semibold"
+                    className="footer-plain-btn hover:text-white font-semibold"
                   >
-                    <span className="material-symbols-outlined text-base text-emerald-500 shrink-0">gavel</span>
+                    <span className="material-symbols-outlined text-base text-white shrink-0">gavel</span>
                     {t("footer.termsOfService", "Terms of Service & Fair Usage")}
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.dpdp)}
-                    className="footer-plain-btn hover:text-emerald-500 font-semibold"
+                    className="footer-plain-btn hover:text-white font-semibold"
                   >
-                    <span className="material-symbols-outlined text-base text-emerald-500 shrink-0">shield</span>
+                    <span className="material-symbols-outlined text-base text-white shrink-0">shield</span>
                     {t("footer.dpdpRetention", "DPDP Act Data Retention Boundary")}
                   </button>
                 </li>
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.zero_brokerage)}
-                    className="footer-plain-btn hover:text-emerald-500 font-semibold"
+                    className="footer-plain-btn hover:text-white font-semibold"
                   >
-                    <span className="material-symbols-outlined text-base text-emerald-500 shrink-0">verified_user</span>
+                    <span className="material-symbols-outlined text-base text-white shrink-0">verified_user</span>
                     {t("footer.zeroBrokerage", "Zero Brokerage Protection")}
                   </button>
                 </li>
@@ -734,7 +734,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           </div>
 
 
-          <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium" style={{ color: "#9CA3AF" }}>
+          <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium" className="text-gray-300">
             <p>{t("footer.copyright", `${platformSettings?.company_name || "Rentlo Technologies"} © 2026. All rights reserved.`)}</p>
           </div>
         </div>
