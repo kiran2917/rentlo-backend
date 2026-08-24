@@ -476,7 +476,7 @@ export const OwnerDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Banner & Action Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-surface to-surface border border-rose-600/20 p-6 md:p-6 rounded-3xl shadow-sm relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r bg-slate-50 border border-rose-600/20 p-6 md:p-6 rounded-3xl shadow-sm relative overflow-hidden">
         <div className="space-y-1 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-black/10 border border-rose-600/20 text-rose-600 text-xs font-bold tracking-wide uppercase mb-1">
             <span className="material-symbols-outlined text-sm">real_estate_agent</span>
@@ -494,7 +494,7 @@ export const OwnerDashboard = () => {
           <button
             type="button"
             onClick={() => setShowCreditsModal(true)}
-            className="px-4 py-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-rose-600/30 hover:border-rose-600/60 text-emerald-800 rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
+            className="px-4 py-4 bg-gradient-to-r bg-slate-100 border border-rose-600/30 hover:border-rose-600/60 text-black rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
           >
             <span className="material-symbols-outlined text-xl text-slate-800">stars</span>
             {ownerCredits?.total_credits_remaining > 0 ? (
@@ -623,7 +623,7 @@ export const OwnerDashboard = () => {
           </p>
           <Link
             to="/owner/new-listing"
-            className="px-6 py-4 bg-slate-900 text-white rounded-2xl text-sm font-bold shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
+            className="px-6 py-4 bg-slate-900 text-white rounded-2xl text-sm font-bold shadow-md shadow-black/10 hover:shadow-lg transition-all"
           >
             List Your First Property
           </Link>
@@ -1012,7 +1012,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <Link
                           to={`/property/${prop.id}/lease`}
-                          className="w-full px-4 py-2 rounded-xl bg-slate-900 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                          className="w-full px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                         >
                           <span className="material-symbols-outlined text-base">description</span>
                           Draft Official Lease Agreement
@@ -1045,7 +1045,7 @@ export const OwnerDashboard = () => {
             {/* Header */}
             <div className="flex items-center justify-between pb-6 border-b" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-600 flex items-center justify-center text-slate-950 shadow-lg shadow-emerald-500/25">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br bg-black flex items-center justify-center text-slate-950 shadow-lg shadow-black/10">
                   <span className="material-symbols-outlined text-3xl font-black">workspace_premium</span>
                 </div>
                 <div>
@@ -1067,7 +1067,7 @@ export const OwnerDashboard = () => {
             </div>
 
             {/* Current Balance & Active Credits Banner */}
-            <div className="my-6 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #059669 0%, #0d9488 100%)", boxShadow: "0 4px 24px rgba(5,150,105,0.25)" }}>
+            <div className="my-6 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" style={{ background: "#000000", boxShadow: "0 4px 24px rgba(0,0,0,0.25)" }}>
               <div className="relative z-10 space-y-2">
                   <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
                   <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
@@ -1134,7 +1134,7 @@ export const OwnerDashboard = () => {
               <Link
                 to="/owner/new-listing"
                 onClick={() => setShowCreditsModal(false)}
-                className="px-4 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-emerald-300/40"
+                className="px-4 py-4 bg-gradient-to-r bg-white hover:bg-slate-200 text-black text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-black/10 flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-slate-300"
               >
                 <span className="material-symbols-outlined text-lg">add_circle</span>
                 Publish Listing Now
@@ -1166,9 +1166,9 @@ export const OwnerDashboard = () => {
                         className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
                           isSelected
                             ? "border-2 shadow-md ring-2"
-                            : "hover:border-emerald-300"
+                            : "hover:border-slate-300"
                         }`}
-                        style={isSelected ? { backgroundColor: "#f0fdf4", borderColor: "#059669", boxShadow: "0 4px 16px rgba(5,150,105,0.15)", ringColor: "rgba(5,150,105,0.3)" } : { backgroundColor: "#f8fafc", borderColor: "#e2e8f0", color: "#475569" }}
+                        style={isSelected ? { backgroundColor: "#ffffff", borderColor: "#000000", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", ringColor: "rgba(0,0,0,0.3)" } : { backgroundColor: "#f8fafc", borderColor: "#e2e8f0", color: "#475569" }}
                       >
                         <div className="flex items-center justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2">
@@ -1179,10 +1179,10 @@ export const OwnerDashboard = () => {
                             >
                               {catObj.icon}
                             </span>
-                            <span className="font-black text-sm" style={{ color: isSelected ? "#059669" : "#0F172A" }}>{catObj.shortLabel}</span>
+                            <span className="font-black text-sm" style={{ color: isSelected ? "#000000" : "#0F172A" }}>{catObj.shortLabel}</span>
                           </div>
                           {isSelected && (
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-xs shadow-emerald-400"></span>
+                            <span className="w-2.5 h-2.5 rounded-full bg-rose-600 shadow-xs shadow-black/10"></span>
                           )}
                         </div>
                         <p className="text-xs leading-relaxed line-clamp-2 opacity-80">{catObj.description}</p>
@@ -1226,9 +1226,9 @@ export const OwnerDashboard = () => {
                       className={`p-4 rounded-3xl border transition-all duration-300 flex flex-col justify-between relative ${
                         plan.highlight
                           ? "border-2"
-                          : "hover:border-emerald-300"
+                          : "hover:border-slate-300"
                       }`}
-                      style={plan.highlight ? { background: "linear-gradient(160deg,#f0fdf4 0%,#ffffff 100%)", borderColor: "#059669", boxShadow: "0 8px 32px rgba(5,150,105,0.18)" } : { backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }}
+                      style={plan.highlight ? { backgroundColor: "#ffffff", borderColor: "#000000", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" } : { backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }}
                     >
                       {plan.badge && (
                         <div className="flex items-center justify-between gap-1 mb-2">
@@ -1628,7 +1628,7 @@ export const OwnerDashboard = () => {
               <button
                 type="submit"
                 disabled={isVerifyingUtr}
-                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-black"
+                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-black/10 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-black"
               >
                 {isVerifyingUtr ? "Verifying..." : "Submit UTR & Activate"}
                 <span className="material-symbols-outlined text-lg">check_circle</span>
@@ -1655,7 +1655,7 @@ export const OwnerDashboard = () => {
                   onClick={() => {
                     window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${successPassId}/receipt/`, "_blank");
                   }}
-                  className="w-full h-12 bg-black hover:bg-black text-white font-extrabold rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2"
+                  className="w-full h-12 bg-black hover:bg-black text-white font-extrabold rounded-xl shadow-lg shadow-black/10 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">download</span>
                   Download Receipt
