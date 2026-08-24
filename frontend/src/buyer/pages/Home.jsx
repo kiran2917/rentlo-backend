@@ -411,7 +411,7 @@ export const Home = () => {
       />
       <main className="flex-grow">
         {/* 100% Universal Screen Viewport-Fitted Edge-to-Edge Hero Section */}
-        <section className="relative w-full overflow-hidden min-h-[90vh] md:min-h-[calc(100vh-72px)] flex items-center justify-center py-12 sm:py-8 md:py-14 px-4 sm:px-6 lg:px-8 transition-all duration-500">
+        <section className="relative w-full overflow-hidden min-h-[85vh] md:min-h-[calc(100vh-72px)] flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 transition-all duration-500">
           {/* Background Full-Width Photo Layer */}
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div
@@ -435,12 +435,12 @@ export const Home = () => {
 
           <div className="relative z-10 flex flex-col items-center text-center w-full max-w-6xl mx-auto">
             {/* Main Headline */}
-            <h1 className="font-display font-extrabold leading-[1.12] sm:leading-[1.08] tracking-tight mb-2 sm:mb-4 text-white max-w-4xl text-3xl xs:text-[34px] sm:text-[50px] md:text-[64px] drop-shadow-md">
+            <h1 className="font-display font-extrabold leading-[1.12] sm:leading-[1.08] tracking-tight mb-2 sm:mb-3 text-white max-w-4xl text-2xl xs:text-[28px] sm:text-[44px] md:text-[64px] drop-shadow-md">
               {t("home.heroTitle", "Find your next perfect place.")}
             </h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-lg md:text-xl font-medium mb-6 sm:mb-8 max-w-xl text-slate-300 leading-relaxed drop-shadow">
+            <p className="text-[13px] sm:text-lg md:text-xl font-medium mb-4 sm:mb-6 max-w-xl text-slate-300 leading-relaxed drop-shadow">
               {t("home.heroSubtitle", "Discover verified rental properties with transparent pricing and direct owner access.")}
             </p>
 
