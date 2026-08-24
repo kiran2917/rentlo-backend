@@ -18,7 +18,7 @@ export const PropertyCard = ({
   const VerifiedBadge = () => {
     if (!prop.is_verified) return null;
     return (
-      <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-black bg-emerald-500 text-white shadow-md uppercase tracking-widest z-10">
+      <div className="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-black bg-slate-900 text-white shadow-md uppercase tracking-widest z-10">
         <span className="material-symbols-outlined text-[10px]">verified</span>
         Verified
       </div>

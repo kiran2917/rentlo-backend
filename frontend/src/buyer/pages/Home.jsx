@@ -456,11 +456,11 @@ export const Home = () => {
                     {t("home.city", "City")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">location_on</span>
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">location_on</span>
                     <select
                       value={filters.city_id}
                       onChange={(e) => handleFilterChange("city_id", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyCity", "Any City")}</option>
                       {cities.map((c) => (
@@ -477,11 +477,11 @@ export const Home = () => {
                     {t("home.localityLabel", "Locality")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">my_location</span>
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">my_location</span>
                     <select
                       value={filters.locality}
                       onChange={(e) => handleFilterChange("locality", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyLocality", "Any Locality")}</option>
                       {localities.map((l) => (
@@ -498,11 +498,11 @@ export const Home = () => {
                     {t("home.type", "Type")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">home_work</span>
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">home_work</span>
                     <select
                       value={filters.property_type}
                       onChange={(e) => handleFilterChange("property_type", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
                     >
                       <option value="">{t("home.anyType", "Any Type")}</option>
                       {propertyTypes.map((p) => (
@@ -521,7 +521,7 @@ export const Home = () => {
                       <button
                         type="button"
                         onClick={() => { setShowCustomPriceInputs(false); setFilters(prev => ({ ...prev, min_price: "", max_price: "" })); }}
-                        className="text-xs text-emerald-600 font-extrabold flex items-center gap-1 hover:underline cursor-pointer"
+                        className="text-xs text-slate-800 font-extrabold flex items-center gap-1 hover:underline cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-xs">list</span>
                         {t("home.useDropdown", "Use Dropdown")}
@@ -532,34 +532,34 @@ export const Home = () => {
                   {showCustomPriceInputs ? (
                     <div className="flex gap-2 items-center">
                       <div className="relative flex-1">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">payments</span>
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
                         <input
                           type="number"
                           placeholder={t("home.minPrice", "Min Price ₹")}
                           value={filters.min_price}
                           onChange={(e) => setFilters(prev => ({ ...prev, min_price: e.target.value }))}
-                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
+                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-800 text-slate-900 transition-all"
                         />
                       </div>
                       <span className="text-slate-400 font-extrabold text-sm">-</span>
                       <div className="relative flex-1">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">payments</span>
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
                         <input
                           type="number"
                           placeholder={t("home.maxPrice", "Max Price ₹")}
                           value={filters.max_price}
                           onChange={(e) => setFilters(prev => ({ ...prev, max_price: e.target.value }))}
-                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-500 text-slate-900 transition-all"
+                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-800 text-slate-900 transition-all"
                         />
                       </div>
                     </div>
                   ) : (
                     <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-emerald-600">payments</span>
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
                       <select
                         value={getBudgetOptionValue()}
                         onChange={(e) => handleBudgetOptionChange(e.target.value)}
-                        className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 text-slate-900 transition-all"
+                        className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
                       >
                         <option value="">{t("home.anyBudget", "Any Budget")}</option>
                         <option value="1000-3000">{t("home.1kTo3k", "₹1k to ₹3k")}</option>
@@ -582,7 +582,7 @@ export const Home = () => {
                 <div className="lg:col-span-2 flex flex-col justify-end mt-2 lg:mt-0 w-full">
                   <button
                     onClick={handleSaveSearch}
-                    className="w-full h-11 sm:h-12 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-0.5 cursor-pointer"
+                    className="w-full h-11 sm:h-12 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold transition-all duration-200 bg-black hover:bg-slate-900 text-white shadow-md shadow-slate-900/20 hover:shadow-slate-900/30 hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-lg">
                       {saveSuccess ? "bookmark_added" : "bookmark_add"}
@@ -600,7 +600,7 @@ export const Home = () => {
                     onClick={handleSearchNearMe}
                     className={`px-4 py-2 rounded-xl flex items-center gap-2 text-xs sm:text-[11px] font-bold transition-all border cursor-pointer ${
                       filters.lat
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20"
+                        ? "bg-black text-white border-black shadow-md shadow-slate-900/20"
                         : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
@@ -764,7 +764,7 @@ export const Home = () => {
 
                   {/* City Selector Dropdown */}
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-emerald-500 pointer-events-none">location_on</span>
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-slate-800 pointer-events-none">location_on</span>
                     <select
                       value={selectedCityId}
                       onChange={(e) => {
