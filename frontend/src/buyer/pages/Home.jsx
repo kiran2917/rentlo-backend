@@ -732,66 +732,69 @@ export const Home = () => {
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
               <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[30px] md:rounded-3xl overflow-hidden shadow-2xl relative md:sticky md:top-24 border mb-24 md:mb-0" style={{ borderColor: "var(--border)" }}>
-                {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
-                <div className="absolute top-4 left-4 z-[1000] backdrop-blur-xl border p-2 rounded-2xl shadow-2xl flex flex-wrap items-center gap-2 max-w-[calc(100%-12rem)]" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 85%, transparent)", borderColor: "var(--border)" }}>
-                  <div className="flex items-center gap-2 px-2 text-emerald-400 text-xs font-black uppercase tracking-wider">
-                    <span className="material-symbols-outlined text-lg">location_on</span>
-                    <span className="hidden sm:inline">Zoom To</span>
+                {/* Map View Mode Controls */}
+                <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 w-[220px] max-w-[calc(100vw-120px)]">
+                  {/* State Selector Dropdown */}
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-slate-500 pointer-events-none">map</span>
+                    <select
+                      value={selectedStateKey}
+                      onChange={(e) => {
+                        const stateKey = e.target.value;
+                        setSelectedStateKey(stateKey);
+                        const stateData = STATE_CITY_DATA[stateKey];
+                        if (stateData) {
+                          const firstCity = stateData.cities[0];
+                          const newCityId = firstCity ? firstCity.id : "all";
+                          setSelectedCityId(newCityId);
+                          setMapCenter(firstCity ? firstCity.center : stateData.center);
+                          setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
+                        }
+                      }}
+                      className="w-full pl-9 pr-8 py-2.5 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl text-xs font-extrabold text-slate-800 shadow-lg appearance-none outline-none cursor-pointer hover:border-slate-300 transition-all truncate"
+                    >
+                      {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
+                        <option key={key} value={key}>
+                          {data.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">expand_more</span>
                   </div>
 
-                  {/* State Selector Dropdown */}
-                  <select
-                    value={selectedStateKey}
-                    onChange={(e) => {
-                      const stateKey = e.target.value;
-                      setSelectedStateKey(stateKey);
-                      const stateData = STATE_CITY_DATA[stateKey];
-                      if (stateData) {
-                        const firstCity = stateData.cities[0];
-                        const newCityId = firstCity ? firstCity.id : "all";
-                        setSelectedCityId(newCityId);
-                        setMapCenter(firstCity ? firstCity.center : stateData.center);
-                        setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
-                      }
-                    }}
-                    className="rounded-xl text-xs font-extrabold py-2 px-2 outline-none cursor-pointer shadow-sm transition-all" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }}
-                  >
-                    {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
-                      <option key={key} value={key}>
-                        State: {data.name}
-                      </option>
-                    ))}
-                  </select>
-
                   {/* City Selector Dropdown */}
-                  <select
-                    value={selectedCityId}
-                    onChange={(e) => {
-                      const cityId = e.target.value;
-                      setSelectedCityId(cityId);
-                      const stateData = STATE_CITY_DATA[selectedStateKey];
-                      if (stateData) {
-                        if (cityId === "all") {
-                          setMapCenter(stateData.center);
-                          setMapZoom(stateData.zoom);
-                        } else {
-                          const matchCity = stateData.cities.find((c) => c.id === cityId);
-                          if (matchCity) {
-                            setMapCenter(matchCity.center);
-                            setMapZoom(matchCity.zoom);
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-emerald-500 pointer-events-none">location_on</span>
+                    <select
+                      value={selectedCityId}
+                      onChange={(e) => {
+                        const cityId = e.target.value;
+                        setSelectedCityId(cityId);
+                        const stateData = STATE_CITY_DATA[selectedStateKey];
+                        if (stateData) {
+                          if (cityId === "all") {
+                            setMapCenter(stateData.center);
+                            setMapZoom(stateData.zoom);
+                          } else {
+                            const matchCity = stateData.cities.find((c) => c.id === cityId);
+                            if (matchCity) {
+                              setMapCenter(matchCity.center);
+                              setMapZoom(matchCity.zoom);
+                            }
                           }
                         }
-                      }
-                    }}
-                    className="rounded-xl text-xs font-extrabold py-2 px-2 outline-none cursor-pointer shadow-sm transition-all" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }}
-                  >
-                    <option value="all">All {STATE_CITY_DATA[selectedStateKey]?.name} Cities</option>
-                    {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        📍 {city.name}
-                      </option>
-                    ))}
-                  </select>
+                      }}
+                      className="w-full pl-9 pr-8 py-2.5 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl text-xs font-extrabold text-slate-800 shadow-lg appearance-none outline-none cursor-pointer hover:border-slate-300 transition-all truncate"
+                    >
+                      <option value="all">All {STATE_CITY_DATA[selectedStateKey]?.name} Cities</option>
+                      {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">expand_more</span>
+                  </div>
                 </div>
 
                 {/* Map Controls Floating Toolbar */}
