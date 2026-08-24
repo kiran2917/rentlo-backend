@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../shared/context/AuthContext";
 import { OtpModal } from "../components/OtpModal";
 import { loadRazorpayScript } from "../../shared/utils/razorpayLoader";
 import { toast } from "react-toastify";
 
 export const PricingPage = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -20,63 +22,63 @@ export const PricingPage = () => {
   const PLANS = [
     {
       id: "single_14",
-      name: "Single Unlock",
+      name: t("pricing.plans.single_14.name", "Single Unlock"),
       price: 14,
       unlocks: 1,
       agreements: 0,
       badge: null,
-      validity: "Instant Access",
-      description: "1-time contact lookup for a specific property listing",
+      validity: t("pricing.plans.single_14.validity", "Instant Access"),
+      description: t("pricing.plans.single_14.description", "1-time contact lookup for a specific property listing"),
       features: [
-        "1 Direct Owner Contact Unlock",
-        "Exact Location Coordinates & Maps",
-        "WhatsApp Direct Chat Access"
+        t("pricing.plans.single_14.features.0", "1 Direct Owner Contact Unlock"),
+        t("pricing.plans.single_14.features.1", "Exact Location Coordinates & Maps"),
+        t("pricing.plans.single_14.features.2", "WhatsApp Direct Chat Access")
       ]
     },
     {
       id: "starter_39",
-      name: "Starter Pass",
+      name: t("pricing.plans.starter_39.name", "Starter Pass"),
       price: 39,
       unlocks: 3,
       agreements: 0,
-      badge: "POPULAR",
-      validity: "3 Credits Pack",
-      description: "Ideal for casual house hunters exploring a locality",
+      badge: t("pricing.plans.starter_39.badge", "POPULAR"),
+      validity: t("pricing.plans.starter_39.validity", "3 Credits Pack"),
+      description: t("pricing.plans.starter_39.description", "Ideal for casual house hunters exploring a locality"),
       features: [
-        "3 Contact Unlocks (Save ₹3)",
-        "1-Click Instant Unlock (No Gateway PIN)",
-        "WhatsApp & Google Maps Navigation"
+        t("pricing.plans.starter_39.features.0", "3 Contact Unlocks (Save ₹3)"),
+        t("pricing.plans.starter_39.features.1", "1-Click Instant Unlock (No Gateway PIN)"),
+        t("pricing.plans.starter_39.features.2", "WhatsApp & Google Maps Navigation")
       ]
     },
     {
       id: "smart_79",
-      name: "Smart Pass",
+      name: t("pricing.plans.smart_79.name", "Smart Pass"),
       price: 79,
       unlocks: 6,
       agreements: 1,
-      badge: "BEST SELLER ⭐",
-      validity: "6 Credits Pack",
-      description: "Best for active tenants comparing multiple properties",
+      badge: t("pricing.plans.smart_79.badge", "BEST SELLER ⭐"),
+      validity: t("pricing.plans.smart_79.validity", "6 Credits Pack"),
+      description: t("pricing.plans.smart_79.description", "Best for active tenants comparing multiple properties"),
       features: [
-        "6 Contact Unlocks (Save ₹5)",
-        "1 Free Legal Rental Lease Agreement (Value ₹299)",
-        "1-Click Instant Unlock Speed",
-        "WhatsApp & Google Maps Pin Access"
+        t("pricing.plans.smart_79.features.0", "6 Contact Unlocks (Save ₹5)"),
+        t("pricing.plans.smart_79.features.1", "1 Free Legal Rental Lease Agreement (Value ₹299)"),
+        t("pricing.plans.smart_79.features.2", "1-Click Instant Unlock Speed"),
+        t("pricing.plans.smart_79.features.3", "WhatsApp & Google Maps Pin Access")
       ]
     },
     {
       id: "pro_129",
-      name: "Pro Hunter Pass",
+      name: t("pricing.plans.pro_129.name", "Pro Hunter Pass"),
       price: 129,
       unlocks: 10,
       agreements: 3,
-      badge: "VIP VALUE 👑",
-      validity: "10 Credits Pack",
-      description: "VIP pass for families & urgent movers needing top choices",
+      badge: t("pricing.plans.pro_129.badge", "VIP VALUE 👑"),
+      validity: t("pricing.plans.pro_129.validity", "10 Credits Pack"),
+      description: t("pricing.plans.pro_129.description", "VIP pass for families & urgent movers needing top choices"),
       features: [
-        "10 Contact Unlocks (Save ₹11)",
-        "3 Free Legal Rental Lease Agreements (Value ₹899)",
-        "VIP Early Access Listing Alerts (2 Hours Early)"
+        t("pricing.plans.pro_129.features.0", "10 Contact Unlocks (Save ₹11)"),
+        t("pricing.plans.pro_129.features.1", "3 Free Legal Rental Lease Agreements (Value ₹899)"),
+        t("pricing.plans.pro_129.features.2", "VIP Early Access Listing Alerts (2 Hours Early)")
       ]
     }
   ];
@@ -238,15 +240,15 @@ export const PricingPage = () => {
           }}
         >
           <span className="material-symbols-outlined text-[18px]">verified</span>
-          Transparent Pricing · Zero Brokerage
+          {t("pricing.transparentPricing", "Transparent Pricing · Zero Brokerage")}
         </div>
 
         <h1 className="font-display font-extrabold text-[36px] sm:text-[56px] leading-tight tracking-tight mb-4" style={{ color: "var(--ink)" }}>
-          Unlock Direct Owner Contacts & Save Brokerage
+          {t("pricing.heroTitle", "Unlock Direct Owner Contacts & Save Brokerage")}
         </h1>
 
         <p className="text-[16px] max-w-2xl mx-auto mb-16" style={{ color: "var(--text-muted)" }}>
-          Skip 1-month brokerage fees (₹15,000+). Pay a tiny fee to connect directly with verified property owners on Rentlo.
+          {t("pricing.heroSubtitle", "Skip 1-month brokerage fees (₹15,000+). Pay a tiny fee to connect directly with verified property owners on Rentlo.")}
         </p>
 
         {/* Pricing Cards Grid */}
@@ -288,7 +290,7 @@ export const PricingPage = () => {
                     ₹{plan.price}
                   </span>
                   <span className="text-[13px] font-medium" style={{ color: "var(--text-muted)" }}>
-                    / {plan.unlocks} {plan.unlocks === 1 ? "unlock" : "unlocks"}
+                    / {plan.unlocks} {plan.unlocks === 1 ? t("pricing.unlock", "unlock") : t("pricing.unlocks", "unlocks")}
                   </span>
                 </div>
 
@@ -321,10 +323,10 @@ export const PricingPage = () => {
                 {purchasingPlanId === plan.id ? (
                   <>
                     <span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-                    Processing...
+                    {t("pricing.processing", "Processing...")}
                   </>
                 ) : (
-                  `Get ${plan.name}`
+                  t("pricing.getPlan", "Get {{name}}", { name: plan.name })
                 )}
               </button>
             </div>
@@ -345,9 +347,9 @@ export const PricingPage = () => {
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
                 <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
               </div>
-              <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
+              <h3 className="text-xl font-extrabold text-slate-900">{t("pricing.upi.scanPay", "Scan & Pay via UPI")}</h3>
               <p className="text-sm font-medium text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
-                Please scan the QR code below using any UPI app (GPay, PhonePe, Paytm) to pay <strong className="text-slate-800">₹{upiOrderData.amount}</strong>.
+                {t("pricing.upi.scanDesc", "Please scan the QR code below using any UPI app (GPay, PhonePe, Paytm) to pay ₹{{amount}}.", { amount: upiOrderData.amount })}
               </p>
             </div>
 
@@ -365,12 +367,12 @@ export const PricingPage = () => {
 
             <form onSubmit={handleUpiSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1 text-left">Enter 12-Digit UTR Number *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1 text-left">{t("pricing.upi.enterUtr", "Enter 12-Digit UTR Number *")}</label>
                 <input
                   type="text"
                   value={utrNumber}
                   onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, ''))}
-                  placeholder="e.g. 325412345678"
+                  placeholder={t("pricing.upi.utrPlaceholder", "e.g. 325412345678")}
                   maxLength={20}
                   required
                   className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-indigo-600 transition-all"
@@ -383,7 +385,7 @@ export const PricingPage = () => {
                 disabled={isVerifyingUtr}
                 className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-black"
               >
-                {isVerifyingUtr ? "Verifying..." : "Submit UTR & Activate"}
+                {isVerifyingUtr ? t("pricing.upi.verifying", "Verifying...") : t("pricing.upi.submitBtn", "Submit UTR & Activate")}
                 <span className="material-symbols-outlined text-lg">check_circle</span>
               </button>
             </form>
