@@ -414,7 +414,7 @@ export const OwnerDashboard = () => {
   const statusConfig = {
     live: {
       label: "🟢 Live",
-      color: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30",
+      color: "bg-emerald-500/15 text-slate-800 dark:text-emerald-400 border border-emerald-500/30",
     },
     under_negotiation: {
       label: "⏸ Under Negotiation",
@@ -495,7 +495,7 @@ export const OwnerDashboard = () => {
             onClick={() => setShowCreditsModal(true)}
             className="px-4 py-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-800 rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
           >
-            <span className="material-symbols-outlined text-xl text-emerald-600">stars</span>
+            <span className="material-symbols-outlined text-xl text-slate-800">stars</span>
             {ownerCredits?.total_credits_remaining > 0 ? (
               <>
                 {ownerCredits.total_credits_remaining} <Translate>Listing Credit</Translate>
@@ -523,25 +523,25 @@ export const OwnerDashboard = () => {
             label: "Total Properties",
             value: totalProperties,
             icon: "home_work",
-            color: "text-blue-500 bg-blue-500/10 border-blue-500/20 shadow-blue-500/10",
+            color: "text-slate-800 bg-slate-50 border-slate-200 shadow-none",
           },
           {
             label: "Live Listings",
             value: liveCount,
             icon: "verified",
-            color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20 shadow-emerald-500/10",
+            color: "text-slate-800 bg-slate-50 border-slate-200 shadow-none",
           },
           {
             label: "Buyer Unlocks",
             value: totalUnlocks,
             icon: "contacts",
-            color: "text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-amber-500/10",
+            color: "text-slate-800 bg-slate-50 border-slate-200 shadow-none",
           },
           {
             label: "In Talks / Rented",
             value: inTalksCount,
             icon: "handshake",
-            color: "text-purple-500 bg-purple-500/10 border-purple-500/20 shadow-purple-500/10",
+            color: "text-slate-800 bg-slate-50 border-slate-200 shadow-none",
           },
         ].map((kpi, idx) => (
           <div
@@ -552,7 +552,7 @@ export const OwnerDashboard = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
                 <Translate>{kpi.label}</Translate>
               </span>
-              <p className="text-2xl md:text-3xl font-extrabold text-ink group-hover:text-emerald-600 transition-colors">
+              <p className="text-2xl md:text-3xl font-extrabold text-ink group-hover:text-slate-800 transition-colors">
                 {kpi.value}
               </p>
             </div>
@@ -1000,7 +1000,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "live")}
-                          className="w-full px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          className="w-full px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-slate-800 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">restart_alt</span>
                           Relist — Available Again
@@ -1173,7 +1173,7 @@ export const OwnerDashboard = () => {
                           <div className="flex items-center gap-2">
                             <span
                               className={`material-symbols-outlined text-xl ${
-                                isSelected ? "text-emerald-600" : "text-slate-400"
+                                isSelected ? "text-slate-800" : "text-slate-400"
                               }`}
                             >
                               {catObj.icon}
@@ -1529,7 +1529,7 @@ export const OwnerDashboard = () => {
 
                 return (
                   <div className="p-4 rounded-2xl border flex items-center justify-between text-xs font-extrabold flex-wrap gap-2 shadow-md" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
-                    <span className="flex items-center gap-2 text-emerald-600">
+                    <span className="flex items-center gap-2 text-slate-800">
                       <span className="material-symbols-outlined text-xl">equalizer</span>
                       <span>Inventory Calculation:</span>
                     </span>
@@ -1540,7 +1540,7 @@ export const OwnerDashboard = () => {
                       <span className="px-2 py-1 rounded-lg border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
                         {occupied} Occupied
                       </span>
-                      <span className="px-2 py-1 rounded-lg border text-emerald-600" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+                      <span className="px-2 py-1 rounded-lg border text-slate-800" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
                         {openBeds} Free
                       </span>
                     </div>
@@ -1588,7 +1588,7 @@ export const OwnerDashboard = () => {
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
             <div className="text-center mb-6 mt-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-slate-800 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
                 <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
