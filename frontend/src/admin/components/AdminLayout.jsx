@@ -92,7 +92,7 @@ export const AdminLayout = ({ children, activeTab }) => {
           {platformSettings?.company_logo_url ? (
             <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
           ) : (
-            <div className="w-7 h-7 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
+            <div className="w-7 h-7 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "#000000" }}>
               <span className="material-symbols-outlined text-[16px]">real_estate_agent</span>
             </div>
           )}
@@ -100,7 +100,7 @@ export const AdminLayout = ({ children, activeTab }) => {
             <span className="text-[16px] font-extrabold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
               {platformSettings?.company_name || "Rentlo"}
             </span>
-            <p className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--accent-soft)" }}>
+            <p className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5" style={{ color: "var(--sidebar-ink)", opacity: 0.6 }}>
               {user?.role?.toUpperCase() || "ADMIN"} CONSOLE
             </p>
           </div>
@@ -133,15 +133,15 @@ export const AdminLayout = ({ children, activeTab }) => {
               className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200"
               style={{
                 backgroundColor: isActive ? "var(--surface-alt)" : "transparent",
-                color: isActive ? "var(--accent)" : "var(--sidebar-ink)",
-                borderLeft: isActive ? "4px solid var(--accent)" : "4px solid transparent",
+                color: isActive ? "#000000" : "var(--sidebar-ink)",
+                borderLeft: isActive ? "4px solid #000000" : "4px solid transparent",
                 fontWeight: isActive ? "800" : "600",
                 opacity: isActive ? 1 : 0.8,
               }}
             >
               <span
                 className="material-symbols-outlined text-[20px]"
-                style={{ color: isActive ? "var(--accent)" : "var(--sidebar-ink)" }}
+                style={{ color: isActive ? "#000000" : "var(--sidebar-ink)" }}
               >
                 {item.icon}
               </span>
@@ -165,34 +165,32 @@ export const AdminLayout = ({ children, activeTab }) => {
   );
 
   return (
-    <div className="min-h-screen flex font-sans antialiased transition-colors duration-300" style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}>
+    <div className="min-h-screen w-full flex bg-[#FFFFFF] transition-colors duration-300">
       {/* Desktop Sidebar */}
-      <nav
-        className="hidden md:flex fixed left-0 top-0 h-screen w-[240px] flex-col py-2.5 z-40 border-r transition-colors duration-300"
-        style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)", color: "var(--sidebar-ink)" }}
+      <aside
+        className="hidden md:flex flex-col w-[240px] fixed top-0 bottom-0 left-0 py-4 border-r z-40 transition-colors duration-300"
+        style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)" }}
       >
-        <SidebarContent onNavClick={() => {}} />
-      </nav>
+        <SidebarContent />
+      </aside>
 
-      {/* Mobile Overlay */}
-      {drawerOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
-      )}
-
-      {/* Mobile Drawer */}
-      <nav
-        className={`md:hidden fixed left-0 top-0 h-full w-[280px] flex flex-col py-3 z-50 border-r transition-transform duration-300 ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{ backgroundColor: "var(--sidebar-bg)", borderColor: "var(--border)", color: "var(--sidebar-ink)" }}
+      {/* Mobile Drawer (Overlay and Panel) */}
+      <div
+        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
-        <button
-          onClick={() => setDrawerOpen(false)}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)" }}
+        <div className="absolute inset-0 bg-black/50" onClick={() => setDrawerOpen(false)} />
+        <div
+          className={`absolute top-0 bottom-0 left-0 w-[240px] py-4 flex flex-col transition-transform duration-300 ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
+          style={{ backgroundColor: "var(--sidebar-bg)" }}
         >
-          <span className="material-symbols-outlined text-[18px]">close</span>
-        </button>
-        <SidebarContent onNavClick={() => setDrawerOpen(false)} />
-      </nav>
+          <div className="flex justify-end px-4 mb-2">
+            <button onClick={() => setDrawerOpen(false)} style={{ color: "var(--sidebar-ink)" }}>
+              <span className="material-symbols-outlined text-[24px]">close</span>
+            </button>
+          </div>
+          <SidebarContent onNavClick={() => setDrawerOpen(false)} />
+        </div>
+      </div>
 
       {/* Mobile Top Bar */}
       <nav
@@ -203,14 +201,14 @@ export const AdminLayout = ({ children, activeTab }) => {
           {platformSettings?.company_logo_url ? (
             <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-7 max-w-[120px] object-contain" />
           ) : (
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: "var(--accent)" }}>
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: "#000000" }}>
               <span className="material-symbols-outlined text-[15px]">real_estate_agent</span>
             </div>
           )}
           <span className="text-[16px] font-bold" style={{ color: "var(--sidebar-ink)" }}>{platformSettings?.company_name || "Rentlo"}</span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-full font-extrabold text-[11px] flex items-center justify-center border" style={{ backgroundColor: "var(--surface-alt)", color: "var(--accent)", borderColor: "var(--border)" }}>
+          <div className="w-7 h-7 rounded-full font-extrabold text-[11px] flex items-center justify-center border" style={{ backgroundColor: "var(--surface-alt)", color: "#000000", borderColor: "var(--border)" }}>
             {user?.username?.charAt(0).toUpperCase() || "A"}
           </div>
           <button onClick={() => setDrawerOpen(true)} className="p-1 rounded-lg" style={{ color: "var(--sidebar-ink)" }}>
@@ -227,7 +225,7 @@ export const AdminLayout = ({ children, activeTab }) => {
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
         >
           <div className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-[20px]" style={{ color: "var(--accent)" }}>grid_view</span>
+            <span className="material-symbols-outlined text-[20px]" style={{ color: "#000000" }}>grid_view</span>
             <h1 className="text-[15px] font-extrabold capitalize tracking-tight" style={{ color: "var(--ink)" }}>
               {currentHeaderTitle}
             </h1>
@@ -254,14 +252,14 @@ export const AdminLayout = ({ children, activeTab }) => {
 
             {/* User Profile Pill */}
             <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
-              <div className="w-7 h-7 rounded-full font-extrabold text-[12px] flex items-center justify-center border shadow-sm" style={{ backgroundColor: "var(--surface)", color: "var(--accent)", borderColor: "var(--border)" }}>
+              <div className="w-7 h-7 rounded-full font-extrabold text-[12px] flex items-center justify-center border shadow-sm" style={{ backgroundColor: "var(--surface)", color: "#000000", borderColor: "var(--border)" }}>
                 {user?.username?.charAt(0).toUpperCase() || "A"}
               </div>
               <div className="text-left">
                 <span className="text-[12px] font-extrabold block leading-none" style={{ color: "var(--ink)" }}>
                   {user?.username}
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-widest block mt-0.5" style={{ color: "var(--accent-soft)" }}>
+                <span className="text-[9px] font-bold uppercase tracking-widest block mt-0.5" style={{ color: "var(--sidebar-ink)", opacity: 0.6 }}>
                   {userRoles[0] || "Admin"}
                 </span>
               </div>
