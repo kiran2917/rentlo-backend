@@ -1509,67 +1509,71 @@ export const OwnerNewListing = () => {
     try {
       let consentProofUrl = "";
 
-      if (consentMethod === "signature") {
-        if (signatureData) {
+      if (!isStaff) {
+        consentProofUrl = "verified_owner_self_registration";
+      } else {
+        if (consentMethod === "signature") {
+          if (signatureData) {
+            try {
+              const fetchRes = await fetch(signatureData);
+              const sigBlob = await fetchRes.blob();
+              const sigFormData = new FormData();
+              sigFormData.append("file", sigBlob, "signature.png");
+              const uploadRes = await fetch(
+                `${import.meta.env.VITE_API_URL}/media/upload/`,
+                {
+                  method: "POST",
+                  credentials: "include",
+                  body: sigFormData,
+                },
+              );
+              if (uploadRes.ok) {
+                const data = await uploadRes.json();
+                consentProofUrl = data.full_url;
+              }
+            } catch (e) {
+              console.error("Signature upload failed, using paid consent fallback", e);
+            }
+          }
+          if (!consentProofUrl) {
+            if (razorpayDetails) {
+              consentProofUrl = "verified_owner_consent_paid";
+            } else {
+              toast.error("Signature data missing. Please go back to the Consent step and sign again.");
+              setIsSubmitting(false);
+              return;
+            }
+          }
+        } else if (consentMethod === "photo") {
+          if (!proofPhoto) {
+            toast.error("Please upload a photo verification document.");
+            setIsSubmitting(false);
+            return;
+          }
           try {
-            const fetchRes = await fetch(signatureData);
-            const sigBlob = await fetchRes.blob();
-            const sigFormData = new FormData();
-            sigFormData.append("file", sigBlob, "signature.png");
+            const photoFormData = new FormData();
+            photoFormData.append("file", proofPhoto);
             const uploadRes = await fetch(
               `${import.meta.env.VITE_API_URL}/media/upload/`,
               {
                 method: "POST",
                 credentials: "include",
-                body: sigFormData,
+                body: photoFormData,
               },
             );
             if (uploadRes.ok) {
               const data = await uploadRes.json();
               consentProofUrl = data.full_url;
+            } else {
+              toast.error("Failed to upload photo verification document.");
+              setIsSubmitting(false);
+              return;
             }
-          } catch (e) {
-            console.error("Signature upload failed, using paid consent fallback", e);
-          }
-        }
-        if (!consentProofUrl) {
-          if (razorpayDetails) {
-            consentProofUrl = "verified_owner_consent_paid";
-          } else {
-            toast.error("Signature data missing. Please go back to the Consent step and sign again.");
+          } catch {
+            toast.error("Error uploading photo verification document.");
             setIsSubmitting(false);
             return;
           }
-        }
-      } else if (consentMethod === "photo") {
-        if (!proofPhoto) {
-          toast.error("Please upload a photo verification document.");
-          setIsSubmitting(false);
-          return;
-        }
-        try {
-          const photoFormData = new FormData();
-          photoFormData.append("file", proofPhoto);
-          const uploadRes = await fetch(
-            `${import.meta.env.VITE_API_URL}/media/upload/`,
-            {
-              method: "POST",
-              credentials: "include",
-              body: photoFormData,
-            },
-          );
-          if (uploadRes.ok) {
-            const data = await uploadRes.json();
-            consentProofUrl = data.full_url;
-          } else {
-            toast.error("Failed to upload photo verification document.");
-            setIsSubmitting(false);
-            return;
-          }
-        } catch {
-          toast.error("Error uploading photo verification document.");
-          setIsSubmitting(false);
-          return;
         }
       }
 
