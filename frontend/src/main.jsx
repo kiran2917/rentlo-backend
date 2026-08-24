@@ -19,7 +19,7 @@ class GlobalErrorBoundary extends React.Component {
       return (
         <div className="min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white font-sans">
           <div className="max-w-md w-full p-8 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl text-center">
-            <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
               <span className="material-symbols-outlined text-[32px]">warning</span>
             </div>
             <h2 className="text-xl font-extrabold mb-2 text-white">Something Went Wrong</h2>
@@ -27,14 +27,14 @@ class GlobalErrorBoundary extends React.Component {
               An unexpected user interface error occurred. Please refresh to continue.
             </p>
             {this.state.error && (
-              <div className="p-3 mb-6 bg-red-950/50 border border-red-500/30 rounded-xl text-left text-xs font-mono text-red-200 overflow-auto max-h-40">
+              <div className="p-3 mb-6 bg-slate-900/50 border border-slate-700 rounded-xl text-left text-xs font-mono text-slate-300 overflow-auto max-h-40">
                 <div className="font-bold mb-1">{this.state.error.toString()}</div>
-                <div className="text-[10px] text-red-300/80 whitespace-pre-wrap">{this.state.error.stack}</div>
+                <div className="text-[10px] text-slate-400 whitespace-pre-wrap">{this.state.error.stack}</div>
               </div>
             )}
             <button
               onClick={() => window.location.reload()}
-              className="w-full py-3 bg-black hover:bg-emerald-400 text-slate-950 rounded-xl font-extrabold text-sm transition-all shadow-md"
+              className="w-full py-3 bg-white hover:bg-slate-200 text-black rounded-xl font-extrabold text-sm transition-all shadow-md"
             >
               Reload Rentlo Platform
             </button>

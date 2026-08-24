@@ -693,7 +693,7 @@ export const OwnerNewListing = () => {
       fetch(`${import.meta.env.VITE_API_URL}/properties/cities/`)
         .then((res) => res.json())
         .then((data) => {
-          let availableCities = data;
+          let availableCities = Array.isArray(data) ? data : (data.results || data.data || []);
           const userRoles = user.roles || [user.role];
           if (userRoles.includes("agent")) {
             availableCities = data.filter((city) =>
@@ -724,10 +724,11 @@ export const OwnerNewListing = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          setLocalities(data);
+          const validData = Array.isArray(data) ? data : [];
+          setLocalities(validData);
           if (formData.locality) {
             const locStr = formData.locality.toString();
-            const matched = data.find((l) => l.id.toString() === locStr || l.name.toLowerCase() === locStr.toLowerCase());
+            const matched = validData.find((l) => l.id.toString() === locStr || l.name.toLowerCase() === locStr.toLowerCase());
             if (matched) {
               setFormData((prev) => ({ ...prev, locality: matched.name }));
             }
