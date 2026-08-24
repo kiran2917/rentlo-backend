@@ -1328,7 +1328,7 @@ export const OwnerDashboard = () => {
                             ? "shadow-md"
                             : ""
                         } disabled:opacity-50`}
-                        style={plan.highlight ? { background: "linear-gradient(135deg, #059669, #0d9488)", color: "#fff", border: "none", boxShadow: "0 4px 16px rgba(5,150,105,0.3)" } : { backgroundColor: "#f1f5f9", color: "#0F172A", border: "1px solid #e2e8f0" }}
+                        style={plan.highlight ? { backgroundColor: "#000000", color: "#FFFFFF", border: "none" } : { backgroundColor: "#FFFFFF", color: "#000000", border: "1px solid #000000" }}
                       >
                         {buyingPassLoading ? (
                           <>
