@@ -98,6 +98,32 @@ export const OwnerDashboard = () => {
       toast.error("Network error. Please try again.");
     }
   };
+  
+  const handleRelistClick = (property) => {
+    const prop_cat = property.property_category;
+    const prop_type = property.property_type;
+    let target_cat = 'residential';
+    if (prop_cat === 'pg' || ['apartment', 'flat', 'pg_hostel'].includes(prop_type)) {
+      target_cat = 'apartment';
+    } else if (prop_cat === 'commercial' || ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building'].includes(prop_type)) {
+      target_cat = 'commercial';
+    }
+
+    const hasCredits = ownerCredits?.active_passes?.some(pass => 
+      pass.credits_remaining > 0 && (pass.category === 'all' || pass.category === target_cat)
+    ) || (ownerCredits?.total_credits_remaining > 0);
+
+    if (!hasCredits) {
+      toast.error(`No active listing credits remaining for ${target_cat.toUpperCase()}. Please buy a pass to relist.`);
+      setSelectedPassCategory(target_cat);
+      setShowCreditsModal(true);
+      return;
+    }
+
+    if (window.confirm(`Relisting this property will consume 1 listing credit from your active pass balance. Do you want to continue?`)) {
+      handleStatusUpdate(property.id, "live");
+    }
+  };
 
   const handlePGOccupancy = async (propId, action, customPayload = {}) => {
     try {
@@ -1011,7 +1037,7 @@ export const OwnerDashboard = () => {
                       {/* Rented → Relist */}
                       {prop.status === "rented" && (
                         <button
-                          onClick={() => handleStatusUpdate(prop.id, "live")}
+                          onClick={() => handleRelistClick(prop)}
                           className="w-full px-4 py-2 rounded-xl bg-black/10 hover:bg-black/20 text-slate-800 dark:text-black border border-indigo-600/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">restart_alt</span>
@@ -1022,7 +1048,7 @@ export const OwnerDashboard = () => {
                       {/* Expired → Relist (pass validity ran out) */}
                       {prop.status === "expired" && (
                         <button
-                          onClick={() => handleStatusUpdate(prop.id, "live")}
+                          onClick={() => handleRelistClick(prop)}
                           className="w-full px-4 py-2 rounded-xl text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                           style={{ backgroundColor: "#000000" }}
                         >
