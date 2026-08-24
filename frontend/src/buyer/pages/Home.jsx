@@ -637,7 +637,7 @@ export const Home = () => {
           >
             <h2
               className="font-display font-black tracking-tight"
-              style={{ fontSize: "clamp(22px,4vw,38px)", color: "white" }}
+              style={{ fontSize: "clamp(22px,4vw,38px)", color: "var(--ink)" }}
             >
               {filters.lat 
                 ? t("home.propertiesWithinRadius", { radius: filters.radius_km || 5 }, `Properties within ${filters.radius_km || 5}km`) 
@@ -731,7 +731,7 @@ export const Home = () => {
               </div>
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
-              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[30px] md:rounded-3xl overflow-hidden shadow-2xl relative md:sticky md:top-24 border" style={{ borderColor: "var(--border)" }}>
+              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[30px] md:rounded-3xl overflow-hidden shadow-2xl relative md:sticky md:top-24 border mb-24 md:mb-0" style={{ borderColor: "var(--border)" }}>
                 {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
                 <div className="absolute top-4 left-4 z-[1000] backdrop-blur-xl border p-2 rounded-2xl shadow-2xl flex flex-wrap items-center gap-2 max-w-[calc(100%-12rem)]" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 85%, transparent)", borderColor: "var(--border)" }}>
                   <div className="flex items-center gap-2 px-2 text-emerald-400 text-xs font-black uppercase tracking-wider">

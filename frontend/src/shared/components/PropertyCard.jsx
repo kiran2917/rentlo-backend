@@ -180,7 +180,7 @@ export const PropertyCard = ({
               </div>
             </div>
             
-            <div className="bg-accent text-white text-xs font-black uppercase tracking-wider px-4 py-2 rounded-full shadow-lg shadow-accent/30 transform group-hover:-translate-y-1 transition-all">
+            <div className="bg-black text-white text-xs font-black uppercase tracking-wider px-4 py-2 rounded-full shadow-lg shadow-black/30 transform group-hover:-translate-y-1 transition-all">
               Book
             </div>
           </div>
