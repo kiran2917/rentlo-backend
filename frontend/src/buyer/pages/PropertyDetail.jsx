@@ -580,7 +580,7 @@ export const PropertyDetail = () => {
 
   return (
     <div
-      className="w-full flex flex-col font-sans"
+      className="w-full flex flex-col font-sans pb-20 md:pb-0"
       style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}
     >
       <SeoHead
@@ -2148,6 +2148,37 @@ export const PropertyDetail = () => {
           setUnlockSuccess(true);
         }}
       />
+
+      {!isUnlocked && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 px-4 flex items-center justify-between gap-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Unlock Fee</span>
+            <span className="text-xl font-black text-slate-950">
+              ₹{property.unlock_fee != null ? Number(property.unlock_fee).toFixed(0) : 99}
+            </span>
+          </div>
+          <button
+            onClick={() => {
+              if (userSub && userSub.has_active_pass && userSub.credits_remaining > 0) {
+                handleUnlock();
+              } else {
+                setShowPlanModal(true);
+              }
+            }}
+            disabled={unlocking}
+            className="flex-1 h-12 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 bg-black text-white hover:bg-slate-900 transition-all active:scale-[0.98] cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              {unlocking ? "hourglass_empty" : (userSub && userSub.has_active_pass && userSub.credits_remaining > 0 ? "bolt" : "credit_card")}
+            </span>
+            {unlocking
+              ? "Processing..."
+              : (userSub && userSub.has_active_pass && userSub.credits_remaining > 0
+                ? "1-Click Unlock"
+                : "Pay to Unlock")}
+          </button>
+        </div>
+      )}
 
     </div>
   );
