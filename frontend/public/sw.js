@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rentlo-cache-v9';
+const CACHE_NAME = 'rentlo-cache-v11';
 
 const APP_SHELL = [
   '/',
