@@ -159,7 +159,7 @@ export const OwnerLayout = () => {
           {platformSettings?.company_logo_url ? (
             <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
           ) : (
-            <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "var(--accent)" }}>
+            <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "#FFFFFF" }}>
               <span className="material-symbols-outlined text-base">real_estate_agent</span>
             </div>
           )}
@@ -167,7 +167,7 @@ export const OwnerLayout = () => {
             <span className="text-base font-bold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
               {platformSettings?.company_name || "Rentlo"}
             </span>
-            <p className="text-xs font-extrabold uppercase tracking-widest leading-none mt-1" style={{ color: "var(--accent)" }}>
+            <p className="text-xs font-extrabold uppercase tracking-widest leading-none mt-1" style={{ color: "#FFFFFF" }}>
               {isAgent ? t("owner.agentConsole", "Agent Console") : t("owner.ownerConsole", "Owner Console")}
             </p>
           </div>
@@ -199,16 +199,16 @@ export const OwnerLayout = () => {
               onClick={onNavClick}
               className="flex items-center gap-4 px-4 h-10 rounded-xl text-sm font-semibold transition-all duration-200"
               style={{
-                color: active ? "var(--accent)" : "var(--sidebar-ink)",
+                color: active ? "#FFFFFF" : "var(--sidebar-ink)",
                 backgroundColor: active ? "var(--surface-alt)" : "transparent",
-                borderLeft: active ? "4px solid var(--accent)" : "4px solid transparent",
+                borderLeft: active ? "4px solid #FFFFFF" : "4px solid transparent",
                 fontWeight: active ? "800" : "600",
                 opacity: active ? 1 : 0.8,
               }}
             >
               <span
                 className="material-symbols-outlined text-xl"
-                style={{ color: active ? "var(--accent)" : "var(--sidebar-ink)" }}
+                style={{ color: active ? "#FFFFFF" : "var(--sidebar-ink)" }}
               >
                 {item.icon}
               </span>
@@ -291,7 +291,7 @@ export const OwnerLayout = () => {
                       }
                     }}
                     className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-xs hover:opacity-90 transition-all cursor-pointer"
-                    style={{ backgroundColor: 'var(--accent)' }}
+                    style={{ backgroundColor: '#FFFFFF' }}
                   >
                     Enable Now
                   </button>
@@ -316,7 +316,7 @@ export const OwnerLayout = () => {
               <span className="material-symbols-outlined text-2xl">menu</span>
             </button>
             <div className="flex items-center gap-2 min-w-0">
-              <span className="material-symbols-outlined text-xl hidden sm:inline-block" style={{ color: "var(--accent)" }}>grid_view</span>
+              <span className="material-symbols-outlined text-xl hidden sm:inline-block" style={{ color: "#FFFFFF" }}>grid_view</span>
               <h1 className="text-sm sm:text-base font-black truncate whitespace-nowrap" style={{ color: "var(--ink)" }} title={
                 location.pathname.startsWith("/owner/leads")
                   ? "Leads & Contacts"
@@ -411,19 +411,13 @@ export const OwnerLayout = () => {
         </div>
 
         {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR (Mobile App UX) */}
-        <nav
-          className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 border-t flex items-center justify-around px-2 shadow-2xl backdrop-blur-xl transition-colors duration-300"
-          style={{
-            backgroundColor: "var(--surface)",
-            borderColor: "var(--border)",
-          }}
-        >
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 border-t border-slate-800 flex items-center justify-around px-1 pb-0 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] bg-black transition-all duration-300">
           {/* Tab 1: Properties / Dashboard */}
           <Link
             to="/owner/dashboard"
             className="flex flex-col items-center justify-center w-14 h-full transition-all"
             style={{
-              color: location.pathname === "/owner/dashboard" ? "var(--accent)" : "var(--text-muted)",
+              color: location.pathname === "/owner/dashboard" ? "#FFFFFF" : "#9CA3AF",
               fontWeight: location.pathname === "/owner/dashboard" ? "800" : "600",
             }}
           >
@@ -436,7 +430,7 @@ export const OwnerLayout = () => {
             to="/owner/leads"
             className="flex flex-col items-center justify-center w-14 h-full transition-all"
             style={{
-              color: location.pathname.startsWith("/owner/leads") ? "var(--accent)" : "var(--text-muted)",
+              color: location.pathname.startsWith("/owner/leads") ? "#FFFFFF" : "#9CA3AF",
               fontWeight: location.pathname.startsWith("/owner/leads") ? "800" : "600",
             }}
           >
@@ -452,7 +446,7 @@ export const OwnerLayout = () => {
             <div
               className="w-13 h-13 rounded-full text-white flex items-center justify-center shadow-xl transition-transform active:scale-95 group-hover:scale-105 border-4"
               style={{
-                background: "linear-gradient(135deg, var(--accent), var(--accent-soft))",
+                background: "linear-gradient(135deg, #FFFFFF, var(--accent-soft))",
                 borderColor: "var(--bg)",
               }}
             >
@@ -468,7 +462,7 @@ export const OwnerLayout = () => {
             to="/owner/chat"
             className="flex flex-col items-center justify-center w-14 h-full relative transition-all"
             style={{
-              color: location.pathname.startsWith("/owner/chat") ? "var(--accent)" : "var(--text-muted)",
+              color: location.pathname.startsWith("/owner/chat") ? "#FFFFFF" : "#9CA3AF",
               fontWeight: location.pathname.startsWith("/owner/chat") ? "800" : "600",
             }}
           >
@@ -484,7 +478,7 @@ export const OwnerLayout = () => {
             to="/owner/visits"
             className="flex flex-col items-center justify-center w-14 h-full transition-all"
             style={{
-              color: location.pathname.startsWith("/owner/visits") ? "var(--accent)" : "var(--text-muted)",
+              color: location.pathname.startsWith("/owner/visits") ? "#FFFFFF" : "#9CA3AF",
               fontWeight: location.pathname.startsWith("/owner/visits") ? "800" : "600",
             }}
           >
