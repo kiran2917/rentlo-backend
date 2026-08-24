@@ -881,7 +881,7 @@ export const Home = () => {
           ) : (
             <div
               ref={gridRef}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
             >
             {loading && page === 1 ? (
               <>
