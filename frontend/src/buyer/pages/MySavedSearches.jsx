@@ -160,7 +160,7 @@ export const MySavedSearches = () => {
         ) : error === "AUTH_REQUIRED" ? (
           /* Authentication Required State */
           <div
-            className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl border text-center max-w-2xl mx-auto shadow-sm"
+            className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl border text-center max-w-2xl mx-auto shadow-xl backdrop-blur-xl"
             style={{
               backgroundColor: "var(--surface)",
               borderColor: "var(--border)",
@@ -267,7 +267,7 @@ export const MySavedSearches = () => {
               return (
                 <div
                   key={search.id}
-                  className="group rounded-3xl p-6 border flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-sm hover:shadow-xl relative"
+                  className="group rounded-3xl p-6 border flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-xl backdrop-blur-xl hover:shadow-xl relative"
                   style={{
                     backgroundColor: "var(--surface)",
                     borderColor: "var(--border)",
@@ -373,7 +373,7 @@ export const MySavedSearches = () => {
 
                     <button
                       onClick={() => handleRunSearch(search)}
-                      className="w-full h-11 rounded-xl text-[13px] font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:opacity-90"
+                      className="w-full h-11 rounded-xl text-[13px] font-extrabold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xl backdrop-blur-xl hover:opacity-90"
                       style={{
                         backgroundColor: "var(--ink)",
                         color: "var(--surface)",

@@ -496,7 +496,7 @@ export const PropertyDetail = () => {
     if (count === 1) {
       return (
         <div
-          className="w-full h-[260px] sm:h-[360px] md:h-[480px] rounded-card overflow-hidden cursor-pointer group"
+          className="w-full h-[40vh] sm:h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer group"
           onClick={() => openGallery(0)}
         >
           <img
@@ -512,7 +512,7 @@ export const PropertyDetail = () => {
 
     if (count === 2) {
       return (
-        <div className="grid grid-cols-2 gap-2 h-[240px] sm:h-[360px] md:h-[480px] rounded-card overflow-hidden cursor-pointer">
+        <div className="grid grid-cols-2 gap-1 h-[40vh] sm:h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer">
           <div className="overflow-hidden group" onClick={() => openGallery(0)}>
             <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           </div>
@@ -524,7 +524,7 @@ export const PropertyDetail = () => {
     }
 
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 md:grid-rows-2 gap-2 h-[300px] md:h-[480px] rounded-card overflow-hidden cursor-pointer">
+      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 md:grid-rows-2 gap-1 h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer">
         {/* Main image: full height on mobile as col-span-2, then 3-col on desktop */}
         <div className="col-span-2 md:col-span-3 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
           <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -575,11 +575,15 @@ export const PropertyDetail = () => {
         }}
       />
       <div className="progress-bar" style={{ width: `${scrollProgress * 100}%` }}></div>
-      <main className="flex-grow w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+      {/* Cinematic Hero Gallery */}
+      <div className="w-full relative -mx-4 md:-mx-10" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+         {renderGalleryGrid()}
+         {/* Vignette */}
+         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 50%)" }}></div>
+      </div>
+      <main className="flex-grow w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 relative z-10 -mt-10 sm:-mt-20">
         {/* ─── Left: Details ─── */}
         <div className="lg:col-span-8 flex flex-col gap-10">
-          {/* Gallery */}
-          {renderGalleryGrid()}
 
           {property.virtual_tour_url && (
             <button 
@@ -613,7 +617,7 @@ export const PropertyDetail = () => {
                     }}
                   >
                     &#8377;{parseFloat(property.price || 0).toLocaleString('en-IN')}
-                    <span className="text-[12px] font-bold text-slate-500 ml-1">/mo</span>
+                    <span className="text-[12px] font-bold text-[var(--text-muted)] ml-1">/mo</span>
                   </span>
                 </div>
               )}
@@ -702,7 +706,7 @@ export const PropertyDetail = () => {
                   <span
                     className={`px-4 py-2.5 rounded-xl text-[13px] font-extrabold flex items-center gap-2 border w-fit ${
                       property.food_preference === 'no_food'
-                        ? 'bg-slate-100 text-slate-700 border-slate-300'
+                        ? 'bg-[var(--border)] text-[var(--ink)] border-slate-300'
                         : 'bg-emerald-50 text-emerald-800 border-emerald-300'
                     }`}
                   >
@@ -754,7 +758,7 @@ export const PropertyDetail = () => {
                 return (
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-orange-500/20 pb-3">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-[15px] sm:text-[16px] text-slate-900 flex items-center gap-2">
+                      <h3 className="font-extrabold text-[15px] sm:text-[16px] text-[var(--ink)] flex items-center gap-2">
                         <span className="material-symbols-outlined text-orange-600 text-[22px]">meeting_room</span>
                         PG Room Sharing Options &amp; Bed Availability
                       </h3>
@@ -787,20 +791,20 @@ export const PropertyDetail = () => {
                       const avail = Number(item.available_beds) || 0;
                       const isFree = avail > 0;
                       return (
-                        <div key={t.key} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${isFree ? 'bg-white border-emerald-200 hover:border-emerald-400' : 'bg-slate-50 border-slate-200 opacity-80'}`}>
+                        <div key={t.key} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${isFree ? 'bg-[var(--surface)] border-emerald-200 hover:border-emerald-400' : 'bg-[var(--surface-alt)] border-[var(--border)] opacity-80'}`}>
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
                               <span className="material-symbols-outlined text-orange-600 text-[20px]">{t.icon}</span>
-                              <span className="text-[12px] font-black text-slate-900">{t.label}</span>
+                              <span className="text-[12px] font-black text-[var(--ink)]">{t.label}</span>
                             </div>
                           </div>
                           <div>
-                            <div className="text-[19px] font-black text-slate-900">
+                            <div className="text-[19px] font-black text-[var(--ink)]">
                               ₹{Number(item.rent || property.price || 0).toLocaleString('en-IN')}
-                              <span className="text-[10px] font-bold text-slate-500"> / bed/mo</span>
+                              <span className="text-[10px] font-bold text-[var(--text-muted)]"> / bed/mo</span>
                             </div>
-                            <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-slate-100">
-                              <span className="text-slate-500">{totBeds} Beds Total ({item.rooms || 0} Rms)</span>
+                            <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-[var(--border-subtle)]">
+                              <span className="text-[var(--text-muted)]">{totBeds} Beds Total ({item.rooms || 0} Rms)</span>
                               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${isFree ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-red-50 border-red-200'}`}>
                                 {isFree ? `${avail} Open Beds` : 'Fully Occupied'}
                               </span>
@@ -823,18 +827,18 @@ export const PropertyDetail = () => {
                   const hasAvail = availBeds > 0;
 
                   return (
-                    <div className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${hasAvail ? 'bg-white border-emerald-200' : 'bg-slate-50 border-slate-200 opacity-80'}`}>
+                    <div className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${hasAvail ? 'bg-[var(--surface)] border-emerald-200' : 'bg-[var(--surface-alt)] border-[var(--border)] opacity-80'}`}>
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-orange-600 text-[20px]">{icon}</span>
-                        <span className="text-[12px] font-black text-slate-900">{label}</span>
+                        <span className="text-[12px] font-black text-[var(--ink)]">{label}</span>
                       </div>
                       <div>
-                        <div className="text-[19px] font-black text-slate-900">
+                        <div className="text-[19px] font-black text-[var(--ink)]">
                           ₹{Number(property.price || 0).toLocaleString('en-IN')}
-                          <span className="text-[10px] font-bold text-slate-500"> / bed/mo</span>
+                          <span className="text-[10px] font-bold text-[var(--text-muted)]"> / bed/mo</span>
                         </div>
-                        <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-slate-100">
-                          <span className="text-slate-500">{property.total_beds || bedsPerRoom} Beds Total</span>
+                        <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-[var(--border-subtle)]">
+                          <span className="text-[var(--text-muted)]">{property.total_beds || bedsPerRoom} Beds Total</span>
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${hasAvail ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-red-50 border-red-200'}`}>
                             {hasAvail ? `${availBeds} Open Beds` : 'Fully Occupied'}
                           </span>
@@ -1140,7 +1144,7 @@ export const PropertyDetail = () => {
                 <div className="mt-5">
                   {property.status === "rented" || property.has_issued_lease ? (
                     <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                      <div className="flex items-center gap-2 text-[12px] font-extrabold text-emerald-600 dark:text-emerald-400 mb-1">
+                      <div className="flex items-center gap-2 text-[12px] font-extrabold text-[var(--accent)] dark:text-emerald-400 mb-1">
                         <span className="material-symbols-outlined text-[18px]">verified</span>
                         Official Lease Agreement Issued
                       </div>
@@ -1149,7 +1153,7 @@ export const PropertyDetail = () => {
                       </p>
                       <Link
                         to={`/property/${property.id}/lease`}
-                        className="w-full h-10 rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
+                        className="w-full h-10 rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-soft)] text-white shadow-sm transition-all"
                       >
                         <span className="material-symbols-outlined text-[16px]">description</span>
                         View / Download Lease Agreement
@@ -1277,7 +1281,7 @@ export const PropertyDetail = () => {
                               {slot.my_booking.status}
                             </span>
                           ) : slot.is_full ? (
-                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-500 uppercase">Full</span>
+                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[var(--border)] text-[var(--text-muted)] uppercase">Full</span>
                           ) : (
                             <button
                               onClick={() => {
@@ -1321,14 +1325,14 @@ export const PropertyDetail = () => {
                           <button
                             type="button"
                             onClick={() => setBookingNote("Hi, I will come with my family to inspect the flat.")}
-                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[var(--border)] text-[var(--ink)] border border-[var(--border)] hover:bg-slate-200 transition-all cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
                           >
                             👨‍👩‍👧‍👦 With Family
                           </button>
                           <button
                             type="button"
                             onClick={() => setBookingNote("Hi, I will come alone to inspect the flat.")}
-                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[var(--border)] text-[var(--ink)] border border-[var(--border)] hover:bg-slate-200 transition-all cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
                           >
                             👤 Solo Visit
                           </button>
@@ -1364,7 +1368,7 @@ export const PropertyDetail = () => {
                       <div className="flex gap-3">
                         <button
                           onClick={() => setBookingSlot(null)}
-                          className="flex-1 h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-[13px] cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                          className="flex-1 h-11 bg-[var(--border)] hover:bg-slate-200 text-[var(--ink)] font-bold rounded-xl text-[13px] cursor-pointer dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                           Cancel
                         </button>
@@ -1402,7 +1406,7 @@ export const PropertyDetail = () => {
                           Exact Location
                         </label>
                         {mapLat && mapLng && (
-                          <span className="text-emerald-600 font-extrabold text-[11px] flex items-center gap-1">
+                          <span className="text-[var(--accent)] font-extrabold text-[11px] flex items-center gap-1">
                             <span className="material-symbols-outlined text-[14px]">pin_drop</span>
                             GPS Pinpointed
                           </span>
@@ -1412,7 +1416,7 @@ export const PropertyDetail = () => {
                       {mapLat && mapLng ? (
                         <div className="flex flex-col gap-3">
                           <div
-                            className="rounded-2xl overflow-hidden shadow-sm border border-slate-200"
+                            className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
                             style={{ height: "220px" }}
                           >
                             <MapContainer
@@ -1444,7 +1448,7 @@ export const PropertyDetail = () => {
                           <span className="material-symbols-outlined text-[32px] text-slate-300 mb-2">
                             map
                           </span>
-                          <p className="text-[13px] font-bold text-slate-600">Location coordinates not set</p>
+                          <p className="text-[13px] font-bold text-[var(--text-muted)]">Location coordinates not set</p>
                           <p className="text-[11px] text-slate-400 mt-0.5">Owner did not pin exact GPS coordinates for this listing.</p>
                         </div>
                       )}
@@ -1580,7 +1584,7 @@ export const PropertyDetail = () => {
                       <button
                         onClick={() => handleUnlock()}
                         disabled={unlocking}
-                        className="w-full rounded-xl text-[14px] font-extrabold flex items-center justify-center gap-2 text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:scale-[1.01] transition-all"
+                        className="w-full rounded-xl text-[14px] font-extrabold flex items-center justify-center gap-2 text-white bg-[var(--accent)] hover:bg-[var(--accent-soft)] shadow-lg hover:scale-[1.01] transition-all"
                         style={{ height: "52px" }}
                       >
                         <span className="material-symbols-outlined text-[20px]">
@@ -1797,7 +1801,7 @@ export const PropertyDetail = () => {
           {/* Close button */}
           <button
             onClick={() => setShowGallery(false)}
-            className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors z-50"
+            className="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--surface)]/10 hover:bg-[var(--surface)]/20 text-white transition-colors z-50"
           >
             <span className="material-symbols-outlined text-[24px]">close</span>
           </button>
@@ -1808,7 +1812,7 @@ export const PropertyDetail = () => {
              {property.media.length > 1 && (
                <button
                  onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev === 0 ? property.media.length - 1 : prev - 1)); }}
-                 className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors"
+                 className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center bg-[var(--surface)]/10 hover:bg-[var(--surface)]/20 text-white transition-colors"
                >
                  <span className="material-symbols-outlined text-[32px]">chevron_left</span>
                </button>
@@ -1825,7 +1829,7 @@ export const PropertyDetail = () => {
              {property.media.length > 1 && (
                <button
                  onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev === property.media.length - 1 ? 0 : prev + 1)); }}
-                 className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-colors"
+                 className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full flex items-center justify-center bg-[var(--surface)]/10 hover:bg-[var(--surface)]/20 text-white transition-colors"
                >
                  <span className="material-symbols-outlined text-[32px]">chevron_right</span>
                </button>
@@ -1854,18 +1858,18 @@ export const PropertyDetail = () => {
 
       {showBuyerUpiModal && buyerUpiConfig && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+          <div className="bg-[var(--surface)] rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
             <button
               onClick={() => setShowBuyerUpiModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--border)] flex items-center justify-center text-[var(--text-muted)] hover:bg-slate-200 transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Unlock Property</h3>
-            <p className="text-sm text-slate-500 mb-6">Pay ₹{buyerUpiConfig.amount} to view owner contact details.</p>
+            <h3 className="text-xl font-bold text-[var(--ink)] mb-2">Unlock Property</h3>
+            <p className="text-sm text-[var(--text-muted)] mb-6">Pay ₹{buyerUpiConfig.amount} to view owner contact details.</p>
             
             <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm">
+              <div className="p-4 bg-[var(--surface)] border-2 border-[var(--border-subtle)] rounded-2xl shadow-sm">
                 <QRCode value={`upi://pay?pa=${buyerUpiConfig.upi_merchant_id}&pn=Rentlo&am=${buyerUpiConfig.amount}&cu=INR`} size={160} />
               </div>
             </div>
@@ -1879,7 +1883,7 @@ export const PropertyDetail = () => {
             </a>
             
             <div className="space-y-3">
-              <label className="block text-[13px] font-bold text-slate-700 uppercase tracking-wider">
+              <label className="block text-[13px] font-bold text-[var(--ink)] uppercase tracking-wider">
                 Enter 12-Digit UTR Number
               </label>
               <input
@@ -1888,7 +1892,7 @@ export const PropertyDetail = () => {
                 onChange={(e) => setBuyerUtr(e.target.value.replace(/[^0-9]/g, ""))}
                 maxLength={12}
                 placeholder="e.g. 312345678901"
-                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-4 text-[14px] font-medium outline-none focus:border-orange-500 transition-colors"
+                className="w-full h-12 bg-[var(--surface-alt)] border border-[var(--border)] rounded-xl px-4 text-[14px] font-medium outline-none focus:border-orange-500 transition-colors"
               />
               <button
                 onClick={handleBuyerUpiSubmit}
@@ -2026,7 +2030,7 @@ export const PropertyDetail = () => {
       {show3DTour && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-fade-in">
           <button
-            className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-all z-10"
+            className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-[var(--surface)]/10 text-white rounded-full hover:bg-[var(--surface)]/20 transition-all z-10"
             onClick={() => setShow3DTour(false)}
           >
             <span className="material-symbols-outlined text-[24px]">close</span>
@@ -2066,10 +2070,10 @@ export const PropertyDetail = () => {
       {/* Printable Signboard QR Code Modal (100% Free) */}
       {showQrModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-sm flex flex-col items-center text-center shadow-2xl relative">
+          <div className="bg-[var(--surface)] rounded-3xl p-8 w-full max-w-sm flex flex-col items-center text-center shadow-2xl relative">
             <button
               onClick={() => setShowQrModal(false)}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[var(--border)] text-[var(--text-muted)] hover:text-[var(--ink)] flex items-center justify-center transition-colors"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
@@ -2078,12 +2082,12 @@ export const PropertyDetail = () => {
               <span className="material-symbols-outlined text-[32px]">qr_code_2</span>
             </div>
 
-            <h3 className="text-[20px] font-bold text-slate-900 mb-1">Printable Signboard QR</h3>
-            <p className="text-[12px] text-slate-500 mb-5">
+            <h3 className="text-[20px] font-bold text-[var(--ink)] mb-1">Printable Signboard QR</h3>
+            <p className="text-[12px] text-[var(--text-muted)] mb-5">
               Print or scan this QR code on field signboards to open instant property details on Rentlo.
             </p>
 
-            <div className="p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-sm mb-6 flex items-center justify-center">
+            <div className="p-4 bg-[var(--surface)] border-2 border-slate-900 rounded-2xl shadow-sm mb-6 flex items-center justify-center">
               <QRCode value={window.location.href} size={180} />
             </div>
 

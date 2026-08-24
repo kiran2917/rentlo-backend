@@ -427,8 +427,8 @@ export const Home = () => {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.45) 50%, rgba(15, 23, 42, 0.70) 100%)",
-                backdropFilter: "blur(3px)",
+                  "linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.7) 50%, #0B0F19 100%)",
+                backdropFilter: "blur(2px)",
               }}
             />
           </div>
@@ -440,7 +440,7 @@ export const Home = () => {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-lg md:text-xl font-medium mb-6 sm:mb-8 max-w-xl text-slate-100/95 leading-relaxed drop-shadow">
+            <p className="text-sm sm:text-lg md:text-xl font-medium mb-6 sm:mb-8 max-w-xl text-slate-300 leading-relaxed drop-shadow">
               {t("home.heroSubtitle", "Discover verified rental properties with transparent pricing and direct owner access.")}
             </p>
 
@@ -636,8 +636,8 @@ export const Home = () => {
             style={{ borderColor: "rgba(255,255,255,0.07)" }}
           >
             <h2
-              className="font-display font-semibold tracking-tight"
-              style={{ fontSize: "clamp(22px,4vw,38px)", color: "var(--ink)" }}
+              className="font-display font-black tracking-tight"
+              style={{ fontSize: "clamp(22px,4vw,38px)", color: "white" }}
             >
               {filters.lat 
                 ? t("home.propertiesWithinRadius", { radius: filters.radius_km || 5 }, `Properties within ${filters.radius_km || 5}km`) 
@@ -647,8 +647,7 @@ export const Home = () => {
             </h2>
             <div className="flex flex-col items-end gap-4">
               <span
-                className="text-xs font-bold uppercase tracking-widest"
-                style={{ color: "var(--text-muted)" }}
+                className="text-xs font-bold uppercase tracking-widest text-accent"
               >
                 {displayedProperties.length} {t("home.listingsCount", "listings")}
               </span>

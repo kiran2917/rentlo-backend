@@ -180,16 +180,16 @@ export const BuyerChat = () => {
   if (!loading && !me) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-500">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--accent)]/100/10 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-500">
           <span className="material-symbols-outlined text-[36px]">lock</span>
         </div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In to View Chat</h2>
-        <p className="text-sm text-slate-500 max-w-sm mb-6">
+        <h2 className="text-xl font-bold text-[var(--ink)] mb-2">Sign In to View Chat</h2>
+        <p className="text-sm text-[var(--text-muted)] max-w-sm mb-6">
           You received a message regarding this property. Please sign in to read and reply to messages.
         </p>
         <Link
           to={`/login?redirect=/chat/${propertyId}`}
-          className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+          className="px-6 py-3 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent)]/100 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
         >
           Sign In to Read Messages
         </Link>
@@ -198,29 +198,29 @@ export const BuyerChat = () => {
   }
 
   return (
-    <div className="h-full w-full flex flex-col bg-white relative">
+    <div className="h-full w-full flex flex-col bg-[var(--surface)] relative">
       {/* Header */}
-      <div className="px-4 py-3 border-b flex items-center gap-3 sticky top-0 z-20 shadow-xs bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+      <div className="px-4 py-3 border-b flex items-center gap-3 sticky top-0 z-20 shadow-xs bg-[var(--surface)] shrink-0" style={{ borderColor: "var(--border)" }}>
         <Link
           to={`/property/${propertyId}`}
-          className="p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
+          className="p-1.5 hover:bg-[var(--border-subtle)] rounded-full transition-colors text-[var(--text-muted)]"
         >
           <span className="material-symbols-outlined text-[24px]">arrow_back</span>
         </Link>
         
         <div className="relative shrink-0">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-850 font-black flex items-center justify-center text-[15px] border border-emerald-200">
-            <span className="material-symbols-outlined text-emerald-600 text-[18px]">real_estate_agent</span>
+          <div className="w-10 h-10 rounded-full bg-[var(--accent)]/20 text-emerald-850 font-black flex items-center justify-center text-[15px] border border-[var(--accent)]">
+            <span className="material-symbols-outlined text-[var(--accent)] text-[18px]">real_estate_agent</span>
           </div>
-          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[var(--accent)]/100 border-2 border-white rounded-full"></span>
         </div>
 
         <div className="min-w-0 flex-1">
-          <h1 className="font-extrabold text-[14.5px] leading-tight text-slate-800 flex items-center gap-1.5">
+          <h1 className="font-extrabold text-[14.5px] leading-tight text-[var(--ink)] flex items-center gap-1.5">
             Chat with Owner
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-[var(--accent)]/100 inline-block animate-pulse"></span>
           </h1>
-          <p className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50/50 border border-emerald-200/50 px-2.5 py-0.5 rounded-full w-fit flex items-center gap-1 mt-0.5 shadow-xs">
+          <p className="text-[10px] font-extrabold text-[var(--accent)] bg-[var(--accent)]/10/50 border border-[var(--accent)]/50 px-2.5 py-0.5 rounded-full w-fit flex items-center gap-1 mt-0.5 shadow-xs">
             <span className="material-symbols-outlined text-[12px] font-bold">gite</span>
             <span>Property #{propertyId} &bull; Direct Messenger</span>
           </p>
@@ -241,12 +241,12 @@ export const BuyerChat = () => {
         <div className="max-w-3xl mx-auto space-y-4">
           {loading && (
             <div className="flex justify-center py-20">
-              <div className="w-8 h-8 rounded-full border-[3px] border-slate-300 border-t-slate-900 animate-spin"></div>
+              <div className="w-8 h-8 rounded-full border-[3px] border-[var(--border)] border-t-slate-900 animate-spin"></div>
             </div>
           )}
           {!loading && messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24 text-center animate-fade-in-up">
-              <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-3xl bg-[var(--accent)]/100/10 border border-emerald-500/20 flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-emerald-500 text-[40px]">forum</span>
               </div>
               <h3 className="text-[22px] font-extrabold mb-2 tracking-tight" style={{ color: "var(--ink)" }}>
@@ -265,8 +265,8 @@ export const BuyerChat = () => {
                   <div
                     className={`relative px-3.5 py-2 rounded-2xl shadow-xs text-[13.5px] leading-relaxed ${
                       isMe
-                        ? "bg-emerald-600 text-white rounded-tr-xs"
-                        : "bg-white border border-slate-200 text-slate-800 rounded-tl-xs"
+                        ? "bg-[var(--accent)] text-white rounded-tr-xs"
+                        : "bg-[var(--surface)] border border-[var(--border)] text-[var(--ink)] rounded-tl-xs"
                     }`}
                     style={!isMe ? { borderColor: "var(--border)" } : {}}
                   >
@@ -281,7 +281,7 @@ export const BuyerChat = () => {
                       <p className="whitespace-pre-wrap">{msg.message}</p>
                     )}
 
-                    <div className={`flex items-center justify-end gap-0.5 mt-1 text-[8.5px] font-bold ${isMe ? "text-emerald-100/90" : "text-slate-400"}`}>
+                    <div className={`flex items-center justify-end gap-0.5 mt-1 text-[8.5px] font-bold ${isMe ? "text-emerald-100/90" : "text-[var(--text-muted)]"}`}>
                       <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                       {isMe && (
                         <span className="material-symbols-outlined text-[11px] font-black">done_all</span>
@@ -295,7 +295,7 @@ export const BuyerChat = () => {
         </div>
         <div ref={bottomRef}></div>
       </div>
-      <div className="px-4 py-3 border-t sticky bottom-0 z-20 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+      <div className="px-4 py-3 border-t sticky bottom-0 z-20 bg-[var(--surface)] shrink-0" style={{ borderColor: "var(--border)" }}>
         <input
           type="file"
           ref={fileInputRef}
@@ -304,13 +304,13 @@ export const BuyerChat = () => {
           className="hidden"
         />
         <form onSubmit={sendMessage} className="max-w-3xl mx-auto flex items-center gap-2.5">
-          <div className="flex-1 flex items-center bg-slate-100 border border-slate-200/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-emerald-500 transition-all shadow-inner relative">
+          <div className="flex-1 flex items-center bg-[var(--border-subtle)] border border-[var(--border)]/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-emerald-500 transition-all shadow-inner relative">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="p-1 hover:bg-slate-200 rounded-full transition-colors cursor-pointer mr-2 flex items-center justify-center shrink-0"
+              className="p-1 hover:bg-[var(--border)] rounded-full transition-colors cursor-pointer mr-2 flex items-center justify-center shrink-0"
             >
-              <span className="material-symbols-outlined text-slate-500 text-[20px]">add_a_photo</span>
+              <span className="material-symbols-outlined text-[var(--text-muted)] text-[20px]">add_a_photo</span>
             </button>
             <input
               type="text"
@@ -318,15 +318,15 @@ export const BuyerChat = () => {
               onChange={(e) => setInput(e.target.value)}
               disabled={!!imagePreview}
               placeholder={imagePreview ? "Photo attached (Click send)" : "Type your message..."}
-              className="flex-1 bg-transparent border-none outline-none text-[13.5px] font-medium text-slate-800 placeholder-slate-400 py-0.5"
+              className="flex-1 bg-transparent border-none outline-none text-[13.5px] font-medium text-[var(--ink)] placeholder-slate-400 py-0.5"
             />
             {imagePreview && (
-              <div className="absolute bottom-14 left-4 bg-white border rounded-2xl p-1.5 shadow-lg flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150 z-50">
+              <div className="absolute bottom-14 left-4 bg-[var(--surface)] border rounded-2xl p-1.5 shadow-lg flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150 z-50">
                 <img src={imagePreview} className="w-12 h-12 object-cover rounded-lg border" />
                 <button
                   type="button"
                   onClick={() => setImagePreview(null)}
-                  className="w-5 h-5 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer border"
+                  className="w-5 h-5 rounded-full bg-[var(--border-subtle)] hover:bg-[var(--border)] flex items-center justify-center cursor-pointer border"
                 >
                   <span className="material-symbols-outlined text-[12px] font-bold">close</span>
                 </button>
@@ -336,7 +336,7 @@ export const BuyerChat = () => {
           <button
             type="submit"
             disabled={sending || (!input.trim() && !imagePreview)}
-            className="w-10 h-10 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white rounded-full flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none shrink-0"
+            className="w-10 h-10 bg-[var(--accent)] hover:bg-[var(--accent)]/100 active:scale-95 text-white rounded-full flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none shrink-0"
           >
             {sending ? (
               <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>

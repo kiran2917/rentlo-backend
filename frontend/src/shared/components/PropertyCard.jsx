@@ -42,15 +42,15 @@ export const PropertyCard = ({
   };
 
   if (!isGrid) {
-    // --- COMPACT LIST LAYOUT (Map View) ---
+    // --- COMPACT LIST LAYOUT (Map View - Dark BMS Style) ---
     return (
       <Link
         to={`/property/${prop.id}`}
         target="_blank"
-        className="group bg-white rounded-2xl p-4 border border-slate-200/80 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 flex gap-4 items-center"
+        className="group bg-slate-900 rounded-2xl p-3 border border-slate-800 hover:border-accent hover:shadow-2xl hover:shadow-accent/20 transition-all duration-300 flex gap-4 items-center"
       >
         {/* Thumbnail */}
-        <div className="relative w-32 h-28 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+        <div className="relative w-28 h-32 rounded-xl overflow-hidden bg-slate-800 shrink-0 shadow-inner">
           <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
           <StatusBadge />
           <VerifiedBadge />
@@ -58,35 +58,30 @@ export const PropertyCard = ({
 
         {/* Card Info */}
         <div className="flex-1 min-w-0 py-1">
-          <div className="text-lg font-extrabold text-emerald-600">
-            {isPg && <span className="text-xs font-bold text-slate-500 mr-1">Starting</span>}
-            ₹{formattedPrice}
-            <span className="text-xs font-normal text-slate-500">{isPg ? '/bed/mo' : '/mo'}</span>
-          </div>
-          <h4 className="font-bold text-sm text-slate-800 capitalize mt-1 truncate">
+          <h4 className="font-bold text-base text-white capitalize mt-1 truncate group-hover:text-accent transition-colors">
             {prop.display_title || `${prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}${prop.property_type || "Property"}`}
           </h4>
-          <p className="text-xs font-medium text-slate-500 flex items-center gap-1 mt-1 truncate">
-            <span className="material-symbols-outlined text-sm text-slate-400">location_on</span>
+          <div className="text-xl font-black text-white mt-1">
+            {isPg && <span className="text-xs font-bold text-slate-400 mr-1">Starting</span>}
+            ₹{formattedPrice}
+            <span className="text-xs font-normal text-slate-400">{isPg ? '/bed/mo' : '/mo'}</span>
+          </div>
+          <p className="text-xs font-medium text-slate-400 flex items-center gap-1 mt-1 truncate">
+            <span className="material-symbols-outlined text-sm text-accent">location_on</span>
             {prop.locality_details?.name || "Locality"}, {prop.locality_details?.city_name || "City"}
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 mt-2">
+          <div className="flex flex-wrap items-center gap-2 mt-3">
             {prop.bedrooms && (
-              <span className="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-md flex items-center gap-1">
+              <span className="px-2 py-1 bg-slate-800/80 border border-slate-700 text-slate-200 text-[10px] uppercase tracking-wider font-bold rounded-md flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs">bed</span>
                 {prop.bedrooms} Bed
               </span>
             )}
             {prop.bathrooms && (
-              <span className="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-md flex items-center gap-1">
+              <span className="px-2 py-1 bg-slate-800/80 border border-slate-700 text-slate-200 text-[10px] uppercase tracking-wider font-bold rounded-md flex items-center gap-1">
                 <span className="material-symbols-outlined text-xs">shower</span>
                 {prop.bathrooms} Bath
-              </span>
-            )}
-            {prop.food_preference && (
-              <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md">
-                {prop.food_preference}
               </span>
             )}
           </div>
@@ -95,19 +90,25 @@ export const PropertyCard = ({
     );
   }
 
-  // --- STANDARD GRID LAYOUT ---
+  // --- STANDARD GRID LAYOUT (BMS Movie Poster Style) ---
   return (
     <Link
       to={`/property/${prop.id}`}
-      className="reveal group rounded-2xl overflow-hidden flex flex-col cursor-pointer border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-emerald-500 active:scale-[0.98] transition-all duration-300 h-full"
+      className="reveal group rounded-[20px] overflow-hidden flex flex-col cursor-pointer bg-slate-900 shadow-xl relative active:scale-[0.98] transition-all duration-300 h-full border border-slate-800 hover:border-accent/50 hover:shadow-accent/20"
     >
-      {/* Image Section (Fixed Aspect Ratio 4:3) */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-        <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/70 to-transparent pointer-events-none" />
+      {/* Poster Image Section (Aspect Ratio 3:4 for vertical poster look) */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-800">
+        <div className="w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-out">
+          <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
+        </div>
+        
+        {/* Deep Gradient Overlay mimicking BMS cards */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none z-0" />
 
-        <StatusBadge />
-        <VerifiedBadge />
+        <div className="z-10">
+          <StatusBadge />
+          <VerifiedBadge />
+        </div>
 
         {/* Action Row - Favorite/Compare */}
         <button
@@ -117,39 +118,29 @@ export const PropertyCard = ({
             if (navigator.vibrate) navigator.vibrate(50);
             toggleCompare(e, prop);
           }}
-          className="absolute top-2 right-2 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all z-10 active:scale-90 shadow-sm cursor-pointer"
+          className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all z-10 active:scale-90 shadow-xl cursor-pointer bg-black/40 border border-white/10 hover:bg-accent"
           style={{
-            backgroundColor: isCompared ? "var(--emerald-600, #059669)" : "rgba(255, 255, 255, 0.9)",
-            color: isCompared ? "white" : "#1e293b",
+            backgroundColor: isCompared ? "var(--accent)" : "",
+            color: "white",
           }}
           title={isCompared ? "Remove from compare" : "Add to compare"}
         >
-          <span className="material-symbols-outlined text-lg" data-weight={isCompared ? "fill" : "regular"}>
+          <span className="material-symbols-outlined text-[20px]" data-weight={isCompared ? "fill" : "regular"}>
             favorite
           </span>
         </button>
-      </div>
 
-      {/* Content Section */}
-      <div className="p-4 flex flex-col flex-grow justify-between gap-4">
-        <div>
-          {/* Price */}
-          {/* FIX: Applied missing PG pricing logic from map view to grid view */}
-          <div className="flex items-baseline gap-1 mb-2">
-            {isPg && <span className="text-xs font-bold text-slate-500 mr-1">Starting</span>}
-            <span className="font-extrabold text-xl tracking-tight text-emerald-600">
-              ₹{formattedPrice}
-            </span>
-            <span className="text-xs font-bold text-slate-500">{isPg ? '/bed/mo' : '/mo'}</span>
-          </div>
-
-          {/* Title & Locality */}
-          <h4 className="font-bold text-sm text-slate-800 capitalize truncate mb-1">
+        {/* Content Section Overlaid on the Poster Bottom */}
+        <div className="absolute inset-x-0 bottom-0 p-5 flex flex-col justify-end z-10">
+          {/* Title */}
+          <h4 className="font-black text-lg text-white capitalize truncate mb-1 leading-tight group-hover:text-accent transition-colors">
             {prop.display_title || `${prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}${prop.property_type || "Property"}`}
           </h4>
-          <div className="flex items-center gap-1 mb-4">
-            <span className="material-symbols-outlined text-sm text-slate-400">location_on</span>
-            <span className="text-xs font-semibold text-slate-500 truncate">
+          
+          {/* Locality */}
+          <div className="flex items-center gap-1 mb-3">
+            <span className="material-symbols-outlined text-[14px] text-accent">location_on</span>
+            <span className="text-xs font-semibold text-slate-300 truncate tracking-wide uppercase">
               <Translate>
                 {prop.locality_details ? `${prop.locality_details.name}, ${prop.locality_details.city_name}` : "Locality"}
               </Translate>
@@ -157,25 +148,41 @@ export const PropertyCard = ({
           </div>
 
           {/* Meta Icon Row */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap mb-4">
             {prop.bedrooms && (
-              <span className="text-xs font-bold px-2 py-1 rounded-md bg-slate-50 text-slate-600 flex items-center gap-1 border border-slate-100">
-                <span className="material-symbols-outlined text-sm">bed</span>
+              <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-white/10 backdrop-blur-md text-white border border-white/10 uppercase tracking-widest">
                 {prop.bedrooms} BHK
               </span>
             )}
             {prop.bathrooms && (
-              <span className="text-xs font-bold px-2 py-1 rounded-md bg-slate-50 text-slate-600 flex items-center gap-1 border border-slate-100">
-                <span className="material-symbols-outlined text-sm">shower</span>
+              <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-white/10 backdrop-blur-md text-white border border-white/10 uppercase tracking-widest">
                 {prop.bathrooms} Bath
               </span>
             )}
             {prop.carpet_area && (
-              <span className="text-xs font-bold px-2 py-1 rounded-md bg-slate-50 text-slate-600 flex items-center gap-1 border border-slate-100">
-                <span className="material-symbols-outlined text-sm">aspect_ratio</span>
+              <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-white/10 backdrop-blur-md text-white border border-white/10 uppercase tracking-widest">
                 {prop.carpet_area} sqft
               </span>
             )}
+          </div>
+
+          {/* Price & Action Button Row */}
+          <div className="flex items-end justify-between border-t border-white/10 pt-3">
+            <div>
+              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">
+                {isPg ? 'Starting At' : 'Rent Price'}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="font-black text-2xl tracking-tighter text-white">
+                  ₹{formattedPrice}
+                </span>
+                <span className="text-xs font-bold text-slate-400">{isPg ? '/bed' : '/mo'}</span>
+              </div>
+            </div>
+            
+            <div className="bg-accent text-white text-xs font-black uppercase tracking-wider px-4 py-2 rounded-full shadow-lg shadow-accent/30 transform group-hover:-translate-y-1 transition-all">
+              Book
+            </div>
           </div>
         </div>
       </div>

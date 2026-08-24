@@ -419,7 +419,13 @@ export const BuyerLogin = () => {
 
   return (
     <div
-      style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}
+      style={{
+        backgroundImage: "var(--hero-overlay), var(--hero-img)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", 
+        color: "var(--ink)"
+      }}
       className="min-h-screen flex flex-col justify-center py-2 sm:py-4 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300 relative overflow-hidden"
     >
       {/* Background Decor Ambient Glows */}
@@ -433,7 +439,7 @@ export const BuyerLogin = () => {
             to="/"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-extrabold border shadow-sm transition-all hover:-translate-x-0.5"
             style={{
-              backgroundColor: "var(--surface)",
+              backgroundColor: "color-mix(in srgb, var(--surface) 65%, transparent)",
               borderColor: "var(--border)",
               color: "var(--ink)",
             }}
@@ -492,7 +498,7 @@ export const BuyerLogin = () => {
 
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div
-          className="py-4 px-4 sm:px-6 rounded-2xl border shadow-2xl backdrop-blur-xl transition-all"
+          className="py-4 px-4 sm:px-6 rounded-3xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all"
           style={{
             backgroundColor: "var(--surface)",
             borderColor: "var(--border)",
@@ -502,7 +508,7 @@ export const BuyerLogin = () => {
           {authMode !== "forgot_password" && (
             <div
               className="flex p-0.5 rounded-xl mb-3 border shadow-inner"
-              style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)" }}
+              style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)" }}
             >
               <button
                 type="button"
@@ -591,7 +597,7 @@ export const BuyerLogin = () => {
                         required
                         className="w-full h-10 pl-11 pr-3 rounded-xl text-[13px] font-bold border outline-none transition-all"
                         style={{
-                          backgroundColor: "var(--bg)",
+                          backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                           borderColor: "var(--border)",
                           color: "var(--ink)",
                         }}
@@ -622,7 +628,7 @@ export const BuyerLogin = () => {
                         required
                         className="w-full h-10 pl-3 pr-10 rounded-xl text-[13px] font-bold border outline-none transition-all"
                         style={{
-                          backgroundColor: "var(--bg)",
+                          backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                           borderColor: "var(--border)",
                           color: "var(--ink)",
                         }}
@@ -666,7 +672,7 @@ export const BuyerLogin = () => {
                 <div>
                   {forgotStep === 1 ? (
                     <form onSubmit={handleForgotRequestOtp} className="space-y-5">
-                      <div className="p-3.5 rounded-2xl border text-[12px] font-medium leading-relaxed mb-2" style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--text-muted)" }}>
+                      <div className="p-3.5 rounded-2xl border text-[12px] font-medium leading-relaxed mb-2" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--text-muted)" }}>
                         Enter your registered 10-digit mobile number. We will send a 6-digit OTP code to verify and reset your password.
                       </div>
 
@@ -687,7 +693,7 @@ export const BuyerLogin = () => {
                             required
                             className="w-full h-12 pl-12 pr-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
                             style={{
-                              backgroundColor: "var(--bg)",
+                              backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                               borderColor: "var(--border)",
                               color: "var(--ink)",
                             }}
@@ -700,7 +706,7 @@ export const BuyerLogin = () => {
                           type="button"
                           onClick={() => setAuthMode("password")}
                           className="w-1/3 h-12 rounded-2xl text-[13px] font-extrabold border transition-all cursor-pointer"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         >
                           Cancel
                         </button>
@@ -734,7 +740,7 @@ export const BuyerLogin = () => {
                           placeholder="123456"
                           required
                           className="w-full h-12 rounded-2xl text-center text-[18px] font-black tracking-[0.5em] border outline-none transition-all"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         />
                       </div>
 
@@ -750,7 +756,7 @@ export const BuyerLogin = () => {
                             placeholder="••••••••"
                             required
                             className="w-full h-12 pl-4 pr-12 rounded-2xl text-[14px] font-bold border outline-none transition-all"
-                            style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                            style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                           />
                           <button
                             type="button"
@@ -776,7 +782,7 @@ export const BuyerLogin = () => {
                           placeholder="••••••••"
                           required
                           className="w-full h-12 px-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         />
                       </div>
 
@@ -785,7 +791,7 @@ export const BuyerLogin = () => {
                           type="button"
                           onClick={() => setForgotStep(1)}
                           className="w-1/3 h-12 rounded-2xl text-[13px] font-extrabold border transition-all cursor-pointer"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         >
                           Back
                         </button>
@@ -825,7 +831,7 @@ export const BuyerLogin = () => {
                             required
                             className="w-full h-12 pl-12 pr-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
                             style={{
-                              backgroundColor: "var(--bg)",
+                              backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                               borderColor: "var(--border)",
                               color: "var(--ink)",
                             }}
@@ -873,7 +879,7 @@ export const BuyerLogin = () => {
                           required
                           className="w-full h-12 text-center text-[18px] font-black tracking-[0.5em] rounded-2xl border outline-none transition-all"
                           style={{
-                            backgroundColor: "var(--bg)",
+                            backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                             borderColor: "var(--border)",
                             color: "var(--ink)",
                           }}
@@ -925,7 +931,7 @@ export const BuyerLogin = () => {
                           placeholder="Rahul Sharma"
                           required
                           className="w-full h-12 px-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         />
                       </div>
 
@@ -940,11 +946,11 @@ export const BuyerLogin = () => {
                           placeholder="••••••••"
                           required
                           className="w-full h-12 px-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
-                          style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)", color: "var(--ink)" }}
                         />
                       </div>
 
-                      <div className="flex items-start gap-2.5 p-3 rounded-2xl border" style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)" }}>
+                      <div className="flex items-start gap-2.5 p-3 rounded-2xl border" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)" }}>
                         <input
                           type="checkbox"
                           id="dpdp-reg-buyer"
@@ -1019,7 +1025,7 @@ export const BuyerLogin = () => {
                       required
                       className="w-full h-12 pl-10 pr-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
                       style={{
-                        backgroundColor: "var(--bg)",
+                        backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                         borderColor: "var(--border)",
                         color: "var(--ink)",
                       }}
@@ -1047,7 +1053,7 @@ export const BuyerLogin = () => {
                       required
                       className="w-full h-12 pl-12 pr-4 rounded-2xl text-[14px] font-bold border outline-none transition-all"
                       style={{
-                        backgroundColor: "var(--bg)",
+                        backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                         borderColor: "var(--border)",
                         color: "var(--ink)",
                       }}
@@ -1068,7 +1074,7 @@ export const BuyerLogin = () => {
                       required
                       className="w-full h-12 pl-10 pr-12 rounded-2xl text-[14px] font-bold border outline-none transition-all"
                       style={{
-                        backgroundColor: "var(--bg)",
+                        backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                         borderColor: "var(--border)",
                         color: "var(--ink)",
                       }}
@@ -1090,7 +1096,7 @@ export const BuyerLogin = () => {
                 </div>
 
                 {/* DPDP Act Affirmative Consent Checkbox */}
-                <div className="flex items-start gap-2.5 p-3 rounded-2xl border" style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)" }}>
+                <div className="flex items-start gap-2.5 p-3 rounded-2xl border" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)" }}>
                   <input
                     type="checkbox"
                     id="dpdp-consent-signup"

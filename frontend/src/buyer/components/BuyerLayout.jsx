@@ -278,7 +278,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         style={{
           backgroundColor: "var(--header-bg)",
           borderColor: "rgba(255,255,255,0.08)",
-          backdropFilter: scrolled ? "blur(12px)" : "none",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          background: scrolled ? "color-mix(in srgb, var(--header-bg) 80%, transparent)" : "var(--header-bg)",
         }}
       >
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
@@ -603,7 +604,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
       {/* Master Footer */}
       {!isChatRoute && (
-        <footer className="border-t py-12 mt-auto" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+        <footer className="border-t py-12 mt-auto" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 50%, transparent)", borderColor: "var(--border)", backdropFilter: "blur(10px)" }}>
         <div className="max-w-[1600px] mx-auto px-4 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b" style={{ borderColor: "var(--border)" }}>
             {/* Col 1: Brand Info */}
@@ -743,7 +744,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR FOR BUYERS / TENANTS */}
       {!isChatRoute && (
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 border-t flex items-center justify-around px-2 shadow-2xl backdrop-blur-xl transition-colors duration-300"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 border-t flex items-center justify-around px-2 shadow-2xl backdrop-blur-2xl transition-colors duration-300"
         style={{
           backgroundColor: "var(--surface)",
           borderColor: "var(--border)",

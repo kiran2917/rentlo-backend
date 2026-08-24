@@ -67,7 +67,7 @@ export const MyUnlocks = () => {
         {/* Active Subscription Banner */}
         {subscription && (
           <div
-            className="mb-8 p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm"
+            className="mb-8 p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl backdrop-blur-xl"
             style={{
               backgroundColor: "var(--surface)",
               borderColor: "var(--border)",
@@ -211,7 +211,7 @@ export const MyUnlocks = () => {
         ) : error === "AUTH_REQUIRED" ? (
           /* Authentication Required State */
           <div
-            className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl border text-center max-w-2xl mx-auto shadow-sm"
+            className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl border text-center max-w-2xl mx-auto shadow-xl backdrop-blur-xl"
             style={{
               backgroundColor: "var(--surface)",
               borderColor: "var(--border)",
@@ -340,7 +340,7 @@ export const MyUnlocks = () => {
                   return (
                     <div
                       key={item.id || prop.id || i}
-                      className="group rounded-3xl overflow-hidden border flex flex-col transition-all duration-300 hover:-translate-y-1.5 shadow-sm hover:shadow-xl"
+                      className="group rounded-3xl overflow-hidden border flex flex-col transition-all duration-300 hover:-translate-y-1.5 shadow-xl backdrop-blur-xl hover:shadow-xl"
                       style={{
                         backgroundColor: "var(--surface)",
                         borderColor: "var(--border)",
@@ -432,7 +432,7 @@ export const MyUnlocks = () => {
                                 <p className="font-extrabold text-[13px] truncate" style={{ color: "var(--ink)" }}>
                                   {ownerName}
                                 </p>
-                                <span className="material-symbols-outlined text-[14px] text-emerald-600" title="Verified Owner">check_circle</span>
+                                <span className="material-symbols-outlined text-[14px] text-[var(--accent)]" title="Verified Owner">check_circle</span>
                               </div>
                               <p className="text-[12px] font-mono font-semibold" style={{ color: "var(--text-muted)" }}>
                                 {ownerPhone || "Contact Direct"}
@@ -458,7 +458,7 @@ export const MyUnlocks = () => {
                             href={getWhatsAppShareLink(ownerPhone, ownerName, prop.property_type, prop.locality_details?.name)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="h-10 rounded-xl flex items-center justify-center gap-1.5 text-[12px] font-extrabold text-white transition-opacity hover:opacity-90 shadow-sm"
+                            className="h-10 rounded-xl flex items-center justify-center gap-1.5 text-[12px] font-extrabold text-white transition-opacity hover:opacity-90 shadow-xl backdrop-blur-xl"
                             style={{ backgroundColor: "#25D366" }}
                           >
                             <span className="material-symbols-outlined text-[17px]">chat</span>
