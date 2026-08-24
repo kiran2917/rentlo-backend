@@ -423,7 +423,7 @@ export const BuyerLogin = () => {
         backgroundColor: "var(--bg)", 
         color: "var(--ink)"
       }}
-      className="min-h-screen flex flex-col justify-center py-2 sm:py-4 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300 relative overflow-hidden"
     >
       {/* Background Decor Ambient Glows */}
       <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ backgroundColor: "var(--accent)" }} />
@@ -495,7 +495,7 @@ export const BuyerLogin = () => {
 
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div
-          className="py-4 px-4 sm:px-6 rounded-3xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all"
+          className="py-6 px-4 sm:px-8 rounded-3xl border border-slate-100 sm:border-slate-200/80 shadow-[0_10px_35px_rgba(0,0,0,0.05)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.06)] bg-white dark:bg-slate-900 transition-all"
           style={{
             backgroundColor: "var(--surface)",
             borderColor: "var(--border)",
@@ -592,7 +592,7 @@ export const BuyerLogin = () => {
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
                         placeholder="9876543210"
                         required
-                        className="w-full h-10 pl-11 pr-3 rounded-xl text-[13px] font-bold border outline-none transition-all"
+                        className="w-full h-12 pl-12 pr-4 rounded-2xl text-[14px] font-semibold border border-slate-200 outline-none transition-all focus:border-black focus:ring-2 focus:ring-black/5"
                         style={{
                           backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                           borderColor: "var(--border)",
@@ -623,7 +623,7 @@ export const BuyerLogin = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
                         required
-                        className="w-full h-10 pl-3 pr-10 rounded-xl text-[13px] font-bold border outline-none transition-all"
+                        className="w-full h-12 pl-4 pr-11 rounded-2xl text-[14px] font-semibold border border-slate-200 outline-none transition-all focus:border-black focus:ring-2 focus:ring-black/5"
                         style={{
                           backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
                           borderColor: "var(--border)",
@@ -646,7 +646,7 @@ export const BuyerLogin = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-10 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.99]"
+                    className="w-full h-12 rounded-2xl text-[14px] font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all active:scale-[0.99] hover:bg-slate-900 hover:shadow-xl"
                     style={{
                       backgroundColor: "#000000", color: "#ffffff",
                     }}
