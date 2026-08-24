@@ -436,7 +436,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               <button
                 type="button"
                 onClick={() => setShowAuthRoleModal(true)}
-                className="h-9 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all text-white shadow-md hover:opacity-90 cursor-pointer"
+                className="h-9 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all text-black shadow-md hover:opacity-90 cursor-pointer"
                 style={{ backgroundColor: "#FFFFFF" }}
               >
                 <span className="material-symbols-outlined text-base">login</span>
