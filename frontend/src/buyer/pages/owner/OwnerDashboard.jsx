@@ -952,6 +952,17 @@ export const OwnerDashboard = () => {
                     </div>
                   )}
 
+                  {prop.status === "expired" && (
+                    <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700">
+                      <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-red-500">timer_off</span>
+                        <span>
+                          <strong>Listing Expired.</strong> Your PG pass validity ran out. Click <strong>Renew &amp; Go Live</strong> below — it will use 1 credit from your active pass to relist immediately.
+                        </span>
+                      </p>
+                    </div>
+                  )}
+
                   {/* Action Buttons Section */}
                   <div className="mt-auto pt-4 border-t border-border space-y-2">
                     <div className="flex flex-col gap-2">
@@ -1005,6 +1016,18 @@ export const OwnerDashboard = () => {
                         >
                           <span className="material-symbols-outlined text-base">restart_alt</span>
                           Relist — Available Again
+                        </button>
+                      )}
+
+                      {/* Expired → Relist (pass validity ran out) */}
+                      {prop.status === "expired" && (
+                        <button
+                          onClick={() => handleStatusUpdate(prop.id, "live")}
+                          className="w-full px-4 py-2 rounded-xl text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                          style={{ backgroundColor: "#000000" }}
+                        >
+                          <span className="material-symbols-outlined text-base">autorenew</span>
+                          Renew &amp; Go Live Again
                         </button>
                       )}
 
