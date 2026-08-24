@@ -258,7 +258,7 @@ export const AgentManagement = () => {
                         <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>KYC Status:</span>
                         <span className={`px-2.5 py-0.5 rounded-full font-extrabold text-[10.5px] border ${
                           agent.kyc_status === 'verified'
-                            ? 'bg-black/10 text-rose-600 border-rose-600/30'
+                            ? 'bg-black/10 text-indigo-600 border-indigo-600/30'
                             : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
                         }`}>
                           {agent.kyc_status === 'verified' ? '🟢 Verified Partner' : '🟡 KYC Pending'}
@@ -271,7 +271,7 @@ export const AgentManagement = () => {
                           <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Status:</span>
                           <span className={`px-2 py-0.5 rounded-full font-black text-[10px] border ${
                             agent.is_active !== false
-                              ? 'bg-black/10 text-rose-600 border-rose-600/30'
+                              ? 'bg-black/10 text-indigo-600 border-indigo-600/30'
                               : 'bg-red-500/10 text-red-600 border-red-500/30'
                           }`}>
                             {agent.is_active !== false ? '🟢 Active' : '🔴 Inactive'}
@@ -283,7 +283,7 @@ export const AgentManagement = () => {
                           className={`px-3 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-all border cursor-pointer ${
                             agent.is_active !== false
                               ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                              : 'bg-emerald-50 text-rose-600 border-emerald-200 hover:bg-emerald-100'
+                              : 'bg-emerald-50 text-indigo-600 border-emerald-200 hover:bg-emerald-100'
                           }`}
                         >
                           {agent.is_active !== false ? '🛑 Deactivate Agent' : '🟢 Reactivate Agent'}
@@ -294,7 +294,7 @@ export const AgentManagement = () => {
                       <div className="p-3.5 rounded-2xl border text-[12px] space-y-2" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                         <div className="flex items-center justify-between">
                           <span className="text-[10.5px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Payout UPI ID:</span>
-                          <span className="font-extrabold text-rose-600 flex items-center gap-1">
+                          <span className="font-extrabold text-indigo-600 flex items-center gap-1">
                             <span className="material-symbols-outlined text-[13px]">qr_code_2</span>
                             {agent.kyc_upi_id || "Not configured"}
                           </span>
@@ -368,7 +368,7 @@ export const AgentManagement = () => {
                         </div>
                         <span className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase ${
                           kyc.status === 'verified'
-                            ? 'bg-black/10 text-rose-600 border border-rose-600/30'
+                            ? 'bg-black/10 text-indigo-600 border border-indigo-600/30'
                             : kyc.status === 'submitted'
                             ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30 animate-pulse'
                             : 'bg-red-500/10 text-red-500 border border-red-500/30'
@@ -393,7 +393,7 @@ export const AgentManagement = () => {
                         </div>
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: "var(--text-muted)" }}>Payout UPI ID:</span>
-                          <span className="font-extrabold text-rose-600">{kyc.upi_id || "N/A"}</span>
+                          <span className="font-extrabold text-indigo-600">{kyc.upi_id || "N/A"}</span>
                         </div>
                       </div>
 

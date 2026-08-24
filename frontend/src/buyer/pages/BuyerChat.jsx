@@ -180,7 +180,7 @@ export const BuyerChat = () => {
   if (!loading && !me) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-[var(--accent)]/100/10 border border-rose-600/30 flex items-center justify-center mb-4 text-rose-600">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--accent)]/100/10 border border-indigo-600/30 flex items-center justify-center mb-4 text-indigo-600">
           <span className="material-symbols-outlined text-[36px]">lock</span>
         </div>
         <h2 className="text-xl font-bold text-[var(--ink)] mb-2">Sign In to View Chat</h2>
@@ -246,8 +246,8 @@ export const BuyerChat = () => {
           )}
           {!loading && messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24 text-center animate-fade-in-up">
-              <div className="w-20 h-20 rounded-3xl bg-[var(--accent)]/100/10 border border-rose-600/20 flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-rose-600 text-[40px]">forum</span>
+              <div className="w-20 h-20 rounded-3xl bg-[var(--accent)]/100/10 border border-indigo-600/20 flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-indigo-600 text-[40px]">forum</span>
               </div>
               <h3 className="text-[22px] font-extrabold mb-2 tracking-tight" style={{ color: "var(--ink)" }}>
                 Start the Conversation
@@ -304,7 +304,7 @@ export const BuyerChat = () => {
           className="hidden"
         />
         <form onSubmit={sendMessage} className="max-w-3xl mx-auto flex items-center gap-2.5">
-          <div className="flex-1 flex items-center bg-[var(--border-subtle)] border border-[var(--border)]/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-rose-600 transition-all shadow-inner relative">
+          <div className="flex-1 flex items-center bg-[var(--border-subtle)] border border-[var(--border)]/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-indigo-600 transition-all shadow-inner relative">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}

@@ -346,7 +346,7 @@ export const PricingPage = () => {
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
             <div className="text-center mb-6 mt-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-rose-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
                 <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
@@ -377,7 +377,7 @@ export const PricingPage = () => {
                   placeholder="e.g. 325412345678"
                   maxLength={20}
                   required
-                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-rose-600 transition-all"
+                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-indigo-600 transition-all"
                   autoFocus
                 />
               </div>

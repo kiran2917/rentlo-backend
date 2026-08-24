@@ -209,7 +209,7 @@ export const OwnerChat = () => {
       <div className={`${showChat ? 'hidden' : 'flex'} md:flex w-full md:w-80 flex-shrink-0 border-r flex-col`} style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}>
         <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
           <h2 className="text-[18px] font-extrabold tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
-            <span className="material-symbols-outlined text-[22px] text-rose-600">chat</span>
+            <span className="material-symbols-outlined text-[22px] text-indigo-600">chat</span>
             Messages
           </h2>
         </div>
@@ -221,8 +221,8 @@ export const OwnerChat = () => {
           )}
           {!loading && threads.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-black/10 border border-rose-600/20 flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-[32px] text-rose-600">mark_unread_chat_alt</span>
+              <div className="w-16 h-16 rounded-2xl bg-black/10 border border-indigo-600/20 flex items-center justify-center mb-4">
+                <span className="material-symbols-outlined text-[32px] text-indigo-600">mark_unread_chat_alt</span>
               </div>
               <p className="text-[14px] font-extrabold" style={{ color: "var(--ink)" }}>No conversations yet</p>
               <p className="text-[12px] font-medium mt-1.5 leading-relaxed" style={{ color: "var(--text-muted)" }}>
@@ -260,12 +260,12 @@ export const OwnerChat = () => {
                       </span>
                     )}
                   </div>
-                  <span className="text-[10.5px] font-extrabold truncate capitalize text-rose-600 block mt-0.5">
+                  <span className="text-[10.5px] font-extrabold truncate capitalize text-indigo-600 block mt-0.5">
                     {t.property_type ? t.property_type.replace('_', ' ') : 'Property'} &bull; {t.property_locality || 'Karnataka'}
                   </span>
                   <div className="text-[11px] font-semibold truncate block mt-0.5" style={{ color: "var(--text-muted)" }}>
                     {isPhoto ? (
-                      <span className="flex items-center gap-1 text-rose-600 font-extrabold">
+                      <span className="flex items-center gap-1 text-indigo-600 font-extrabold">
                         <span className="material-symbols-outlined text-[13px] font-black">image</span>
                         Photo
                       </span>
@@ -284,8 +284,8 @@ export const OwnerChat = () => {
       <div className={`${!showChat ? 'hidden' : 'flex fixed inset-0 z-[60] bg-white'} md:relative md:flex flex-1 flex-col md:z-auto`}>
         {!activeThread ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center px-8" style={{ backgroundColor: "var(--surface-alt)" }}>
-            <div className="w-20 h-20 rounded-3xl bg-black/10 border border-rose-600/20 flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-rose-600 text-[40px]">forum</span>
+            <div className="w-20 h-20 rounded-3xl bg-black/10 border border-indigo-600/20 flex items-center justify-center mb-6">
+              <span className="material-symbols-outlined text-indigo-600 text-[40px]">forum</span>
             </div>
             <h3 className="text-[22px] font-extrabold mb-2 tracking-tight" style={{ color: "var(--ink)" }}>Select a conversation</h3>
             <p className="text-[13.5px] font-medium max-w-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
@@ -318,7 +318,7 @@ export const OwnerChat = () => {
                   </h3>
                   <Link
                     to={`/property/${activeThread.property_id}`}
-                    className="text-[10px] font-extrabold text-rose-600 hover:text-emerald-700 flex items-center gap-0.5 mt-0.5"
+                    className="text-[10px] font-extrabold text-indigo-600 hover:text-emerald-700 flex items-center gap-0.5 mt-0.5"
                   >
                     <span className="material-symbols-outlined text-[12px] font-bold">gite</span>
                     <span className="truncate">{activeThread.property_type ? activeThread.property_type.replace('_', ' ') : 'Property'} • {activeThread.property_locality}</span>
@@ -341,8 +341,8 @@ export const OwnerChat = () => {
             >
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center min-h-[300px] py-16 text-center animate-fade-in-up">
-                  <div className="w-16 h-16 rounded-2xl bg-black/10 border border-rose-600/20 flex items-center justify-center mb-4">
-                    <span className="material-symbols-outlined text-[32px] text-rose-600">waving_hand</span>
+                  <div className="w-16 h-16 rounded-2xl bg-black/10 border border-indigo-600/20 flex items-center justify-center mb-4">
+                    <span className="material-symbols-outlined text-[32px] text-indigo-600">waving_hand</span>
                   </div>
                   <p className="text-[14px] font-extrabold" style={{ color: "var(--ink)" }}>Say hello to {activeThread.other_user_name}!</p>
                   <p className="text-[12px] font-medium mt-1.5 leading-relaxed max-w-xs" style={{ color: "var(--text-muted)" }}>
@@ -398,7 +398,7 @@ export const OwnerChat = () => {
                 className="hidden"
               />
               <form onSubmit={sendMessage} className="max-w-3xl mx-auto flex items-center gap-2.5">
-                <div className="flex-1 flex items-center bg-slate-100 border border-slate-200/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-rose-600 transition-all shadow-inner relative">
+                <div className="flex-1 flex items-center bg-slate-100 border border-slate-200/50 rounded-full px-3.5 py-1.5 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:border-indigo-600 transition-all shadow-inner relative">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}

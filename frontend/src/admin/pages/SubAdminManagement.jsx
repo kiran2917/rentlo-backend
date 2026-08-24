@@ -240,7 +240,7 @@ export const SubAdminManagement = () => {
                         </div>
                       </div>
 
-                      <span className="px-3 py-1 rounded-full bg-black/10 text-rose-600 font-extrabold text-[11px] border border-rose-600/20">
+                      <span className="px-3 py-1 rounded-full bg-black/10 text-indigo-600 font-extrabold text-[11px] border border-indigo-600/20">
                         {grantedCount} Authorities Active
                       </span>
                     </div>

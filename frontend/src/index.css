@@ -9,11 +9,11 @@
   --bg:           #F8FAFC;
   --surface:      #FFFFFF;
   --surface-alt:  #F1F5F9;
-  --header-bg:    #E11D48;
+  --header-bg:    #4F46E5;
   --header-ink:   #FFFFFF;
   --sidebar-bg:   #FFFFFF;
   --sidebar-ink:  #0F172A;
-  --accent:       #E11D48;
+  --accent:       #4F46E5;
   --accent-soft:  #FDA4AF;
   --ink:          #0F172A;
   --text-muted:   #64748B;
@@ -58,7 +58,7 @@ body.theme-sapphire-luxury, body.theme-sapphire_luxury, .theme-sapphire-luxury, 
   --border:       #C7D2FE;
   --border-subtle: #E0E7FF;
   --success:      #10B981;
-  --danger:       #E11D48;
+  --danger:       #4F46E5;
   --btn-text:     #FFFFFF;
 
   --shadow-neutral-card: rgba(30, 27, 75, 0.05);
@@ -93,7 +93,7 @@ body.theme-midnight-cyber, body.theme-midnight_cyber, body.theme-midnight-glass,
   --border:       rgba(255, 255, 255, 0.12);
   --border-subtle: rgba(255, 255, 255, 0.06);
   --success:      #10B981;
-  --danger:       #F43F5E;
+  --danger:       #6366F1;
   --btn-text:     #FFFFFF;
 
   --shadow-neutral-card: rgba(0, 0, 0, 0.4);
@@ -121,7 +121,7 @@ body.theme-graffiti-pink, body.theme-graffiti_pink, .theme-graffiti-pink, .theme
   --header-ink:   #ffffff;
   --sidebar-bg:   #09070c;
   --sidebar-ink:  #ffffff;
-  --accent:       #f43f5e;
+  --accent:       #6366F1;
   --accent-soft:  #ec4899;
   --ink:          #ffffff;
   --text-muted:   #a78bfa;
@@ -158,7 +158,7 @@ body.theme-graffiti-lime, body.theme-graffiti_lime, .theme-graffiti-lime, .theme
   --accent:       #a3e635;
   --accent-soft:  #34d399;
   --ink:          #ffffff;
-  --text-muted:   #f43f5e;
+  --text-muted:   #6366F1;
   --border:       #a3e635;
   --border-subtle: #1c2b14;
   --success:      #10b981;
@@ -291,7 +291,7 @@ body.theme-glass-crimson, body.theme-glass_crimson, .theme-glass-crimson, .theme
   --header-ink:   #f8fafc;
   --sidebar-bg:   #0b0607;
   --sidebar-ink:  #f8fafc;
-  --accent:       #f43f5e;
+  --accent:       #6366F1;
   --accent-soft:  #fb7185;
   --ink:          #f8fafc;
   --text-muted:   #fecdd3;
@@ -711,7 +711,7 @@ body.theme-cyber-magenta, body.theme-cyber_magenta, .theme-cyber-magenta, .theme
   --sidebar-bg:   #050308;
   --sidebar-ink:  #ffffff;
   --accent:       #ec4899;
-  --accent-soft:  #f43f5e;
+  --accent-soft:  #6366F1;
   --ink:          #ffffff;
   --text-muted:   #d946ef;
   --border:       rgba(236, 72, 153, 0.4);

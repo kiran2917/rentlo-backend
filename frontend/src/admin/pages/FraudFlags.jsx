@@ -130,7 +130,7 @@ export const FraudFlags = () => {
           <button
             onClick={() => { setActiveSubTab("fraud"); setCurrentPage(1); }}
             className={`flex-1 py-2.5 px-4 rounded-xl text-[13px] font-extrabold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              activeSubTab === "fraud" ? "bg-rose-500 text-white shadow-md scale-[1.02]" : "hover:opacity-80"
+              activeSubTab === "fraud" ? "bg-indigo-500 text-white shadow-md scale-[1.02]" : "hover:opacity-80"
             }`}
             style={activeSubTab !== "fraud" ? { color: "var(--text-muted)" } : {}}
           >
@@ -153,7 +153,7 @@ export const FraudFlags = () => {
         <div className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
           <div className="flex items-center gap-4 group">
             <div className={`w-14 h-14 border rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-all duration-500 ${
-              activeSubTab === "fraud" ? "bg-rose-500/10 text-rose-500 border-rose-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+              activeSubTab === "fraud" ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/20" : "bg-amber-500/10 text-amber-500 border-amber-500/20"
             }`}>
               <span className="material-symbols-outlined text-[32px] group-hover:animate-pulse">
                 {activeSubTab === "fraud" ? "radar" : "contact_phone"}
@@ -242,7 +242,7 @@ export const FraudFlags = () => {
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center sticky left-0 right-0">
                       <div className="flex flex-col items-center justify-center gap-3 w-full max-w-xs sm:max-w-md mx-auto">
-                        <span className="material-symbols-outlined text-5xl text-rose-600/80 mb-2 block">
+                        <span className="material-symbols-outlined text-5xl text-indigo-600/80 mb-2 block">
                           task_alt
                         </span>
                         <p className="text-[14px] font-extrabold uppercase tracking-widest text-center" style={{ color: "var(--ink)" }}>
@@ -270,7 +270,7 @@ export const FraudFlags = () => {
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold bg-rose-100 text-rose-600">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold bg-indigo-100 text-indigo-600">
                             {agent.username?.charAt(0).toUpperCase()}
                           </div>
                           <span className="text-[13px] font-extrabold" style={{ color: "var(--ink)" }}>
@@ -284,7 +284,7 @@ export const FraudFlags = () => {
                         </span>
                       </td>
                       <td className="px-6 py-5 text-center">
-                        <span className="px-3 py-1 rounded-full text-[12px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                        <span className="px-3 py-1 rounded-full text-[12px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-200">
                           {agent.fraud_flags}
                         </span>
                       </td>
@@ -296,7 +296,7 @@ export const FraudFlags = () => {
                         ) : (
                           <button
                             onClick={() => suspendAgent(agent.id)}
-                            className="px-4 py-2 border border-rose-200 rounded-xl text-[12px] font-bold uppercase tracking-widest text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300 transition-all shadow-sm cursor-pointer"
+                            className="px-4 py-2 border border-indigo-200 rounded-xl text-[12px] font-bold uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition-all shadow-sm cursor-pointer"
                             style={{ backgroundColor: "var(--surface)" }}
                           >
                             Suspend
@@ -344,7 +344,7 @@ export const FraudFlags = () => {
                             Accurate / Working
                           </span>
                         ) : (
-                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 inline-flex items-center gap-1">
+                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 inline-flex items-center gap-1">
                             <span className="material-symbols-outlined text-[14px]">cancel</span>
                             Inaccurate / Report
                           </span>

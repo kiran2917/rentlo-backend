@@ -255,7 +255,7 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer" }) => {
         )}
 
         {/* Icon Header */}
-        <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/100/10 border border-rose-600/20 text-[var(--accent)] flex items-center justify-center mb-5 shadow-sm">
+        <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/100/10 border border-indigo-600/20 text-[var(--accent)] flex items-center justify-center mb-5 shadow-sm">
           <span className="material-symbols-outlined text-2xl" aria-hidden="true">
             {otpStep === 1 ? "phone_iphone" : requireOtp && otpStep === 2 ? "dialpad" : "badge"}
           </span>

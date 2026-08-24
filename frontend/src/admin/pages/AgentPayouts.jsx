@@ -174,7 +174,7 @@ export const AgentPayouts = () => {
             <p className="text-[11px] font-extrabold uppercase tracking-widest mb-1.5 relative z-10 text-text-muted">
               Successfully Paid
             </p>
-            <h3 className="text-3xl font-black text-rose-600 relative z-10">
+            <h3 className="text-3xl font-black text-indigo-600 relative z-10">
               ₹{totalPaid.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             </h3>
           </div>
@@ -254,7 +254,7 @@ export const AgentPayouts = () => {
                         <td className="px-6 py-4 text-text-muted">
                           {new Date(b.cycle_start_date).toLocaleDateString()} - {new Date(b.cycle_end_date).toLocaleDateString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right font-black text-rose-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-right font-black text-indigo-600">
                           ₹{parseFloat(b.total_amount).toLocaleString("en-IN")}
                         </td>
                         <td className="px-6 py-4 text-center">
@@ -315,7 +315,7 @@ export const AgentPayouts = () => {
                 <div className="mb-6 p-4 rounded-xl border bg-slate-50">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-[12px] font-bold text-slate-500">Amount to Pay</span>
-                    <span className="text-lg font-black text-rose-600">₹{parseFloat(b.total_amount).toLocaleString("en-IN")}</span>
+                    <span className="text-lg font-black text-indigo-600">₹{parseFloat(b.total_amount).toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[12px] font-bold text-slate-500">Agent UPI ID</span>

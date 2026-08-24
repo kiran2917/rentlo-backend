@@ -128,7 +128,7 @@ export const OwnerLayout = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg text-ink">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-rose-600 border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
       </div>
     );
   }
@@ -347,7 +347,7 @@ export const OwnerLayout = () => {
                 className="flex items-center gap-2 px-2.5 py-1 rounded-xl border bg-surface-alt hover:bg-surface-alt/80 border-border transition-all cursor-pointer select-none active:scale-95 shadow-sm"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
               >
-                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-rose-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-indigo-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
                   {ownerInitials}
                 </div>
                 <div className="text-left hidden sm:block">
@@ -373,7 +373,7 @@ export const OwnerLayout = () => {
                     to="/"
                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-extrabold text-slate-700 hover:bg-slate-50 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-lg text-rose-600">storefront</span>
+                    <span className="material-symbols-outlined text-lg text-indigo-600">storefront</span>
                     <span>Explore Marketplace</span>
                   </Link>
 

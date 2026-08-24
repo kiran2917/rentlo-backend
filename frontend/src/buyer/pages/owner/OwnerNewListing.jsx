@@ -1859,7 +1859,7 @@ export const OwnerNewListing = () => {
                           <span className="text-[9px] font-bold text-amber-500 animate-pulse">Checking account...</span>
                         )}
                         {ownerAccountExists === true && (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-rose-600 border border-rose-600/30">
+                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-indigo-600 border border-indigo-600/30">
                             ✓ Account Exists ({ownerAccountDetails?.first_name || ownerAccountDetails?.username})
                           </span>
                         )}
@@ -1891,7 +1891,7 @@ export const OwnerNewListing = () => {
                                 {verifyMode === "otp" ? "Phone Verification Required" : "Owner Selfie Required"}
                               </span>
                               {isVerified && (
-                                <span className="text-[9.5px] font-black text-rose-600 flex items-center gap-0.5">
+                                <span className="text-[9.5px] font-black text-indigo-600 flex items-center gap-0.5">
                                   <span className="material-symbols-outlined text-[13px]">check_circle</span>Verified
                                 </span>
                               )}
@@ -1931,7 +1931,7 @@ export const OwnerNewListing = () => {
                                 <div className="flex items-center gap-3">
                                   <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-400 shadow" />
                                   <div>
-                                    <p className="text-[10px] font-bold text-rose-600">Selfie captured. Form unlocked.</p>
+                                    <p className="text-[10px] font-bold text-indigo-600">Selfie captured. Form unlocked.</p>
                                     <button type="button" onClick={() => { setSelfiePhoto(null); setSelfiePreview(null); }}
                                       className="text-[9px] text-slate-400 hover:text-red-500 underline mt-0.5 cursor-pointer">
                                       Retake
@@ -1995,7 +1995,7 @@ export const OwnerNewListing = () => {
                             style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                           />
                           {ownerAccountExists === true && (
-                            <p className="text-[10px] font-bold text-rose-600 mt-1">
+                            <p className="text-[10px] font-bold text-indigo-600 mt-1">
                               ✓ Password field disabled because this owner already has a registered Rentlo account.
                             </p>
                           )}
@@ -2145,7 +2145,7 @@ export const OwnerNewListing = () => {
                         {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
                         <div className="absolute top-3 left-14 right-3 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200/90 p-2 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-2 transition-all">
                           <div className="flex items-center gap-1.5 px-2 text-slate-800 text-[11px] font-black uppercase tracking-wider shrink-0">
-                            <span className="material-symbols-outlined text-[16px] text-rose-600">travel_explore</span>
+                            <span className="material-symbols-outlined text-[16px] text-indigo-600">travel_explore</span>
                             <span className="hidden sm:inline">Zoom Map To:</span>
                           </div>
 
@@ -2166,7 +2166,7 @@ export const OwnerNewListing = () => {
                                     setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
                                   }
                                 }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-rose-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
+                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-indigo-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
                               >
                                 {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
                                   <option key={key} value={key}>
@@ -2200,7 +2200,7 @@ export const OwnerNewListing = () => {
                                     }
                                   }
                                 }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-rose-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
+                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-indigo-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
                               >
                                 <option value="all">📍 All Cities</option>
                                 {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
@@ -2566,7 +2566,7 @@ export const OwnerNewListing = () => {
                                     </label>
 
                                     {inv.enabled && (
-                                      <span className="text-[10px] font-bold text-rose-600 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                                      <span className="text-[10px] font-bold text-indigo-600 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                                         Total: {inv.rooms * type.defaultBeds} Beds ({inv.rooms} Rooms)
                                       </span>
                                     )}
@@ -3035,7 +3035,7 @@ export const OwnerNewListing = () => {
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="mb-1 border-b border-slate-200 pb-6">
                   <h2 className="text-[20px] font-extrabold text-slate-900 tracking-tight flex items-center gap-2 drop-shadow-sm">
-                    <span className="material-symbols-outlined text-rose-600 text-[24px]">
+                    <span className="material-symbols-outlined text-indigo-600 text-[24px]">
                       verified_user
                     </span>
                     Owner Consent Verification
@@ -3164,7 +3164,7 @@ export const OwnerNewListing = () => {
                               className="w-20 h-20 object-cover rounded-xl border border-slate-200 shadow-inner"
                             />
                             <div>
-                              <div className="flex items-center gap-1.5 text-rose-600 text-[9px] font-extrabold mb-1">
+                              <div className="flex items-center gap-1.5 text-indigo-600 text-[9px] font-extrabold mb-1">
                                 <span className="material-symbols-outlined text-[16px]">
                                   check_circle
                                 </span>
@@ -3250,7 +3250,7 @@ export const OwnerNewListing = () => {
 
                       {otpVerified ? (
                         <div className="bg-white p-4 rounded-2xl border border-emerald-200 shadow-sm flex items-center gap-4">
-                          <span className="material-symbols-outlined text-rose-600 text-[24px]">check_circle</span>
+                          <span className="material-symbols-outlined text-indigo-600 text-[24px]">check_circle</span>
                           <div>
                             <p className="text-[11px] font-bold text-slate-900">Verified Successfully</p>
                             <p className="text-[9px] text-slate-500">Your consent has been recorded.</p>
@@ -3349,14 +3349,14 @@ export const OwnerNewListing = () => {
                     <>
                       {/* Active Credits Top Notification Banner */}
                       {ownerCredits?.total_credits_remaining > 0 && (
-                        <div className="mb-8 p-6 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl border-2 border-rose-600/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="mb-8 p-6 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl border-2 border-indigo-600/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-300">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-black/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
                               <span className="material-symbols-outlined text-[28px]">workspace_premium</span>
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="px-2.5 py-0.5 rounded-full bg-black/20 text-emerald-300 border border-rose-600/40 text-[10px] font-black uppercase tracking-wider">
+                                <span className="px-2.5 py-0.5 rounded-full bg-black/20 text-emerald-300 border border-indigo-600/40 text-[10px] font-black uppercase tracking-wider">
                                   ACTIVE PASS DETECTED
                                 </span>
                                 <span className="text-[11px] font-bold text-slate-300">
@@ -3486,13 +3486,13 @@ export const OwnerNewListing = () => {
                                         Included
                                       </li>
                                       <li className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-rose-600 text-[18px]">
+                                        <span className="material-symbols-outlined text-indigo-600 text-[18px]">
                                           check
                                         </span>
                                         Direct Verified Tenant Enquiries
                                       </li>
                                       <li className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-rose-600 text-[18px]">
+                                        <span className="material-symbols-outlined text-indigo-600 text-[18px]">
                                           check
                                         </span>
                                         {plan.count > 1
@@ -3717,8 +3717,8 @@ export const OwnerNewListing = () => {
 
                       {/* Payment Section / Active Credits Section */}
                       {ownerCredits?.total_credits_remaining > 0 ? (
-                        <div className="max-w-xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 border-2 border-rose-600/50 shadow-2xl rounded-3xl p-8 mt-10 text-center text-white relative overflow-hidden">
-                          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black/20 border border-rose-600/40 flex items-center justify-center text-emerald-400">
+                        <div className="max-w-xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 border-2 border-indigo-600/50 shadow-2xl rounded-3xl p-8 mt-10 text-center text-white relative overflow-hidden">
+                          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black/20 border border-indigo-600/40 flex items-center justify-center text-emerald-400">
                             <span className="material-symbols-outlined text-[32px]">stars</span>
                           </div>
                           <h3 className="text-xl font-black mb-1 text-white">
@@ -3917,7 +3917,7 @@ export const OwnerNewListing = () => {
               <canvas ref={selfieCanvasRef} className="hidden" />
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div 
-                  className={`w-40 h-52 rounded-full border-4 border-dashed transition-all duration-300 ${faceDetected ? 'border-rose-600' : faceMisaligned ? 'border-red-500' : 'border-white/60'}`}
+                  className={`w-40 h-52 rounded-full border-4 border-dashed transition-all duration-300 ${faceDetected ? 'border-indigo-600' : faceMisaligned ? 'border-red-500' : 'border-white/60'}`}
                   style={{ 
                     boxShadow: faceDetected 
                       ? "0 0 0 9999px rgba(6, 78, 59, 0.45)" 

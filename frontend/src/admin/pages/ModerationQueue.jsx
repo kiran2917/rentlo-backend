@@ -263,7 +263,7 @@ export const ModerationQueue = () => {
                     <tr>
                       <td colSpan={4} className="py-20 text-center sticky left-0 right-0">
                         <div className="flex flex-col items-center justify-center gap-3 w-full max-w-xs sm:max-w-md mx-auto">
-                          <span className="material-symbols-outlined text-5xl text-rose-600/80">
+                          <span className="material-symbols-outlined text-5xl text-indigo-600/80">
                             task_alt
                           </span>
                           <p className="text-[14px] font-extrabold uppercase tracking-widest" style={{ color: "var(--ink)" }}>
@@ -389,7 +389,7 @@ export const ModerationQueue = () => {
               ) : filteredProperties.length === 0 ? (
                 <div className="py-20 text-center">
                   <div className="flex flex-col items-center gap-3">
-                    <span className="material-symbols-outlined text-5xl text-rose-600/80">
+                    <span className="material-symbols-outlined text-5xl text-indigo-600/80">
                       task_alt
                     </span>
                     <p className="text-[14px] font-extrabold uppercase tracking-widest" style={{ color: "var(--ink)" }}>
@@ -547,7 +547,7 @@ export const ModerationQueue = () => {
               <div className="absolute right-4 top-4 sm:relative sm:right-0 sm:top-0">
                 <button
                   onClick={() => setSelectedProperty(null)}
-                  className="w-9 h-9 rounded-xl bg-white/80 border border-white shadow-sm flex items-center justify-center text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 transition-all hover:scale-105 hover:shadow-md group cursor-pointer"
+                  className="w-9 h-9 rounded-xl bg-white/80 border border-white shadow-sm flex items-center justify-center text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100 transition-all hover:scale-105 hover:shadow-md group cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform duration-300">
                     close

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const STATUS_COLORS = {
   pending: "bg-amber-500/10 text-amber-500 border border-amber-500/30",
-  approved: "bg-black/10 text-rose-600 border border-rose-600/30",
+  approved: "bg-black/10 text-indigo-600 border border-indigo-600/30",
   rejected: "bg-red-500/10 text-red-500 border border-red-500/30",
   cancelled: "bg-slate-500/10 text-slate-400 border border-slate-500/20",
 };
@@ -146,7 +146,7 @@ export const OwnerVisits = () => {
                           onClick={() => setForm({ ...form, property_id: p.id.toString() })}
                           className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                             isSelected
-                              ? "border-rose-600 bg-black/10 shadow-sm"
+                              ? "border-indigo-600 bg-black/10 shadow-sm"
                               : "border-border bg-surface-alt hover:opacity-90"
                           }`}
                         >
@@ -162,17 +162,17 @@ export const OwnerVisits = () => {
                                 {title}
                               </span>
                               <span className="text-[11px] font-medium truncate flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                                <span className="material-symbols-outlined text-[13px] text-rose-600">location_on</span>
+                                <span className="material-symbols-outlined text-[13px] text-indigo-600">location_on</span>
                                 {locationStr || "Karnataka"}
                               </span>
-                              <span className="text-[11px] font-extrabold text-rose-600 mt-0.5">
+                              <span className="text-[11px] font-extrabold text-indigo-600 mt-0.5">
                                 &#8377;{p.price ? (typeof p.price === 'number' ? p.price.toLocaleString("en-IN") : p.price) : 'N/A'} / mo
                               </span>
                             </div>
                           </div>
 
                           <div className={`w-6 h-6 rounded-full border flex items-center justify-center flex-shrink-0 ${
-                            isSelected ? "border-rose-600 bg-black text-white" : "border-slate-400"
+                            isSelected ? "border-indigo-600 bg-black text-white" : "border-slate-400"
                           }`}>
                             {isSelected && <span className="material-symbols-outlined text-[14px]">check</span>}
                           </div>
@@ -263,8 +263,8 @@ export const OwnerVisits = () => {
           </div>
         ) : slots.length === 0 ? (
           <div className="rounded-3xl border shadow-sm p-16 flex flex-col items-center text-center" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-            <div className="w-20 h-20 rounded-3xl bg-black/10 border border-rose-600/20 flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-rose-600 text-[40px]">event_available</span>
+            <div className="w-20 h-20 rounded-3xl bg-black/10 border border-indigo-600/20 flex items-center justify-center mb-6">
+              <span className="material-symbols-outlined text-indigo-600 text-[40px]">event_available</span>
             </div>
             <h3 className="text-[22px] font-extrabold mb-2" style={{ color: "var(--ink)" }}>No visit slots yet</h3>
             <p className="text-[13.5px] font-medium mb-6 max-w-sm" style={{ color: "var(--text-muted)" }}>
@@ -285,11 +285,11 @@ export const OwnerVisits = () => {
                 {/* Slot Header */}
                 <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-black/10 border border-rose-600/20 rounded-2xl flex flex-col items-center justify-center">
-                      <span className="text-[11px] font-bold text-rose-600 uppercase">
+                    <div className="w-12 h-12 bg-black/10 border border-indigo-600/20 rounded-2xl flex flex-col items-center justify-center">
+                      <span className="text-[11px] font-bold text-indigo-600 uppercase">
                         {new Date(slot.slot_date).toLocaleDateString("en-IN", { month: "short" })}
                       </span>
-                      <span className="text-[20px] font-extrabold text-rose-600 leading-none">
+                      <span className="text-[20px] font-extrabold text-indigo-600 leading-none">
                         {new Date(slot.slot_date).getDate()}
                       </span>
                     </div>

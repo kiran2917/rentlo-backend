@@ -103,8 +103,8 @@ export const OwnerLeads = () => {
     {
       id: "new",
       title: "New Inquiries",
-      countColor: "bg-black/10 text-rose-600 border-rose-600/30",
-      accentBorder: "border-rose-600/30",
+      countColor: "bg-black/10 text-indigo-600 border-indigo-600/30",
+      accentBorder: "border-indigo-600/30",
       badge: "🌱 NEW",
     },
     {
@@ -124,8 +124,8 @@ export const OwnerLeads = () => {
     {
       id: "rejected",
       title: "Not Interested",
-      countColor: "bg-rose-500/10 text-rose-600 border-rose-500/30",
-      accentBorder: "border-rose-500/30",
+      countColor: "bg-indigo-500/10 text-indigo-600 border-indigo-500/30",
+      accentBorder: "border-indigo-500/30",
       badge: "🚫 REJECTED",
     },
   ];
@@ -153,7 +153,7 @@ export const OwnerLeads = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b pb-6 border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/10 text-emerald-700 border border-rose-600/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/10 text-emerald-700 border border-indigo-600/20">
               Live Buyer Pipeline
             </span>
           </div>
@@ -204,7 +204,7 @@ export const OwnerLeads = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by buyer name or phone..."
-              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-rose-600 focus:ring-2 focus:ring-emerald-500/20 transition-all w-48 md:w-56"
+              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-indigo-600 focus:ring-2 focus:ring-emerald-500/20 transition-all w-48 md:w-56"
             />
           </div>
 
@@ -212,7 +212,7 @@ export const OwnerLeads = () => {
             <select
               value={selectedPropFilter}
               onChange={(e) => setSelectedPropFilter(e.target.value)}
-              className="py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-rose-600 text-slate-700 cursor-pointer"
+              className="py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-indigo-600 text-slate-700 cursor-pointer"
             >
               <option value="all">All Properties</option>
               {uniqueProperties.map((pid) => (
@@ -229,7 +229,7 @@ export const OwnerLeads = () => {
       {!loading && leads.length > 0 && (
         <div className="flex md:grid md:grid-cols-4 overflow-x-auto snap-x gap-2 md:gap-3.5 mb-6 md:mb-8 pb-2 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
-            <div className="hidden md:flex w-10 h-10 rounded-xl bg-black/10 text-rose-600 items-center justify-center font-black">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-black/10 text-indigo-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">groups</span>
             </div>
             <div className="flex items-center gap-1.5 md:block">
@@ -263,7 +263,7 @@ export const OwnerLeads = () => {
           </div>
 
           <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 md:p-4 rounded-full md:rounded-2xl bg-white border border-slate-200 shadow-sm snap-start">
-            <div className="hidden md:flex w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 items-center justify-center font-black">
+            <div className="hidden md:flex w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 items-center justify-center font-black">
               <span className="material-symbols-outlined text-[20px]">do_not_disturb_on</span>
             </div>
             <div className="flex items-center gap-1.5 md:block">
@@ -288,7 +288,7 @@ export const OwnerLeads = () => {
                 onClick={() => setActiveMobileTab(col.id)}
                 className={`shrink-0 whitespace-nowrap px-4 py-3 text-[13px] font-bold border-b-2 transition-all flex items-center gap-2 ${
                   isActive
-                    ? "border-rose-600 text-emerald-700"
+                    ? "border-indigo-600 text-emerald-700"
                     : "border-transparent text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -304,12 +304,12 @@ export const OwnerLeads = () => {
 
       {loading ? (
         <div className="flex justify-center py-24">
-          <div className="w-10 h-10 rounded-full border-[3px] border-rose-600/20 border-t-emerald-600 animate-spin"></div>
+          <div className="w-10 h-10 rounded-full border-[3px] border-indigo-600/20 border-t-emerald-600 animate-spin"></div>
         </div>
       ) : leads.length === 0 ? (
         <div className="rounded-3xl border border-slate-200 bg-white p-16 flex flex-col items-center justify-center text-center shadow-sm">
-          <div className="w-20 h-20 rounded-3xl bg-black/10 border border-rose-600/20 flex items-center justify-center mb-6">
-            <span className="material-symbols-outlined text-rose-600 text-[40px]">person_search</span>
+          <div className="w-20 h-20 rounded-3xl bg-black/10 border border-indigo-600/20 flex items-center justify-center mb-6">
+            <span className="material-symbols-outlined text-indigo-600 text-[40px]">person_search</span>
           </div>
           <h3 className="text-xl font-black text-slate-900 mb-2">No buyer inquiries yet</h3>
           <p className="text-xs font-medium text-slate-500 max-w-sm">
@@ -382,7 +382,7 @@ export const OwnerLeads = () => {
                         <select
                           value={lead.lead_status || "new"}
                           onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                          className="py-1.5 px-3 bg-white border border-slate-300 rounded-xl text-xs font-black outline-none focus:border-rose-600 cursor-pointer shadow-xs"
+                          className="py-1.5 px-3 bg-white border border-slate-300 rounded-xl text-xs font-black outline-none focus:border-indigo-600 cursor-pointer shadow-xs"
                         >
                           <option value="new">🌱 New Inquiry</option>
                           <option value="contacted">💬 In Discussion</option>
@@ -463,12 +463,12 @@ export const OwnerLeads = () => {
                           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 mb-3 space-y-2.5">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[16px] text-rose-600">
+                                <span className="material-symbols-outlined text-[16px] text-indigo-600">
                                   call
                                 </span>
                                 <a
                                   href={`tel:${lead.user_phone}`}
-                                  className="text-[13px] font-black text-slate-900 hover:text-rose-600 transition-colors"
+                                  className="text-[13px] font-black text-slate-900 hover:text-indigo-600 transition-colors"
                                 >
                                   {lead.user_phone}
                                 </a>
@@ -536,7 +536,7 @@ export const OwnerLeads = () => {
               <span className="material-symbols-outlined text-[36px]">workspace_premium</span>
             </div>
 
-            <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/20 text-rose-600 border border-rose-600/30 inline-block mb-2">
+            <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/20 text-indigo-600 border border-indigo-600/30 inline-block mb-2">
               🎉 Deal Closed Successfully!
             </span>
 

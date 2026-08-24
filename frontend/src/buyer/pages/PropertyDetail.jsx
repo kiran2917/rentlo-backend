@@ -765,7 +765,7 @@ export const PropertyDetail = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`text-[11px] font-black px-3 py-1 rounded-full border uppercase tracking-wider flex items-center gap-1.5 shadow-xs ${displayFreeBeds > 0 ? 'text-white bg-black border-black' : 'text-black bg-white border-slate-300'}`}>
-                        <span className={`w-2 h-2 rounded-full ${displayFreeBeds > 0 ? 'bg-rose-600 animate-pulse' : 'bg-slate-500'}`}></span>
+                        <span className={`w-2 h-2 rounded-full ${displayFreeBeds > 0 ? 'bg-indigo-600 animate-pulse' : 'bg-slate-500'}`}></span>
                         {displayFreeBeds} Free Beds Available
                       </span>
                     </div>
@@ -1143,7 +1143,7 @@ export const PropertyDetail = () => {
                 {/* Lease Agreement Flow (Issued by Owner, Downloaded by Buyer) */}
                 <div className="mt-5">
                   {property.status === "rented" || property.has_issued_lease ? (
-                    <div className="p-3.5 rounded-xl border border-rose-600/30 bg-black/10">
+                    <div className="p-3.5 rounded-xl border border-indigo-600/30 bg-black/10">
                       <div className="flex items-center gap-2 text-[12px] font-extrabold text-[var(--accent)] dark:text-emerald-400 mb-1">
                         <span className="material-symbols-outlined text-[18px]">verified</span>
                         Official Lease Agreement Issued
