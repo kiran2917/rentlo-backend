@@ -217,7 +217,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                             <td className="px-6 py-4 font-bold text-slate-700">
                               {parseFloat(unlock.amount) === 0 ? (
                                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200/40">
-                                  Pass Credit
+                                  {unlock.pass_name || "Pass Credit"}
                                 </span>
                               ) : (
                                 `₹${unlock.amount}`

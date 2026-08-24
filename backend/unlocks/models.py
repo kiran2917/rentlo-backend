@@ -20,6 +20,7 @@ class Unlock(models.Model):
 
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='unlocks')
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='unlocks')
+    buyer_subscription = models.ForeignKey('BuyerSubscription', on_delete=models.SET_NULL, null=True, blank=True, related_name='unlocked_items')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     
     PAYMENT_CHOICES = [

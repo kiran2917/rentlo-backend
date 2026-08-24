@@ -1979,17 +1979,29 @@ class PropertyLifecycleView(views.APIView):
         property_data = PropertySerializer(property_instance, context={'request': request}).data
 
         from unlocks.models import Unlock
-        unlocks = Unlock.objects.filter(property=property_instance).select_related('buyer').order_by('-created_at')
-        unlock_data = [{
-            'id': u.id,
-            'buyer_name': f"{u.buyer.first_name} {u.buyer.last_name}".strip() or u.buyer.username,
-            'buyer_phone': u.buyer.phone,
-            'amount': str(u.amount),
-            'status': u.status,
-            'lead_status': u.lead_status,
-            'created_at': u.created_at,
-            'unlocked_at': u.unlocked_at
-        } for u in unlocks]
+        unlocks = Unlock.objects.filter(property=property_instance).select_related('buyer', 'buyer_subscription').order_by('-created_at')
+        unlock_data = []
+        for u in unlocks:
+            pass_name = None
+            pass_amount = None
+            if u.buyer_subscription:
+                pass_dict = dict(u.buyer_subscription.PASS_TYPES)
+                pass_type_val = u.buyer_subscription.pass_type
+                pass_name = pass_dict.get(pass_type_val, pass_type_val.replace('_', ' ').capitalize())
+                pass_amount = str(u.buyer_subscription.amount_paid)
+
+            unlock_data.append({
+                'id': u.id,
+                'buyer_name': f"{u.buyer.first_name} {u.buyer.last_name}".strip() or u.buyer.username,
+                'buyer_phone': u.buyer.phone,
+                'amount': str(u.amount),
+                'status': u.status,
+                'lead_status': u.lead_status,
+                'created_at': u.created_at,
+                'unlocked_at': u.unlocked_at,
+                'pass_name': pass_name,
+                'pass_amount': pass_amount
+            })
 
         from properties.models import PropertyAuditLog
         audit_logs = PropertyAuditLog.objects.filter(property=property_instance).select_related('changed_by').order_by('-changed_at')

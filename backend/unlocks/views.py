@@ -130,6 +130,7 @@ class InitiateUnlockView(views.APIView):
                         property=prop,
                         defaults={
                             'amount': 0.00,
+                            'buyer_subscription': active_sub,
                             'status': 'paid',
                             'payment_method': 'razorpay',
                             'unlocked_at': timezone.now()
@@ -138,6 +139,7 @@ class InitiateUnlockView(views.APIView):
                     if not created:
                         unlock.status = 'paid'
                         unlock.amount = 0.00
+                        unlock.buyer_subscription = active_sub
                         unlock.unlocked_at = timezone.now()
                         unlock.save()
 
