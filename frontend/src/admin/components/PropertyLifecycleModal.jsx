@@ -214,10 +214,18 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                             <td className="px-6 py-4 font-medium text-slate-500">
                               {formatDate(unlock.created_at)}
                             </td>
-                            <td className="px-6 py-4 font-bold text-slate-700">₹{unlock.amount}</td>
+                            <td className="px-6 py-4 font-bold text-slate-700">
+                              {parseFloat(unlock.amount) === 0 ? (
+                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200/40">
+                                  Pass Credit
+                                </span>
+                              ) : (
+                                `₹${unlock.amount}`
+                              )}
+                            </td>
                             <td className="px-6 py-4">
                               <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${
-                                unlock.status === 'paid' ? 'bg-emerald-50 text-indigo-600' : 
+                                unlock.status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 
                                 unlock.status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'
                               }`}>
                                 {unlock.status}
