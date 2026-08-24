@@ -744,10 +744,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR FOR BUYERS / TENANTS */}
       {!isChatRoute && (
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 border-t flex items-center justify-around px-2 shadow-2xl backdrop-blur-2xl transition-colors duration-300"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-[72px] border-t flex items-center justify-around px-2 pb-1 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] backdrop-blur-3xl transition-all duration-300"
         style={{
-          backgroundColor: "var(--surface)",
-          borderColor: "var(--border)",
+          backgroundColor: "color-mix(in srgb, var(--surface) 65%, transparent)",
+          borderColor: "color-mix(in srgb, var(--border) 50%, transparent)",
         }}
       >
         {/* Tab 1: Home / Explore */}
@@ -782,15 +782,16 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           className="flex flex-col items-center justify-center relative -mt-6 group"
         >
           <div
-            className="w-13 h-13 rounded-full text-white flex items-center justify-center shadow-xl transition-transform active:scale-95 group-hover:scale-105 border-4"
+            className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.2)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
             style={{
-              background: "linear-gradient(135deg, var(--accent), var(--accent-soft))",
+              backgroundColor: "var(--accent)",
               borderColor: "var(--bg)",
+              color: "var(--btn-text, #ffffff)"
             }}
           >
-            <span className="material-symbols-outlined text-2xl">add</span>
+            <span className="material-symbols-outlined text-[28px]">add</span>
           </div>
-          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
+          <span className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-80" style={{ color: "var(--text-muted)" }}>
             Post Ad
           </span>
         </Link>
