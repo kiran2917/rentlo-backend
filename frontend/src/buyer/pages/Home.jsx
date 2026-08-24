@@ -645,6 +645,39 @@ export const Home = () => {
                     ? t("home.propertiesInLocality", { locality: selectedLocality }, `Properties in ${selectedLocality}`) 
                     : t("home.discoverProperties", "Discover Properties"))}
             </h2>
+
+          {/* Floating Action Pill for Mobile Filters/Map */}
+          <div className="md:hidden flex justify-center w-full mb-6 z-30 relative">
+            <div 
+              className="rounded-full px-4 py-2 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)]  backdrop-blur-xl transition-all"
+              style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
+            >
+              <button 
+                onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
+                className="flex items-center gap-1.5 text-sm font-extrabold active:scale-95 transition-transform"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  {viewMode === "grid" ? "map" : "grid_view"}
+                </span>
+                {viewMode === "grid" ? "Map View" : "List View"}
+              </button>
+              <div className="w-[1px] h-4" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
+              <button 
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  // Focus the first filter input to trigger mobile UI scroll
+                  setTimeout(() => {
+                    const firstFilter = document.querySelector('select[name="city_id"]');
+                    if (firstFilter) firstFilter.focus();
+                  }, 400);
+                }}
+                className="flex items-center gap-2 text-sm font-bold active:scale-95 transition-transform"
+              >
+                <span className="material-symbols-outlined text-lg">tune</span>
+                Filters
+              </button>
+            </div>
+          </div>
             <div className="flex flex-col items-end gap-4">
               <span
                 className="text-[11px] font-bold uppercase tracking-widest text-accent"
@@ -878,38 +911,7 @@ export const Home = () => {
             </div>
           )}
 
-          {/* Floating Action Pill for Mobile Filters/Map */}
-          <div className="md:hidden fixed bottom-[80px] left-1/2 -translate-x-1/2 z-40 flex justify-center pointer-events-none">
-            <div 
-              className="rounded-full px-4 py-2 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)] pointer-events-auto backdrop-blur-xl transition-all"
-              style={{ backgroundColor: "color-mix(in srgb, var(--accent) 90%, transparent)", color: "var(--btn-text, #ffffff)" }}
-            >
-              <button 
-                onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
-                className="flex items-center gap-1.5 text-sm font-extrabold active:scale-95 transition-transform"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  {viewMode === "grid" ? "map" : "grid_view"}
-                </span>
-                {viewMode === "grid" ? "Map View" : "List View"}
-              </button>
-              <div className="w-[1px] h-4" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
-              <button 
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  // Focus the first filter input to trigger mobile UI scroll
-                  setTimeout(() => {
-                    const firstFilter = document.querySelector('select[name="city_id"]');
-                    if (firstFilter) firstFilter.focus();
-                  }, 400);
-                }}
-                className="flex items-center gap-2 text-sm font-bold active:scale-95 transition-transform"
-              >
-                <span className="material-symbols-outlined text-lg">tune</span>
-                Filters
-              </button>
-            </div>
-          </div>
+          
 
           {hasMore && (
             <div className="mt-12 text-center">

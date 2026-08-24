@@ -777,11 +777,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         >
           <div
             className="w-12 h-12 rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.2)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
-            style={{
-              backgroundColor: "var(--accent)",
-              borderColor: "#000000",
-              color: "var(--btn-text, #ffffff)"
-            }}
+            style={{ backgroundColor: "#FFFFFF", borderColor: "#000000", color: "#000000" }}
           >
             <span className="material-symbols-outlined text-[24px]">add</span>
           </div>
