@@ -17,6 +17,7 @@ export const SubAdminManagement = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSubAdmin, setEditingSubAdmin] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Form state
   const [username, setUsername] = useState("");
@@ -147,9 +148,7 @@ export const SubAdminManagement = () => {
     }
   };
 
-  const handleDeleteSubAdmin = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to revoke sub-admin access for ${name}?`)) return;
-
+  const handleDeleteSubAdmin = async (id) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/sub-admins/${id}/delete/`, {
         method: "DELETE",
@@ -286,7 +285,7 @@ export const SubAdminManagement = () => {
                         Edit Authorities
                       </button>
                       <button
-                        onClick={() => handleDeleteSubAdmin(subAdmin.id, subAdmin.username)}
+                        onClick={() => setDeleteTarget({ id: subAdmin.id, username: subAdmin.username })}
                         className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors cursor-pointer"
                         title="Revoke Account"
                       >
@@ -427,6 +426,50 @@ export const SubAdminManagement = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete/Revoke Sub-Admin Confirmation Modal */}
+        {deleteTarget && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+              
+              <div className="text-center mb-6 mt-4">
+                <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                  <span className="material-symbols-outlined text-3xl text-slate-800">delete_forever</span>
+                </div>
+                <h3 className="text-lg font-black text-slate-900 font-extrabold">Revoke Sub-Admin Account?</h3>
+                <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                  Are you sure you want to revoke sub-admin access for <strong className="text-slate-800 font-extrabold">{deleteTarget.username}</strong>? This will immediately terminate all access to platform modules.
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(null)}
+                  className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDeleteSubAdmin(deleteTarget.id);
+                    setDeleteTarget(null);
+                  }}
+                  className="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-red-600/10"
+                >
+                  Revoke Access
+                </button>
+              </div>
             </div>
           </div>
         )}

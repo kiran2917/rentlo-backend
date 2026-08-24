@@ -15,6 +15,7 @@ export const OwnerVisits = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [form, setForm] = useState({ property_id: "", slot_date: "", slot_time: "", max_bookings: 1 });
   const [saving, setSaving] = useState(false);
+  const [deleteSlotTarget, setDeleteSlotTarget] = useState(null);
 
   const fetchSlots = async () => {
     try {
@@ -94,7 +95,6 @@ export const OwnerVisits = () => {
   };
 
   const deleteSlot = async (slotId) => {
-    if (!window.confirm("Remove this slot?")) return;
     try {
       const r = await fetch(`${import.meta.env.VITE_API_URL}/visits/slots/${slotId}/delete/`, {
         method: "DELETE",
@@ -311,7 +311,7 @@ export const OwnerVisits = () => {
                       {slot.bookings?.length || 0} booking{slot.bookings?.length !== 1 ? "s" : ""}
                     </span>
                     <button
-                      onClick={() => deleteSlot(slot.id)}
+                      onClick={() => setDeleteSlotTarget(slot.id)}
                       className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-red-500/10 text-red-500"
                     >
                       <span className="material-symbols-outlined text-[18px]">delete</span>
@@ -372,6 +372,50 @@ export const OwnerVisits = () => {
           </div>
         )}
       </div>
+
+      {/* Delete Slot Confirmation Modal */}
+      {deleteSlotTarget && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+            <button
+              onClick={() => setDeleteSlotTarget(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+            
+            <div className="text-center mb-6 mt-4">
+              <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                <span className="material-symbols-outlined text-3xl text-slate-800">delete_sweep</span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900 font-extrabold">Remove Booking Slot?</h3>
+              <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                Are you sure you want to remove this visit slot? Any pending booking requests for this slot will be canceled.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteSlotTarget(null)}
+                className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteSlot(deleteSlotTarget);
+                  setDeleteSlotTarget(null);
+                }}
+                className="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-red-600/10"
+              >
+                Remove Slot
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -30,6 +30,7 @@ export const OwnerDashboard = () => {
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
   const [updatingBeds, setUpdatingBeds] = useState(false);
   const [relistTarget, setRelistTarget] = useState(null);
+  const [statusTarget, setStatusTarget] = useState(null);
 
   const fetchProperties = () => {
     setLoading(true);
@@ -994,7 +995,7 @@ export const OwnerDashboard = () => {
                       {/* Live → Under Negotiation */}
                       {prop.status === "live" && (
                         <button
-                          onClick={() => handleStatusUpdate(prop.id, "under_negotiation")}
+                          onClick={() => setStatusTarget({ id: prop.id, status: "under_negotiation" })}
                           className="w-full px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">handshake</span>
@@ -1006,7 +1007,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "under_negotiation" && (
                         <div className="flex gap-2">
                           <button
-                            onClick={() => handleStatusUpdate(prop.id, "rented")}
+                            onClick={() => setStatusTarget({ id: prop.id, status: "rented" })}
                             className="flex-1 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                           >
                             <span className="material-symbols-outlined text-base">home</span>
@@ -1025,7 +1026,7 @@ export const OwnerDashboard = () => {
                       {/* Live → Mark Rented directly */}
                       {prop.status === "live" && (
                         <button
-                          onClick={() => handleStatusUpdate(prop.id, "rented")}
+                          onClick={() => setStatusTarget({ id: prop.id, status: "rented" })}
                           className="w-full px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30 text-[11.5px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-base">key</span>
@@ -1723,6 +1724,56 @@ export const OwnerDashboard = () => {
                 className="flex-1 h-12 bg-black text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-black/10 hover:opacity-90"
               >
                 Confirm &amp; Relist
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Status Change Confirmation Modal */}
+      {statusTarget && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+            <button
+              onClick={() => setStatusTarget(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+            
+            <div className="text-center mb-6 mt-4">
+              <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                <span className="material-symbols-outlined text-3xl text-slate-800">
+                  {statusTarget.status === 'rented' ? 'key' : 'handshake'}
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900">
+                {statusTarget.status === 'rented' ? 'Mark as Rented?' : 'Pause Listing Unlocks?'}
+              </h3>
+              <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed">
+                {statusTarget.status === 'rented' 
+                  ? 'This will mark the property as Rented and take the listing offline. You can relist it later using pass credits.' 
+                  : 'This puts the property under negotiation and pauses tenant contact unlocks for 48 hours.'}
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setStatusTarget(null)}
+                className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleStatusUpdate(statusTarget.id, statusTarget.status);
+                  setStatusTarget(null);
+                }}
+                className="flex-1 h-12 bg-black text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-black/10 hover:opacity-90"
+              >
+                Confirm
               </button>
             </div>
           </div>

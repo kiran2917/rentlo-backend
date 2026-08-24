@@ -13,6 +13,7 @@ export const AdminCRM = () => {
   const [listingFilter, setListingFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [inspectUser, setInspectUser] = useState(null);
+  const [confirmToggleUser, setConfirmToggleUser] = useState(null);
 
   useEffect(() => {
     fetchCrmUsers();
@@ -422,11 +423,11 @@ export const AdminCRM = () => {
                     </button>
 
                     <button
-                      onClick={() => handleToggleUserStatus(u.id, u.username)}
+                      onClick={() => setConfirmToggleUser({ id: u.id, username: u.username, is_active: u.is_active })}
                       className={`h-10 px-3.5 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex-shrink-0 ${
                         u.is_active
                           ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
-                          : 'bg-black/10 text-indigo-600 border-indigo-600/30 hover:bg-black/20'
+                          : 'bg-black/10 text-slate-800 border-slate-300 hover:bg-black/20'
                       }`}
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
@@ -575,11 +576,11 @@ export const AdminCRM = () => {
               {/* Modal Footer Actions */}
               <div className="mt-6 pt-4 border-t flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
                 <button
-                  onClick={() => handleToggleUserStatus(inspectUser.id, inspectUser.username)}
+                  onClick={() => setConfirmToggleUser({ id: inspectUser.id, username: inspectUser.username, is_active: inspectUser.is_active })}
                   className={`px-4 py-2 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider cursor-pointer ${
                     inspectUser.is_active
                       ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
-                      : 'bg-black/10 text-indigo-600 border-indigo-600/30 hover:bg-black/20'
+                      : 'bg-black/10 text-slate-800 border-slate-300 hover:bg-black/20'
                   }`}
                 >
                   {inspectUser.is_active ? 'Block Account' : 'Unblock Account'}
@@ -590,6 +591,56 @@ export const AdminCRM = () => {
                   className="px-5 py-2 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white font-extrabold text-[12px] uppercase cursor-pointer"
                 >
                   Close Profile
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Block/Unblock Confirmation Modal */}
+        {confirmToggleUser && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+              <button
+                onClick={() => setConfirmToggleUser(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+              
+              <div className="text-center mb-6 mt-4">
+                <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                  <span className="material-symbols-outlined text-3xl text-slate-800">
+                    {confirmToggleUser.is_active ? 'no_accounts' : 'person'}
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {confirmToggleUser.is_active ? 'Block User Account?' : 'Unblock User Account?'}
+                </h3>
+                <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                  {confirmToggleUser.is_active 
+                    ? `Are you sure you want to block ${confirmToggleUser.username}? They will no longer be able to log in or access the platform.` 
+                    : `Are you sure you want to restore access for ${confirmToggleUser.username}?`}
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setConfirmToggleUser(null)}
+                  className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleToggleUserStatus(confirmToggleUser.id, confirmToggleUser.username);
+                    setConfirmToggleUser(null);
+                  }}
+                  className="flex-1 h-12 bg-black text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-black/10 hover:opacity-90"
+                >
+                  {confirmToggleUser.is_active ? 'Confirm Block' : 'Confirm Unblock'}
                 </button>
               </div>
             </div>
