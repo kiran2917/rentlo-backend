@@ -1,5 +1,5 @@
 @import '@fontsource-variable/fraunces';
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik+Mono+One&family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Cinzel:wght@600;700;900&family=Orbitron:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Permanent+Marker&family=Rubik+Mono+One&family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&family=Cinzel:wght@600;700;900&family=Orbitron:wght@700;900&display=swap');
  
 @tailwind base;
 @tailwind components;
@@ -23,7 +23,7 @@
   --danger:       #DC2626;
   --btn-text:     #FFFFFF;
 
-  --font-family: 'Inter', system-ui, sans-serif;
+  --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-heading: 'Outfit', sans-serif;
 
   --shadow-neutral-card: rgba(15, 23, 42, 0.05);
@@ -1511,7 +1511,7 @@ body[class*="theme-cyber-"], body[class*="theme-cyber_"],
 /* 5. Neumorphic Themes (Outfit & Inter) */
 body[class*="theme-neumorphic-"], body[class*="theme-neumorphic_"], 
 [class*="theme-neumorphic-"], [class*="theme-neumorphic_"] {
-  --font-family: 'Inter', system-ui, sans-serif;
+  --font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-heading: 'Outfit', sans-serif;
 }
 
@@ -1533,3 +1533,9 @@ h1, h2, h3, h4, h5, h6, .font-heading, .font-display, [class*="font-display"], [
   font-family: var(--font-heading, var(--font-family, 'Inter', system-ui, sans-serif)) !important;
 }
 
+
+@media (max-width: 768px) {
+  html {
+    font-size: 13.5px; /* Scales down all rem-based sizes to densify mobile UI */
+  }
+}

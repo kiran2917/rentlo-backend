@@ -598,7 +598,7 @@ export const Home = () => {
                   <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">{t("home.gpsFilter", "GPS Filter:")}</span>
                   <button
                     onClick={handleSearchNearMe}
-                    className={`px-4 py-2 rounded-xl flex items-center gap-2 text-xs sm:text-xs font-bold transition-all border cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl flex items-center gap-2 text-xs sm:text-[11px] font-bold transition-all border cursor-pointer ${
                       filters.lat
                         ? "bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20"
                         : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -615,7 +615,7 @@ export const Home = () => {
                     value={filters.radius_km}
                     onChange={(e) => handleFilterChange("radius_km", e.target.value)}
                     disabled={!filters.lat && !filters.city_id}
-                    className="px-4 py-2 rounded-xl text-xs sm:text-xs font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
+                    className="px-4 py-2 rounded-xl text-xs sm:text-[11px] font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
                   >
                     <option value="">{t("home.anyDistance", "Any Distance")}</option>
                     <option value="2">{t("home.within2km", "Within 2 km")}</option>
@@ -647,7 +647,7 @@ export const Home = () => {
             </h2>
             <div className="flex flex-col items-end gap-4">
               <span
-                className="text-xs font-bold uppercase tracking-widest text-accent"
+                className="text-[11px] font-bold uppercase tracking-widest text-accent"
               >
                 {displayedProperties.length} {t("home.listingsCount", "listings")}
               </span>
@@ -881,19 +881,19 @@ export const Home = () => {
           {/* Floating Action Pill for Mobile Filters/Map */}
           <div className="md:hidden fixed bottom-[80px] left-1/2 -translate-x-1/2 z-40 flex justify-center pointer-events-none">
             <div 
-              className="rounded-full px-5 py-2.5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)] pointer-events-auto backdrop-blur-xl transition-all"
+              className="rounded-full px-4 py-2 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)] pointer-events-auto backdrop-blur-xl transition-all"
               style={{ backgroundColor: "color-mix(in srgb, var(--accent) 90%, transparent)", color: "var(--btn-text, #ffffff)" }}
             >
               <button 
                 onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
                 className="flex items-center gap-1.5 text-sm font-extrabold active:scale-95 transition-transform"
               >
-                <span className="material-symbols-outlined text-[18px]">
+                <span className="material-symbols-outlined text-[16px]">
                   {viewMode === "grid" ? "map" : "grid_view"}
                 </span>
                 {viewMode === "grid" ? "Map View" : "List View"}
               </button>
-              <div className="w-[1px] h-5" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
+              <div className="w-[1px] h-4" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
               <button 
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });

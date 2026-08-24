@@ -274,7 +274,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       )}
       {/* Navbar */}
       <nav
-        className="w-full top-0 sticky z-50 transition-all duration-300 border-b shadow-sm"
+        className="w-full top-0 sticky z-50 h-14 md:h-16 flex items-center transition-all duration-300 border-b shadow-sm"
         style={{
           backgroundColor: "var(--header-bg)",
           borderColor: "rgba(255,255,255,0.08)",
@@ -292,7 +292,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
               </div>
             )}
-            <span className="text-xl font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>
               {platformSettings?.company_name || "Rentlo"}
             </span>
           </Link>
@@ -509,7 +509,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 backgroundColor: location.pathname === link.to ? "var(--nav-active-bg)" : "transparent",
               }}
             >
-              <span className="material-symbols-outlined text-xl" style={{ color: location.pathname === link.to ? "var(--accent)" : "rgba(255,255,255,0.5)" }}>{link.icon}</span>
+              <span className="material-symbols-outlined text-lg" style={{ color: location.pathname === link.to ? "var(--accent)" : "rgba(255,255,255,0.5)" }}>{link.icon}</span>
               {link.label}
               {link.badge > 0 && (
                 <span className="ml-auto px-1.5 py-0.5 rounded text-xs font-bold text-white" style={{ backgroundColor: "var(--accent)" }}>{link.badge}</span>
@@ -523,7 +523,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
               style={{ color: "var(--accent)", backgroundColor: "var(--nav-active-bg)" }}
             >
-              <span className="material-symbols-outlined text-xl">admin_panel_settings</span>
+              <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
               Admin Console
             </Link>
           )}
@@ -533,7 +533,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all"
               style={{ color: "var(--accent)", backgroundColor: "var(--nav-active-bg)" }}
             >
-              <span className="material-symbols-outlined text-xl">dashboard</span>
+              <span className="material-symbols-outlined text-lg">dashboard</span>
               Owner Dashboard
             </Link>
           )}
@@ -744,7 +744,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR FOR BUYERS / TENANTS */}
       {!isChatRoute && (
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-[72px] border-t flex items-center justify-around px-2 pb-1 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] backdrop-blur-3xl transition-all duration-300"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 border-t flex items-center justify-around px-1 pb-0 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] backdrop-blur-3xl transition-all duration-300"
         style={{
           backgroundColor: "color-mix(in srgb, var(--surface) 65%, transparent)",
           borderColor: "color-mix(in srgb, var(--border) 50%, transparent)",
@@ -759,8 +759,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname === "/" ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-xl">storefront</span>
-          <span className="text-xs font-bold mt-0.5">Explore</span>
+          <span className="material-symbols-outlined text-lg">storefront</span>
+          <span className="text-[10px] font-bold mt-0.5">Explore</span>
         </Link>
 
         {/* Tab 2: Passes / Pricing */}
@@ -772,8 +772,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname.startsWith("/pricing") ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-xl">confirmation_number</span>
-          <span className="text-xs font-bold mt-0.5">Passes</span>
+          <span className="material-symbols-outlined text-lg">confirmation_number</span>
+          <span className="text-[10px] font-bold mt-0.5">Passes</span>
         </Link>
 
         {/* Tab 3: CENTER HERO (+) ACTION BUTTON - Post New Listing */}
@@ -782,14 +782,14 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           className="flex flex-col items-center justify-center relative -mt-6 group"
         >
           <div
-            className="w-14 h-14 rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.2)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
+            className="w-12 h-12 rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.2)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
             style={{
               backgroundColor: "var(--accent)",
               borderColor: "var(--bg)",
               color: "var(--btn-text, #ffffff)"
             }}
           >
-            <span className="material-symbols-outlined text-[28px]">add</span>
+            <span className="material-symbols-outlined text-[24px]">add</span>
           </div>
           <span className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-80" style={{ color: "var(--text-muted)" }}>
             Post Ad
@@ -805,8 +805,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             fontWeight: location.pathname.startsWith("/my-unlocks") ? "800" : "600",
           }}
         >
-          <span className="material-symbols-outlined text-xl">lock_open</span>
-          <span className="text-xs font-bold mt-0.5">Unlocks</span>
+          <span className="material-symbols-outlined text-lg">lock_open</span>
+          <span className="text-[10px] font-bold mt-0.5">Unlocks</span>
         </Link>
 
         {/* Tab 5: Owner / Agent Portal or Sign Out */}
@@ -836,23 +836,23 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             if (!user) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-xl">person</span>
-                  <span className="text-xs font-bold mt-0.5">Login</span>
+                  <span className="material-symbols-outlined text-lg">person</span>
+                  <span className="text-[10px] font-bold mt-0.5">Login</span>
                 </>
               );
             } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.roles?.includes("owner")) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-xl">admin_panel_settings</span>
-                  <span className="text-xs font-bold mt-0.5">Console</span>
+                  <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
+                  <span className="text-[10px] font-bold mt-0.5">Console</span>
                 </>
               );
             } else {
               // Pure buyer - sign out
               return (
                 <>
-                  <span className="material-symbols-outlined text-xl text-red-500">logout</span>
-                  <span className="text-xs font-bold mt-0.5 text-red-500">Sign Out</span>
+                  <span className="material-symbols-outlined text-lg text-red-500">logout</span>
+                  <span className="text-[10px] font-bold mt-0.5 text-red-500">Sign Out</span>
                 </>
               );
             }
