@@ -159,7 +159,7 @@ export const OwnerLayout = () => {
           {platformSettings?.company_logo_url ? (
             <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
           ) : (
-            <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "#FFFFFF" }}>
+            <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "#000000" }}>
               <span className="material-symbols-outlined text-base">real_estate_agent</span>
             </div>
           )}
@@ -167,7 +167,7 @@ export const OwnerLayout = () => {
             <span className="text-base font-bold tracking-tight" style={{ color: "var(--sidebar-ink)" }}>
               {platformSettings?.company_name || "Rentlo"}
             </span>
-            <p className="text-xs font-extrabold uppercase tracking-widest leading-none mt-1" style={{ color: "#FFFFFF" }}>
+            <p className="text-[9px] font-bold uppercase tracking-widest leading-none mt-1" style={{ color: "var(--sidebar-ink)", opacity: 0.6 }}>
               {isAgent ? t("owner.agentConsole", "Agent Console") : t("owner.ownerConsole", "Owner Console")}
             </p>
           </div>
@@ -185,17 +185,18 @@ export const OwnerLayout = () => {
               key={item.to}
               to={item.to}
               onClick={onNavClick}
-              className="flex items-center gap-4 px-4 h-10 rounded-xl text-sm font-semibold transition-all duration-200"
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-semibold transition-all duration-200"
               style={{
-                color: active ? "#FFFFFF" : "var(--sidebar-ink)",
-                backgroundColor: active ? "#000000" : "transparent",
+                backgroundColor: active ? "var(--surface-alt)" : "transparent",
+                color: active ? "#000000" : "var(--sidebar-ink)",
+                borderLeft: active ? "4px solid #000000" : "4px solid transparent",
                 fontWeight: active ? "800" : "600",
                 opacity: active ? 1 : 0.8,
               }}
             >
               <span
-                className="material-symbols-outlined text-xl"
-                style={{ color: active ? "#FFFFFF" : "var(--sidebar-ink)" }}
+                className="material-symbols-outlined text-[20px]"
+                style={{ color: active ? "#000000" : "var(--sidebar-ink)" }}
               >
                 {item.icon}
               </span>
@@ -278,7 +279,7 @@ export const OwnerLayout = () => {
                       }
                     }}
                     className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-xs hover:opacity-90 transition-all cursor-pointer"
-                    style={{ backgroundColor: 'var(--accent)' }}
+                    style={{ backgroundColor: '#000000' }}
                   >
                     Enable Now
                   </button>
@@ -303,7 +304,7 @@ export const OwnerLayout = () => {
               <span className="material-symbols-outlined text-2xl">menu</span>
             </button>
             <div className="flex items-center gap-2 min-w-0">
-              <span className="material-symbols-outlined text-xl hidden sm:inline-block" style={{ color: "#FFFFFF" }}>grid_view</span>
+              <span className="material-symbols-outlined text-xl hidden sm:inline-block" style={{ color: "#000000" }}>grid_view</span>
               <h1 className="text-sm sm:text-base font-black truncate whitespace-nowrap" style={{ color: "var(--ink)" }} title={
                 location.pathname.startsWith("/owner/leads")
                   ? "Leads & Contacts"
@@ -347,7 +348,7 @@ export const OwnerLayout = () => {
                 className="flex items-center gap-2 px-2.5 py-1 rounded-xl border bg-surface-alt hover:bg-surface-alt/80 border-border transition-all cursor-pointer select-none active:scale-95 shadow-sm"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
               >
-                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-indigo-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-black bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
                   {ownerInitials}
                 </div>
                 <div className="text-left hidden sm:block">
