@@ -1612,7 +1612,7 @@ export const PropertyDetail = () => {
                       <button
                         onClick={() => handleUnlock()}
                         disabled={unlocking}
-                        className="w-full rounded-xl text-[14px] font-extrabold flex items-center justify-center gap-2 text-white bg-[var(--accent)] hover:bg-[var(--accent-soft)] shadow-lg hover:scale-[1.01] transition-all"
+                        className="w-full rounded-xl text-[14px] font-extrabold flex items-center justify-center gap-2 text-white bg-black hover:bg-slate-900 shadow-md hover:scale-[1.01] transition-all"
                         style={{ height: "52px" }}
                       >
                         <span className="material-symbols-outlined text-[20px]">
@@ -1642,15 +1642,9 @@ export const PropertyDetail = () => {
                     <button
                       onClick={() => setShowPlanModal(true)}
                       disabled={unlocking}
-                      className="w-full h-13 rounded-xl text-[14px] font-semibold btn-shimmer flex items-center justify-center gap-2 relative z-10 disabled:opacity-50 transition-transform duration-200 hover:-translate-y-0.5"
+                      className="w-full h-13 rounded-xl text-[14px] font-semibold btn-shimmer flex items-center justify-center gap-2 relative z-10 disabled:opacity-50 transition-transform duration-200 hover:-translate-y-0.5 bg-black text-white hover:bg-slate-900 shadow-md"
                       style={{
                         height: "52px",
-                        background:
-                          "linear-gradient(135deg, var(--accent), var(--accent-soft))",
-                        color: "var(--surface)",
-                        boxShadow: unlocking
-                          ? "none"
-                          : "0 8px 24px -8px var(--shadow-accent-glow)",
                       }}
                     >
                       <span className="material-symbols-outlined text-[20px]">
