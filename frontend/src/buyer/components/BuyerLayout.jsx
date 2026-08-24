@@ -604,7 +604,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
       {/* Master Footer */}
       {!isChatRoute && (
-        <footer className="border-t border-slate-800 py-12 mt-auto bg-black text-white">
+        <footer className="border-t border-slate-800 py-12 pb-32 md:pb-12 mt-auto bg-black text-white">
         <div className="max-w-[1600px] mx-auto px-4 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b" style={{ borderColor: "var(--border)" }}>
             {/* Col 1: Brand Info */}
@@ -778,8 +778,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           <div
             className="w-12 h-12 rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.2)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
             style={{
-              backgroundColor: "#FFFFFF",
-              borderColor: "var(--bg)",
+              backgroundColor: "var(--accent)",
+              borderColor: "#000000",
               color: "var(--btn-text, #ffffff)"
             }}
           >

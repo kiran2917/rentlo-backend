@@ -291,7 +291,7 @@ export const OwnerLayout = () => {
                       }
                     }}
                     className="ml-2 px-3 py-1 rounded-lg text-white font-extrabold text-xs hover:opacity-90 transition-all cursor-pointer"
-                    style={{ backgroundColor: '#FFFFFF' }}
+                    style={{ backgroundColor: 'var(--accent)' }}
                   >
                     Enable Now
                   </button>
@@ -446,8 +446,8 @@ export const OwnerLayout = () => {
             <div
               className="w-13 h-13 rounded-full text-white flex items-center justify-center shadow-xl transition-transform active:scale-95 group-hover:scale-105 border-4"
               style={{
-                background: "linear-gradient(135deg, #FFFFFF, var(--accent-soft))",
-                borderColor: "var(--bg)",
+                background: "linear-gradient(135deg, var(--accent), var(--accent-soft))",
+                borderColor: "#000000",
               }}
             >
               <span className="material-symbols-outlined text-2xl">add</span>
