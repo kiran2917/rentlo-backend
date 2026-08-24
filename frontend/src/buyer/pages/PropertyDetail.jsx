@@ -480,7 +480,7 @@ export const PropertyDetail = () => {
     if (count === 0) {
       return (
         <div
-          className="w-full h-[480px] rounded-card flex items-center justify-center"
+          className="w-full h-[400px] rounded-3xl flex items-center justify-center border border-slate-200"
           style={{ backgroundColor: "var(--surface)" }}
         >
           <span className="material-symbols-outlined text-[40px] text-text-muted opacity-50">home_work</span>
@@ -496,7 +496,7 @@ export const PropertyDetail = () => {
     if (count === 1) {
       return (
         <div
-          className="w-full h-[40vh] sm:h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer group"
+          className="w-full h-[35vh] sm:h-[45vh] md:h-[55vh] overflow-hidden cursor-pointer group rounded-3xl border border-slate-200"
           onClick={() => openGallery(0)}
         >
           <img
@@ -512,7 +512,7 @@ export const PropertyDetail = () => {
 
     if (count === 2) {
       return (
-        <div className="grid grid-cols-2 gap-1 h-[40vh] sm:h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer">
+        <div className="grid grid-cols-2 gap-2 h-[35vh] sm:h-[45vh] md:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200">
           <div className="overflow-hidden group" onClick={() => openGallery(0)}>
             <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           </div>
@@ -523,24 +523,54 @@ export const PropertyDetail = () => {
       );
     }
 
+    if (count === 3) {
+      return (
+        <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[40vh] sm:h-[50vh] md:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
+          {/* Main image: Left 50% width */}
+          <div className="col-span-4 md:col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
+            <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          {/* Small 1: Right-top 50% width */}
+          <div className="col-span-2 md:col-span-2 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(1)}>
+            <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          {/* Small 2: Right-bottom 50% width */}
+          <div className="col-span-2 md:col-span-2 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(2)}>
+            <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          </div>
+        </div>
+      );
+    }
+
+    // 4 or more images: Premium Airbnb-style layout
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 md:grid-rows-2 gap-1 h-[50vh] md:h-[65vh] overflow-hidden cursor-pointer">
-        {/* Main image: full height on mobile as col-span-2, then 3-col on desktop */}
-        <div className="col-span-2 md:col-span-3 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
+      <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[45vh] md:h-[58vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
+        {/* Main image: Left 50% width */}
+        <div className="col-span-4 md:col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
           <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         </div>
-        <div className="col-span-1 md:col-span-1 row-span-1 overflow-hidden group hidden sm:block" onClick={() => openGallery(1)}>
+        {/* Small 1 */}
+        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(1)}>
           <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         </div>
-        <div className="col-span-1 md:col-span-1 row-span-1 overflow-hidden relative group hidden sm:block" onClick={() => openGallery(2)}>
+        {/* Small 2 */}
+        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(2)}>
           <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          {count > 3 && (
+        </div>
+        {/* Small 3 */}
+        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(3)}>
+          <img src={media[3].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        </div>
+        {/* Small 4 / Show More Overlay */}
+        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden relative group hidden md:block" onClick={() => openGallery(4)}>
+          <img src={media[4].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          {count > 5 && (
             <div
-              className="absolute inset-0 flex items-center justify-center flex-col transition-colors hover:bg-black/40"
-              style={{ backgroundColor: "rgba(11,12,14,0.6)", backdropFilter: "blur(4px)" }}
+              className="absolute inset-0 flex items-center justify-center flex-col transition-all hover:bg-black/40 duration-300"
+              style={{ backgroundColor: "rgba(11,12,14,0.55)", backdropFilter: "blur(4px)" }}
             >
-              <span className="material-symbols-outlined text-[24px] mb-1 text-white">photo_library</span>
-              <span className="text-[14px] font-semibold text-white">+{count - 3} Photos</span>
+              <span className="material-symbols-outlined text-[26px] mb-1 text-white">photo_library</span>
+              <span className="text-[13px] font-black tracking-wide text-white">+{count - 5} Photos</span>
             </div>
           )}
         </div>
@@ -576,10 +606,8 @@ export const PropertyDetail = () => {
       />
       <div className="progress-bar" style={{ width: `${scrollProgress * 100}%` }}></div>
       {/* Cinematic Hero Gallery */}
-      <div className="w-full relative -mx-4 md:-mx-10" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-10 mt-6 animate-in fade-in duration-300">
          {renderGalleryGrid()}
-         {/* Vignette */}
-         {/* Vignette Removed */}
       </div>
       <main className="flex-grow w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 relative z-10">
         {/* ─── Left: Details ─── */}

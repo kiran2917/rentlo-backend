@@ -350,8 +350,8 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   }}
                 >
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-extrabold text-white uppercase shadow-sm"
-                    style={{ backgroundColor: "#FFFFFF" }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-slate-800 uppercase shadow-inner"
+                    style={{ backgroundColor: "#f1f5f9" }}
                   >
                     {(user.first_name ? user.first_name.charAt(0) : (user.username && user.username.startsWith("buyer_") ? "B" : user.username?.charAt(0) || "U"))}
                   </div>
