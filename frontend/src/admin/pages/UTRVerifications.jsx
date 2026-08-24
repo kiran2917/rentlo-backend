@@ -8,6 +8,7 @@ export const UTRVerifications = () => {
   const [expandedBuyers, setExpandedBuyers] = useState({});
   const [selectedRoleTab, setSelectedRoleTab] = useState("all");
   const [showManualModal, setShowManualModal] = useState(false);
+  const [confirmBanUser, setConfirmBanUser] = useState(null);
   const [manualForm, setManualForm] = useState({
     user: "",
     property_id: "",
@@ -336,9 +337,7 @@ export const UTRVerifications = () => {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (window.confirm(`Are you sure you want to BAN user account "${buyerGroup.buyerName}" (${buyerGroup.buyerRole}) and revoke their access?`)) {
-                                            handleAction(u.id, 'ban');
-                                          }
+                                          setConfirmBanUser({ id: u.id, username: buyerGroup.buyerName, role: buyerGroup.buyerRole, revoke: true });
                                         }}
                                         className="px-3 py-1.5 rounded-lg text-[12px] font-bold bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer shadow-xs hover:opacity-90"
                                       >
@@ -349,9 +348,7 @@ export const UTRVerifications = () => {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (window.confirm(`Are you sure you want to BAN user account "${buyerGroup.buyerName}" (${buyerGroup.buyerRole})?`)) {
-                                            handleAction(u.id, 'ban');
-                                          }
+                                          setConfirmBanUser({ id: u.id, username: buyerGroup.buyerName, role: buyerGroup.buyerRole, revoke: false });
                                         }}
                                         className="px-3 py-1.5 rounded-lg text-[12px] font-bold bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer shadow-xs hover:opacity-90"
                                       >
@@ -487,9 +484,7 @@ export const UTRVerifications = () => {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (window.confirm(`Are you sure you want to BAN user account "${buyerGroup.buyerName}" (${buyerGroup.buyerRole}) and revoke their access?`)) {
-                                            handleAction(u.id, 'ban');
-                                          }
+                                          setConfirmBanUser({ id: u.id, username: buyerGroup.buyerName, role: buyerGroup.buyerRole, revoke: true });
                                         }}
                                         className="px-2.5 py-1 rounded bg-red-600 text-white text-[10.5px] font-bold transition-all shadow-xs cursor-pointer shadow-sm hover:opacity-90"
                                       >
@@ -500,9 +495,7 @@ export const UTRVerifications = () => {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          if (window.confirm(`Are you sure you want to BAN user account "${buyerGroup.buyerName}" (${buyerGroup.buyerRole})?`)) {
-                                            handleAction(u.id, 'ban');
-                                          }
+                                          setConfirmBanUser({ id: u.id, username: buyerGroup.buyerName, role: buyerGroup.buyerRole, revoke: false });
                                         }}
                                         className="px-2.5 py-1 rounded bg-red-600 text-white text-[10.5px] font-bold transition-all shadow-xs cursor-pointer shadow-sm hover:opacity-90"
                                       >
@@ -629,6 +622,51 @@ export const UTRVerifications = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Ban User Confirmation Modal */}
+      {confirmBanUser && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+            <button
+              onClick={() => setConfirmBanUser(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+            
+            <div className="text-center mb-6 mt-4">
+              <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                <span className="material-symbols-outlined text-3xl text-slate-800">gavel</span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900 font-extrabold">BAN &amp; Revoke User?</h3>
+              <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                Are you sure you want to BAN user account <strong className="text-slate-800 font-bold">"{confirmBanUser.username}"</strong> ({confirmBanUser.role})
+                {confirmBanUser.revoke ? " and revoke their access?" : "?"}
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmBanUser(null)}
+                className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleAction(confirmBanUser.id, 'ban');
+                  setConfirmBanUser(null);
+                }}
+                className="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-red-600/10"
+              >
+                Confirm Ban
+              </button>
+            </div>
           </div>
         </div>
       )}
