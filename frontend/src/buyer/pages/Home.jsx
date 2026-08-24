@@ -252,7 +252,8 @@ export const Home = () => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/cities/?has_properties=true`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
-        const cityData = Array.isArray(data) ? data : [];
+        const allStaticCities = Object.values(STATE_CITY_DATA).flatMap(state => state.cities);
+        const cityData = (Array.isArray(data) && data.length > 0) ? data : allStaticCities;
         setCities(cityData);
         if (cityData.length === 1 && !filters.city_id)
           setFilters((p) => ({ ...p, city_id: cityData[0].id.toString() }));

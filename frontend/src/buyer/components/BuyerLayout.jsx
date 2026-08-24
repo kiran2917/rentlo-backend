@@ -617,11 +617,11 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                     <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
                   </div>
                 )}
-                <span className="text-lg font-black tracking-tight" className="text-white">
+                <span className="text-lg font-black tracking-tight text-white">
                   {platformSettings?.company_name || "Rentlo"}
                 </span>
               </div>
-              <p className="text-sm font-medium leading-relaxed" className="text-gray-300">
+              <p className="text-sm font-medium leading-relaxed text-gray-300">
                 {t("footer.desc", "Zero-Brokerage Real Estate Ecosystem. Directly connecting buyers, tenants, and property owners across India.")}
               </p>
               <p className="text-xs font-bold uppercase tracking-wider text-white">
@@ -631,10 +631,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 2: Login Portals */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4 text-white">
                 {t("footer.accessPortals", "Access Portals & Login")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
+              <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
                   <Link to="/login" className="flex items-center gap-2 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-base text-white">person</span>
@@ -652,10 +652,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 3: Platform Features */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4 text-white">
                 {t("footer.platformServices", "Platform Services")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
+              <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
                   <Link to="/" className="flex items-center gap-2 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-base text-white">home_work</span>
@@ -689,10 +689,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
 
             {/* Col 4: Trust & Legal */}
             <div>
-              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4" className="text-white">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4 text-white">
                 {t("footer.legalGovernance", "Legal & Governance")}
               </h4>
-              <ul className="space-y-2.5 text-sm font-semibold" className="text-gray-300">
+              <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
                   <button
                     onClick={() => setLegalModal(legalPolicies.privacy)}
@@ -734,7 +734,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
           </div>
 
 
-          <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium" className="text-gray-300">
+          <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium text-gray-300">
             <p>{t("footer.copyright", `${platformSettings?.company_name || "Rentlo Technologies"} © 2026. All rights reserved.`)}</p>
           </div>
         </div>
