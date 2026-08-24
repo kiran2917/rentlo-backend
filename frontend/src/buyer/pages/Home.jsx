@@ -875,18 +875,21 @@ export const Home = () => {
           )}
 
           {/* Floating Action Pill for Mobile Filters/Map */}
-          <div className="md:hidden sticky bottom-[80px] z-40 flex justify-center pointer-events-none pb-4">
-            <div className="bg-slate-900 text-white rounded-full px-4 py-2 flex items-center gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] pointer-events-auto backdrop-blur-md">
+          <div className="md:hidden fixed bottom-[80px] left-1/2 -translate-x-1/2 z-40 flex justify-center pointer-events-none">
+            <div 
+              className="rounded-full px-5 py-2.5 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)] pointer-events-auto backdrop-blur-xl transition-all"
+              style={{ backgroundColor: "color-mix(in srgb, var(--accent) 90%, transparent)", color: "var(--btn-text, #ffffff)" }}
+            >
               <button 
                 onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
-                className="flex items-center gap-2 text-sm font-bold active:scale-95 transition-transform"
+                className="flex items-center gap-1.5 text-sm font-extrabold active:scale-95 transition-transform"
               >
-                <span className="material-symbols-outlined text-lg">
+                <span className="material-symbols-outlined text-[18px]">
                   {viewMode === "grid" ? "map" : "grid_view"}
                 </span>
                 {viewMode === "grid" ? "Map View" : "List View"}
               </button>
-              <div className="w-[1px] h-4 bg-white/20"></div>
+              <div className="w-[1px] h-5" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
               <button 
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
