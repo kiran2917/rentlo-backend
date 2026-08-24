@@ -407,7 +407,7 @@ export const PropertyDetail = () => {
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-10 py-12 flex flex-col gap-10 min-h-screen">
         <div className="w-full h-[480px] rounded-card skeleton-box"></div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-8 flex flex-col gap-8">
+          <div className="lg:col-span-8 flex flex-col gap-6 md:gap-8">
             <div className="h-16 w-3/4 skeleton-box rounded-lg"></div>
             <div className="flex gap-4">
                <div className="h-12 w-1/4 skeleton-box rounded-lg"></div>

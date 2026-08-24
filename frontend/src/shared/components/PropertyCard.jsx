@@ -47,7 +47,7 @@ export const PropertyCard = ({
       <Link
         to={`/property/${prop.id}`}
         target="_blank"
-        className="group bg-slate-900 rounded-2xl p-3 border border-slate-800 hover:border-accent hover:shadow-2xl hover:shadow-accent/20 transition-all duration-300 flex gap-4 items-center"
+        className="group bg-slate-900 rounded-2xl p-3 border border-slate-800 hover:border-accent hover:shadow-2xl hover:shadow-accent/20 transition-all duration-300 flex gap-3 md:gap-4 items-center"
       >
         {/* Thumbnail */}
         <div className="relative w-28 h-32 rounded-xl overflow-hidden bg-slate-800 shrink-0 shadow-inner">
@@ -61,7 +61,7 @@ export const PropertyCard = ({
           <h4 className="font-bold text-base text-white capitalize mt-1 truncate group-hover:text-accent transition-colors">
             {prop.display_title || `${prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}${prop.property_type || "Property"}`}
           </h4>
-          <div className="text-xl font-black text-white mt-1">
+          <div className="text-lg md:text-xl font-black text-white mt-1">
             {isPg && <span className="text-xs font-bold text-slate-400 mr-1">Starting</span>}
             ₹{formattedPrice}
             <span className="text-xs font-normal text-slate-400">{isPg ? '/bed/mo' : '/mo'}</span>
@@ -131,7 +131,7 @@ export const PropertyCard = ({
         </button>
 
         {/* Content Section Overlaid on the Poster Bottom */}
-        <div className="absolute inset-x-0 bottom-0 p-5 flex flex-col justify-end z-10">
+        <div className="absolute inset-x-0 bottom-0 p-4 md:p-5 flex flex-col justify-end z-10">
           {/* Title */}
           <h4 className="font-black text-lg text-white capitalize truncate mb-1 leading-tight group-hover:text-accent transition-colors">
             {prop.display_title || `${prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}${prop.property_type || "Property"}`}
