@@ -411,7 +411,7 @@ export const Home = () => {
       />
       <main className="flex-grow">
         {/* 100% Universal Screen Viewport-Fitted Edge-to-Edge Hero Section */}
-        <section className="relative w-full overflow-hidden min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-72px)] flex items-center justify-center py-6 sm:py-8 md:py-14 px-4 sm:px-6 lg:px-8 transition-all duration-500">
+        <section className="relative w-full overflow-hidden min-h-[90vh] md:min-h-[calc(100vh-72px)] flex items-center justify-center py-12 sm:py-8 md:py-14 px-4 sm:px-6 lg:px-8 transition-all duration-500">
           {/* Background Full-Width Photo Layer */}
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div
