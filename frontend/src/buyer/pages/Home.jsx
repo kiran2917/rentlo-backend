@@ -598,7 +598,7 @@ export const Home = () => {
                   <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">{t("home.gpsFilter", "GPS Filter:")}</span>
                   <button
                     onClick={handleSearchNearMe}
-                    className={`px-4 py-2 rounded-xl flex items-center gap-2 text-xs sm:text-[11px] font-bold transition-all border cursor-pointer ${
+                    className={`h-10 px-4 rounded-xl flex items-center gap-2 text-xs sm:text-[11px] font-bold transition-all border cursor-pointer ${
                       filters.lat
                         ? "bg-black text-white border-black shadow-md shadow-slate-900/20"
                         : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
@@ -615,7 +615,7 @@ export const Home = () => {
                     value={filters.radius_km}
                     onChange={(e) => handleFilterChange("radius_km", e.target.value)}
                     disabled={!filters.lat && !filters.city_id}
-                    className="px-4 py-2 rounded-xl text-xs sm:text-[11px] font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
+                    className="h-10 px-4 rounded-xl text-xs sm:text-[11px] font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
                   >
                     <option value="">{t("home.anyDistance", "Any Distance")}</option>
                     <option value="2">{t("home.within2km", "Within 2 km")}</option>

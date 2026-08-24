@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../shared/context/AuthContext";
-import { LanguageToggle } from "../LanguageToggle";
 import { useTranslation } from "react-i18next";
 
 export const OwnerLayout = () => {
@@ -360,8 +359,6 @@ export const OwnerLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
-            {/* Language Translator Dropdown */}
-            <LanguageToggle />
 
             {/* Owner Profile Pill Dropdown */}
             <div className="relative">

@@ -109,15 +109,14 @@ export const PropertyCard = ({
           {prop.display_title || `${prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}${prop.property_type || "Property"}`}
         </p>
 
-        <div className="flex items-center justify-between mt-1 pt-1">
-          <div className="font-black text-sm sm:text-lg text-slate-900">
+        <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between">
+          <div className="font-black text-sm sm:text-lg text-slate-950">
             ₹{formattedPrice}
-            <span className="font-semibold text-slate-500 text-[10px] sm:text-xs ml-0.5">{isPg ? '/bed' : '/mo'}</span>
+            <span className="font-bold text-slate-400 text-[10px] sm:text-xs ml-1">{isPg ? '/bed' : '/mo'}</span>
           </div>
-          
-          <button className="bg-black text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-6 py-2 rounded-xl shadow-sm hover:bg-slate-800 hover:shadow-md transition-all active:scale-95">
-            View
-          </button>
+          <span className="text-[11px] font-black uppercase text-slate-400 group-hover:text-black transition-colors flex items-center gap-0.5">
+            Details <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+          </span>
         </div>
       </div>
     </Link>

@@ -641,7 +641,7 @@ export const PropertyDetail = () => {
                     className="font-display font-semibold leading-none"
                     style={{
                       fontSize: "clamp(24px,3.5vw,40px)",
-                      color: "var(--accent-soft)",
+                      color: "var(--ink)",
                     }}
                   >
                     &#8377;{parseFloat(property.price || 0).toLocaleString('en-IN')}

@@ -18,7 +18,7 @@ body.theme-emerald_minimal,
   --sidebar-bg: #FFFFFF;
   --sidebar-ink: #0F172A;
   --accent: #4F46E5;
-  --accent-soft: #FDA4AF;
+  --accent-soft: #C7D2FE;
   --ink: #0F172A;
   --text-muted: #64748B;
   --border: #E2E8F0;
@@ -1640,7 +1640,7 @@ body.theme-midnight-cyber tbody tr:hover {
 
   .card:hover {
     transform: translateY(-0.25rem);
-    box-shadow: 0 20px 40px -10px rgba(199, 125, 59, 0.20);
+    box-shadow: 0 20px 40px -10px var(--shadow-neutral-card);
   }
 
   .badge {
@@ -1772,13 +1772,11 @@ body.theme-midnight-cyber tbody tr:hover {
   0% {
     box-shadow: 0 0 0 0 var(--pulse-ring-color);
   }
-
   70% {
-    box-shadow: 0 0 0 10px rgba(199, 125, 59, 0);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
   }
-
   100% {
-    box-shadow: 0 0 0 0 rgba(199, 125, 59, 0);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }
 

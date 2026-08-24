@@ -65,8 +65,8 @@ export default {
           "100%": { backgroundPosition: "200% 0" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 12px -2px rgba(199,125,59,0.3)" },
-          "50%":      { boxShadow: "0 0 28px -2px rgba(199,125,59,0.6)" },
+          "0%, 100%": { boxShadow: "0 0 12px -2px rgba(79,70,229,0.3)" },
+          "50%":      { boxShadow: "0 0 28px -2px rgba(79,70,229,0.6)" },
         },
       },
       animation: {
