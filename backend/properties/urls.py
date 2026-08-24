@@ -18,6 +18,7 @@ from .reconfirm_view import PropertyReconfirmView
 
 urlpatterns = [
     path('cities/', CityListCreateView.as_view(), name='city-list'),
+    path('cities/localities/', LocalityListCreateView.as_view(), name='all-locality-list'),
     path('cities/<int:pk>/', CityDetailView.as_view(), name='city-detail'),
     path('cities/<int:city_id>/localities/', LocalityListCreateView.as_view(), name='locality-list'),
     path('localities/<int:pk>/', LocalityDetailView.as_view(), name='locality-detail'),
