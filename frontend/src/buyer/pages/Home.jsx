@@ -698,9 +698,9 @@ export const Home = () => {
               </div>
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
-              <div className="lg:col-span-7 md:col-span-1 h-[75vh] md:h-[600px] lg:h-[750px] rounded-3xl overflow-hidden border border-slate-200/80 shadow-2xl relative sticky top-24">
+              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[30px] md:rounded-3xl overflow-hidden shadow-2xl relative md:sticky md:top-24 border" style={{ borderColor: "var(--border)" }}>
                 {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
-                <div className="absolute top-4 left-4 z-[1000] bg-slate-950/90 backdrop-blur-md border border-slate-800 p-2 rounded-2xl shadow-2xl flex flex-wrap items-center gap-2 max-w-[calc(100%-12rem)]">
+                <div className="absolute top-4 left-4 z-[1000] backdrop-blur-xl border p-2 rounded-2xl shadow-2xl flex flex-wrap items-center gap-2 max-w-[calc(100%-12rem)]" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 85%, transparent)", borderColor: "var(--border)" }}>
                   <div className="flex items-center gap-2 px-2 text-emerald-400 text-xs font-black uppercase tracking-wider">
                     <span className="material-symbols-outlined text-lg">location_on</span>
                     <span className="hidden sm:inline">Zoom To</span>
@@ -721,7 +721,7 @@ export const Home = () => {
                         setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
                       }
                     }}
-                    className="bg-slate-900 border border-slate-700 text-white rounded-xl text-xs font-extrabold py-2 px-2 outline-none focus:border-emerald-500 cursor-pointer shadow-xs"
+                    className="rounded-xl text-xs font-extrabold py-2 px-2 outline-none cursor-pointer shadow-sm transition-all" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }}
                   >
                     {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
                       <option key={key} value={key}>
@@ -750,7 +750,7 @@ export const Home = () => {
                         }
                       }
                     }}
-                    className="bg-slate-900 border border-slate-700 text-white rounded-xl text-xs font-extrabold py-2 px-2 outline-none focus:border-emerald-500 cursor-pointer shadow-xs"
+                    className="rounded-xl text-xs font-extrabold py-2 px-2 outline-none cursor-pointer shadow-sm transition-all" style={{ backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }}
                   >
                     <option value="all">All {STATE_CITY_DATA[selectedStateKey]?.name} Cities</option>
                     {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
@@ -768,11 +768,15 @@ export const Home = () => {
                       setIsDrawingMode(!isDrawingMode);
                       if (isDrawingMode) setDrawnPolygon([]);
                     }}
-                    className={`px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-2 shadow-xl transition-all ${
+                    className={`px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all ${
                       isDrawingMode
-                        ? "bg-orange-600 text-white shadow-orange-500/30 scale-105"
-                        : "bg-white text-slate-800 hover:bg-slate-50 border border-slate-200"
+                        ? "scale-105"
+                        : "backdrop-blur-xl"
                     }`}
+                    style={isDrawingMode 
+                      ? { backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" } 
+                      : { backgroundColor: "color-mix(in srgb, var(--surface) 90%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }
+                    }
                   >
                     <span className="material-symbols-outlined text-lg">
                       {isDrawingMode ? "close" : "draw"}
