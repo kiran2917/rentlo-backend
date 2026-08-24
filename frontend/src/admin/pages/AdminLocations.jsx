@@ -16,6 +16,8 @@ export const AdminLocations = () => {
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
   const [selectedSuggestions, setSelectedSuggestions] = useState({});
   const [addingSuggestions, setAddingSuggestions] = useState(false);
+  const [deleteCityTarget, setDeleteCityTarget] = useState(null);
+  const [deleteLocalityTarget, setDeleteLocalityTarget] = useState(null);
 
   const fetchCities = async () => {
     try {
@@ -64,9 +66,7 @@ export const AdminLocations = () => {
     }
   };
 
-  const handleDeleteCity = async (e, id) => {
-    e.stopPropagation();
-    if (!window.confirm("Are you sure? This deletes all localities and properties in this city!")) return;
+  const handleDeleteCity = async (id) => {
     try {
       const r = await fetch(`${import.meta.env.VITE_API_URL}/properties/cities/${id}/`, {
         method: "DELETE",
@@ -99,7 +99,6 @@ export const AdminLocations = () => {
   };
 
   const handleDeleteLocality = async (id) => {
-    if (!window.confirm("Delete this locality?")) return;
     try {
       const r = await fetch(`${import.meta.env.VITE_API_URL}/properties/localities/${id}/`, {
         method: "DELETE",
@@ -230,7 +229,10 @@ export const AdminLocations = () => {
                     <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>{c.state}</div>
                   </div>
                   <button 
-                    onClick={(e) => handleDeleteCity(e, c.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteCityTarget({ id: c.id, name: c.name });
+                    }}
                     className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                   >
                     <span className="material-symbols-outlined text-[18px]">delete</span>
@@ -293,7 +295,7 @@ export const AdminLocations = () => {
                     <div key={l.id} className="border rounded-2xl px-4 py-3 flex items-center justify-between transition-colors" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                       <span className="font-bold text-[14px]" style={{ color: "var(--ink)" }}>{l.name}</span>
                       <button 
-                        onClick={() => handleDeleteLocality(l.id)}
+                        onClick={() => setDeleteLocalityTarget({ id: l.id, name: l.name })}
                         className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                       >
                         <span className="material-symbols-outlined text-[16px]">close</span>
@@ -404,6 +406,94 @@ export const AdminLocations = () => {
                   </button>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Delete City Confirmation Modal */}
+        {deleteCityTarget && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 border border-slate-200">
+              <button
+                onClick={() => setDeleteCityTarget(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+              
+              <div className="text-center mb-6 mt-4">
+                <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                  <span className="material-symbols-outlined text-3xl text-red-500">location_off</span>
+                </div>
+                <h3 className="text-lg font-black text-slate-900 font-extrabold">Delete City?</h3>
+                <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                  Are you sure you want to delete <strong className="text-slate-800 font-extrabold">"{deleteCityTarget.name}"</strong>? This will permanently delete all localities and properties in this city!
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteCityTarget(null)}
+                  className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDeleteCity(deleteCityTarget.id);
+                    setDeleteCityTarget(null);
+                  }}
+                  className="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md"
+                >
+                  Delete City
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Locality Confirmation Modal */}
+        {deleteLocalityTarget && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 border border-slate-200">
+              <button
+                onClick={() => setDeleteLocalityTarget(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+              
+              <div className="text-center mb-6 mt-4">
+                <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                  <span className="material-symbols-outlined text-3xl text-slate-800">delete_forever</span>
+                </div>
+                <h3 className="text-lg font-black text-slate-900 font-extrabold">Delete Locality?</h3>
+                <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed font-semibold">
+                  Are you sure you want to delete the locality <strong className="text-slate-800 font-extrabold">"{deleteLocalityTarget.name}"</strong>? This action cannot be undone.
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setDeleteLocalityTarget(null)}
+                  className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDeleteLocality(deleteLocalityTarget.id);
+                    setDeleteLocalityTarget(null);
+                  }}
+                  className="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md"
+                >
+                  Delete Locality
+                </button>
+              </div>
             </div>
           </div>
         )}
