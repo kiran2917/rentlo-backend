@@ -512,8 +512,8 @@ export const BuyerLogin = () => {
                 onClick={() => { setActiveTab("login"); setAuthMode("password"); setOtpStep(1); }}
                 className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
                 style={{
-                  backgroundColor: activeTab === "login" ? "var(--accent)" : "transparent",
-                  color: activeTab === "login" ? "var(--btn-text, #ffffff)" : "var(--ink)",
+                  backgroundColor: activeTab === "login" ? "#000000" : "transparent",
+                  color: activeTab === "login" ? "#ffffff" : "var(--ink)",
                   opacity: activeTab === "login" ? 1 : 0.6,
                 }}
               >
@@ -525,8 +525,8 @@ export const BuyerLogin = () => {
                 onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
                 className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
                 style={{
-                  backgroundColor: activeTab === "signup" ? "var(--accent)" : "transparent",
-                  color: activeTab === "signup" ? "var(--btn-text, #ffffff)" : "var(--ink)",
+                  backgroundColor: activeTab === "signup" ? "#000000" : "transparent",
+                  color: activeTab === "signup" ? "#ffffff" : "var(--ink)",
                   opacity: activeTab === "signup" ? 1 : 0.6,
                 }}
               >
@@ -549,7 +549,7 @@ export const BuyerLogin = () => {
                     onClick={() => setAuthMode("password")}
                     className="cursor-pointer transition-all flex items-center gap-1"
                     style={{
-                      color: authMode === "password" ? "var(--accent)" : "var(--ink)",
+                      color: authMode === "password" ? "#000000" : "var(--ink)",
                       opacity: authMode === "password" ? 1 : 0.6,
                       textDecoration: authMode === "password" ? "underline" : "none",
                     }}
@@ -563,7 +563,7 @@ export const BuyerLogin = () => {
                     onClick={() => { setAuthMode("otp"); setOtpStep(1); setIsNewUser(false); }}
                     className="cursor-pointer transition-all flex items-center gap-1"
                     style={{
-                      color: authMode === "otp" ? "var(--accent)" : "var(--ink)",
+                      color: authMode === "otp" ? "#000000" : "var(--ink)",
                       opacity: authMode === "otp" ? 1 : 0.6,
                       textDecoration: authMode === "otp" ? "underline" : "none",
                     }}
@@ -611,7 +611,7 @@ export const BuyerLogin = () => {
                         type="button"
                         onClick={() => { setAuthMode("forgot_password"); setResetPhone(phone); setForgotStep(1); }}
                         className="text-[11px] font-extrabold hover:underline cursor-pointer"
-                        style={{ color: "var(--accent)" }}
+                        style={{ color: "#000000" }}
                       >
                         Forgot Password?
                       </button>
@@ -719,7 +719,7 @@ export const BuyerLogin = () => {
                   ) : (
                     <form onSubmit={handleForgotResetSubmit} className="space-y-4">
                       {forgotDemoCode && (
-                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                           🔑 Demo OTP Code: <span className="font-mono text-[14px] underline">{forgotDemoCode}</span>
                         </div>
                       )}
@@ -856,7 +856,7 @@ export const BuyerLogin = () => {
                   ) : !isNewUser ? (
                     <form onSubmit={handleVerifyOtp} className="space-y-5">
                       {demoCode && (
-                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                           🔑 Demo OTP Code: <span className="font-mono text-[14px] underline">{demoCode}</span>
                         </div>
                       )}
@@ -885,7 +885,7 @@ export const BuyerLogin = () => {
                             type="button"
                             onClick={() => setOtpStep(1)}
                             className="font-extrabold hover:underline cursor-pointer"
-                            style={{ color: "var(--accent)" }}
+                            style={{ color: "#000000" }}
                           >
                             Change Number
                           </button>
@@ -910,7 +910,7 @@ export const BuyerLogin = () => {
                   ) : (
                     /* NEW USER REGISTRATION STEP: MANDATORY NAME & PASSWORD */
                     <form onSubmit={handleCompleteRegistration} className="space-y-4">
-                      <div className="p-3 rounded-2xl border text-[12px] font-bold" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                      <div className="p-3 rounded-2xl border text-[12px] font-bold" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                         ✨ OTP Verified! Complete registration to finish setting up your account.
                       </div>
 
@@ -984,14 +984,14 @@ export const BuyerLogin = () => {
                     type="button"
                     onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
                     className="font-extrabold hover:underline cursor-pointer"
-                    style={{ color: "var(--accent)" }}
+                    style={{ color: "#000000" }}
                   >
                     Create Account / Sign Up →
                   </button>
                 </p>
                 <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
                   Are you a Property Owner?{" "}
-                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "var(--accent)" }}>
+                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "#000000" }}>
                     Owner Portal Login →
                   </Link>
                 </p>
@@ -1129,14 +1129,14 @@ export const BuyerLogin = () => {
                     type="button"
                     onClick={() => { setActiveTab("login"); setAuthMode("password"); }}
                     className="font-extrabold hover:underline cursor-pointer"
-                    style={{ color: "var(--accent)" }}
+                    style={{ color: "#000000" }}
                   >
                     Sign In to Account →
                   </button>
                 </p>
                 <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
                   Are you a Property Owner?{" "}
-                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "var(--accent)" }}>
+                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "#000000" }}>
                     Owner Portal Login →
                   </Link>
                 </p>

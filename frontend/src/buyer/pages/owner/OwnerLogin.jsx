@@ -509,8 +509,8 @@ export const OwnerLogin = () => {
                 onClick={() => { setActiveTab("login"); setAuthMode("password"); setOtpStep(1); }}
                 className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
                 style={{
-                  backgroundColor: activeTab === "login" ? "var(--accent)" : "transparent",
-                  color: activeTab === "login" ? "var(--btn-text, #ffffff)" : "var(--ink)",
+                  backgroundColor: activeTab === "login" ? "#000000" : "transparent",
+                  color: activeTab === "login" ? "#ffffff" : "var(--ink)",
                   opacity: activeTab === "login" ? 1 : 0.6,
                 }}
               >
@@ -522,8 +522,8 @@ export const OwnerLogin = () => {
                 onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
                 className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
                 style={{
-                  backgroundColor: activeTab === "signup" ? "var(--accent)" : "transparent",
-                  color: activeTab === "signup" ? "var(--btn-text, #ffffff)" : "var(--ink)",
+                  backgroundColor: activeTab === "signup" ? "#000000" : "transparent",
+                  color: activeTab === "signup" ? "#ffffff" : "var(--ink)",
                   opacity: activeTab === "signup" ? 1 : 0.6,
                 }}
               >
@@ -545,7 +545,7 @@ export const OwnerLogin = () => {
                     type="button"
                     onClick={() => setAuthMode("password")}
                     className={`cursor-pointer transition-all flex items-center gap-1 ${
-                      authMode === "password" ? "underline underline-offset-4 text-accent" : "opacity-60 hover:opacity-100 text-slate-400"
+                      authMode === "password" ? "underline underline-offset-4 text-black dark:text-black font-extrabold" : "opacity-60 hover:opacity-100 text-slate-400"
                     }`}
                   >
                     <span className="material-symbols-outlined text-[14px]">lock</span>
@@ -556,7 +556,7 @@ export const OwnerLogin = () => {
                     type="button"
                     onClick={() => { setAuthMode("otp"); setOtpStep(1); setIsNewUser(false); }}
                     className={`cursor-pointer transition-all flex items-center gap-1 ${
-                      authMode === "otp" ? "underline underline-offset-4 text-accent" : "opacity-60 hover:opacity-100 text-slate-400"
+                      authMode === "otp" ? "underline underline-offset-4 text-black dark:text-black font-extrabold" : "opacity-60 hover:opacity-100 text-slate-400"
                     }`}
                   >
                     <span className="material-symbols-outlined text-[14px]">sms</span>
@@ -601,7 +601,7 @@ export const OwnerLogin = () => {
                       <button
                         type="button"
                         onClick={() => { setAuthMode("forgot_password"); setResetPhone(phone); setForgotStep(1); }}
-                        className="text-[11px] font-extrabold hover:underline cursor-pointer text-accent"
+                        className="text-[11px] font-extrabold hover:underline cursor-pointer text-black dark:text-black font-extrabold"
                       >
                         Forgot Password?
                       </button>
@@ -636,7 +636,7 @@ export const OwnerLogin = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-10 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all bg-accent text-white active:scale-[0.99] hover:opacity-90"
+                    className="w-full h-10 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all bg-black text-white active:scale-[0.99] hover:opacity-90"
                   >
                     {loading ? (
                       <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
@@ -706,7 +706,7 @@ export const OwnerLogin = () => {
                   ) : (
                     <form onSubmit={handleForgotResetSubmit} className="space-y-4">
                       {forgotDemoCode && (
-                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                           🔑 Demo OTP Code: <span className="font-mono text-[14px] underline">{forgotDemoCode}</span>
                         </div>
                       )}
@@ -843,7 +843,7 @@ export const OwnerLogin = () => {
                   ) : !isNewUser ? (
                     <form onSubmit={handleVerifyOtp} className="space-y-5">
                       {demoCode && (
-                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                           🔑 Demo OTP Code: <span className="font-mono text-[14px] underline">{demoCode}</span>
                         </div>
                       )}
@@ -872,7 +872,7 @@ export const OwnerLogin = () => {
                             type="button"
                             onClick={() => setOtpStep(1)}
                             className="font-extrabold hover:underline cursor-pointer"
-                            style={{ color: "var(--accent)" }}
+                            style={{ color: "#000000" }}
                           >
                             Change Number
                           </button>
@@ -897,7 +897,7 @@ export const OwnerLogin = () => {
                   ) : (
                     /* NEW OWNER REGISTRATION STEP */
                     <form onSubmit={handleCompleteRegistration} className="space-y-4">
-                      <div className="p-3 rounded-2xl border text-[12px] font-bold" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)", borderColor: "var(--accent)", color: "var(--accent)" }}>
+                      <div className="p-3 rounded-2xl border text-[12px] font-bold" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
                         ✨ OTP Verified! Complete owner registration to start listing properties.
                       </div>
 

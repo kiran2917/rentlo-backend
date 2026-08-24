@@ -36,8 +36,8 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
           <span
             className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest mb-3 shadow-xs border"
             style={{
-              backgroundColor: "rgba(16, 185, 129, 0.12)",
-              color: "var(--accent)",
+              backgroundColor: "var(--surface-alt)",
+              color: "#000000",
               borderColor: "var(--border)",
             }}
           >
@@ -65,13 +65,13 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
             <div>
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-xs"
-                style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", color: "var(--accent)" }}
+                style={{ backgroundColor: "var(--border)", color: "#000000" }}
               >
                 <span className="material-symbols-outlined text-3xl">real_estate_agent</span>
               </div>
               <span
                 className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
-                style={{ backgroundColor: "var(--surface)", color: "var(--accent)", borderColor: "var(--border)" }}
+                style={{ backgroundColor: "var(--surface)", color: "#000000", borderColor: "var(--border)" }}
               >
                 OWNER &amp; AGENT
               </span>
@@ -89,8 +89,8 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                 onClick={() => handleSelectRole("/owner/login", "login")}
                 className="w-full py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer hover:opacity-90 active:scale-98"
                 style={{
-                  backgroundColor: "var(--accent)",
-                  color: "var(--btn-text, #ffffff)",
+                  backgroundColor: "#000000",
+                  color: "#ffffff",
                 }}
               >
                 <span className="material-symbols-outlined text-base">login</span>
@@ -122,13 +122,13 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
             <div>
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-xs"
-                style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", color: "var(--accent)" }}
+                style={{ backgroundColor: "var(--border)", color: "#000000" }}
               >
                 <span className="material-symbols-outlined text-3xl">home_pin</span>
               </div>
               <span
                 className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
-                style={{ backgroundColor: "var(--surface)", color: "var(--accent)", borderColor: "var(--border)" }}
+                style={{ backgroundColor: "var(--surface)", color: "#000000", borderColor: "var(--border)" }}
               >
                 TENANT &amp; BUYER
               </span>
@@ -146,8 +146,8 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
                 onClick={() => handleSelectRole("/login", "login")}
                 className="w-full py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer hover:opacity-90 active:scale-98"
                 style={{
-                  backgroundColor: "var(--accent)",
-                  color: "var(--btn-text, #ffffff)",
+                  backgroundColor: "#000000",
+                  color: "#ffffff",
                 }}
               >
                 <span className="material-symbols-outlined text-base">login</span>
