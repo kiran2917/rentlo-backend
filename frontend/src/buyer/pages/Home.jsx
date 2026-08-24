@@ -932,20 +932,25 @@ export const Home = () => {
       )}
 
       {compareList.length > 0 && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-4 bg-gray-900 text-white px-6 py-4 rounded-full shadow-2xl border border-white/10 animate-fade-in">
-          <span className="font-bold text-sm tracking-wide">{compareList.length} Selected</span>
+        <div 
+          className="fixed bottom-[90px] md:bottom-8 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-4 px-6 py-3 rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.2)] border animate-fade-in backdrop-blur-2xl"
+          style={{ backgroundColor: "color-mix(in srgb, var(--surface) 85%, transparent)", color: "var(--ink)", borderColor: "var(--border)" }}
+        >
+          <span className="font-extrabold text-xs tracking-widest uppercase opacity-70">{compareList.length} Selected</span>
           <button 
             onClick={() => setShowCompareModal(true)}
-            className="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-full font-bold text-xs transition-colors shadow-lg"
+            className="px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-wider transition-all shadow-md active:scale-95"
+            style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
           >
             Compare Now
           </button>
           <button 
             onClick={() => setCompareList([])}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            style={{ color: "var(--ink)" }}
             title="Clear all"
           >
-            <span className="material-symbols-outlined text-base">close</span>
+            <span className="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
       )}
