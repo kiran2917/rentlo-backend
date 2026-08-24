@@ -442,7 +442,7 @@ export const OwnerLogin = () => {
             <span>Back to Home</span>
           </Link>
           <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md transition-transform group-hover:scale-105" style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}>
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md transition-transform group-hover:scale-105" style={{ backgroundColor: "#000000", color: "#ffffff" }}>
               R
             </div>
             <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>
@@ -466,7 +466,7 @@ export const OwnerLogin = () => {
             <button
               type="button"
               className="flex-1 py-1 px-2.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md flex items-center justify-center gap-1"
-              style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+              style={{ backgroundColor: "#000000", color: "#ffffff" }}
             >
               <span className="material-symbols-outlined text-[14px]">real_estate_agent</span>
               Owner Portal
@@ -697,7 +697,7 @@ export const OwnerLogin = () => {
                           type="submit"
                           disabled={loading}
                           className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90"
-                          style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+                          style={{ backgroundColor: "#000000", color: "#ffffff" }}
                         >
                           {loading ? "Sending OTP..." : "Send Reset OTP"}
                         </button>
@@ -782,7 +782,7 @@ export const OwnerLogin = () => {
                           type="submit"
                           disabled={loading}
                           className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90"
-                          style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+                          style={{ backgroundColor: "#000000", color: "#ffffff" }}
                         >
                           {loading ? "Updating Password..." : "Update & Sign In"}
                         </button>
@@ -827,8 +827,7 @@ export const OwnerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -885,8 +884,7 @@ export const OwnerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -951,8 +949,7 @@ export const OwnerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -1078,8 +1075,7 @@ export const OwnerLogin = () => {
                   disabled={loading}
                   className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90 active:scale-[0.99]"
                   style={{
-                    backgroundColor: "var(--accent)",
-                    color: "var(--btn-text, #ffffff)",
+                    backgroundColor: "#000000", color: "#ffffff",
                   }}
                 >
                   {loading ? (

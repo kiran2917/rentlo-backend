@@ -420,10 +420,7 @@ export const BuyerLogin = () => {
   return (
     <div
       style={{
-        backgroundImage: "var(--hero-overlay), var(--hero-img)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", 
+        backgroundColor: "var(--bg)", 
         color: "var(--ink)"
       }}
       className="min-h-screen flex flex-col justify-center py-2 sm:py-4 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300 relative overflow-hidden"
@@ -448,7 +445,7 @@ export const BuyerLogin = () => {
             <span>Back to Home</span>
           </Link>
           <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md transition-transform group-hover:scale-105" style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}>
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center font-extrabold text-sm shadow-md transition-transform group-hover:scale-105" style={{ backgroundColor: "#000000", color: "#ffffff" }}>
               R
             </div>
             <span className="text-lg font-black tracking-tight" style={{ color: "var(--ink)" }}>
@@ -463,7 +460,7 @@ export const BuyerLogin = () => {
             <button
               type="button"
               className="flex-1 py-1 px-2.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md flex items-center justify-center gap-1"
-              style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+              style={{ backgroundColor: "#000000", color: "#ffffff" }}
             >
               <span className="material-symbols-outlined text-[14px]">home_pin</span>
               Tenant / Buyer
@@ -651,8 +648,7 @@ export const BuyerLogin = () => {
                     disabled={loading}
                     className="w-full h-10 rounded-xl text-[13px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.99]"
                     style={{
-                      backgroundColor: "var(--accent)",
-                      color: "var(--btn-text, #ffffff)",
+                      backgroundColor: "#000000", color: "#ffffff",
                     }}
                   >
                     {loading ? (
@@ -714,7 +710,7 @@ export const BuyerLogin = () => {
                           type="submit"
                           disabled={loading}
                           className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90"
-                          style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+                          style={{ backgroundColor: "#000000", color: "#ffffff" }}
                         >
                           {loading ? "Sending OTP..." : "Send Reset OTP"}
                         </button>
@@ -799,7 +795,7 @@ export const BuyerLogin = () => {
                           type="submit"
                           disabled={loading}
                           className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90"
-                          style={{ backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)" }}
+                          style={{ backgroundColor: "#000000", color: "#ffffff" }}
                         >
                           {loading ? "Updating Password..." : "Update & Sign In"}
                         </button>
@@ -844,8 +840,7 @@ export const BuyerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -902,8 +897,7 @@ export const BuyerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -968,8 +962,7 @@ export const BuyerLogin = () => {
                         disabled={loading}
                         className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
                         style={{
-                          backgroundColor: "var(--accent)",
-                          color: "var(--btn-text, #ffffff)",
+                          backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
@@ -1114,8 +1107,7 @@ export const BuyerLogin = () => {
                   disabled={loading}
                   className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90 active:scale-[0.99]"
                   style={{
-                    backgroundColor: "var(--accent)",
-                    color: "var(--btn-text, #ffffff)",
+                    backgroundColor: "#000000", color: "#ffffff",
                   }}
                 >
                   {loading ? (
