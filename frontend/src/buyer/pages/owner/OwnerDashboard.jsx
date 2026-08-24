@@ -103,7 +103,7 @@ export const OwnerDashboard = () => {
     const prop_cat = property.property_category;
     const prop_type = property.property_type;
     let target_cat = 'residential';
-    if (prop_cat === 'pg' || ['apartment', 'flat', 'pg_hostel'].includes(prop_type)) {
+    if (prop_cat === 'pg' || ['apartment', 'flat', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'pg', 'hostel'].includes(prop_type)) {
       target_cat = 'apartment';
     } else if (prop_cat === 'commercial' || ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building'].includes(prop_type)) {
       target_cat = 'commercial';

@@ -289,7 +289,7 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             prop_cat = serializer.validated_data.get('property_category') or 'residential'
             prop_type = serializer.validated_data.get('property_type') or ''
             
-            if prop_cat == 'pg' or prop_type in ['apartment', 'flat', 'pg_hostel']:
+            if prop_cat == 'pg' or prop_type in ['apartment', 'flat', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'pg', 'hostel']:
                 target_cat = 'apartment'
             elif prop_cat == 'commercial' or prop_type in ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building']:
                 target_cat = 'commercial'
@@ -1594,7 +1594,7 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                     prop_cat = instance.property_category
                     prop_type = instance.property_type
                     
-                    if prop_cat == 'pg' or prop_type in ['apartment', 'flat', 'pg_hostel']:
+                    if prop_cat == 'pg' or prop_type in ['apartment', 'flat', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'pg', 'hostel']:
                         target_cat = 'apartment'
                     elif prop_cat == 'commercial' or prop_type in ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building']:
                         target_cat = 'commercial'
