@@ -4,8 +4,8 @@ export const SeoHead = ({
   title = "Rentlo — Zero-Brokerage Real Estate Platform",
   description = "Find verified flats, apartments, PG accommodations, and commercial properties directly from owners. Zero brokerage fees.",
   keywords = "Rentlo, zero brokerage rent, direct owner property, no broker flat, 2BHK rent, apartment for rent",
-  canonicalUrl = "https://rentlo.in/",
-  ogImage = "https://rentlo.in/og-cover.jpg",
+  canonicalUrl = "https://rentlo.creanexatechnologies.tech/",
+  ogImage = "https://rentlo.creanexatechnologies.tech/og-cover.jpg",
   jsonLd = null,
 }) => {
   useEffect(() => {
@@ -57,6 +57,15 @@ export const SeoHead = ({
     } else if (scriptTag) {
       scriptTag.remove();
     }
+
+    // 6. Dynamic Canonical Link Update
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = canonicalUrl;
   }, [title, description, keywords, canonicalUrl, ogImage, jsonLd]);
 
   return null;
