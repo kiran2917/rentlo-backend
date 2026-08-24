@@ -334,7 +334,11 @@ export const AdminCRM = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-11 h-11 rounded-2xl bg-slate-950 text-white font-extrabold text-[16px] flex items-center justify-center shadow-md border border-slate-800 flex-shrink-0">
-                          {u.username ? u.username.charAt(0).toUpperCase() : "U"}
+                          {u.first_name ? (
+                            u.first_name.charAt(0).toUpperCase()
+                          ) : (
+                            <span className="material-symbols-outlined text-[20px]">person</span>
+                          )}
                         </div>
                         <div className="min-w-0">
                           <h3 className="font-extrabold text-[15px] leading-tight truncate" style={{ color: "var(--ink)" }}>

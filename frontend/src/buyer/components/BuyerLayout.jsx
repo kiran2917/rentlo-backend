@@ -350,10 +350,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   }}
                 >
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-slate-800 uppercase shadow-inner"
-                    style={{ backgroundColor: "#f1f5f9" }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-900 text-white shadow-md border border-slate-800/40"
                   >
-                    {(user.first_name ? user.first_name.charAt(0) : (user.username && user.username.startsWith("buyer_") ? "B" : user.username?.charAt(0) || "U"))}
+                    <span className="material-symbols-outlined text-[18px]">person</span>
                   </div>
                   <span className="text-xs font-bold" style={{ color: "var(--header-ink)" }}>
                     {user.first_name ? user.first_name.split(" ")[0] : "Account"}
