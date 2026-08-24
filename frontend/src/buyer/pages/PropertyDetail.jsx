@@ -579,9 +579,9 @@ export const PropertyDetail = () => {
       <div className="w-full relative -mx-4 md:-mx-10" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
          {renderGalleryGrid()}
          {/* Vignette */}
-         <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 50%)" }}></div>
+         {/* Vignette Removed */}
       </div>
-      <main className="flex-grow w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 relative z-10 -mt-10 sm:-mt-20">
+      <main className="flex-grow w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 relative z-10">
         {/* ─── Left: Details ─── */}
         <div className="lg:col-span-8 flex flex-col gap-10">
 
@@ -696,8 +696,8 @@ export const PropertyDetail = () => {
               {property.property_category === 'pg' && (
                 <div className="flex flex-col gap-2 w-full mt-1">
                   {property.pg_gender && (
-                    <span className="px-4 py-2.5 rounded-xl text-[13px] font-black flex items-center gap-2 border w-fit bg-purple-50 text-purple-900 border-purple-300 shadow-2xs">
-                      <span className="material-symbols-outlined text-[18px] text-purple-600">
+                    <span className="px-4 py-2.5 rounded-xl text-[13px] font-black flex items-center gap-2 border w-fit bg-black text-white border-black shadow-2xs">
+                      <span className="material-symbols-outlined text-[18px] text-white">
                         {property.pg_gender === 'boys' ? 'male' : property.pg_gender === 'girls' ? 'female' : 'group'}
                       </span>
                       {property.pg_gender === 'boys' ? 'Boys PG Only 👦' : property.pg_gender === 'girls' ? 'Girls PG Only 👧' : 'Co-Living (Both Boys & Girls) 👫'}
@@ -707,7 +707,7 @@ export const PropertyDetail = () => {
                     className={`px-4 py-2.5 rounded-xl text-[13px] font-extrabold flex items-center gap-2 border w-fit ${
                       property.food_preference === 'no_food'
                         ? 'bg-[var(--border)] text-[var(--ink)] border-slate-300'
-                        : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        : 'bg-white text-black border-slate-300'
                     }`}
                   >
                     <span className="material-symbols-outlined text-[18px]">
@@ -721,14 +721,14 @@ export const PropertyDetail = () => {
                   </span>
 
                   {property.food_preference !== 'no_food' && (
-                    <div className="flex items-center gap-2 flex-wrap text-[12px] font-extrabold text-amber-900 bg-amber-50 px-4 py-2 rounded-xl border border-amber-200 w-fit">
-                      <span className="material-symbols-outlined text-[16px] text-amber-600">schedule</span>
+                    <div className="flex items-center gap-2 flex-wrap text-[12px] font-extrabold text-black bg-white px-4 py-2 rounded-xl border border-slate-300 w-fit">
+                      <span className="material-symbols-outlined text-[16px] text-black">schedule</span>
                       <span>Included Meals:</span>
                       {(Array.isArray(property.pg_food_provided) && property.pg_food_provided.length > 0
                         ? property.pg_food_provided
                         : ["Morning (Breakfast)", "Afternoon (Lunch)", "Night (Dinner)"]
                       ).map((m) => (
-                        <span key={m} className="bg-amber-100/80 px-2.5 py-0.5 rounded-md border border-amber-300/60 flex items-center gap-1">
+                        <span key={m} className="bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200 flex items-center gap-1">
                           {m.includes('Morning') || m.includes('Breakfast') ? '🌅 Morning' : m.includes('Afternoon') || m.includes('Lunch') ? '☀️ Afternoon' : '🌙 Night'}
                         </span>
                       ))}
@@ -740,7 +740,7 @@ export const PropertyDetail = () => {
           </div>
           {/* PG Room Sharing Per-Room Pricing Breakdown */}
           {(property.property_category === 'pg' || property.property_type === 'pg' || property.property_type === 'pg_hostel' || property.property_type?.startsWith('pg') || property.pg_rules?.room_inventory) && (
-            <div className="p-6 rounded-card border border-orange-500/30 bg-orange-500/5 space-y-4 shadow-sm">
+            <div className="p-6 rounded-card border border-slate-200 bg-white space-y-4 shadow-sm">
               {(() => {
                 const inv = property.pg_rules?.room_inventory;
                 let totalInvOpenBeds = 0;
@@ -756,16 +756,16 @@ export const PropertyDetail = () => {
                 const displayFreeBeds = hasActiveInv ? totalInvOpenBeds : (property.available_beds || 0);
 
                 return (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-orange-500/20 pb-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
                     <div className="flex items-center gap-2">
                       <h3 className="font-extrabold text-[15px] sm:text-[16px] text-[var(--ink)] flex items-center gap-2">
-                        <span className="material-symbols-outlined text-orange-600 text-[22px]">meeting_room</span>
+                        <span className="material-symbols-outlined text-black text-[22px]">meeting_room</span>
                         PG Room Sharing Options &amp; Bed Availability
                       </h3>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`text-[11px] font-black px-3 py-1 rounded-full border uppercase tracking-wider flex items-center gap-1.5 shadow-xs ${displayFreeBeds > 0 ? 'text-emerald-800 bg-emerald-100/90 border-emerald-300' : 'text-red-700 bg-red-100/90 border-red-300'}`}>
-                        <span className={`w-2 h-2 rounded-full ${displayFreeBeds > 0 ? 'bg-black animate-pulse' : 'bg-red-500'}`}></span>
+                      <span className={`text-[11px] font-black px-3 py-1 rounded-full border uppercase tracking-wider flex items-center gap-1.5 shadow-xs ${displayFreeBeds > 0 ? 'text-white bg-black border-black' : 'text-black bg-white border-slate-300'}`}>
+                        <span className={`w-2 h-2 rounded-full ${displayFreeBeds > 0 ? 'bg-rose-600 animate-pulse' : 'bg-slate-500'}`}></span>
                         {displayFreeBeds} Free Beds Available
                       </span>
                     </div>
@@ -794,7 +794,7 @@ export const PropertyDetail = () => {
                         <div key={t.key} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${isFree ? 'bg-[var(--surface)] border-emerald-200 hover:border-emerald-400' : 'bg-[var(--surface-alt)] border-[var(--border)] opacity-80'}`}>
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <span className="material-symbols-outlined text-orange-600 text-[20px]">{t.icon}</span>
+                              <span className="material-symbols-outlined text-black text-[20px]">{t.icon}</span>
                               <span className="text-[12px] font-black text-[var(--ink)]">{t.label}</span>
                             </div>
                           </div>
@@ -805,7 +805,7 @@ export const PropertyDetail = () => {
                             </div>
                             <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-[var(--border-subtle)]">
                               <span className="text-[var(--text-muted)]">{totBeds} Beds Total ({item.rooms || 0} Rms)</span>
-                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${isFree ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-red-50 border-red-200'}`}>
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${isFree ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-slate-50 border-red-200'}`}>
                                 {isFree ? `${avail} Open Beds` : 'Fully Occupied'}
                               </span>
                             </div>
@@ -829,7 +829,7 @@ export const PropertyDetail = () => {
                   return (
                     <div className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 shadow-xs ${hasAvail ? 'bg-[var(--surface)] border-emerald-200' : 'bg-[var(--surface-alt)] border-[var(--border)] opacity-80'}`}>
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-orange-600 text-[20px]">{icon}</span>
+                        <span className="material-symbols-outlined text-black text-[20px]">{icon}</span>
                         <span className="text-[12px] font-black text-[var(--ink)]">{label}</span>
                       </div>
                       <div>
@@ -839,7 +839,7 @@ export const PropertyDetail = () => {
                         </div>
                         <div className="mt-2 flex items-center justify-between text-[11px] font-extrabold border-t pt-2 border-[var(--border-subtle)]">
                           <span className="text-[var(--text-muted)]">{property.total_beds || bedsPerRoom} Beds Total</span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${hasAvail ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-red-50 border-red-200'}`}>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${hasAvail ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-slate-50 border-red-200'}`}>
                             {hasAvail ? `${availBeds} Open Beds` : 'Fully Occupied'}
                           </span>
                         </div>
@@ -2078,7 +2078,7 @@ export const PropertyDetail = () => {
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-black flex items-center justify-center mb-3">
               <span className="material-symbols-outlined text-[32px]">qr_code_2</span>
             </div>
 
