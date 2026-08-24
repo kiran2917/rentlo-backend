@@ -1311,9 +1311,9 @@ export const NewListing = () => {
       <div className="relative z-10 w-full max-w-4xl mx-auto">
         {offlineDrafts.length > 0 && (
           <div className="mb-10">
-            <div className="bg-amber-500/10 backdrop-blur-xl border border-amber-500/20 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
-              <div className="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition-all duration-700 pointer-events-none"></div>
-              <h2 className="text-[16px] font-extrabold text-amber-600 mb-5 flex items-center gap-2 drop-shadow-sm">
+            <div className="bg-indigo-500/10 backdrop-blur-xl border border-indigo-500/20 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl group-hover:bg-indigo-500/30 transition-all duration-700 pointer-events-none"></div>
+              <h2 className="text-[16px] font-extrabold text-indigo-600 mb-5 flex items-center gap-2 drop-shadow-sm">
                 <span className="material-symbols-outlined text-[20px] animate-pulse">
                   cloud_sync
                 </span>
@@ -1337,7 +1337,7 @@ export const NewListing = () => {
                     <button
                       onClick={() => syncDraft(draft.key)}
                       disabled={isSubmitting || !navigator.onLine}
-                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-amber-600/30 disabled:opacity-50 flex items-center gap-2"
+                      className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-600/30 disabled:opacity-50 flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-[16px]">
                         {isSubmitting ? "sync" : "cloud_upload"}
@@ -1420,7 +1420,7 @@ export const NewListing = () => {
                       isCompleted
                         ? "text-slate-800"
                         : isActive
-                          ? "text-orange-700"
+                          ? "text-indigo-700"
                           : "text-slate-500"
                     }`}
                   >
@@ -1467,7 +1467,7 @@ export const NewListing = () => {
                           Owner Phone <span className="text-red-500">*</span>
                         </label>
                         {checkingOwnerPhone && (
-                          <span className="text-[9px] font-bold text-amber-500 animate-pulse">Checking account...</span>
+                          <span className="text-[9px] font-bold text-indigo-500 animate-pulse">Checking account...</span>
                         )}
                         {ownerAccountExists === true && (
                           <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-indigo-600 border border-indigo-600/30">
@@ -1475,7 +1475,7 @@ export const NewListing = () => {
                           </span>
                         )}
                         {ownerAccountExists === false && (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30">
+                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 border border-indigo-500/30">
                             🆕 New Account
                           </span>
                         )}
@@ -1513,16 +1513,16 @@ export const NewListing = () => {
                               !otpVerified ? (
                                 !otpSent ? (
                                   <button type="button" onClick={sendOTP} disabled={otpLoading}
-                                    className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
+                                    className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
                                     {otpLoading ? "Sending..." : "Verify Owner Phone via OTP"}
                                   </button>
                                 ) : (
                                   <div className="flex items-center gap-2">
                                     <input type="text" value={otpCode} onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
                                       placeholder="6-digit code" maxLength={6}
-                                      className="h-8 w-28 px-2 rounded-xl border border-slate-200 text-center tracking-widest text-[12px] font-bold outline-none focus:border-orange-500" />
+                                      className="h-8 w-28 px-2 rounded-xl border border-slate-200 text-center tracking-widest text-[12px] font-bold outline-none focus:border-indigo-500" />
                                     <button type="button" onClick={verifyOTP} disabled={otpLoading || otpCode.length < 6}
-                                      className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
+                                      className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
                                       {otpLoading ? "..." : "Verify"}
                                     </button>
                                   </div>
@@ -1534,13 +1534,13 @@ export const NewListing = () => {
                               /* ── SELFIE MODE ── */
                               !selfiePhoto ? (
                                 <button type="button" onClick={openSelfieCamera}
-                                  className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                                  className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
                                   <span className="material-symbols-outlined text-[14px]">camera_alt</span>
                                   Capture Owner Live Selfie
                                 </button>
                               ) : (
                                 <div className="flex items-center gap-3">
-                                  <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-400 shadow" />
+                                  <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-slate-200 shadow" />
                                   <div>
                                     <p className="text-[10px] font-bold text-indigo-600">Selfie captured. Form unlocked.</p>
                                     <button type="button" onClick={() => { setSelfiePhoto(null); setSelfiePreview(null); }}
@@ -1632,7 +1632,7 @@ export const NewListing = () => {
                               property_category: cat.id,
                               property_type: cat.defaultType
                             })}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
+                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-indigo-500 bg-slate-50 text-indigo-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
                           >
                             <span className="material-symbols-outlined mb-1 text-[20px]">{cat.icon}</span>
                             <span className="text-[10px] font-bold text-center">{cat.label}</span>
@@ -1654,7 +1654,7 @@ export const NewListing = () => {
                           name="property_type"
                           value={formData.property_type}
                           onChange={handleInputChange}
-                          className="w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer"
+                          className="w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer"
                         >
                           {formData.property_category === 'residential' && (
                             <>
@@ -1697,7 +1697,7 @@ export const NewListing = () => {
                         value={formData.price}
                         onChange={handleInputChange}
                         placeholder="e.g. 25000"
-                        className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm"
+                        className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm"
                       />
                     </div>
                   </div>
@@ -2043,7 +2043,7 @@ export const NewListing = () => {
                                     onClick={() => setFormData((prev) => ({ ...prev, food_preference: foodOpt.id }))}
                                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-[10px] font-black cursor-pointer transition-all ${
                                       isSel
-                                        ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm"
+                                        ? "border-indigo-500 bg-slate-50 text-indigo-700 shadow-sm"
                                         : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                                     }`}
                                   >
@@ -2056,9 +2056,9 @@ export const NewListing = () => {
                           </div>
 
                           {formData.food_preference !== 'no_food' && (
-                            <div className="col-span-1 md:col-span-2 bg-amber-500/5 p-4 rounded-xl border border-amber-500/20 space-y-2">
+                            <div className="col-span-1 md:col-span-2 bg-indigo-500/5 p-4 rounded-xl border border-indigo-500/20 space-y-2">
                               <label className="text-[9px] font-extrabold uppercase tracking-widest block text-slate-700 flex items-center gap-1.5">
-                                <span className="material-symbols-outlined text-[14px] text-amber-600">schedule</span>
+                                <span className="material-symbols-outlined text-[14px] text-indigo-600">schedule</span>
                                 Mark Included Daily Meals:
                               </label>
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -2092,9 +2092,9 @@ export const NewListing = () => {
                                         type="checkbox"
                                         checked={isChecked}
                                         onChange={() => {}}
-                                        className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer"
+                                        className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer"
                                       />
-                                      <span className="material-symbols-outlined text-[16px] text-amber-600">{meal.icon}</span>
+                                      <span className="material-symbols-outlined text-[16px] text-indigo-600">{meal.icon}</span>
                                       <span className="text-[10px]">{meal.label}</span>
                                     </label>
                                   );
@@ -2105,11 +2105,11 @@ export const NewListing = () => {
                         </div>
 
                         {/* Multi-Room & Bed Inventory Configurator Card */}
-                        <div className="p-5 rounded-2xl border bg-orange-500/5 border-orange-500/20 space-y-4 shadow-sm">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-orange-500/20 pb-3">
+                        <div className="p-5 rounded-2xl border bg-indigo-500/5 border-indigo-500/20 space-y-4 shadow-sm">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-500/20 pb-3">
                             <div>
                               <h4 className="text-[12px] font-black text-slate-900 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-orange-600 text-[18px]">meeting_room</span>
+                                <span className="material-symbols-outlined text-indigo-600 text-[18px]">meeting_room</span>
                                 Multi-Room &amp; Bed Inventory Tracker
                               </h4>
                               <p className="text-[10px] text-slate-500 font-medium mt-0.5">
@@ -2142,16 +2142,16 @@ export const NewListing = () => {
                               };
 
                               return (
-                                <div key={type.key} className={`p-3.5 rounded-xl border transition-all ${inv.enabled ? 'bg-white border-orange-300 shadow-sm' : 'bg-slate-50/70 border-slate-200 opacity-70'}`}>
+                                <div key={type.key} className={`p-3.5 rounded-xl border transition-all ${inv.enabled ? 'bg-white border-slate-300 shadow-sm' : 'bg-slate-50/70 border-slate-200 opacity-70'}`}>
                                   <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={inv.enabled}
                                         onChange={handleToggle}
-                                        className="w-4 h-4 accent-orange-600 rounded cursor-pointer"
+                                        className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
                                       />
-                                      <span className="material-symbols-outlined text-[18px] text-orange-600">{type.icon}</span>
+                                      <span className="material-symbols-outlined text-[18px] text-indigo-600">{type.icon}</span>
                                       <span className="text-[11px] font-black text-slate-900">{type.label}</span>
                                     </label>
 
@@ -2172,7 +2172,7 @@ export const NewListing = () => {
                                           value={inv.rooms || ""}
                                           onChange={(e) => handleFieldChange("rooms", e.target.value)}
                                           placeholder="e.g. 5"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                       <div>
@@ -2192,7 +2192,7 @@ export const NewListing = () => {
                                           value={inv.available_beds}
                                           onChange={(e) => handleFieldChange("available_beds", e.target.value)}
                                           placeholder="e.g. 3"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                       <div>
@@ -2203,7 +2203,7 @@ export const NewListing = () => {
                                           value={inv.rent || ""}
                                           onChange={(e) => handleFieldChange("rent", e.target.value)}
                                           placeholder="e.g. 7500"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                     </div>
@@ -2214,7 +2214,7 @@ export const NewListing = () => {
                           </div>
 
                           {/* Live Inventory Summary Pill */}
-                          <div className="p-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl flex items-center justify-between flex-wrap gap-2 shadow-sm text-[11px] font-extrabold">
+                          <div className="p-3 bg-gradient-to-r from-indigo-600 to-indigo-600 text-white rounded-xl flex items-center justify-between flex-wrap gap-2 shadow-sm text-[11px] font-extrabold">
                             <div className="flex items-center gap-2">
                               <span className="material-symbols-outlined text-[18px]">analytics</span>
                               <span>Live Summary: {calculatePgSummary(formData.pg_room_inventory).totalBeds} Total Beds across {calculatePgSummary(formData.pg_room_inventory).totalRooms} Rooms</span>
@@ -2222,7 +2222,7 @@ export const NewListing = () => {
                             <div className="flex items-center gap-2">
                               <span className="bg-white/20 px-2.5 py-0.5 rounded-full">Available Beds: {calculatePgSummary(formData.pg_room_inventory).availableBeds}</span>
                               {calculatePgSummary(formData.pg_room_inventory).minRent > 0 && (
-                                <span className="bg-white text-orange-700 px-2.5 py-0.5 rounded-full font-black">Starting ₹{calculatePgSummary(formData.pg_room_inventory).minRent}/mo</span>
+                                <span className="bg-white text-indigo-700 px-2.5 py-0.5 rounded-full font-black">Starting ₹{calculatePgSummary(formData.pg_room_inventory).minRent}/mo</span>
                               )}
                             </div>
                           </div>
@@ -2311,7 +2311,7 @@ export const NewListing = () => {
                       <input name="maintenance_charges" type="number" value={formData.maintenance_charges} onChange={handleInputChange} className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }} />
                     </div>
                     <div className="flex items-center gap-3 h-9">
-                      <input type="checkbox" checked={formData.maintenance_included_in_rent} onChange={(e) => setFormData(prev => ({...prev, maintenance_included_in_rent: e.target.checked}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                      <input type="checkbox" checked={formData.maintenance_included_in_rent} onChange={(e) => setFormData(prev => ({...prev, maintenance_included_in_rent: e.target.checked}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                       <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, maintenance_included_in_rent: !prev.maintenance_included_in_rent}))}>Maintenance Included in Rent</label>
                     </div>
                     <div>
@@ -2363,11 +2363,11 @@ export const NewListing = () => {
                           </select>
                         </div>
                         <div className="flex items-center gap-3 h-9">
-                          <input type="checkbox" checked={formData.pg_rules?.non_veg_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: e.target.checked}}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                          <input type="checkbox" checked={formData.pg_rules?.non_veg_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: e.target.checked}}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                           <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: !prev.pg_rules?.non_veg_allowed}}))}>Non-Veg Allowed</label>
                         </div>
                         <div className="flex items-center gap-3 h-9">
-                          <input type="checkbox" checked={formData.pg_rules?.smoking_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: e.target.checked}}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                          <input type="checkbox" checked={formData.pg_rules?.smoking_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: e.target.checked}}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                           <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: !prev.pg_rules?.smoking_allowed}}))}>Smoking Allowed</label>
                         </div>
                       </>
@@ -2428,7 +2428,7 @@ export const NewListing = () => {
                         type="button"
                         onClick={handleGenerateDescription}
                         disabled={generatingDescription}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-indigo-500 to-indigo-500 hover:from-indigo-600 hover:to-indigo-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
                       >
                         {generatingDescription ? (
                           <div className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
@@ -2447,7 +2447,7 @@ export const NewListing = () => {
                       placeholder="Write a brief description or click 'Auto-write with AI ✨' to generate automatically using filled property details..."
                     ></textarea>
                     <p className="text-[11px] mt-2 font-medium flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                      <span className="material-symbols-outlined text-[13px] text-amber-500">lightbulb</span>
+                      <span className="material-symbols-outlined text-[13px] text-indigo-500">lightbulb</span>
                       Tip: Click "Auto-write with AI ✨" to automatically generate a rich property description based on all your filled specifications, location, price, rules, and amenities above.
                     </p>
                   </div>
@@ -2543,7 +2543,7 @@ export const NewListing = () => {
                     </div>
                   )}
                   {uploadingPhotos && (
-                    <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-orange-600 bg-orange-50 p-3 rounded-xl border border-orange-200 animate-pulse">
+                    <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-indigo-600 bg-slate-50 p-3 rounded-xl border border-slate-200 animate-pulse">
                       <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
                       Processing & Uploading Photos...
                     </div>
@@ -2723,7 +2723,7 @@ export const NewListing = () => {
                             onboarding_payment_method: "cash",
                           }))
                         }
-                        className={`w-full h-10 px-6 rounded-xl border transition-all flex items-center gap-3 ${formData.onboarding_payment_method === "cash" ? "bg-orange-50 border-orange-500 shadow-sm ring-2 ring-orange-500/20" : "bg-white border-slate-200 hover:bg-slate-50 shadow-sm"}`}
+                        className={`w-full h-10 px-6 rounded-xl border transition-all flex items-center gap-3 ${formData.onboarding_payment_method === "cash" ? "bg-slate-50 border-indigo-500 shadow-sm ring-2 ring-indigo-500/20" : "bg-white border-slate-200 hover:bg-slate-50 shadow-sm"}`}
                       >
                         <span className="material-symbols-outlined text-[20px] text-indigo-600">
                           payments
@@ -2786,7 +2786,7 @@ export const NewListing = () => {
                         </div>
                         <p className="text-[11px] font-bold text-slate-800">
                           Ask owner to scan and pay{" "}
-                          <span className="text-orange-600">
+                          <span className="text-indigo-600">
                             ₹{formData.onboarding_fee || 0}
                           </span>
                         </p>
@@ -2869,7 +2869,7 @@ export const NewListing = () => {
           <div className="bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl flex flex-col items-center animate-in zoom-in duration-200">
             <div className="w-full px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h3 className="text-white font-extrabold text-[12px] flex items-center gap-2">
-                <span className="material-symbols-outlined text-orange-500">photo_camera</span>
+                <span className="material-symbols-outlined text-indigo-500">photo_camera</span>
                 Live Camera Capture
               </h3>
               <button
@@ -2902,7 +2902,7 @@ export const NewListing = () => {
               <button
                 type="button"
                 onClick={capturePhotoFromCamera}
-                className="px-8 py-3 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg shadow-orange-600/30 transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95"
+                className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95"
               >
                 <span className="material-symbols-outlined text-[18px]">photo_camera</span>
                 Capture Photo
@@ -2917,7 +2917,7 @@ export const NewListing = () => {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden max-w-md w-full shadow-2xl flex flex-col items-center animate-in zoom-in duration-300">
             <div className="w-full px-6 py-4 border-b border-slate-800/80 flex items-center justify-between">
               <h3 className="text-white font-extrabold text-[12px] flex items-center gap-2 uppercase tracking-wider">
-                <span className="material-symbols-outlined text-orange-500 text-[18px]">face</span>
+                <span className="material-symbols-outlined text-indigo-500 text-[18px]">face</span>
                 Capture Owner Selfie
               </h3>
               <button type="button" onClick={closeSelfieCamera} className="text-slate-400 hover:text-white p-1 rounded-full transition-colors cursor-pointer">
@@ -2937,7 +2937,7 @@ export const NewListing = () => {
               {/* Selfie Frame Guide Overlay */}
               <div className="absolute inset-0 border-[32px] border-slate-950/50 pointer-events-none flex items-center justify-center">
                 <div 
-                  className={`w-[200px] h-[260px] rounded-[110px] border-2 border-dashed transition-all duration-300 ${faceDetected ? 'border-indigo-600' : faceMisaligned ? 'border-red-500' : 'border-orange-500'}`}
+                  className={`w-[200px] h-[260px] rounded-[110px] border-2 border-dashed transition-all duration-300 ${faceDetected ? 'border-indigo-600' : faceMisaligned ? 'border-red-500' : 'border-indigo-500'}`}
                   style={{ 
                     boxShadow: faceDetected 
                       ? "0 0 0 9999px rgba(6, 78, 59, 0.45)" 
@@ -2946,8 +2946,8 @@ export const NewListing = () => {
                       : "0 0 0 9999px rgba(15,23,42,0.6)" 
                   }}
                 >
-                  <div className={`absolute top-[35%] left-1/2 -translate-x-1/2 w-4 h-1 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
-                  <div className={`absolute top-[52%] left-1/2 -translate-x-1/2 w-10 h-0.5 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
+                  <div className={`absolute top-[35%] left-1/2 -translate-x-1/2 w-4 h-1 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-indigo-500/60'}`}></div>
+                  <div className={`absolute top-[52%] left-1/2 -translate-x-1/2 w-10 h-0.5 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-indigo-500/60'}`}></div>
                 </div>
               </div>
             </div>
@@ -2959,7 +2959,7 @@ export const NewListing = () => {
               <button 
                 type="button" 
                 onClick={captureSelfie} 
-                className={`px-6 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer duration-300 ${faceDetected ? 'bg-black hover:bg-black shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20'}`}
+                className={`px-6 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer duration-300 ${faceDetected ? 'bg-black hover:bg-black shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/20'}`}
               >
                 <span className="material-symbols-outlined text-[16px]">{faceDetected ? 'check_circle' : faceMisaligned ? 'warning' : 'photo_camera'}</span>
                 {faceDetected ? 'Face Detected - Capture' : faceMisaligned ? 'Align Face to Circle' : 'Capture Selfie'}

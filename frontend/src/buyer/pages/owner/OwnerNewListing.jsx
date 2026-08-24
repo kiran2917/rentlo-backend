@@ -1701,9 +1701,9 @@ export const OwnerNewListing = () => {
       <div className="relative z-10 w-full max-w-4xl mx-auto">
         {offlineDrafts.length > 0 && (
           <div className="mb-10">
-            <div className="bg-amber-500/10 backdrop-blur-xl border border-amber-500/20 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
-              <div className="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition-all duration-700 pointer-events-none"></div>
-              <h2 className="text-[16px] font-extrabold text-amber-600 mb-5 flex items-center gap-2 drop-shadow-sm">
+            <div className="bg-indigo-500/10 backdrop-blur-xl border border-indigo-500/20 p-6 rounded-2xl shadow-lg relative overflow-hidden group">
+              <div className="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl group-hover:bg-indigo-500/30 transition-all duration-700 pointer-events-none"></div>
+              <h2 className="text-[16px] font-extrabold text-indigo-600 mb-5 flex items-center gap-2 drop-shadow-sm">
                 <span className="material-symbols-outlined text-[20px] animate-pulse">
                   cloud_sync
                 </span>
@@ -1727,7 +1727,7 @@ export const OwnerNewListing = () => {
                     <button
                       onClick={() => syncDraft(draft.key)}
                       disabled={isSubmitting || !navigator.onLine}
-                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-amber-600/30 disabled:opacity-50 flex items-center gap-2"
+                      className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-600/30 disabled:opacity-50 flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-[16px]">
                         {isSubmitting ? "sync" : "cloud_upload"}
@@ -1744,7 +1744,7 @@ export const OwnerNewListing = () => {
         {/* Header */}
         <div className="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4 group">
-            <div className="w-14 h-10 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-600 shadow-sm border border-orange-500/20 group-hover:scale-110 group-hover:bg-orange-500/20 transition-all duration-500">
+            <div className="w-14 h-10 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-500/20 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all duration-500">
               <span className="material-symbols-outlined text-[32px] group-hover:-translate-y-1 transition-transform duration-500">
                 add_business
               </span>
@@ -1812,7 +1812,7 @@ export const OwnerNewListing = () => {
                       isCompleted
                         ? "text-slate-800"
                         : isActive
-                          ? "text-orange-700"
+                          ? "text-slate-900"
                           : "text-slate-500"
                     }`}
                   >
@@ -1857,7 +1857,7 @@ export const OwnerNewListing = () => {
                           Owner Phone <span className="text-red-500">*</span>
                         </label>
                         {checkingOwnerPhone && (
-                          <span className="text-[9px] font-bold text-amber-500 animate-pulse">Checking account...</span>
+                          <span className="text-[9px] font-bold text-indigo-500 animate-pulse">Checking account...</span>
                         )}
                         {ownerAccountExists === true && (
                           <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-indigo-600 border border-indigo-600/30">
@@ -1865,7 +1865,7 @@ export const OwnerNewListing = () => {
                           </span>
                         )}
                         {ownerAccountExists === false && (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30">
+                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 border border-indigo-500/30">
                             🆕 New Account
                           </span>
                         )}
@@ -1903,16 +1903,16 @@ export const OwnerNewListing = () => {
                               !otpVerified ? (
                                 !otpSent ? (
                                   <button type="button" onClick={sendOTP} disabled={otpLoading}
-                                    className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
+                                    className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
                                     {otpLoading ? "Sending..." : "Verify Owner Phone via OTP"}
                                   </button>
                                 ) : (
                                   <div className="flex items-center gap-2">
                                     <input type="text" value={otpCode} onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
                                       placeholder="6-digit code" maxLength={6}
-                                      className="h-8 w-28 px-2 rounded-xl border border-slate-200 text-center tracking-widest text-[12px] font-bold outline-none focus:border-orange-500" />
+                                      className="h-8 w-28 px-2 rounded-xl border border-slate-200 text-center tracking-widest text-[12px] font-bold outline-none focus:border-indigo-500" />
                                     <button type="button" onClick={verifyOTP} disabled={otpLoading || otpCode.length < 6}
-                                      className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
+                                      className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer">
                                       {otpLoading ? "..." : "Verify"}
                                     </button>
                                   </div>
@@ -1924,13 +1924,13 @@ export const OwnerNewListing = () => {
                               /* ── SELFIE MODE ── */
                               !selfiePhoto ? (
                                 <button type="button" onClick={openSelfieCamera}
-                                  className="h-8 px-4 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                                  className="h-8 px-4 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
                                   <span className="material-symbols-outlined text-[14px]">camera_alt</span>
                                   Capture Owner Live Selfie
                                 </button>
                               ) : (
                                 <div className="flex items-center gap-3">
-                                  <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-400 shadow" />
+                                  <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-slate-200 shadow" />
                                   <div>
                                     <p className="text-[10px] font-bold text-indigo-600">Selfie captured. Form unlocked.</p>
                                     <button type="button" onClick={() => { setSelfiePhoto(null); setSelfiePreview(null); }}
@@ -2020,7 +2020,7 @@ export const OwnerNewListing = () => {
                               property_category: cat.id,
                               property_type: cat.defaultType
                             })}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-orange-500 bg-orange-50 text-orange-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
+                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-indigo-500 bg-slate-50 text-indigo-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
                           >
                             <span className="material-symbols-outlined mb-1 text-[20px]">{cat.icon}</span>
                             <span className="text-[10px] font-bold text-center">{cat.label}</span>
@@ -2042,7 +2042,7 @@ export const OwnerNewListing = () => {
                           name="property_type"
                           value={formData.property_type}
                           onChange={handleInputChange}
-                          className="w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer"
+                          className="w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer"
                         >
                           {formData.property_category === 'residential' && (
                             <>
@@ -2087,7 +2087,7 @@ export const OwnerNewListing = () => {
                           value={formData.price}
                           onChange={handleInputChange}
                           placeholder="e.g. 25000"
-                          className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm"
+                          className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm"
                         />
                       </div>
                     </div>
@@ -2130,7 +2130,7 @@ export const OwnerNewListing = () => {
                           <button
                             type="button"
                             onClick={detectMyLocation}
-                            className="px-3 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-[10px] font-bold rounded-lg transition flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-indigo-800 text-[10px] font-bold rounded-lg transition flex items-center gap-1 cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[14px]">my_location</span>
                             Detect My Location
@@ -2316,7 +2316,7 @@ export const OwnerNewListing = () => {
                   <button
                     onClick={handleNext}
                     disabled={isStaff && !(platformSettings?.owner_listing_verification_method === 'selfie' ? !!selfiePhoto : otpVerified)}
-                    className="h-10 px-8 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-orange-600/30 hover:shadow-orange-600/40 hover:-translate-y-0.5 pulse-button disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="h-10 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:-translate-y-0.5 pulse-button disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Continue to Property Details
                     <span className="material-symbols-outlined text-[20px]">
@@ -2454,7 +2454,7 @@ export const OwnerNewListing = () => {
                                     onClick={() => setFormData((prev) => ({ ...prev, food_preference: foodOpt.id }))}
                                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-[10px] font-black cursor-pointer transition-all ${
                                       isSel
-                                        ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm"
+                                        ? "border-indigo-500 bg-slate-50 text-indigo-700 shadow-sm"
                                         : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                                     }`}
                                   >
@@ -2467,9 +2467,9 @@ export const OwnerNewListing = () => {
                           </div>
 
                           {formData.food_preference !== 'no_food' && (
-                            <div className="col-span-1 md:col-span-2 bg-amber-500/5 p-4 rounded-xl border border-amber-500/20 space-y-2">
+                            <div className="col-span-1 md:col-span-2 bg-indigo-500/5 p-4 rounded-xl border border-indigo-500/20 space-y-2">
                               <label className="text-[9px] font-extrabold uppercase tracking-widest block text-slate-700 flex items-center gap-1.5">
-                                <span className="material-symbols-outlined text-[14px] text-amber-600">schedule</span>
+                                <span className="material-symbols-outlined text-[14px] text-indigo-600">schedule</span>
                                 Mark Included Daily Meals:
                               </label>
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -2503,9 +2503,9 @@ export const OwnerNewListing = () => {
                                         type="checkbox"
                                         checked={isChecked}
                                         onChange={() => {}}
-                                        className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer"
+                                        className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer"
                                       />
-                                      <span className="material-symbols-outlined text-[16px] text-amber-600">{meal.icon}</span>
+                                      <span className="material-symbols-outlined text-[16px] text-indigo-600">{meal.icon}</span>
                                       <span className="text-[10px]">{meal.label}</span>
                                     </label>
                                   );
@@ -2516,11 +2516,11 @@ export const OwnerNewListing = () => {
                         </div>
 
                         {/* Multi-Room & Bed Inventory Configurator Card */}
-                        <div className="p-5 rounded-2xl border bg-orange-500/5 border-orange-500/20 space-y-4 shadow-sm">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-orange-500/20 pb-3">
+                        <div className="p-5 rounded-2xl border bg-indigo-500/5 border-indigo-500/20 space-y-4 shadow-sm">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-500/20 pb-3">
                             <div>
                               <h4 className="text-[12px] font-black text-slate-900 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-orange-600 text-[18px]">meeting_room</span>
+                                <span className="material-symbols-outlined text-indigo-600 text-[18px]">meeting_room</span>
                                 Multi-Room &amp; Bed Inventory Tracker
                               </h4>
                               <p className="text-[10px] text-slate-500 font-medium mt-0.5">
@@ -2553,16 +2553,16 @@ export const OwnerNewListing = () => {
                               };
 
                               return (
-                                <div key={type.key} className={`p-3.5 rounded-xl border transition-all ${inv.enabled ? 'bg-white border-orange-300 shadow-sm' : 'bg-slate-50/70 border-slate-200 opacity-70'}`}>
+                                <div key={type.key} className={`p-3.5 rounded-xl border transition-all ${inv.enabled ? 'bg-white border-slate-300 shadow-sm' : 'bg-slate-50/70 border-slate-200 opacity-70'}`}>
                                   <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={inv.enabled}
                                         onChange={handleToggle}
-                                        className="w-4 h-4 accent-orange-600 rounded cursor-pointer"
+                                        className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
                                       />
-                                      <span className="material-symbols-outlined text-[18px] text-orange-600">{type.icon}</span>
+                                      <span className="material-symbols-outlined text-[18px] text-indigo-600">{type.icon}</span>
                                       <span className="text-[11px] font-black text-slate-900">{type.label}</span>
                                     </label>
 
@@ -2583,7 +2583,7 @@ export const OwnerNewListing = () => {
                                           value={inv.rooms || ""}
                                           onChange={(e) => handleFieldChange("rooms", e.target.value)}
                                           placeholder="e.g. 5"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                       <div>
@@ -2603,7 +2603,7 @@ export const OwnerNewListing = () => {
                                           value={inv.available_beds}
                                           onChange={(e) => handleFieldChange("available_beds", e.target.value)}
                                           placeholder="e.g. 3"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                       <div>
@@ -2614,7 +2614,7 @@ export const OwnerNewListing = () => {
                                           value={inv.rent || ""}
                                           onChange={(e) => handleFieldChange("rent", e.target.value)}
                                           placeholder="e.g. 7500"
-                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-orange-500 bg-white"
+                                          className="w-full h-8 px-2 rounded-lg border border-slate-200 text-[11px] font-bold outline-none focus:border-indigo-500 bg-white"
                                         />
                                       </div>
                                     </div>
@@ -2625,7 +2625,7 @@ export const OwnerNewListing = () => {
                           </div>
 
                           {/* Live Inventory Summary Pill */}
-                          <div className="p-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl flex items-center justify-between flex-wrap gap-2 shadow-sm text-[11px] font-extrabold">
+                          <div className="p-3 bg-gradient-to-r from-indigo-600 to-indigo-600 text-white rounded-xl flex items-center justify-between flex-wrap gap-2 shadow-sm text-[11px] font-extrabold">
                             <div className="flex items-center gap-2">
                               <span className="material-symbols-outlined text-[18px]">analytics</span>
                               <span>Live Summary: {calculatePgSummary(formData.pg_room_inventory).totalBeds} Total Beds across {calculatePgSummary(formData.pg_room_inventory).totalRooms} Rooms</span>
@@ -2633,7 +2633,7 @@ export const OwnerNewListing = () => {
                             <div className="flex items-center gap-2">
                               <span className="bg-white/20 px-2.5 py-0.5 rounded-full">Available Beds: {calculatePgSummary(formData.pg_room_inventory).availableBeds}</span>
                               {calculatePgSummary(formData.pg_room_inventory).minRent > 0 && (
-                                <span className="bg-white text-orange-700 px-2.5 py-0.5 rounded-full font-black">Starting ₹{calculatePgSummary(formData.pg_room_inventory).minRent}/mo</span>
+                                <span className="bg-white text-indigo-700 px-2.5 py-0.5 rounded-full font-black">Starting ₹{calculatePgSummary(formData.pg_room_inventory).minRent}/mo</span>
                               )}
                             </div>
                           </div>
@@ -2722,7 +2722,7 @@ export const OwnerNewListing = () => {
                       <input name="maintenance_charges" type="number" value={formData.maintenance_charges} onChange={handleInputChange} className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }} />
                     </div>
                     <div className="flex items-center gap-3 h-9">
-                      <input type="checkbox" checked={formData.maintenance_included_in_rent} onChange={(e) => setFormData(prev => ({...prev, maintenance_included_in_rent: e.target.checked}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                      <input type="checkbox" checked={formData.maintenance_included_in_rent} onChange={(e) => setFormData(prev => ({...prev, maintenance_included_in_rent: e.target.checked}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                       <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, maintenance_included_in_rent: !prev.maintenance_included_in_rent}))}>Maintenance Included in Rent</label>
                     </div>
                     <div>
@@ -2774,11 +2774,11 @@ export const OwnerNewListing = () => {
                           </select>
                         </div>
                         <div className="flex items-center gap-3 h-9">
-                          <input type="checkbox" checked={formData.pg_rules?.non_veg_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: e.target.checked}}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                          <input type="checkbox" checked={formData.pg_rules?.non_veg_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: e.target.checked}}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                           <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, non_veg_allowed: !prev.pg_rules?.non_veg_allowed}}))}>Non-Veg Allowed</label>
                         </div>
                         <div className="flex items-center gap-3 h-9">
-                          <input type="checkbox" checked={formData.pg_rules?.smoking_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: e.target.checked}}))} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
+                          <input type="checkbox" checked={formData.pg_rules?.smoking_allowed || false} onChange={(e) => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: e.target.checked}}))} className="w-5 h-5 accent-slate-300 cursor-pointer" />
                           <label className="text-[11px] font-bold cursor-pointer" style={{ color: "var(--ink)" }} onClick={() => setFormData(prev => ({...prev, pg_rules: {...prev.pg_rules, smoking_allowed: !prev.pg_rules?.smoking_allowed}}))}>Smoking Allowed</label>
                         </div>
                       </>
@@ -2839,7 +2839,7 @@ export const OwnerNewListing = () => {
                         type="button"
                         onClick={handleGenerateDescription}
                         disabled={generatingDescription}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-indigo-500 to-indigo-500 hover:from-indigo-600 hover:to-indigo-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
                       >
                         {generatingDescription ? (
                           <div className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
@@ -2858,7 +2858,7 @@ export const OwnerNewListing = () => {
                       placeholder="Write a brief description or click 'Auto-write with AI ✨' to generate automatically using filled property details..."
                     ></textarea>
                     <p className="text-[9px] text-slate-500 mt-2 font-medium flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[11px] text-amber-500">lightbulb</span>
+                      <span className="material-symbols-outlined text-[11px] text-indigo-500">lightbulb</span>
                       Tip: Click "Auto-write with AI ✨" to automatically generate a rich property description based on all your filled specifications, location, price, rules, and amenities above.
                     </p>
                   </div>
@@ -2878,7 +2878,7 @@ export const OwnerNewListing = () => {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="h-10 px-8 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-orange-600/30 hover:-translate-y-0.5"
+                    className="h-10 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
                   >
                     Continue to Photos &amp; Audio
                     <span className="material-symbols-outlined text-[20px]">
@@ -2893,7 +2893,7 @@ export const OwnerNewListing = () => {
               <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="mb-1 border-b border-slate-200 pb-6">
                   <h2 className="text-[20px] font-extrabold text-slate-900 tracking-tight flex items-center gap-2 drop-shadow-sm">
-                    <span className="material-symbols-outlined text-orange-600 text-[24px]">
+                    <span className="material-symbols-outlined text-indigo-600 text-[24px]">
                       perm_media
                     </span>
                     Photos & Audio
@@ -2916,8 +2916,8 @@ export const OwnerNewListing = () => {
                     {...getRootProps()}
                     className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 ${
                       isDragActive
-                        ? "border-orange-500 bg-orange-50 scale-[1.02]"
-                        : "border-slate-300 bg-white hover:border-orange-400 shadow-sm"
+                        ? "border-indigo-500 bg-slate-50 scale-[1.02]"
+                        : "border-slate-300 bg-white hover:border-indigo-400 shadow-sm"
                     }`}
                   >
                     <input {...getInputProps()} />
@@ -2952,7 +2952,7 @@ export const OwnerNewListing = () => {
                     </div>
                   )}
                   {uploadingPhotos && (
-                    <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-orange-600 bg-orange-50 p-3 rounded-xl border border-orange-200 animate-pulse">
+                    <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-indigo-600 bg-slate-50 p-3 rounded-xl border border-slate-200 animate-pulse">
                       <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
                       Processing & Uploading Photos...
                     </div>
@@ -2974,7 +2974,7 @@ export const OwnerNewListing = () => {
                       <button
                         type="button"
                         onClick={isRecording ? stopRecording : startRecording}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-orange-50 hover:bg-orange-100 text-orange-600 shadow-sm"}`}
+                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-slate-50 hover:bg-slate-100 text-indigo-600 shadow-sm"}`}
                       >
                         <span className="material-symbols-outlined text-[32px]">
                           {isRecording ? "stop" : "mic"}
@@ -3021,7 +3021,7 @@ export const OwnerNewListing = () => {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="h-10 px-8 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-orange-600/30 hover:-translate-y-0.5"
+                    className="h-10 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
                   >
                     Continue to Consent
                     <span className="material-symbols-outlined text-[20px]">
@@ -3053,7 +3053,7 @@ export const OwnerNewListing = () => {
                     onClick={() => setConsentMethod("signature")}
                     className={`flex-1 py-3 px-3 rounded-xl text-[9px] sm:text-[9px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
                       consentMethod === "signature"
-                        ? "bg-white text-orange-600 shadow-md border border-orange-200"
+                        ? "bg-white text-indigo-600 shadow-md border border-slate-200"
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
@@ -3066,7 +3066,7 @@ export const OwnerNewListing = () => {
                     onClick={() => setConsentMethod("photo")}
                     className={`flex-1 py-3 px-3 rounded-xl text-[9px] sm:text-[9px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
                       consentMethod === "photo"
-                        ? "bg-white text-orange-600 shadow-md border border-orange-200"
+                        ? "bg-white text-indigo-600 shadow-md border border-slate-200"
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
@@ -3079,7 +3079,7 @@ export const OwnerNewListing = () => {
                     onClick={() => setConsentMethod("otp")}
                     className={`flex-1 py-3 px-3 rounded-xl text-[9px] sm:text-[9px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
                       consentMethod === "otp"
-                        ? "bg-white text-orange-600 shadow-md border border-orange-200"
+                        ? "bg-white text-indigo-600 shadow-md border border-slate-200"
                         : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
@@ -3198,9 +3198,9 @@ export const OwnerNewListing = () => {
                           <button
                             type="button"
                             onClick={() => openCamera("consent")}
-                            className="h-32 border-2 border-dashed border-orange-300 bg-orange-50/50 hover:bg-orange-100/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
+                            className="h-32 border-2 border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
                           >
-                            <span className="material-symbols-outlined text-[36px] text-orange-600 mb-1 group-hover:scale-110 transition-transform">
+                            <span className="material-symbols-outlined text-[36px] text-indigo-600 mb-1 group-hover:scale-110 transition-transform">
                               photo_camera
                             </span>
                             <span className="text-[9px] font-bold text-slate-900">
@@ -3211,7 +3211,7 @@ export const OwnerNewListing = () => {
                             </span>
                           </button>
 
-                          <label className="h-32 border-2 border-dashed border-slate-300 bg-white hover:border-orange-400 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all relative group">
+                          <label className="h-32 border-2 border-dashed border-slate-300 bg-white hover:border-indigo-400 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all relative group">
                             <input
                               type="file"
                               accept="image/*"
@@ -3262,7 +3262,7 @@ export const OwnerNewListing = () => {
                           type="button"
                           onClick={sendOTP}
                           disabled={otpLoading}
-                          className="h-10 px-6 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md disabled:opacity-50"
+                          className="h-10 px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md disabled:opacity-50"
                         >
                           {otpLoading ? "Sending..." : "Send OTP"}
                         </button>
@@ -3274,13 +3274,13 @@ export const OwnerNewListing = () => {
                             onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
                             placeholder="Enter 6-digit code"
                             maxLength={6}
-                            className="w-full h-10 px-3 rounded-xl border border-slate-200 focus:border-orange-500 outline-none text-center tracking-widest text-[14px]"
+                            className="w-full h-10 px-3 rounded-xl border border-slate-200 focus:border-indigo-500 outline-none text-center tracking-widest text-[14px]"
                           />
                           <button
                             type="button"
                             onClick={verifyOTP}
                             disabled={otpLoading || otpCode.length < 6}
-                            className="h-10 px-6 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md disabled:opacity-50"
+                            className="h-10 px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md disabled:opacity-50"
                           >
                             {otpLoading ? "Verifying..." : "Verify Code"}
                           </button>
@@ -3304,7 +3304,7 @@ export const OwnerNewListing = () => {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="h-10 px-10 bg-orange-600 hover:bg-orange-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-orange-600/30 hover:shadow-orange-600/40 hover:-translate-y-0.5"
+                    className="h-10 px-10 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:-translate-y-0.5"
                   >
                     Continue to Payment
                     <span className="material-symbols-outlined text-[20px]">
@@ -3350,14 +3350,14 @@ export const OwnerNewListing = () => {
                     <>
                       {/* Active Credits Top Notification Banner */}
                       {ownerCredits?.total_credits_remaining > 0 && (
-                        <div className="mb-8 p-6 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl border-2 border-indigo-600/50 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="mb-8 p-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl border-2 border-slate-700 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-300">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-black/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                            <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white flex-shrink-0">
                               <span className="material-symbols-outlined text-[28px]">workspace_premium</span>
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="px-2.5 py-0.5 rounded-full bg-black/20 text-emerald-300 border border-indigo-600/40 text-[10px] font-black uppercase tracking-wider">
+                                <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-white border border-white/20 text-[10px] font-black uppercase tracking-wider">
                                   ACTIVE PASS DETECTED
                                 </span>
                                 <span className="text-[11px] font-bold text-slate-300">
@@ -3376,7 +3376,7 @@ export const OwnerNewListing = () => {
                             type="button"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="w-full sm:w-auto px-6 py-3.5 bg-black hover:bg-emerald-400 text-slate-950 text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer flex-shrink-0 hover:-translate-y-0.5 disabled:opacity-50"
+                            className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-slate-200 text-black text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-2 cursor-pointer flex-shrink-0 hover:-translate-y-0.5 disabled:opacity-50"
                           >
                             <span className="material-symbols-outlined text-[18px]">bolt</span>
                             {isSubmitting ? "Publishing..." : "USE 1 CREDIT & PUBLISH NOW"}
@@ -3392,7 +3392,7 @@ export const OwnerNewListing = () => {
                             onClick={() => setPlanMode("packages")}
                             className={`px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
                               planMode === "packages"
-                                ? "bg-white text-orange-600 shadow-md border border-slate-200/80"
+                                ? "bg-white text-slate-900 shadow-md border border-slate-200/80"
                                 : "text-slate-500 hover:text-slate-900"
                             }`}
                           >
@@ -3404,7 +3404,7 @@ export const OwnerNewListing = () => {
                             onClick={() => setPlanMode("custom")}
                             className={`px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
                               planMode === "custom"
-                                ? "bg-white text-orange-600 shadow-md border border-slate-200/80"
+                                ? "bg-white text-slate-900 shadow-md border border-slate-200/80"
                                 : "text-slate-500 hover:text-slate-900"
                             }`}
                           >
@@ -3417,7 +3417,7 @@ export const OwnerNewListing = () => {
                       {planMode === "packages" ? (
                         <>
                           <div className="mb-8 text-center">
-                            <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-600 border border-orange-500/20 text-[11px] font-black uppercase tracking-wider mb-3 shadow-xs">
+                            <span className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-black uppercase tracking-wider mb-3 shadow-xs">
                               {categoryInfo.categoryTag} PACKAGES
                             </span>
                             <h2 className="text-[26px] font-black text-slate-900 tracking-tight">
@@ -3441,12 +3441,12 @@ export const OwnerNewListing = () => {
                                   }}
                                   className={`relative p-6 rounded-3xl border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between ${
                                     isSelected
-                                      ? "border-orange-500 bg-orange-500/5 shadow-xl scale-[1.02]"
+                                      ? "border-slate-900 bg-slate-50 shadow-xl scale-[1.02]"
                                       : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
                                   }`}
                                 >
                                   {plan.popular && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-md">
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-md">
                                       ★ MOST POPULAR
                                     </div>
                                   )}
@@ -3457,14 +3457,14 @@ export const OwnerNewListing = () => {
                                           plan.id === "single"
                                             ? "bg-slate-100 text-slate-700 border-slate-200"
                                             : plan.id === "3pack"
-                                            ? "bg-orange-100 text-orange-700 border-orange-200"
+                                            ? "bg-slate-100 text-indigo-700 border-slate-200"
                                             : "bg-purple-100 text-purple-700 border-purple-200"
                                         }`}
                                       >
                                         {plan.tag}
                                       </span>
                                       {isSelected && (
-                                        <span className="material-symbols-outlined text-orange-600 text-[22px]">
+                                        <span className="material-symbols-outlined text-indigo-600 text-[22px]">
                                           check_circle
                                         </span>
                                       )}
@@ -3478,7 +3478,7 @@ export const OwnerNewListing = () => {
                                     </p>
                                     <ul className="mt-5 space-y-2.5 text-[12px] font-semibold text-slate-700">
                                       <li className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-orange-600 text-[18px]">
+                                        <span className="material-symbols-outlined text-indigo-600 text-[18px]">
                                           home_work
                                         </span>
                                         <span className="font-extrabold text-slate-900">
@@ -3528,7 +3528,7 @@ export const OwnerNewListing = () => {
                             <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-2xl">
                               <div>
                                 <h4 className="text-[14px] font-extrabold text-slate-900 flex items-center gap-2">
-                                  <span className="material-symbols-outlined text-orange-600 text-[20px]">home</span>
+                                  <span className="material-symbols-outlined text-indigo-600 text-[20px]">home</span>
                                   Residential House / Villa
                                 </h4>
                                 <p className="text-[11px] text-slate-500 font-medium">₹{housePrice} per property ({platformSettings?.validity_residential_days || 30}d Validity)</p>
@@ -3559,7 +3559,7 @@ export const OwnerNewListing = () => {
                               <div className="flex items-center justify-between">
                                 <div>
                                   <h4 className="text-[14px] font-extrabold text-slate-900 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-orange-600 text-[20px]">apartment</span>
+                                    <span className="material-symbols-outlined text-indigo-600 text-[20px]">apartment</span>
                                     Apartment / PG & Hostel
                                   </h4>
                                   <p className="text-[11px] text-slate-500 font-medium">₹{pgPrice + pgDurationFee} per property ({customPgDuration}d Validity & Room Tracker)</p>
@@ -3588,7 +3588,7 @@ export const OwnerNewListing = () => {
                               {/* Duration Selector Buttons */}
                               <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between gap-2 flex-wrap">
                                 <span className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-[14px] text-orange-600">schedule</span>
+                                  <span className="material-symbols-outlined text-[14px] text-indigo-600">schedule</span>
                                   Select Listing Duration:
                                 </span>
                                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -3604,7 +3604,7 @@ export const OwnerNewListing = () => {
                                       onClick={() => setCustomPgDuration(d.days)}
                                       className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition-all cursor-pointer border ${
                                         customPgDuration === d.days
-                                          ? "bg-orange-600 text-white border-orange-600 shadow-sm"
+                                          ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
                                           : "bg-white text-slate-700 border-slate-300 hover:border-slate-400 hover:bg-slate-100"
                                       }`}
                                     >
@@ -3619,7 +3619,7 @@ export const OwnerNewListing = () => {
                             <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-2xl">
                               <div>
                                 <h4 className="text-[14px] font-extrabold text-slate-900 flex items-center gap-2">
-                                  <span className="material-symbols-outlined text-orange-600 text-[20px]">storefront</span>
+                                  <span className="material-symbols-outlined text-indigo-600 text-[20px]">storefront</span>
                                   Commercial Shop / Office
                                 </h4>
                                 <p className="text-[11px] text-slate-500 font-medium">₹{commercialPrice} per property ({platformSettings?.validity_commercial_days || 30}d Validity)</p>
@@ -3652,13 +3652,13 @@ export const OwnerNewListing = () => {
                               2. Optional Visibility Boosts
                             </h3>
 
-                            <label className="flex items-center justify-between p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl cursor-pointer hover:bg-amber-500/10 transition-colors">
+                            <label className="flex items-center justify-between p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl cursor-pointer hover:bg-indigo-500/10 transition-colors">
                               <div className="flex items-center gap-3">
                                 <input
                                   type="checkbox"
                                   checked={customAddonFeatured}
                                   onChange={(e) => setCustomAddonFeatured(e.target.checked)}
-                                  className="w-5 h-5 accent-orange-600 rounded cursor-pointer"
+                                  className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
                                 />
                                 <div>
                                   <h4 className="text-[13px] font-extrabold text-slate-900 flex items-center gap-1.5">
@@ -3667,7 +3667,7 @@ export const OwnerNewListing = () => {
                                   <p className="text-[11px] text-slate-500 font-medium">Pins your listings to top search results with a Featured Badge.</p>
                                 </div>
                               </div>
-                              <span className="text-[13px] font-black text-orange-600">+₹99</span>
+                              <span className="text-[13px] font-black text-indigo-600">+₹99</span>
                             </label>
 
                             <label className="flex items-center justify-between p-4 bg-purple-500/5 border border-purple-500/20 rounded-2xl cursor-pointer hover:bg-purple-500/10 transition-colors">
@@ -3704,13 +3704,13 @@ export const OwnerNewListing = () => {
                                 )}
                               </div>
                               {customDiscountAmount > 0 && (
-                                <p className="text-[11px] text-emerald-400 font-extrabold mt-1">
+                                <p className="text-[11px] text-slate-200 font-extrabold mt-1">
                                   🎉 15% Multi-Property Combo Discount Applied (-₹{customDiscountAmount})
                                 </p>
                               )}
                             </div>
                             <div className="text-right text-[11px] font-bold text-slate-300">
-                              Selected Plan Total: <span className="text-orange-400 font-black text-[15px]">₹{customFinalAmount}</span>
+                              Selected Plan Total: <span className="text-indigo-400 font-black text-[15px]">₹{customFinalAmount}</span>
                             </div>
                           </div>
                         </div>
@@ -3719,7 +3719,7 @@ export const OwnerNewListing = () => {
                       {/* Payment Section / Active Credits Section */}
                       {ownerCredits?.total_credits_remaining > 0 ? (
                         <div className="max-w-xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 border-2 border-indigo-600/50 shadow-2xl rounded-3xl p-8 mt-10 text-center text-white relative overflow-hidden">
-                          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black/20 border border-indigo-600/40 flex items-center justify-center text-emerald-400">
+                          <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black/20 border border-indigo-600/40 flex items-center justify-center text-slate-200">
                             <span className="material-symbols-outlined text-[32px]">stars</span>
                           </div>
                           <h3 className="text-xl font-black mb-1 text-white">
@@ -3733,7 +3733,7 @@ export const OwnerNewListing = () => {
                             type="button"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 hover:-translate-y-0.5"
+                            className="w-full py-4 bg-gradient-to-r from-slate-300 to-teal-400 hover:from-slate-200 hover:to-teal-300 text-slate-950 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-slate-300/30 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 hover:-translate-y-0.5"
                           >
                             <span className="material-symbols-outlined text-[20px]">bolt</span>
                             {isSubmitting ? "Publishing Listing..." : "PUBLISH LISTING USING 1 CREDIT"}
@@ -3760,19 +3760,19 @@ export const OwnerNewListing = () => {
                             Complete Payment & Publish Listing
                           </h3>
                           <p className="text-[12px] text-slate-500 font-medium mb-6">
-                            Total Amount Due: <span className="text-orange-600 font-black text-[16px]">₹{currentAmount}</span>
+                            Total Amount Due: <span className="text-indigo-600 font-black text-[16px]">₹{currentAmount}</span>
                           </p>
 
                         {regConfig?.payment_gateway === "razorpay" ? (
                           <div className="space-y-4">
-                            <div className="p-4 bg-orange-50/50 border border-orange-200/60 rounded-2xl text-[11px] text-slate-600 font-medium leading-relaxed">
+                            <div className="p-4 bg-slate-50/50 border border-slate-200/60 rounded-2xl text-[11px] text-slate-600 font-medium leading-relaxed">
                               🔒 <strong>Instant Automated Checkout</strong> via Razorpay. Supports Credit/Debit Cards, GPay, PhonePe, Paytm, and NetBanking.
                             </div>
                             <button
                               type="button"
                               onClick={() => handleRazorpayPayment(currentAmount, selectedPlan)}
                               disabled={isSubmitting}
-                              className="w-full h-12 bg-orange-600 hover:bg-orange-500 text-white text-[12px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-orange-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer hover:-translate-y-0.5"
+                              className="w-full h-12 bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer hover:-translate-y-0.5"
                             >
                               <span className="material-symbols-outlined text-[20px]">lock</span>
                               {isSubmitting ? "Processing..." : `Pay ₹${currentAmount} & Publish Listing`}
@@ -3810,7 +3810,7 @@ export const OwnerNewListing = () => {
                                 onChange={(e) => setRegUtr(e.target.value.replace(/[^0-9]/g, ""))}
                                 maxLength={12}
                                 placeholder="e.g. 312345678901"
-                                className="w-full h-11 bg-white border-2 border-slate-200 rounded-xl px-3 text-[13px] font-bold outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all"
+                                className="w-full h-11 bg-white border-2 border-slate-200 rounded-xl px-3 text-[13px] font-bold outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all"
                               />
                             </div>
 
@@ -3852,7 +3852,7 @@ export const OwnerNewListing = () => {
           <div className="rounded-3xl overflow-hidden max-w-lg w-full shadow-2xl flex flex-col items-center border animate-in zoom-in duration-200" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
             <div className="w-full px-6 py-4 flex items-center justify-between border-b" style={{ borderColor: "var(--border)" }}>
               <h3 className="font-extrabold text-[12px] flex items-center gap-2" style={{ color: "var(--ink)" }}>
-                <span className="material-symbols-outlined text-orange-500">photo_camera</span>
+                <span className="material-symbols-outlined text-indigo-500">photo_camera</span>
                 Live Camera Capture
               </h3>
               <button
@@ -3904,7 +3904,7 @@ export const OwnerNewListing = () => {
           <div className="rounded-3xl overflow-hidden max-w-sm w-full shadow-2xl flex flex-col items-center border animate-in zoom-in duration-200" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
             <div className="w-full px-6 py-4 flex items-center justify-between border-b" style={{ borderColor: "var(--border)" }}>
               <h3 className="font-extrabold text-[12px] flex items-center gap-2" style={{ color: "var(--ink)" }}>
-                <span className="material-symbols-outlined text-orange-500">face_retouching_natural</span>
+                <span className="material-symbols-outlined text-indigo-500">face_retouching_natural</span>
                 Owner Live Selfie Verification
               </h3>
               <button type="button" onClick={closeSelfieCamera}
@@ -3948,7 +3948,7 @@ export const OwnerNewListing = () => {
               <button 
                 type="button" 
                 onClick={captureSelfie}
-                className={`px-7 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95 duration-300 ${faceDetected ? 'bg-black hover:bg-black shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20'}`}
+                className={`px-7 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95 duration-300 ${faceDetected ? 'bg-black hover:bg-black shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/20'}`}
               >
                 <span className="material-symbols-outlined text-[16px]">{faceDetected ? 'check_circle' : faceMisaligned ? 'warning' : 'camera_alt'}</span>
                 {faceDetected ? 'Face Detected - Capture' : faceMisaligned ? 'Align Face to Circle' : 'Capture Selfie'}
