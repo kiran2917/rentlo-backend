@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../shared/context/AuthContext";
 import { toast } from "react-toastify";
@@ -414,7 +415,7 @@ export const OwnerDashboard = () => {
   const statusConfig = {
     live: {
       label: "🟢 Live",
-      color: "bg-black/15 text-slate-800 dark:text-emerald-400 border border-rose-600/30",
+      color: "bg-black/15 text-slate-800 dark:text-black border border-rose-600/30",
     },
     under_negotiation: {
       label: "⏸ Under Negotiation",
@@ -622,7 +623,7 @@ export const OwnerDashboard = () => {
           </p>
           <Link
             to="/owner/new-listing"
-            className="px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-2xl text-sm font-bold shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
+            className="px-6 py-4 bg-slate-900 text-white rounded-2xl text-sm font-bold shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
           >
             List Your First Property
           </Link>
@@ -683,7 +684,7 @@ export const OwnerDashboard = () => {
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <h4 className="text-base font-bold text-ink capitalize line-clamp-1">
-                        <Translate>{prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}{prop.property_type}</Translate>
+                        <Translate>{prop.bedrooms ? `${prop.bedrooms} BHK ` : ""}{String(prop.property_type).replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</Translate>
                       </h4>
                       {prop.status === "live" && prop.expires_at && (() => {
                         const diffTime = new Date(prop.expires_at) - new Date();
@@ -720,9 +721,9 @@ export const OwnerDashboard = () => {
                     prop.property_type === "pg" ||
                     prop.property_type === "pg_hostel" ||
                     (prop.property_type && prop.property_type.startsWith("pg"))) && (
-                    <div className="p-4 rounded-2xl bg-slate-950 text-white shadow-md border border-slate-800 space-y-3">
+                    <div className="p-4 rounded-2xl bg-white text-black shadow-md border border-slate-200 space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span className="text-xs font-black uppercase tracking-wider text-orange-400 flex items-center gap-2">
+                        <span className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-2">
                           <span className="material-symbols-outlined text-base">hotel</span>
                           PG / Hostel Room Tracker
                         </span>
@@ -731,19 +732,19 @@ export const OwnerDashboard = () => {
                       {/* Visual Bed Occupancy & Resident Tracker */}
                       <div className="flex items-center justify-between text-xs mb-1">
                         <span className="text-xs font-extrabold text-slate-400 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-base text-emerald-400">group</span>
-                          Occupied: <strong className="text-white">{Math.max(0, (prop.total_beds || 0) - (prop.available_beds || 0))} Persons</strong>
+                          <span className="material-symbols-outlined text-base text-black">group</span>
+                          Occupied: <strong className="text-black">{Math.max(0, (prop.total_beds || 0) - (prop.available_beds || 0))} Persons</strong>
                         </span>
-                        <span className="text-xs font-black px-2 py-1 rounded-full bg-black/15 text-emerald-300 border border-rose-600/30">
+                        <span className="text-xs font-black px-2 py-1 rounded-full bg-slate-100 text-black border border-slate-200">
                           {prop.available_beds || 0} / {prop.total_beds || 0} Beds Available
                         </span>
                       </div>
 
                       {/* Visual Occupancy Progress Bar */}
                       {prop.total_beds > 0 && (
-                        <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700/50">
+                        <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300">
                           <div
-                            className="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 h-full transition-all duration-300"
+                            className="bg-rose-600 h-full transition-all duration-300"
                             style={{
                               width: `${Math.min(
                                 100,
@@ -800,7 +801,7 @@ export const OwnerDashboard = () => {
                                       }
                                     });
                                   }}
-                                  className="text-xs font-extrabold text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
+                                  className="text-xs font-extrabold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer"
                                 >
                                   <span className="material-symbols-outlined text-sm">edit_note</span>
                                   Configure Inventory
@@ -813,13 +814,13 @@ export const OwnerDashboard = () => {
                                   const openBeds = Number(item.available_beds) || 0;
                                   const totBeds = (Number(item.rooms) || 0) * (Number(item.beds_per_room) || t.beds);
                                   return (
-                                    <div key={t.key} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-900 border border-slate-800/90 hover:border-slate-700 transition-all">
+                                    <div key={t.key} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all">
                                       <div className="flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-lg text-orange-400">{t.icon}</span>
+                                        <span className="material-symbols-outlined text-lg text-black">{t.icon}</span>
                                         <div>
-                                          <div className="text-xs font-black text-white">{t.label}</div>
+                                          <div className="text-xs font-black text-black">{t.label}</div>
                                           <div className="text-[9.5px] font-extrabold text-slate-400">
-                                            <span className={openBeds > 0 ? "text-emerald-400 font-black" : "text-red-400 font-black"}>{openBeds} Open</span> / {totBeds} Total Beds
+                                            <span className={openBeds > 0 ? "text-black font-black" : "text-red-400 font-black"}>{openBeds} Open</span> / {totBeds} Total Beds
                                           </div>
                                         </div>
                                       </div>
@@ -895,7 +896,7 @@ export const OwnerDashboard = () => {
                                   }
                                 });
                               }}
-                              className="px-2 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-orange-400 border border-orange-500/30 text-xs font-extrabold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                              className="px-2 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-black border border-orange-500/30 text-xs font-extrabold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
                               title="Edit total & available bed capacity"
                             >
                               <span className="material-symbols-outlined text-sm">edit_note</span>
@@ -908,9 +909,9 @@ export const OwnerDashboard = () => {
                   )}
 
                   {prop.status === "live" && unlockCount > 0 && (
-                    <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400">
+                    <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-orange-600 dark:text-black">
                       <p className="text-[11.5px] font-semibold flex items-start gap-2 leading-relaxed">
-                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-orange-500">notifications_active</span>
+                        <span className="material-symbols-outlined text-base flex-shrink-0 mt-1 text-black">notifications_active</span>
                         <span>
                           <strong>{unlockCount} {unlockCount === 1 ? "buyer has" : "buyers have"} unlocked your contact details.</strong> Click <em>"I'm In Talks"</em> when negotiating to pause new unlocks.
                         </span>
@@ -1000,7 +1001,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "live")}
-                          className="w-full px-4 py-2 rounded-xl bg-black/10 hover:bg-black/20 text-slate-800 dark:text-emerald-400 border border-rose-600/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          className="w-full px-4 py-2 rounded-xl bg-black/10 hover:bg-black/20 text-slate-800 dark:text-black border border-rose-600/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">restart_alt</span>
                           Relist — Available Again
@@ -1011,7 +1012,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <Link
                           to={`/property/${prop.id}/lease`}
-                          className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                          className="w-full px-4 py-2 rounded-xl bg-slate-900 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                         >
                           <span className="material-symbols-outlined text-base">description</span>
                           Draft Official Lease Agreement
@@ -1145,7 +1146,7 @@ export const OwnerDashboard = () => {
               <div className="space-y-4 animate-in fade-in duration-300">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2" style={{ color: "#0F172A" }}>
-                    <span className="material-symbols-outlined text-emerald-400 text-xl">category</span>
+                    <span className="material-symbols-outlined text-black text-xl">category</span>
                     Select Property Category For Refill Plans:
                   </h4>
                   <span className="text-xs font-bold" style={{ color: "#64748B" }}>
@@ -1206,13 +1207,13 @@ export const OwnerDashboard = () => {
                       Back
                     </button>
                     <div className="flex items-start gap-2 pt-1">
-                      <span className="material-symbols-outlined text-orange-400 text-xl shrink-0 mt-1">shopping_bag</span>
+                      <span className="material-symbols-outlined text-black text-xl shrink-0 mt-1">shopping_bag</span>
                       <h4 className="text-sm font-black uppercase tracking-wider leading-snug" style={{ color: "#0F172A" }}>
                         {CATEGORY_PLANS[selectedPassCategory]?.label} Listing Passes
                       </h4>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-black/10 px-2 py-1 rounded-full border border-rose-600/20 w-fit self-end sm:self-auto">
+                  <span className="text-xs font-bold text-black bg-black/10 px-2 py-1 rounded-full border border-rose-600/20 w-fit self-end sm:self-auto">
                     ⚡ Instant Activation
                   </span>
                 </div>
@@ -1260,7 +1261,7 @@ export const OwnerDashboard = () => {
                         <ul className="space-y-2 pt-2" style={{ borderTop: "1px solid #e2e8f0" }}>
                           {plan.features.map((feat, i) => (
                             <li key={i} className="flex items-start gap-2 text-xs font-medium leading-tight" style={{ color: "#475569" }}>
-                              <span className="material-symbols-outlined text-sm text-emerald-400 shrink-0 mt-1">
+                              <span className="material-symbols-outlined text-sm text-black shrink-0 mt-1">
                                 check_circle
                               </span>
                               <span>{feat}</span>
@@ -1298,13 +1299,13 @@ export const OwnerDashboard = () => {
             {/* Footer Trust Badges */}
             <div className="mt-8 pt-4 flex flex-wrap items-center justify-between gap-4 text-xs font-bold" style={{ borderTop: "1px solid #e2e8f0", color: "#64748b" }}>
               <span className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-base text-emerald-400">bolt</span> Instant Credit Activation
+                <span className="material-symbols-outlined text-base text-black">bolt</span> Instant Credit Activation
               </span>
               <span className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-base text-emerald-400">all_inclusive</span> Credits Never Expire
+                <span className="material-symbols-outlined text-base text-black">all_inclusive</span> Credits Never Expire
               </span>
               <span className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-base text-emerald-400">verified_user</span> 100% Secure Razorpay Checkout
+                <span className="material-symbols-outlined text-base text-black">verified_user</span> 100% Secure Razorpay Checkout
               </span>
             </div>
           </div>
@@ -1312,12 +1313,12 @@ export const OwnerDashboard = () => {
       )}
 
       {/* Edit Bed Capacity & Room Inventory Configurator Modal */}
-      {editingBedProp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in" style={{ backgroundColor: "rgba(0,0,0,0.45)" }}>
+      {editingBedProp && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto animate-fade-in" style={{ backgroundColor: "rgba(0,0,0,0.45)" }}>
           <div className="rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto scrollbar-thin border" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}>
             <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-orange-500 text-2xl">hotel</span>
+                <span className="material-symbols-outlined text-black text-2xl">hotel</span>
                 <div>
                   <h3 className="font-extrabold text-lg" style={{ color: "var(--ink)" }}>Configure Room Sharing & Bed Tracker</h3>
                   <p className="text-xs" style={{ color: "var(--text-muted)" }}>Listing #{editingBedProp.id} • Customize room types, room counts, and per-bed rents.</p>
@@ -1372,7 +1373,7 @@ export const OwnerDashboard = () => {
             >
               {/* Room Categories Configurator */}
               <div className="space-y-3">
-                <label className="block text-xs font-black text-orange-500 uppercase tracking-wider">
+                <label className="block text-xs font-black text-black uppercase tracking-wider">
                   Room Types Available in this Property
                 </label>
 
@@ -1416,15 +1417,15 @@ export const OwnerDashboard = () => {
                                 room_inventory: { ...prev.room_inventory, [type.key]: updated },
                               }));
                             }}
-                            className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 border-gray-300"
+                            className="w-4 h-4 rounded text-black focus:ring-orange-500 border-gray-300"
                             style={{ accentColor: "var(--accent)" }}
                           />
-                          <span className="material-symbols-outlined text-xl text-orange-500">{type.icon}</span>
+                          <span className="material-symbols-outlined text-xl text-black">{type.icon}</span>
                           <span className="text-sm font-extrabold" style={{ color: "var(--ink)" }}>{type.label}</span>
                         </label>
 
                         {item.enabled && (
-                          <span className="text-xs font-bold px-2 py-1 rounded-full text-orange-500 border border-orange-500/30" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)" }}>
+                          <span className="text-xs font-bold px-2 py-1 rounded-full text-black border border-orange-500/30" style={{ backgroundColor: "color-mix(in srgb, var(--accent) 10%, transparent)" }}>
                             {item.rooms * (item.beds_per_room || type.defaultBeds)} Beds Total
                           </span>
                         )}
@@ -1578,8 +1579,8 @@ export const OwnerDashboard = () => {
         </div>
       )}
 
-      {showUpiModal && upiOrderData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      {showUpiModal && upiOrderData && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95">
             <button
               onClick={() => setShowUpiModal(false)}
@@ -1588,7 +1589,7 @@ export const OwnerDashboard = () => {
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
             <div className="text-center mb-6 mt-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-slate-800 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center mx-auto mb-3 border border-slate-300">
                 <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>

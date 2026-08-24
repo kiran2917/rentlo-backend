@@ -188,8 +188,7 @@ export const OwnerLayout = () => {
               className="flex items-center gap-4 px-4 h-10 rounded-xl text-sm font-semibold transition-all duration-200"
               style={{
                 color: active ? "#FFFFFF" : "var(--sidebar-ink)",
-                backgroundColor: active ? "var(--surface-alt)" : "transparent",
-                borderLeft: active ? "4px solid #FFFFFF" : "4px solid transparent",
+                backgroundColor: active ? "#000000" : "transparent",
                 fontWeight: active ? "800" : "600",
                 opacity: active ? 1 : 0.8,
               }}
