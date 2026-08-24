@@ -1562,7 +1562,7 @@ export const OwnerDashboard = () => {
                   type="submit"
                   disabled={updatingBeds}
                   className="px-4 py-2 rounded-xl text-white text-xs font-black transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center gap-2"
-                  style={{ backgroundColor: "var(--accent)" }}
+                  style={{ backgroundColor: "#000000" }}
                 >
                   {updatingBeds ? (
                     <>Saving Configuration...</>
