@@ -25,9 +25,9 @@ export const LanguageToggle = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-sm hover:opacity-90 cursor-pointer"
         style={{
-          backgroundColor: "var(--surface)",
-          borderColor: "var(--border)",
-          color: "var(--ink)",
+          backgroundColor: "rgba(255,255,255,0.12)",
+          borderColor: "rgba(255,255,255,0.2)",
+          color: "#FFFFFF",
         }}
       >
         <span className="material-symbols-outlined text-base text-indigo-600">translate</span>

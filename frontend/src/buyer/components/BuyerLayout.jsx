@@ -276,10 +276,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       <nav
         className="w-full top-0 sticky z-50 h-14 md:h-16 flex items-center transition-all duration-300 border-b shadow-sm"
         style={{
-          backgroundColor: "var(--header-bg)",
+          backgroundColor: "#252259",
           borderColor: "rgba(255,255,255,0.08)",
           backdropFilter: scrolled ? "blur(20px)" : "none",
-          background: scrolled ? "color-mix(in srgb, var(--header-bg) 80%, transparent)" : "var(--header-bg)",
+          background: scrolled ? "rgba(37,34,89,0.85)" : "#252259",
         }}
       >
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
@@ -288,11 +288,11 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             {platformSettings?.company_logo_url ? (
               <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[140px] object-contain" />
             ) : (
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#FFFFFF" }}>
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)" }}>
                 <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
               </div>
             )}
-            <span className="text-lg font-bold tracking-tight" style={{ color: "var(--header-ink)" }}>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#FFFFFF" }}>
               {platformSettings?.company_name || "Rentlo"}
             </span>
           </Link>
@@ -304,7 +304,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 key={link.to}
                 to={link.to}
                 className="text-sm font-semibold transition-colors duration-200 flex items-center gap-2 h-10"
-                style={{ color: location.pathname === link.to ? "#FFFFFF" : "var(--header-ink)" }}
+                style={{ color: location.pathname === link.to ? "#FFFFFF" : "rgba(255,255,255,0.75)" }}
               >
                 {link.label}
                 {link.badge > 0 && (
@@ -354,7 +354,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                   >
                     <span className="material-symbols-outlined text-[18px]">person</span>
                   </div>
-                  <span className="text-xs font-bold" style={{ color: "var(--header-ink)" }}>
+                  <span className="text-xs font-bold" style={{ color: "#FFFFFF" }}>
                     {user.first_name ? user.first_name.split(" ")[0] : "Account"}
                   </span>
                   <span className="material-symbols-outlined text-base" style={{ color: "rgba(255,255,255,0.6)" }}>
