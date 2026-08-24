@@ -29,6 +29,7 @@ export const OwnerDashboard = () => {
   const [editingBedProp, setEditingBedProp] = useState(null);
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
   const [updatingBeds, setUpdatingBeds] = useState(false);
+  const [relistTarget, setRelistTarget] = useState(null);
 
   const fetchProperties = () => {
     setLoading(true);
@@ -120,9 +121,7 @@ export const OwnerDashboard = () => {
       return;
     }
 
-    if (window.confirm(`Relisting this property will consume 1 listing credit from your active pass balance. Do you want to continue?`)) {
-      handleStatusUpdate(property.id, "live");
-    }
+    setRelistTarget(property);
   };
 
   const handlePGOccupancy = async (propId, action, customPayload = {}) => {
@@ -1686,6 +1685,50 @@ export const OwnerDashboard = () => {
           </div>
         </div>
       )}
+      {/* Relist Confirmation Modal */}
+      {relistTarget && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative flex flex-col p-6 animate-in zoom-in-95 duration-200 border border-slate-200">
+            <button
+              onClick={() => setRelistTarget(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+            
+            <div className="text-center mb-6 mt-4">
+              <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-4 border border-slate-200">
+                <span className="material-symbols-outlined text-3xl text-slate-800">restart_alt</span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900">Relist Listing?</h3>
+              <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed">
+                Relisting this property will consume <strong className="text-slate-800 font-bold">1 listing credit</strong> from your active pass balance.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setRelistTarget(null)}
+                className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleStatusUpdate(relistTarget.id, "live");
+                  setRelistTarget(null);
+                }}
+                className="flex-1 h-12 bg-black text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md shadow-black/10 hover:opacity-90"
+              >
+                Confirm &amp; Relist
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Success Modal */}
       {successPassId && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
