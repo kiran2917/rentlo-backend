@@ -242,53 +242,62 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
 
               {/* Audit Log Tab */}
               {activeTab === "audit" && (
-                <div className="bg-white/90 backdrop-blur-sm border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs animate-in fade-in duration-300">
                   {data.audit_logs?.length === 0 ? (
                     <div className="p-12 text-center flex flex-col items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mb-4">
-                        <span className="material-symbols-outlined text-[32px] text-slate-300">history_toggle_off</span>
+                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-3">
+                        <span className="material-symbols-outlined text-[24px] text-slate-300">history_toggle_off</span>
                       </div>
-                      <p className="text-slate-500 font-medium">No changes have been recorded yet.</p>
+                      <p className="text-slate-500 text-xs font-semibold">No changes have been recorded yet.</p>
                     </div>
                   ) : (
-                    <div className="relative p-8">
-                      {/* Timeline line */}
-                      <div className="absolute top-8 bottom-8 left-[47px] w-[3px] bg-slate-100 rounded-full"></div>
-                      
-                      <div className="space-y-8 relative">
-                        {data.audit_logs.map(log => (
-                          <div key={log.id} className="flex gap-5 group">
-                            <div className="relative z-10 bg-white border-[3px] border-emerald-400 rounded-full w-12 h-12 flex items-center justify-center text-indigo-600 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300 shrink-0">
-                              <span className="material-symbols-outlined text-[20px]">history_edu</span>
-                            </div>
-                            <div className="flex-1 bg-white border border-slate-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-                                <p className="text-[14px] text-slate-600">
-                                  <strong className="text-slate-800 font-bold">{log.changed_by}</strong> updated{' '}
-                                  <span className="font-mono text-[12px] font-semibold bg-slate-100 text-brand-600 px-2 py-1 rounded-md border border-slate-200/60">
-                                    {log.field_name}
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50/75 border-b border-slate-200/80">
+                            <th className="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">Date &amp; Time</th>
+                            <th className="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">Actor</th>
+                            <th className="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">Field</th>
+                            <th className="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">Change Description</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-[12px]">
+                          {data.audit_logs.map(log => (
+                            <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
+                              {/* Date & Time */}
+                              <td className="px-5 py-3 whitespace-nowrap font-medium text-slate-500">
+                                {formatDate(log.changed_at)}
+                              </td>
+                              {/* Actor */}
+                              <td className="px-5 py-3 whitespace-nowrap">
+                                <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                                  log.changed_by === 'System' 
+                                    ? 'bg-slate-100 text-slate-600 border border-slate-200/60' 
+                                    : 'bg-slate-900 text-white'
+                                }`}>
+                                  {log.changed_by}
+                                </span>
+                              </td>
+                              {/* Field */}
+                              <td className="px-5 py-3 whitespace-nowrap font-mono text-[11px] font-bold text-slate-700">
+                                {log.field_name}
+                              </td>
+                              {/* Change */}
+                              <td className="px-5 py-3 whitespace-nowrap">
+                                <div className="flex items-center gap-2">
+                                  <span className="px-1.5 py-0.5 rounded bg-slate-50 text-slate-400 line-through text-[11px] font-semibold border border-slate-200/40">
+                                    {log.old_value || "(empty)"}
                                   </span>
-                                </p>
-                                <p className="text-[12px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                                  <span className="material-symbols-outlined text-[14px]">schedule</span>
-                                  {formatDate(log.changed_at)}
-                                </p>
-                              </div>
-                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 text-[13px] mt-4">
-                                <div className="flex-1 bg-indigo-50/50 border border-indigo-100/50 text-indigo-600 p-3 rounded-lg line-through opacity-80 break-all font-medium">
-                                  {log.old_value || "(empty)"}
+                                  <span className="material-symbols-outlined text-[14px] text-slate-300">arrow_right_alt</span>
+                                  <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-extrabold text-[11px] border border-emerald-100/50">
+                                    {log.new_value || "(empty)"}
+                                  </span>
                                 </div>
-                                <div className="flex items-center justify-center text-slate-300 hidden sm:flex">
-                                  <span className="material-symbols-outlined text-[24px]">arrow_right_alt</span>
-                                </div>
-                                <div className="flex-1 bg-emerald-50/50 border border-emerald-100/50 text-emerald-700 p-3 rounded-lg font-bold break-all shadow-inner">
-                                  {log.new_value || "(empty)"}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>
