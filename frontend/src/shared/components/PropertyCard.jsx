@@ -50,7 +50,7 @@ export const PropertyCard = ({
       <Link
         to={`/property/${prop.id}`}
         target="_blank"
-        className="group bg-white rounded-2xl p-2.5 border border-slate-100 hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex gap-3 md:gap-4 items-center"
+        className="group bg-white rounded-2xl p-2.5 border border-slate-200 hover:border-slate-400 hover:shadow-lg transition-all duration-300 flex gap-3 md:gap-4 items-center"
       >
         <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden bg-slate-100 shrink-0">
           <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
@@ -76,10 +76,10 @@ export const PropertyCard = ({
   return (
     <Link
       to={`/property/${prop.id}`}
-      className="flex flex-col gap-2.5 group cursor-pointer active:scale-[0.98] transition-transform duration-300"
+      className="flex flex-col group cursor-pointer active:scale-[0.98] transition-all duration-300 rounded-[22px] border border-slate-200 hover:border-slate-400 hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] bg-white overflow-hidden"
     >
       {/* Image Container (Aspect Square) */}
-      <div className="relative aspect-[4/5] sm:aspect-square w-full rounded-[20px] overflow-hidden bg-slate-100 shadow-sm border border-black/5">
+      <div className="relative aspect-[4/5] sm:aspect-square w-full overflow-hidden bg-slate-100">
         <div className="w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-out">
           <PropertyImageSlideshow media={prop.media} propertyType={prop.property_type} />
         </div>
@@ -94,7 +94,7 @@ export const PropertyCard = ({
       </div>
 
       {/* Content Details */}
-      <div className="px-1 flex flex-col gap-0.5">
+      <div className="px-3 pb-3 pt-2 flex flex-col gap-0.5">
         <div className="flex justify-between items-start gap-2">
           <h4 className="font-extrabold text-sm sm:text-base text-slate-900 truncate leading-tight">
             {prop.locality_details?.name || "Locality"}, {prop.locality_details?.city_name || "City"}

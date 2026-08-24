@@ -127,17 +127,7 @@ def send_web_push_notification(sender, instance, created, **kwargs):
             url = f"/my-unlocks"
             title = "🔑 Contact Unlocked!"
             body = f"Owner contact details for {prop_label} #{prop.id} in {loc_name} are now visible."
-        elif "onboarding" in msg.lower():
-            url = f"/owner/dashboard"
-            title = "✅ Verification Payment Verified"
-            body = f"Payment received for {prop_label} #{prop.id}. Verification in progress."
-        elif "match" in msg.lower():
-            url = f"/property/{prop.id}"
-            title = "🔔 New Property Match!"
-            body = msg.replace("New property match: ", "").replace("🔔 ", "")
-        else:
-            url = f"/property/{prop.id}"
-    else:
+
         # ── No property attached — check message type ──────────────────────
         if "credit pass" in msg.lower() or "buyer credit" in msg.lower():
             url = "/my-unlocks"
@@ -150,17 +140,7 @@ def send_web_push_notification(sender, instance, created, **kwargs):
         elif "payment" in msg.lower():
             title = "💳 Payment Confirmed"
             body = msg
-        elif any(kw in msg for kw in ["⏳ Listing Pass", "🚨 Pass Expires", "🔴 Pass Expires"]):
-            # Pass expiry countdown notification — deep link to owner dashboard
-            url = "/owner/dashboard"
-            try:
-                # Extract clean title and body from the stored message format:
-                # "TITLE: BODY (category · N credit(s) remaining)"
-                title = msg.split(":")[0].strip()
-                body = ": ".join(msg.split(":")[1:]).strip()
-            except Exception:
-                title = "⏳ Pass Expiry Reminder"
-                body = msg
+
 
     payload = {
         'title': title,
