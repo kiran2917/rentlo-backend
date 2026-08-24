@@ -115,8 +115,8 @@ export const PropertyCard = ({
             <span className="font-semibold text-slate-500 text-[10px] sm:text-xs ml-0.5">{isPg ? '/bed' : '/mo'}</span>
           </div>
           
-          <button className="bg-black text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full hover:bg-slate-800 transition-colors">
-            Book
+          <button className="bg-black text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider px-6 py-2 rounded-xl shadow-sm hover:bg-slate-800 hover:shadow-md transition-all active:scale-95">
+            View
           </button>
         </div>
       </div>
