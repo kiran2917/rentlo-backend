@@ -592,7 +592,7 @@ export const PlanSelectionModal = ({
         {/* ACTIVE PASS DETECTED FOR RETURNING USER */}
         {authStep === "ACTIVE_PASS_DETECTED" && sub && (
           <div className="py-4 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-rose-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
               <span className="material-symbols-outlined text-4xl">verified_user</span>
             </div>
 
@@ -868,7 +868,7 @@ export const PlanSelectionModal = ({
         {authStep === "COMPLETE_REGISTRATION" && (
           <div className="py-4">
             <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2 border border-emerald-200">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-rose-600 flex items-center justify-center mx-auto mb-2 border border-emerald-200">
                 <span className="material-symbols-outlined text-2xl">person_add</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">Create Buyer Account</h3>
@@ -934,7 +934,7 @@ export const PlanSelectionModal = ({
             </button>
 
             <div className="text-center mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-rose-600 flex items-center justify-center mx-auto mb-3 border border-emerald-200">
                 <span className="material-symbols-outlined text-3xl">qr_code_scanner</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">Scan & Pay via UPI</h3>
@@ -965,7 +965,7 @@ export const PlanSelectionModal = ({
                   placeholder="e.g. 325412345678"
                   maxLength={20}
                   required
-                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-emerald-500 transition-all"
+                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-rose-600 transition-all"
                   autoFocus
                 />
                 <p className="text-[10px] text-slate-400 font-medium text-center mt-2">
@@ -976,7 +976,7 @@ export const PlanSelectionModal = ({
               <button
                 type="submit"
                 disabled={purchasing}
-                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-emerald-600"
+                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-black"
               >
                 {purchasing ? "Verifying..." : "Submit UTR & Activate"}
                 <span className="material-symbols-outlined text-lg">check_circle</span>

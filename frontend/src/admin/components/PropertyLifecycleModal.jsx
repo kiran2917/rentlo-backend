@@ -101,7 +101,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 pb-4 pt-3 text-[14px] font-bold border-b-[3px] transition-all duration-300 ${
                     activeTab === tab.id 
-                      ? "border-emerald-500 text-emerald-600 drop-shadow-sm" 
+                      ? "border-rose-600 text-rose-600 drop-shadow-sm" 
                       : "border-transparent text-slate-400 hover:text-slate-700 hover:border-slate-300"
                   }`}
                 >
@@ -148,7 +148,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                   {/* Property Details Card */}
                   <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group">
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-rose-600 group-hover:scale-110 transition-transform duration-300">
                         <span className="material-symbols-outlined">location_on</span>
                       </div>
                       <h3 className="text-[14px] font-extrabold text-slate-700 tracking-wide">PROPERTY DETAILS</h3>
@@ -166,7 +166,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                           <span className="px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider bg-slate-100 text-slate-600 uppercase border border-slate-200 shadow-sm">
                             {data.property.status?.replace('_', ' ')}
                           </span>
-                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider bg-emerald-50 text-emerald-600 uppercase border border-emerald-100 shadow-sm">
+                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider bg-emerald-50 text-rose-600 uppercase border border-emerald-100 shadow-sm">
                             {data.property.verification_status?.replace('_', ' ')}
                           </span>
                         </div>
@@ -217,7 +217,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                             <td className="px-6 py-4 font-bold text-slate-700">₹{unlock.amount}</td>
                             <td className="px-6 py-4">
                               <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${
-                                unlock.status === 'paid' ? 'bg-emerald-50 text-emerald-600' : 
+                                unlock.status === 'paid' ? 'bg-emerald-50 text-rose-600' : 
                                 unlock.status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500'
                               }`}>
                                 {unlock.status}
@@ -258,7 +258,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                       <div className="space-y-8 relative">
                         {data.audit_logs.map(log => (
                           <div key={log.id} className="flex gap-5 group">
-                            <div className="relative z-10 bg-white border-[3px] border-emerald-400 rounded-full w-12 h-12 flex items-center justify-center text-emerald-500 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300 shrink-0">
+                            <div className="relative z-10 bg-white border-[3px] border-emerald-400 rounded-full w-12 h-12 flex items-center justify-center text-rose-600 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300 shrink-0">
                               <span className="material-symbols-outlined text-[20px]">history_edu</span>
                             </div>
                             <div className="flex-1 bg-white border border-slate-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">

@@ -1470,7 +1470,7 @@ export const NewListing = () => {
                           <span className="text-[9px] font-bold text-amber-500 animate-pulse">Checking account...</span>
                         )}
                         {ownerAccountExists === true && (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-rose-600 border border-rose-600/30">
                             ✓ Account Exists ({ownerAccountDetails?.first_name || ownerAccountDetails?.username})
                           </span>
                         )}
@@ -1502,7 +1502,7 @@ export const NewListing = () => {
                                 {verifyMode === "otp" ? "Phone Verification Required" : "Owner Selfie Required"}
                               </span>
                               {isVerified && (
-                                <span className="text-[9.5px] font-black text-emerald-600 flex items-center gap-0.5">
+                                <span className="text-[9.5px] font-black text-rose-600 flex items-center gap-0.5">
                                   <span className="material-symbols-outlined text-[13px]">check_circle</span>Verified
                                 </span>
                               )}
@@ -1542,7 +1542,7 @@ export const NewListing = () => {
                                 <div className="flex items-center gap-3">
                                   <img src={selfiePreview} alt="Owner selfie" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-400 shadow" />
                                   <div>
-                                    <p className="text-[10px] font-bold text-emerald-600">Selfie captured. Form unlocked.</p>
+                                    <p className="text-[10px] font-bold text-rose-600">Selfie captured. Form unlocked.</p>
                                     <button type="button" onClick={() => { setSelfiePhoto(null); setSelfiePreview(null); }}
                                       className="text-[9px] text-slate-400 hover:text-red-500 underline mt-0.5 cursor-pointer">
                                       Retake
@@ -1609,7 +1609,7 @@ export const NewListing = () => {
                         style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                       />
                       {ownerAccountExists === true && (
-                        <p className="text-[10px] font-bold text-emerald-500 mt-1">
+                        <p className="text-[10px] font-bold text-rose-600 mt-1">
                           ✓ Password field disabled because this owner already has a registered Rentlo account.
                         </p>
                       )}
@@ -1744,7 +1744,7 @@ export const NewListing = () => {
                         {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
                         <div className="absolute top-3 left-14 right-3 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200/90 p-2 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-2 transition-all">
                           <div className="flex items-center gap-1.5 px-2 text-slate-800 text-[11px] font-black uppercase tracking-wider shrink-0">
-                            <span className="material-symbols-outlined text-[16px] text-emerald-600">travel_explore</span>
+                            <span className="material-symbols-outlined text-[16px] text-rose-600">travel_explore</span>
                             <span className="hidden sm:inline">Zoom Map To:</span>
                           </div>
 
@@ -1765,7 +1765,7 @@ export const NewListing = () => {
                                     setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
                                   }
                                 }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-emerald-500 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
+                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-rose-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
                               >
                                 {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
                                   <option key={key} value={key}>
@@ -1799,7 +1799,7 @@ export const NewListing = () => {
                                     }
                                   }
                                 }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-emerald-500 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
+                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-rose-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
                               >
                                 <option value="all">📍 All Cities</option>
                                 {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
@@ -2156,7 +2156,7 @@ export const NewListing = () => {
                                     </label>
 
                                     {inv.enabled && (
-                                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                                      <span className="text-[10px] font-bold text-rose-600 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                                         Total: {inv.rooms * type.defaultBeds} Beds ({inv.rooms} Rooms)
                                       </span>
                                     )}
@@ -2506,8 +2506,8 @@ export const NewListing = () => {
                     {...getRootProps()}
                     className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 ${
                       isDragActive
-                        ? "border-emerald-500 bg-emerald-500/10 scale-[1.02]"
-                        : "hover:border-emerald-500 shadow-sm"
+                        ? "border-rose-600 bg-black/10 scale-[1.02]"
+                        : "hover:border-rose-600 shadow-sm"
                     }`}
                     style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
                   >
@@ -2565,7 +2565,7 @@ export const NewListing = () => {
                       <button
                         type="button"
                         onClick={isRecording ? stopRecording : startRecording}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all cursor-pointer ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 shadow-sm"}`}
+                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all cursor-pointer ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-black/10 hover:bg-black/20 text-rose-600 shadow-sm"}`}
                       >
                         <span className="material-symbols-outlined text-[32px]">
                           {isRecording ? "stop" : "mic"}
@@ -2725,7 +2725,7 @@ export const NewListing = () => {
                         }
                         className={`w-full h-10 px-6 rounded-xl border transition-all flex items-center gap-3 ${formData.onboarding_payment_method === "cash" ? "bg-orange-50 border-orange-500 shadow-sm ring-2 ring-orange-500/20" : "bg-white border-slate-200 hover:bg-slate-50 shadow-sm"}`}
                       >
-                        <span className="material-symbols-outlined text-[20px] text-emerald-600">
+                        <span className="material-symbols-outlined text-[20px] text-rose-600">
                           payments
                         </span>
                         <span className="text-[9px] font-extrabold text-slate-800 tracking-widest uppercase">
@@ -2802,7 +2802,7 @@ export const NewListing = () => {
                     {formData.onboarding_payment_method === "cash" && (
                       <div className="flex flex-col items-center text-center animate-in zoom-in duration-300">
                         <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-100 mb-4 shadow-inner">
-                          <span className="material-symbols-outlined text-[40px] text-emerald-500">
+                          <span className="material-symbols-outlined text-[40px] text-rose-600">
                             done_all
                           </span>
                         </div>
@@ -2937,7 +2937,7 @@ export const NewListing = () => {
               {/* Selfie Frame Guide Overlay */}
               <div className="absolute inset-0 border-[32px] border-slate-950/50 pointer-events-none flex items-center justify-center">
                 <div 
-                  className={`w-[200px] h-[260px] rounded-[110px] border-2 border-dashed transition-all duration-300 ${faceDetected ? 'border-emerald-500' : faceMisaligned ? 'border-red-500' : 'border-orange-500'}`}
+                  className={`w-[200px] h-[260px] rounded-[110px] border-2 border-dashed transition-all duration-300 ${faceDetected ? 'border-rose-600' : faceMisaligned ? 'border-red-500' : 'border-orange-500'}`}
                   style={{ 
                     boxShadow: faceDetected 
                       ? "0 0 0 9999px rgba(6, 78, 59, 0.45)" 
@@ -2946,8 +2946,8 @@ export const NewListing = () => {
                       : "0 0 0 9999px rgba(15,23,42,0.6)" 
                   }}
                 >
-                  <div className={`absolute top-[35%] left-1/2 -translate-x-1/2 w-4 h-1 rounded transition-colors duration-300 ${faceDetected ? 'bg-emerald-500/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
-                  <div className={`absolute top-[52%] left-1/2 -translate-x-1/2 w-10 h-0.5 rounded transition-colors duration-300 ${faceDetected ? 'bg-emerald-500/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
+                  <div className={`absolute top-[35%] left-1/2 -translate-x-1/2 w-4 h-1 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
+                  <div className={`absolute top-[52%] left-1/2 -translate-x-1/2 w-10 h-0.5 rounded transition-colors duration-300 ${faceDetected ? 'bg-black/60' : faceMisaligned ? 'bg-red-500/60' : 'bg-orange-500/60'}`}></div>
                 </div>
               </div>
             </div>
@@ -2959,7 +2959,7 @@ export const NewListing = () => {
               <button 
                 type="button" 
                 onClick={captureSelfie} 
-                className={`px-6 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer duration-300 ${faceDetected ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20'}`}
+                className={`px-6 py-2.5 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer duration-300 ${faceDetected ? 'bg-black hover:bg-black shadow-emerald-600/20' : faceMisaligned ? 'bg-red-600 hover:bg-red-500 shadow-red-600/20' : 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20'}`}
               >
                 <span className="material-symbols-outlined text-[16px]">{faceDetected ? 'check_circle' : faceMisaligned ? 'warning' : 'photo_camera'}</span>
                 {faceDetected ? 'Face Detected - Capture' : faceMisaligned ? 'Align Face to Circle' : 'Capture Selfie'}

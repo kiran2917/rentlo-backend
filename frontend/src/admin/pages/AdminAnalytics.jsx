@@ -173,13 +173,13 @@ export const AdminAnalytics = () => {
             className="rounded-2xl p-6 border shadow-sm relative overflow-hidden group hover:shadow-lg transition-all duration-300 cursor-default"
             style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", color: "var(--ink)" }}
           >
-            <div className="absolute -right-6 -top-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all duration-700"></div>
+            <div className="absolute -right-6 -top-6 w-32 h-32 bg-black/10 rounded-full blur-2xl group-hover:bg-black/20 transition-all duration-700"></div>
             <div className="flex justify-between items-start mb-5 relative z-10">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border group-hover:animate-bounce transition-all duration-500"
+                className="w-14 h-14 rounded-2xl flex items-center justify-center text-rose-600 shadow-sm border group-hover:animate-bounce transition-all duration-500"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
               >
-                <span className="material-symbols-outlined text-[28px] group-hover:text-emerald-500 transition-colors">
+                <span className="material-symbols-outlined text-[28px] group-hover:text-rose-600 transition-colors">
                   payments
                 </span>
               </div>
@@ -462,13 +462,13 @@ export const AdminAnalytics = () => {
                       <td className="px-6 py-4 text-[13px] font-medium" style={{ color: "var(--text-muted)" }}>
                         {a.submitted_count}
                       </td>
-                      <td className="px-6 py-4 text-[13px] font-extrabold text-emerald-500">
+                      <td className="px-6 py-4 text-[13px] font-extrabold text-rose-600">
                         {a.approved_count}
                       </td>
                       <td className="px-6 py-4">
                         {a.trust_score !== null ? (
                           <span
-                            className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border shadow-sm ${a.trust_score >= 80 ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : a.trust_score >= 50 ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
+                            className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border shadow-sm ${a.trust_score >= 80 ? "bg-black/10 text-rose-600 border-rose-600/20" : a.trust_score >= 50 ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
                           >
                             {a.trust_score}%
                           </span>

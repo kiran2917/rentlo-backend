@@ -87,7 +87,7 @@ export const CitySeoLanding = () => {
             <span className="text-emerald-400">Rent in {formattedCity}</span>
           </nav>
 
-          <span className="inline-block px-3.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+          <span className="inline-block px-3.5 py-1 bg-black/10 border border-rose-600/20 text-emerald-400 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
             Local SEO Landing Page • Zero Brokerage
           </span>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-4">
@@ -112,7 +112,7 @@ export const CitySeoLanding = () => {
           </div>
           <Link
             to="/"
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all"
+            className="px-4 py-2 bg-black hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all"
           >
             Search All Cities →
           </Link>
@@ -154,18 +154,18 @@ export const CitySeoLanding = () => {
                   <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full border border-white/20">
                     {prop.property_type}
                   </div>
-                  <div className="absolute bottom-3 right-3 bg-emerald-600 text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-md">
+                  <div className="absolute bottom-3 right-3 bg-black text-white font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-md">
                     ₹{Number(prop.price).toLocaleString("en-IN")}/mo
                   </div>
                 </div>
 
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base line-clamp-1 mb-1 group-hover:text-emerald-600 transition-colors">
+                    <h3 className="font-bold text-slate-900 text-base line-clamp-1 mb-1 group-hover:text-rose-600 transition-colors">
                       {prop.title}
                     </h3>
                     <p className="text-xs text-slate-500 font-semibold flex items-center gap-1 mb-3">
-                      <span className="material-symbols-outlined text-[14px] text-emerald-600">location_on</span>
+                      <span className="material-symbols-outlined text-[14px] text-rose-600">location_on</span>
                       {prop.locality_name || formattedCity}
                     </p>
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
@@ -193,21 +193,21 @@ export const CitySeoLanding = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-              <span className="material-symbols-outlined text-[28px] text-emerald-600 mb-2">money_off</span>
+              <span className="material-symbols-outlined text-[28px] text-rose-600 mb-2">money_off</span>
               <h3 className="font-bold text-sm text-slate-900 mb-1">Zero Brokerage Fees</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Connect directly with landlords in {formattedCity}. Save 1 to 2 months of rent usually spent on middleman broker commissions.
               </p>
             </div>
             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-              <span className="material-symbols-outlined text-[28px] text-emerald-600 mb-2">verified_user</span>
+              <span className="material-symbols-outlined text-[28px] text-rose-600 mb-2">verified_user</span>
               <h3 className="font-bold text-sm text-slate-900 mb-1">100% Verified Owners</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Every property listed in {formattedCity} undergoes phone and ownership document check before going live.
               </p>
             </div>
             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-              <span className="material-symbols-outlined text-[28px] text-emerald-600 mb-2">bolt</span>
+              <span className="material-symbols-outlined text-[28px] text-rose-600 mb-2">bolt</span>
               <h3 className="font-bold text-sm text-slate-900 mb-1">Instant Owner Contact</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Unlock phone numbers in 1-click using Rentlo single contact unlocks or buyer credit pass packs.

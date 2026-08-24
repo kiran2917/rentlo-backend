@@ -209,15 +209,15 @@ export const Dashboard = () => {
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
         >
           <div className="flex justify-between items-start mb-6 relative z-10">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-emerald-600 bg-emerald-50 border border-emerald-100 shadow-sm group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-rose-600 bg-emerald-50 border border-emerald-100 shadow-sm group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-[24px]">{agentEarnings ? "account_balance_wallet" : "payments"}</span>
             </div>
-            <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-extrabold uppercase tracking-wider">{agentEarnings ? "Wallet" : "Revenue"}</span>
+            <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-rose-600 text-[10px] font-extrabold uppercase tracking-wider">{agentEarnings ? "Wallet" : "Revenue"}</span>
           </div>
           <h3 className="text-[11px] font-extrabold mb-1.5 uppercase tracking-widest relative z-10" style={{ color: "var(--text-muted)" }}>
             {agentEarnings ? "Wallet Balance (Unpaid)" : "Total Platform Revenue"}
           </h3>
-          <p className="text-[32px] font-extrabold text-emerald-600 tracking-tight relative z-10 leading-none">
+          <p className="text-[32px] font-extrabold text-rose-600 tracking-tight relative z-10 leading-none">
             ₹{agentEarnings ? (agentEarnings.wallet_balance || 0).toLocaleString("en-IN") : metrics.totalEarnings.toLocaleString("en-IN")}
           </p>
           {agentEarnings && agentEarnings.next_payout_date && (
@@ -266,7 +266,7 @@ export const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-black px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+              <span className="text-[11px] font-black px-3 py-1 rounded-full bg-black/20 text-emerald-300 border border-rose-600/30 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 {metrics.pgOccupancyRate}% Occupancy Rate
               </span>
@@ -286,7 +286,7 @@ export const Dashboard = () => {
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-200 block mb-1">Persons Residing</span>
               <div className="text-2xl font-black text-indigo-300">{metrics.totalPgResidents} Persons</div>
             </div>
-            <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30">
+            <div className="p-3.5 rounded-2xl bg-black/15 border border-rose-600/30">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-200 block mb-1">Free Available Beds</span>
               <div className="text-2xl font-black text-emerald-300">{metrics.totalPgFreeBeds} Beds</div>
             </div>
@@ -410,7 +410,7 @@ export const Dashboard = () => {
                     </p>
                     <p className="text-[10px] font-bold mt-1.5 flex items-center gap-1.5 uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
                       <span
-                        className={`w-1.5 h-1.5 rounded-full shadow-sm ${prop.status === "approved" ? "bg-emerald-500 shadow-emerald-500/50" : prop.status === "pending" ? "bg-amber-500 shadow-amber-500/50" : "bg-red-500 shadow-red-500/50"}`}
+                        className={`w-1.5 h-1.5 rounded-full shadow-sm ${prop.status === "approved" ? "bg-black shadow-emerald-500/50" : prop.status === "pending" ? "bg-amber-500 shadow-amber-500/50" : "bg-red-500 shadow-red-500/50"}`}
                       ></span>
                       {prop.status}
                     </p>
@@ -463,7 +463,7 @@ export const Dashboard = () => {
                             {new Date(batch.cycle_start_date).toLocaleDateString()} - {new Date(batch.cycle_end_date).toLocaleDateString()}
                           </span>
                         </td>
-                        <td className="px-6 py-4 font-black text-emerald-600">
+                        <td className="px-6 py-4 font-black text-rose-600">
                           ₹{parseFloat(batch.total_amount).toLocaleString("en-IN")}
                         </td>
                         <td className="px-6 py-4">

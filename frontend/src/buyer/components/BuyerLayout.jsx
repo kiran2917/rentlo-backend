@@ -594,7 +594,7 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             </p>
             <button
               onClick={() => setLegalModal(null)}
-              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs shadow-md transition-all cursor-pointer"
+              className="w-full py-3 bg-black hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs shadow-md transition-all cursor-pointer"
             >
               Close &amp; Accept Policy
             </button>

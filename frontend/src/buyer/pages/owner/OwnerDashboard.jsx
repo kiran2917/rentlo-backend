@@ -414,7 +414,7 @@ export const OwnerDashboard = () => {
   const statusConfig = {
     live: {
       label: "🟢 Live",
-      color: "bg-emerald-500/15 text-slate-800 dark:text-emerald-400 border border-emerald-500/30",
+      color: "bg-black/15 text-slate-800 dark:text-emerald-400 border border-rose-600/30",
     },
     under_negotiation: {
       label: "⏸ Under Negotiation",
@@ -475,9 +475,9 @@ export const OwnerDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Banner & Action Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-surface to-surface border border-emerald-500/20 p-6 md:p-6 rounded-3xl shadow-sm relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900/10 via-surface to-surface border border-rose-600/20 p-6 md:p-6 rounded-3xl shadow-sm relative overflow-hidden">
         <div className="space-y-1 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold tracking-wide uppercase mb-1">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-black/10 border border-rose-600/20 text-rose-600 text-xs font-bold tracking-wide uppercase mb-1">
             <span className="material-symbols-outlined text-sm">real_estate_agent</span>
             <Translate>Owner Console</Translate>
           </div>
@@ -493,7 +493,7 @@ export const OwnerDashboard = () => {
           <button
             type="button"
             onClick={() => setShowCreditsModal(true)}
-            className="px-4 py-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-800 rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
+            className="px-4 py-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-rose-600/30 hover:border-rose-600/60 text-emerald-800 rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
           >
             <span className="material-symbols-outlined text-xl text-slate-800">stars</span>
             {ownerCredits?.total_credits_remaining > 0 ? (
@@ -579,7 +579,7 @@ export const OwnerDashboard = () => {
               onClick={() => setSelectedStatusFilter(tab.id)}
               className={`px-4 py-2 rounded-xl text-[12.5px] font-bold whitespace-nowrap transition-all duration-200 cursor-pointer flex-shrink-0 ${
                 selectedStatusFilter === tab.id
-                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
+                  ? "bg-black text-white shadow-md shadow-slate-900/20"
                   : "bg-surface border border-border text-text-muted hover:text-ink hover:bg-surface-alt"
               }`}
             >
@@ -598,7 +598,7 @@ export const OwnerDashboard = () => {
             placeholder="Search properties or ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-4 py-2 h-10 rounded-xl bg-surface border border-border text-[12.5px] font-medium outline-none focus:border-emerald-500 transition-colors"
+            className="w-full pl-8 pr-4 py-2 h-10 rounded-xl bg-surface border border-border text-[12.5px] font-medium outline-none focus:border-rose-600 transition-colors"
           />
         </div>
       </div>
@@ -606,12 +606,12 @@ export const OwnerDashboard = () => {
       {/* Main Content Area */}
       {loading ? (
         <div className="flex flex-col justify-center items-center py-24 gap-4">
-          <div className="w-10 h-10 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
+          <div className="w-10 h-10 rounded-full border-4 border-rose-600 border-t-transparent animate-spin" />
           <p className="text-sm font-medium text-text-muted">Fetching your listings...</p>
         </div>
       ) : filteredProperties.length === 0 ? (
         <div className="bg-surface border border-border rounded-3xl p-12 flex flex-col items-center justify-center text-center shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-black/10 text-rose-600 flex items-center justify-center mb-4">
             <span className="material-symbols-outlined text-[36px]">real_estate_agent</span>
           </div>
           <h3 className="text-xl font-bold text-ink mb-2">No properties found</h3>
@@ -694,7 +694,7 @@ export const OwnerDashboard = () => {
                               className={`px-2 py-1 rounded-lg text-xs font-extrabold tracking-wide whitespace-nowrap shrink-0 ${
                                 diffDays <= 10 
                                   ? "bg-rose-500/10 text-rose-500 border border-rose-500/20 animate-pulse" 
-                                  : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                                  : "bg-black/10 text-rose-600 border border-rose-600/20"
                               }`}
                             >
                               ⏳ {diffDays} {diffDays === 1 ? "Day" : "Days"} Left
@@ -710,7 +710,7 @@ export const OwnerDashboard = () => {
                       })()}
                     </div>
                     <p className="text-xs text-text-muted flex items-center gap-1 mt-1">
-                      <span className="material-symbols-outlined text-sm text-emerald-500">location_on</span>
+                      <span className="material-symbols-outlined text-sm text-rose-600">location_on</span>
                       <Translate>{prop.locality_details?.name || "Locality"}</Translate>, <Translate>{prop.locality_details?.city_name || "City"}</Translate>
                     </p>
                   </div>
@@ -734,7 +734,7 @@ export const OwnerDashboard = () => {
                           <span className="material-symbols-outlined text-base text-emerald-400">group</span>
                           Occupied: <strong className="text-white">{Math.max(0, (prop.total_beds || 0) - (prop.available_beds || 0))} Persons</strong>
                         </span>
-                        <span className="text-xs font-black px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                        <span className="text-xs font-black px-2 py-1 rounded-full bg-black/15 text-emerald-300 border border-rose-600/30">
                           {prop.available_beds || 0} / {prop.total_beds || 0} Beds Available
                         </span>
                       </div>
@@ -828,7 +828,7 @@ export const OwnerDashboard = () => {
                                           type="button"
                                           onClick={() => handlePGOccupancy(prop.id, "rent_bed", { room_type: t.key })}
                                           disabled={openBeds <= 0}
-                                          className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[9.5px] font-black flex items-center gap-1 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
+                                          className="px-2 py-1 rounded-lg bg-black hover:bg-black text-white text-[9.5px] font-black flex items-center gap-1 disabled:opacity-30 transition-all cursor-pointer shadow-xs"
                                           title={`Mark 1 bed rented under ${t.label}`}
                                         >
                                           <span className="material-symbols-outlined text-sm">person_add</span>
@@ -860,7 +860,7 @@ export const OwnerDashboard = () => {
                               type="button"
                               onClick={() => handlePGOccupancy(prop.id, "rent_bed")}
                               disabled={prop.available_beds <= 0}
-                              className="px-2 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-1 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
+                              className="px-2 py-2 rounded-xl bg-black hover:bg-black text-white text-xs font-black flex items-center justify-center gap-1 transition-all disabled:opacity-40 cursor-pointer shadow-xs"
                               title="Record 1 resident check-in (marks 1 bed rented)"
                             >
                               <span className="material-symbols-outlined text-sm">person_add</span>
@@ -1000,7 +1000,7 @@ export const OwnerDashboard = () => {
                       {prop.status === "rented" && (
                         <button
                           onClick={() => handleStatusUpdate(prop.id, "live")}
-                          className="w-full px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-slate-800 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          className="w-full px-4 py-2 rounded-xl bg-black/10 hover:bg-black/20 text-slate-800 dark:text-emerald-400 border border-rose-600/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-base">restart_alt</span>
                           Relist — Available Again
@@ -1023,7 +1023,7 @@ export const OwnerDashboard = () => {
                       <span className="text-xs font-medium text-text-muted">Status: {sc.label}</span>
                       <Link
                         to={`/property/${prop.id}`}
-                        className="text-xs font-extrabold text-emerald-500 hover:underline flex items-center gap-1"
+                        className="text-xs font-extrabold text-rose-600 hover:underline flex items-center gap-1"
                       >
                         View listing
                         <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -1114,7 +1114,7 @@ export const OwnerDashboard = () => {
                           </span>
                           <button
                             onClick={() => window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${pass.id}/receipt/`, "_blank")}
-                            className="ml-2 bg-emerald-500/20 hover:bg-emerald-500/40 text-white p-1 rounded-lg transition-colors flex items-center justify-center"
+                            className="ml-2 bg-black/20 hover:bg-black/40 text-white p-1 rounded-lg transition-colors flex items-center justify-center"
                             title="Download Receipt"
                           >
                             <span className="material-symbols-outlined text-[14px]">download</span>
@@ -1212,7 +1212,7 @@ export const OwnerDashboard = () => {
                       </h4>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 w-fit self-end sm:self-auto">
+                  <span className="text-xs font-bold text-emerald-400 bg-black/10 px-2 py-1 rounded-full border border-rose-600/20 w-fit self-end sm:self-auto">
                     ⚡ Instant Activation
                   </span>
                 </div>
@@ -1619,7 +1619,7 @@ export const OwnerDashboard = () => {
                   placeholder="e.g. 325412345678"
                   maxLength={20}
                   required
-                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-emerald-500 transition-all"
+                  className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-rose-600 transition-all"
                   autoFocus
                 />
               </div>
@@ -1627,7 +1627,7 @@ export const OwnerDashboard = () => {
               <button
                 type="submit"
                 disabled={isVerifyingUtr}
-                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-emerald-600"
+                className="w-full h-14 rounded-xl text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer bg-black"
               >
                 {isVerifyingUtr ? "Verifying..." : "Submit UTR & Activate"}
                 <span className="material-symbols-outlined text-lg">check_circle</span>
@@ -1641,7 +1641,7 @@ export const OwnerDashboard = () => {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
           <div className="bg-surface rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden animate-fade-in border border-border">
             <div className="p-8 flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-black/20 text-rose-600 flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-[40px]">check_circle</span>
               </div>
               <h3 className="text-2xl font-black text-ink tracking-tight mb-2">Payment Successful!</h3>
@@ -1654,7 +1654,7 @@ export const OwnerDashboard = () => {
                   onClick={() => {
                     window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${successPassId}/receipt/`, "_blank");
                   }}
-                  className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2"
+                  className="w-full h-12 bg-black hover:bg-black text-white font-extrabold rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">download</span>
                   Download Receipt

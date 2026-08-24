@@ -77,10 +77,10 @@ export const NotificationPromptModal = () => {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md bg-slate-900 border border-emerald-500/40 rounded-3xl p-6 sm:p-7 shadow-2xl text-white transform transition-all animate-scaleUp overflow-hidden">
+      <div className="relative w-full max-w-md bg-slate-900 border border-rose-600/40 rounded-3xl p-6 sm:p-7 shadow-2xl text-white transform transition-all animate-scaleUp overflow-hidden">
         
         {/* Soft background glow */}
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-36 h-36 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-36 h-36 bg-black/20 rounded-full blur-2xl pointer-events-none"></div>
 
         {/* Close Button */}
         <button
@@ -104,7 +104,7 @@ export const NotificationPromptModal = () => {
 
           <div>
             <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${
-              isOwner ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+              isOwner ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" : "bg-black/20 text-emerald-300 border border-rose-600/30"
             }`}>
               {isOwner ? "Owner Portal Alert" : "Instant Property Alert"}
             </span>

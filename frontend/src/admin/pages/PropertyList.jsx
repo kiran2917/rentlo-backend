@@ -244,14 +244,14 @@ export const PropertyList = () => {
               <span className="text-2xl font-extrabold text-purple-500 mt-2">{agentCount}</span>
             </div>
             <div className="p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-500 flex items-center gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-rose-600 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[15px]">person</span> Owner Listed
               </span>
-              <span className="text-2xl font-extrabold text-emerald-500 mt-2">{ownerCount}</span>
+              <span className="text-2xl font-extrabold text-rose-600 mt-2">{ownerCount}</span>
             </div>
             <div className="p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-500">Live Properties</span>
-              <span className="text-2xl font-extrabold text-emerald-500 mt-2">{liveCount}</span>
+              <span className="text-[11px] font-bold uppercase tracking-widest text-rose-600">Live Properties</span>
+              <span className="text-2xl font-extrabold text-rose-600 mt-2">{liveCount}</span>
             </div>
           </div>
         ) : (
@@ -261,10 +261,10 @@ export const PropertyList = () => {
               <span className="text-2xl font-extrabold mt-2" style={{ color: "var(--ink)" }}>{totalCount}</span>
             </div>
             <div className="p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-500 flex items-center gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-rose-600 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[15px]">check_circle</span> Live Properties
               </span>
-              <span className="text-2xl font-extrabold text-emerald-500 mt-2">{liveCount}</span>
+              <span className="text-2xl font-extrabold text-rose-600 mt-2">{liveCount}</span>
             </div>
             <div className="p-5 rounded-2xl border shadow-sm flex flex-col justify-between" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
               <span className="text-[11px] font-bold uppercase tracking-widest text-amber-500 flex items-center gap-1">
@@ -557,8 +557,8 @@ export const PropertyList = () => {
                           {/* 5. Status */}
                           <td className="py-4 px-6">
                             {p.status === "live" && (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-black/10 text-rose-600 border border-rose-600/20">
+                                <span className="w-2 h-2 rounded-full bg-black animate-pulse"></span>
                                 Live
                               </span>
                             )}
@@ -620,7 +620,7 @@ export const PropertyList = () => {
                               {p.status === "under_negotiation" && (
                                 <button
                                   onClick={() => handleUpdateStatus(p.id, "live")}
-                                  className="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[11px] font-bold transition-all"
+                                  className="px-2.5 py-1.5 rounded-lg bg-black/10 hover:bg-black/20 text-emerald-400 border border-rose-600/20 text-[11px] font-bold transition-all"
                                   title="Release hold — re-open property for new buyers"
                                 >
                                   ▶️ Release Hold
@@ -638,7 +638,7 @@ export const PropertyList = () => {
                               {p.status === "rented" && (
                                 <button
                                   onClick={() => handleUpdateStatus(p.id, "live")}
-                                  className="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[11px] font-bold transition-all"
+                                  className="px-2.5 py-1.5 rounded-lg bg-black/10 hover:bg-black/20 text-emerald-400 border border-rose-600/20 text-[11px] font-bold transition-all"
                                   title="Relist — make available for rent again"
                                 >
                                   🔄 Relist
@@ -683,7 +683,7 @@ export const PropertyList = () => {
                                       <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
                                         {Math.max(0, (p.total_beds || 0) - (p.available_beds || 0))} Persons Residing
                                       </span>
-                                      <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                                      <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-black/15 text-emerald-300 border border-rose-600/30">
                                         {p.available_beds || 0} Beds Free
                                       </span>
                                     </div>
@@ -691,7 +691,7 @@ export const PropertyList = () => {
                                   <p className="text-sm text-slate-600 mb-4">{p.description || "No description provided."}</p>
                                   
                                   <div className="flex gap-4">
-                                    <a href={`/property/${p.id}`} target="_blank" rel="noreferrer" className="text-emerald-600 text-xs font-bold hover:underline flex items-center gap-1">
+                                    <a href={`/property/${p.id}`} target="_blank" rel="noreferrer" className="text-rose-600 text-xs font-bold hover:underline flex items-center gap-1">
                                       View Full Public Page <span className="material-symbols-outlined text-sm">open_in_new</span>
                                     </a>
                                   </div>
@@ -750,7 +750,7 @@ export const PropertyList = () => {
                               <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
                                 {Math.max(0, (p.total_beds || 0) - (p.available_beds || 0))} Occ
                               </span>
-                              <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                              <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-black/15 text-emerald-300 border border-rose-600/30">
                                 {p.available_beds || 0} Free
                               </span>
                             </div>
@@ -793,8 +793,8 @@ export const PropertyList = () => {
                         <div>
                           <span className="text-[10px] font-extrabold uppercase tracking-widest block mb-0.5" style={{ color: "var(--text-muted)" }}>Status</span>
                           {p.status === "live" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-black/10 text-rose-600 border border-rose-600/20">
+                              <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse"></span>
                               Live
                             </span>
                           )}
@@ -858,7 +858,7 @@ export const PropertyList = () => {
                           {p.status === "under_negotiation" && (
                             <button
                               onClick={() => handleUpdateStatus(p.id, "live")}
-                              className="px-2.5 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-lg text-[11px] font-bold shadow-xs transition-all cursor-pointer animate-pulse"
+                              className="px-2.5 py-1.5 bg-black/10 text-emerald-400 border border-rose-600/20 hover:bg-black/20 rounded-lg text-[11px] font-bold shadow-xs transition-all cursor-pointer animate-pulse"
                             >
                               Release Hold
                             </button>
@@ -876,7 +876,7 @@ export const PropertyList = () => {
                           {p.status === "rented" && (
                             <button
                               onClick={() => handleUpdateStatus(p.id, "live")}
-                              className="px-2.5 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 rounded-lg text-[11px] font-bold shadow-xs transition-all cursor-pointer"
+                              className="px-2.5 py-1.5 bg-black/10 text-emerald-400 border border-rose-600/20 hover:bg-black/20 rounded-lg text-[11px] font-bold shadow-xs transition-all cursor-pointer"
                             >
                               Relist
                             </button>

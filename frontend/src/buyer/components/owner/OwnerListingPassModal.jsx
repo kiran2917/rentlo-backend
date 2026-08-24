@@ -125,10 +125,10 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
           {CATEGORY_PACKS[selectedTab].packs.map((pack, idx) => (
             <div
               key={idx}
-              className="p-5 rounded-2xl border-2 border-slate-200 hover:border-emerald-600 bg-white hover:bg-emerald-50/20 transition-all duration-200 flex flex-col justify-between relative group"
+              className="p-5 rounded-2xl border-2 border-slate-200 hover:border-rose-600 bg-white hover:bg-emerald-50/20 transition-all duration-200 flex flex-col justify-between relative group"
             >
               {pack.badge && (
-                <span className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-extrabold tracking-wider shadow-sm">
+                <span className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-black text-white text-xs font-extrabold tracking-wider shadow-sm">
                   {pack.badge}
                 </span>
               )}

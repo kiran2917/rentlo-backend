@@ -111,7 +111,7 @@ export const Earnings = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
           <div className="flex items-center gap-4 group">
-            <div className="w-14 h-14 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-all duration-500">
+            <div className="w-14 h-14 bg-black/10 text-rose-600 border border-rose-600/20 rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-all duration-500">
               <span className="material-symbols-outlined text-[32px]">
                 account_balance_wallet
               </span>
@@ -127,11 +127,11 @@ export const Earnings = () => {
           </div>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="relative group flex-1 min-w-[200px] md:w-72">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] group-focus-within:text-emerald-500 transition-colors">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] group-focus-within:text-rose-600 transition-colors">
                 search
               </span>
               <input
-                className="pl-11 pr-4 py-3 w-full border rounded-xl text-[13px] font-bold outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all shadow-sm"
+                className="pl-11 pr-4 py-3 w-full border rounded-xl text-[13px] font-bold outline-none focus:border-rose-600 focus:ring-4 focus:ring-emerald-500/10 transition-all shadow-sm"
                 style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                 placeholder="Search earnings..."
                 type="text"
@@ -185,7 +185,7 @@ export const Earnings = () => {
             {
               label: "Total Paid",
               value: totalPaid,
-              color: "text-emerald-600",
+              color: "text-rose-600",
               bg: "bg-emerald-50",
             },
           ].map((stat) => (
@@ -227,7 +227,7 @@ export const Earnings = () => {
                   setFilters({ ...filters, agent: e.target.value });
                   setCurrentPage(1);
                 }}
-                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none cursor-pointer border focus:border-emerald-500 flex-1 sm:flex-initial"
+                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none cursor-pointer border focus:border-rose-600 flex-1 sm:flex-initial"
                 style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
               >
                 <option value="">All Agents</option>
@@ -244,7 +244,7 @@ export const Earnings = () => {
                   setFilters({ ...filters, status: e.target.value });
                   setCurrentPage(1);
                 }}
-                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none cursor-pointer border focus:border-emerald-500 flex-1 sm:flex-initial"
+                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none cursor-pointer border focus:border-rose-600 flex-1 sm:flex-initial"
                 style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
               >
                 <option value="">All Statuses</option>
@@ -265,7 +265,7 @@ export const Earnings = () => {
                   setFilters({ ...filters, start_date: e.target.value });
                   setCurrentPage(1);
                 }}
-                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none border focus:border-emerald-500 flex-1 sm:flex-initial w-full sm:w-auto"
+                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none border focus:border-rose-600 flex-1 sm:flex-initial w-full sm:w-auto"
                 style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
               />
               <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 flex-shrink-0">
@@ -278,7 +278,7 @@ export const Earnings = () => {
                   setFilters({ ...filters, end_date: e.target.value });
                   setCurrentPage(1);
                 }}
-                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none border focus:border-emerald-500 flex-1 sm:flex-initial w-full sm:w-auto"
+                className="rounded-xl px-3 py-2 text-[13px] font-bold outline-none border focus:border-rose-600 flex-1 sm:flex-initial w-full sm:w-auto"
                 style={{ backgroundColor: "var(--surface-alt)", color: "var(--ink)", borderColor: "var(--border)" }}
               />
             </div>
@@ -322,7 +322,7 @@ export const Earnings = () => {
                     <tr>
                       <td colSpan={6} className="py-20 text-center sticky left-0 right-0">
                         <div className="flex flex-col items-center justify-center gap-3 w-full max-w-xs sm:max-w-md mx-auto">
-                          <span className="material-symbols-outlined text-5xl text-emerald-500/80 mb-2 block">
+                          <span className="material-symbols-outlined text-5xl text-rose-600/80 mb-2 block">
                             receipt_long
                           </span>
                           <p className="text-[14px] font-extrabold uppercase tracking-widest text-center" style={{ color: "var(--ink)" }}>
@@ -345,7 +345,7 @@ export const Earnings = () => {
                           {entry.status === "approved" && (
                             <input
                               type="checkbox"
-                              className="w-4 h-4 cursor-pointer rounded text-emerald-600 focus:ring-emerald-500"
+                              className="w-4 h-4 cursor-pointer rounded text-rose-600 focus:ring-emerald-500"
                               checked={selectedIds.has(entry.id)}
                               onChange={() => toggleSelect(entry.id)}
                             />
@@ -366,7 +366,7 @@ export const Earnings = () => {
                                 {entry.agent_details?.username}
                               </span>
                               {entry.agent_details?.kyc_upi_id && (
-                                <span className="text-[11px] font-bold text-emerald-500 flex items-center gap-1">
+                                <span className="text-[11px] font-bold text-rose-600 flex items-center gap-1">
                                   <span className="material-symbols-outlined text-[13px]">qr_code_2</span>
                                   {entry.agent_details.kyc_upi_id}
                                 </span>
@@ -377,7 +377,7 @@ export const Earnings = () => {
                         <td className="px-6 py-5 text-[13px] font-bold capitalize" style={{ color: "var(--text-muted)" }}>
                           {entry.source_type.replace("_", " ")}
                         </td>
-                        <td className="px-6 py-5 font-extrabold text-[15px] text-emerald-600">
+                        <td className="px-6 py-5 font-extrabold text-[15px] text-rose-600">
                           &#8377;{entry.amount}
                         </td>
                         <td className="px-6 py-5">
@@ -413,7 +413,7 @@ export const Earnings = () => {
                 </div>
               ) : paginatedEntries.length === 0 ? (
                 <div className="py-20 text-center">
-                  <span className="material-symbols-outlined text-5xl text-emerald-500/80 mb-2 block">
+                  <span className="material-symbols-outlined text-5xl text-rose-600/80 mb-2 block">
                     receipt_long
                   </span>
                   <p className="text-[14px] font-extrabold uppercase tracking-widest" style={{ color: "var(--ink)" }}>
@@ -432,7 +432,7 @@ export const Earnings = () => {
                         {entry.status === "approved" && (
                           <input
                             type="checkbox"
-                            className="w-4 h-4 cursor-pointer rounded text-emerald-600 focus:ring-emerald-500"
+                            className="w-4 h-4 cursor-pointer rounded text-rose-600 focus:ring-emerald-500"
                             checked={selectedIds.has(entry.id)}
                             onChange={() => toggleSelect(entry.id)}
                           />
@@ -446,7 +446,7 @@ export const Earnings = () => {
                               {entry.agent_details?.username}
                             </span>
                             {entry.agent_details?.kyc_upi_id && (
-                              <span className="text-[10px] font-bold text-emerald-500 flex items-center gap-0.5">
+                              <span className="text-[10px] font-bold text-rose-600 flex items-center gap-0.5">
                                 <span className="material-symbols-outlined text-[12px]">qr_code_2</span>
                                 {entry.agent_details.kyc_upi_id}
                               </span>
@@ -457,7 +457,7 @@ export const Earnings = () => {
 
                       {/* Right: Amount */}
                       <div className="text-right">
-                        <span className="font-extrabold text-[15px] text-emerald-600 block">&#8377;{entry.amount}</span>
+                        <span className="font-extrabold text-[15px] text-rose-600 block">&#8377;{entry.amount}</span>
                         <span
                           className={`inline-block px-2 py-0.5 mt-1 rounded text-[9px] font-bold uppercase tracking-wider border ${
                             entry.status === "paid"

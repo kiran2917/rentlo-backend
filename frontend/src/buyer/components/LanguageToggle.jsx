@@ -30,7 +30,7 @@ export const LanguageToggle = () => {
           color: "var(--ink)",
         }}
       >
-        <span className="material-symbols-outlined text-base text-emerald-500">translate</span>
+        <span className="material-symbols-outlined text-base text-rose-600">translate</span>
         <span>{currentLanguage.short}</span>
         <span className="material-symbols-outlined text-sm">
           {isOpen ? "expand_less" : "expand_more"}
@@ -64,7 +64,7 @@ export const LanguageToggle = () => {
                   >
                     <span>{lang.label}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-black"></span>
                     )}
                   </button>
                 );

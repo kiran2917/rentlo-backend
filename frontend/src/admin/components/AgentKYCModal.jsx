@@ -322,7 +322,7 @@ export const AgentKYCModal = ({ user, onClose, onRefreshUser }) => {
               {kycData && (
                 <div className={`p-4 rounded-2xl border flex items-center justify-between shadow-sm ${
                   kycData.status === 'verified'
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+                    ? 'bg-black/10 border-rose-600/30 text-rose-600'
                     : kycData.status === 'submitted'
                     ? 'bg-amber-500/10 border-amber-500/30 text-amber-500'
                     : kycData.status === 'rejected'

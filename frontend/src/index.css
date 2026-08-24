@@ -13,8 +13,8 @@
   --header-ink:   #0F172A;
   --sidebar-bg:   #FFFFFF;
   --sidebar-ink:  #0F172A;
-  --accent:       #059669;
-  --accent-soft:  #34D399;
+  --accent:       #E11D48;
+  --accent-soft:  #FDA4AF;
   --ink:          #0F172A;
   --text-muted:   #64748B;
   --border:       #E2E8F0;
@@ -27,15 +27,15 @@
   --font-heading: 'Outfit', sans-serif;
 
   --shadow-neutral-card: rgba(15, 23, 42, 0.05);
-  --shadow-accent-glow: rgba(5, 150, 105, 0.16);
-  --shadow-accent-soft: rgba(5, 150, 105, 0.08);
+  --shadow-accent-glow: rgba(225, 29, 72, 0.16);
+  --shadow-accent-soft: rgba(225, 29, 72, 0.08);
 
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(226, 232, 240, 0.8);
   --glass-blur: 12px;
 
-  --nav-active-bg: rgba(5, 150, 105, 0.12);
-  --pulse-ring-color: rgba(5, 150, 105, 0.7);
+  --nav-active-bg: rgba(225, 29, 72, 0.12);
+  --pulse-ring-color: rgba(225, 29, 72, 0.7);
   
   --hero-img:     url('https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop');
   --hero-overlay: linear-gradient(180deg, rgba(248, 250, 252, 0.40) 0%, rgba(241, 245, 249, 0.15) 50%, rgba(248, 250, 252, 0.85) 100%);

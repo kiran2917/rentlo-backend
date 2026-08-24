@@ -263,7 +263,7 @@ export const ModerationQueue = () => {
                     <tr>
                       <td colSpan={4} className="py-20 text-center sticky left-0 right-0">
                         <div className="flex flex-col items-center justify-center gap-3 w-full max-w-xs sm:max-w-md mx-auto">
-                          <span className="material-symbols-outlined text-5xl text-emerald-500/80">
+                          <span className="material-symbols-outlined text-5xl text-rose-600/80">
                             task_alt
                           </span>
                           <p className="text-[14px] font-extrabold uppercase tracking-widest" style={{ color: "var(--ink)" }}>
@@ -389,7 +389,7 @@ export const ModerationQueue = () => {
               ) : filteredProperties.length === 0 ? (
                 <div className="py-20 text-center">
                   <div className="flex flex-col items-center gap-3">
-                    <span className="material-symbols-outlined text-5xl text-emerald-500/80">
+                    <span className="material-symbols-outlined text-5xl text-rose-600/80">
                       task_alt
                     </span>
                     <p className="text-[14px] font-extrabold uppercase tracking-widest" style={{ color: "var(--ink)" }}>
@@ -809,7 +809,7 @@ export const ModerationQueue = () => {
                   <button
                     disabled={actionLoading}
                     onClick={() => handleAction("approve")}
-                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white text-[14px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0"
+                    className="w-full h-14 bg-black hover:bg-black text-white text-[14px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0"
                   >
                     <span className="material-symbols-outlined text-[24px]">
                       check_circle

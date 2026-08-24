@@ -157,11 +157,11 @@ export const AdminCRM = () => {
           <div className="rounded-3xl p-5 border shadow-sm transition-all hover:shadow-md" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Total Unlocks Paid</span>
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-500">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-black/10 border border-rose-600/20 text-rose-600">
                 <span className="material-symbols-outlined text-[20px]">key</span>
               </div>
             </div>
-            <p className="text-[26px] font-extrabold mt-2 tracking-tight text-emerald-500">{totalUnlocks}</p>
+            <p className="text-[26px] font-extrabold mt-2 tracking-tight text-rose-600">{totalUnlocks}</p>
           </div>
 
           <div className="rounded-3xl p-5 border shadow-sm transition-all hover:shadow-md" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
@@ -347,7 +347,7 @@ export const AdminCRM = () => {
 
                       <span className={`px-2.5 py-0.5 rounded-full font-extrabold text-[10.5px] border flex-shrink-0 ${
                         u.is_active
-                          ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+                          ? 'bg-black/10 text-rose-600 border-rose-600/30'
                           : 'bg-red-500/10 text-red-500 border-red-500/30'
                       }`}>
                         {u.is_active ? 'Active' : 'Blocked'}
@@ -373,7 +373,7 @@ export const AdminCRM = () => {
                         <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Unlock Pass:</span>
                         <span className={`font-extrabold px-2.5 py-0.5 rounded-full text-[11px] border ${
                           activePass?.pass_type
-                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+                            ? 'bg-black/10 text-rose-600 border-rose-600/30'
                             : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
                         }`}>
                           {activePass?.pass_type ? activePass.pass_type.replace('_', ' ').toUpperCase() : "No Active Pass"}
@@ -386,7 +386,7 @@ export const AdminCRM = () => {
                           <>
                             <div>
                               <span className="text-[10px] font-bold block uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Remaining:</span>
-                              <span className="font-extrabold text-emerald-500">{activePass?.credits_remaining || 0} Unlocks</span>
+                              <span className="font-extrabold text-rose-600">{activePass?.credits_remaining || 0} Unlocks</span>
                             </div>
                             <div>
                               <span className="text-[10px] font-bold block uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Paid Unlocks:</span>
@@ -426,7 +426,7 @@ export const AdminCRM = () => {
                       className={`h-10 px-3.5 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer flex-shrink-0 ${
                         u.is_active
                           ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
-                          : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20'
+                          : 'bg-black/10 text-rose-600 border-rose-600/30 hover:bg-black/20'
                       }`}
                     >
                       {u.is_active ? 'Block' : 'Unblock'}
@@ -462,7 +462,7 @@ export const AdminCRM = () => {
                     </h2>
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border ${
                       inspectUser.is_active
-                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+                        ? 'bg-black/10 text-rose-600 border-rose-600/30'
                         : 'bg-red-500/10 text-red-500 border-red-500/30'
                     }`}>
                       {inspectUser.is_active ? 'Active' : 'Blocked'}
@@ -479,7 +479,7 @@ export const AdminCRM = () => {
                 <div className="p-4 rounded-2xl border text-[12px] space-y-2" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                   <div className="flex items-center justify-between border-b pb-1.5" style={{ borderColor: "var(--border)" }}>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Active Subscription</span>
-                    <span className="font-extrabold text-emerald-500">
+                    <span className="font-extrabold text-rose-600">
                       {inspectUser.buyer_stats?.active_pass?.pass_type
                         ? inspectUser.buyer_stats.active_pass.pass_type.replace('_', ' ').toUpperCase()
                         : "No Active Pass"}
@@ -487,7 +487,7 @@ export const AdminCRM = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-bold" style={{ color: "var(--text-muted)" }}>Remaining Unlocks:</span>
-                    <span className="font-extrabold text-emerald-500">{inspectUser.buyer_stats?.active_pass?.credits_remaining || 0} Credits</span>
+                    <span className="font-extrabold text-rose-600">{inspectUser.buyer_stats?.active_pass?.credits_remaining || 0} Credits</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-bold" style={{ color: "var(--text-muted)" }}>Member Since:</span>
@@ -502,7 +502,7 @@ export const AdminCRM = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-bold" style={{ color: "var(--text-muted)" }}>Total Unlocks Paid:</span>
-                    <span className="font-extrabold text-emerald-500">{inspectUser.buyer_stats?.total_unlocks_count || 0} (&#8377;{inspectUser.buyer_stats?.total_spent || 0})</span>
+                    <span className="font-extrabold text-rose-600">{inspectUser.buyer_stats?.total_unlocks_count || 0} (&#8377;{inspectUser.buyer_stats?.total_spent || 0})</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[10.5px] font-bold" style={{ color: "var(--text-muted)" }}>Listed Properties:</span>
@@ -516,7 +516,7 @@ export const AdminCRM = () => {
                 {/* Buyer Unlocks Log */}
                 <div>
                   <h4 className="text-[12px] font-extrabold uppercase tracking-wider mb-2.5 flex items-center gap-1.5" style={{ color: "var(--ink)" }}>
-                    <span className="material-symbols-outlined text-[16px] text-emerald-500">key</span>
+                    <span className="material-symbols-outlined text-[16px] text-rose-600">key</span>
                     Contact Unlocks History:
                   </h4>
                   {inspectUser.buyer_stats?.recent_unlocks?.length > 0 ? (
@@ -527,7 +527,7 @@ export const AdminCRM = () => {
                             <p className="font-extrabold" style={{ color: "var(--ink)" }}>{un.property_title}</p>
                             <p className="text-[10.5px] mt-0.5" style={{ color: "var(--text-muted)" }}>Unlocked: {new Date(un.unlocked_at || Date.now()).toLocaleDateString()}</p>
                           </div>
-                          <span className="font-extrabold text-emerald-500">&#8377;{un.amount}</span>
+                          <span className="font-extrabold text-rose-600">&#8377;{un.amount}</span>
                         </div>
                       ))}
                     </div>
@@ -555,7 +555,7 @@ export const AdminCRM = () => {
                             <p className="text-[10.5px] mt-0.5" style={{ color: "var(--text-muted)" }}>{p.city} • Listed: {new Date(p.created_at).toLocaleDateString()}</p>
                           </div>
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                            p.status === 'active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                            p.status === 'active' ? 'bg-black/10 text-rose-600' : 'bg-amber-500/10 text-amber-500'
                           }`}>
                             {p.status}
                           </span>
@@ -579,7 +579,7 @@ export const AdminCRM = () => {
                   className={`px-4 py-2 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider cursor-pointer ${
                     inspectUser.is_active
                       ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
-                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/20'
+                      : 'bg-black/10 text-rose-600 border-rose-600/30 hover:bg-black/20'
                   }`}
                 >
                   {inspectUser.is_active ? 'Block Account' : 'Unblock Account'}

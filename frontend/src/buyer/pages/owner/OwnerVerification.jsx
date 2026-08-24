@@ -76,7 +76,7 @@ export const OwnerVerification = () => {
             </p>
             <div className="mt-4 p-3 rounded-lg border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
               <p className="text-[12px] font-bold mb-2" style={{ color: "var(--ink)" }}>Accepted Documents (Upload any ONE):</p>
-              <ul className="text-[12px] space-y-1.5 list-disc pl-4 marker:text-emerald-500" style={{ color: "var(--text-muted)" }}>
+              <ul className="text-[12px] space-y-1.5 list-disc pl-4 marker:text-rose-600" style={{ color: "var(--text-muted)" }}>
                 <li>Aadhaar Card (Front &amp; Back)</li>
                 <li>PAN Card</li>
                 <li>Voter ID</li>

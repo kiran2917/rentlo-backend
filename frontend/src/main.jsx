@@ -34,7 +34,7 @@ class GlobalErrorBoundary extends React.Component {
             )}
             <button
               onClick={() => window.location.reload()}
-              className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-extrabold text-sm transition-all shadow-md"
+              className="w-full py-3 bg-black hover:bg-emerald-400 text-slate-950 rounded-xl font-extrabold text-sm transition-all shadow-md"
             >
               Reload Rentlo Platform
             </button>

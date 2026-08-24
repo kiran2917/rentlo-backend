@@ -128,7 +128,7 @@ export const OwnerLayout = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg text-ink">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-rose-600 border-t-transparent"></div>
       </div>
     );
   }
@@ -171,18 +171,6 @@ export const OwnerLayout = () => {
               {isAgent ? t("owner.agentConsole", "Agent Console") : t("owner.ownerConsole", "Owner Console")}
             </p>
           </div>
-        </Link>
-      </div>
-
-      {/* Top Action Button: Post New Listing - Compact Height */}
-      <div className="px-4 mb-2 flex-shrink-0">
-        <Link
-          to="/owner/new-listing"
-          onClick={onNavClick}
-          className="w-full h-10 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white flex items-center justify-center gap-2 text-xs font-extrabold shadow-md transition-all cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-base">add_circle</span>
-          {t("owner.postNewListing", "Post New Listing")}
         </Link>
       </div>
 
@@ -360,7 +348,7 @@ export const OwnerLayout = () => {
                 className="flex items-center gap-2 px-2.5 py-1 rounded-xl border bg-surface-alt hover:bg-surface-alt/80 border-border transition-all cursor-pointer select-none active:scale-95 shadow-sm"
                 style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
               >
-                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-emerald-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
+                <div className="w-7 h-7 rounded-full font-extrabold text-xs flex items-center justify-center border shadow-xs text-rose-600 bg-white shrink-0" style={{ borderColor: "var(--border)" }}>
                   {ownerInitials}
                 </div>
                 <div className="text-left hidden sm:block">
@@ -386,7 +374,7 @@ export const OwnerLayout = () => {
                     to="/"
                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-extrabold text-slate-700 hover:bg-slate-50 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-lg text-emerald-600">storefront</span>
+                    <span className="material-symbols-outlined text-lg text-rose-600">storefront</span>
                     <span>Explore Marketplace</span>
                   </Link>
 

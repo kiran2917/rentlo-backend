@@ -242,7 +242,7 @@ export const FraudFlags = () => {
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center sticky left-0 right-0">
                       <div className="flex flex-col items-center justify-center gap-3 w-full max-w-xs sm:max-w-md mx-auto">
-                        <span className="material-symbols-outlined text-5xl text-emerald-500/80 mb-2 block">
+                        <span className="material-symbols-outlined text-5xl text-rose-600/80 mb-2 block">
                           task_alt
                         </span>
                         <p className="text-[14px] font-extrabold uppercase tracking-widest text-center" style={{ color: "var(--ink)" }}>

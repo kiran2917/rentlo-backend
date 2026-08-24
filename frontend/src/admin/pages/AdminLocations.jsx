@@ -305,7 +305,7 @@ export const AdminLocations = () => {
                       <p className="text-[14px]" style={{ color: "var(--text-muted)" }}>No localities added yet.</p>
                       <button 
                         onClick={fetchSuggestions}
-                        className="text-emerald-500 font-bold text-[14px] mt-2 hover:underline cursor-pointer"
+                        className="text-rose-600 font-bold text-[14px] mt-2 hover:underline cursor-pointer"
                       >
                         Use Smart Suggestion
                       </button>
@@ -323,12 +323,12 @@ export const AdminLocations = () => {
             <div className="bg-white rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
               <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50 to-teal-50">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-500">
+                  <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-rose-600">
                     <span className="material-symbols-outlined text-[24px]">auto_awesome</span>
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-[16px]">AI Map Analysis</h3>
-                    <p className="text-[12px] text-emerald-600 font-medium">{selectedCity?.name} Localities</p>
+                    <p className="text-[12px] text-rose-600 font-medium">{selectedCity?.name} Localities</p>
                   </div>
                 </div>
                 <button onClick={() => setShowSuggestionModal(false)} className="w-8 h-8 flex items-center justify-center text-slate-400 hover:bg-white rounded-full transition-colors">
@@ -358,7 +358,7 @@ export const AdminLocations = () => {
                           suggestions.forEach(s => all[s] = true);
                           setSelectedSuggestions(all);
                         }}
-                        className="text-[12px] text-emerald-600 font-bold hover:underline"
+                        className="text-[12px] text-rose-600 font-bold hover:underline"
                       >
                         Select All
                       </button>
@@ -370,12 +370,12 @@ export const AdminLocations = () => {
                           key={i} 
                           className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors border ${
                             exists ? "bg-slate-100 border-transparent opacity-60" 
-                            : selectedSuggestions[name] ? "bg-white border-emerald-500 shadow-sm" : "bg-white border-slate-100 hover:border-slate-300"
+                            : selectedSuggestions[name] ? "bg-white border-rose-600 shadow-sm" : "bg-white border-slate-100 hover:border-slate-300"
                           }`}
                         >
                           <input 
                             type="checkbox" 
-                            className="w-5 h-5 rounded-md text-emerald-500 focus:ring-emerald-500 border-slate-300 cursor-pointer"
+                            className="w-5 h-5 rounded-md text-rose-600 focus:ring-emerald-500 border-slate-300 cursor-pointer"
                             checked={!!selectedSuggestions[name] || exists}
                             disabled={exists}
                             onChange={(e) => {

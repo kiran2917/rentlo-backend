@@ -143,7 +143,7 @@ export const LeaseAgreement = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white gap-3">
-        <div className="w-10 h-10 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
+        <div className="w-10 h-10 rounded-full border-4 border-rose-600 border-t-transparent animate-spin" />
         <p className="text-sm font-extrabold text-emerald-400 tracking-wider">Generating Legal Lease Agreement...</p>
       </div>
     );
@@ -175,7 +175,7 @@ export const LeaseAgreement = () => {
   const docId = `IN-KA${property.id}2026RENT`;
 
   return (
-    <div className="min-h-screen font-sans bg-slate-950 text-slate-100 pb-20 selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen font-sans bg-slate-950 text-slate-100 pb-20 selection:bg-black selection:text-slate-950">
       {/* 1-PAGE A4 HIGH-PERFORMANCE PRINT CSS */}
       <style>{`
         @page {
@@ -234,7 +234,7 @@ export const LeaseAgreement = () => {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-black/20 text-emerald-400 border border-rose-600/30">
                 1-Page A4 Sheet Legal Builder
               </span>
             </div>
@@ -266,19 +266,19 @@ export const LeaseAgreement = () => {
 
         {/* Phase 2 E-Stamp Banner */}
         {platformSettings?.enable_e_stamp_agreements && (
-          <div className="max-w-6xl mx-auto mt-3 p-3 rounded-2xl bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg">
+          <div className="max-w-6xl mx-auto mt-3 p-3 rounded-2xl bg-emerald-950/90 border border-rose-600/40 text-emerald-300 flex flex-col md:flex-row items-center justify-between gap-3 shadow-lg">
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[24px] text-emerald-400">verified</span>
               <div>
                 <p className="text-[12px] font-bold text-white flex items-center gap-2">
                   Official State Govt E-Stamp Upgrade
-                  <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-extrabold">Active</span>
+                  <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-black text-slate-950 font-extrabold">Active</span>
                 </p>
               </div>
             </div>
             <button
               onClick={() => alert(`Triggering Razorpay payment of ₹${platformSettings.e_stamp_price || 499} for Govt E-Stamp procurement.`)}
-              className="px-4 py-1.5 bg-emerald-500 text-slate-950 text-[11px] font-extrabold rounded-xl shadow-lg transition-all cursor-pointer"
+              className="px-4 py-1.5 bg-black text-slate-950 text-[11px] font-extrabold rounded-xl shadow-lg transition-all cursor-pointer"
             >
               Upgrade to Govt E-Stamp (₹{platformSettings.e_stamp_price || 499})
             </button>
@@ -293,7 +293,7 @@ export const LeaseAgreement = () => {
               type="text"
               value={landlordName}
               onChange={(e) => setLandlordName(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
               placeholder="e.g., Dhruva"
             />
           </div>
@@ -303,7 +303,7 @@ export const LeaseAgreement = () => {
               type="text"
               value={landlordPhone}
               onChange={(e) => setLandlordPhone(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
               placeholder="e.g., 9902591115"
             />
           </div>
@@ -313,7 +313,7 @@ export const LeaseAgreement = () => {
               type="text"
               value={tenantName}
               onChange={(e) => setTenantName(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
               placeholder="e.g., Ramesh Kumar"
             />
           </div>
@@ -323,7 +323,7 @@ export const LeaseAgreement = () => {
               type="text"
               value={tenantPhone}
               onChange={(e) => setTenantPhone(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
               placeholder="e.g., 9876543210"
             />
           </div>
@@ -333,7 +333,7 @@ export const LeaseAgreement = () => {
               type="number"
               value={rentAmount}
               onChange={(e) => setRentAmount(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
             />
           </div>
           <div className="flex flex-col">
@@ -342,7 +342,7 @@ export const LeaseAgreement = () => {
               type="number"
               value={depositAmount}
               onChange={(e) => setDepositAmount(e.target.value)}
-              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 font-semibold"
+              className="bg-slate-950 text-white rounded-xl px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 font-semibold"
             />
           </div>
         </div>
@@ -367,7 +367,7 @@ export const LeaseAgreement = () => {
                   onClick={() => togglePresetRule(preset.text)}
                   className={`text-[10px] font-bold px-2 py-0.5 rounded border transition-all cursor-pointer ${
                     active
-                      ? "bg-emerald-500 text-slate-950 border-emerald-400 font-black shadow-xs"
+                      ? "bg-black text-slate-950 border-emerald-400 font-black shadow-xs"
                       : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
                   }`}
                 >
@@ -384,12 +384,12 @@ export const LeaseAgreement = () => {
               onChange={(e) => setNewRuleInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addCustomRule()}
               placeholder="Type custom house rule or clause..."
-              className="flex-1 bg-slate-900 rounded-lg px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-emerald-500 text-white font-medium"
+              className="flex-1 bg-slate-900 rounded-lg px-3 py-1.5 text-xs outline-none border border-slate-700 focus:border-rose-600 text-white font-medium"
             />
             <button
               type="button"
               onClick={addCustomRule}
-              className="px-3 py-1.5 bg-emerald-500 text-slate-950 text-xs font-black rounded-lg cursor-pointer hover:bg-emerald-400"
+              className="px-3 py-1.5 bg-black text-slate-950 text-xs font-black rounded-lg cursor-pointer hover:bg-emerald-400"
             >
               + Add Clause
             </button>

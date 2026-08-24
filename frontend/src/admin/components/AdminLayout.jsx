@@ -237,8 +237,8 @@ export const AdminLayout = ({ children, activeTab }) => {
           <div className="flex items-center gap-3">
             {isAgent && (
               user.kyc_status === 'verified' ? (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 font-extrabold text-[11px] uppercase tracking-widest shadow-sm">
-                  <span className="material-symbols-outlined text-[16px] text-emerald-600">verified</span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-600/30 bg-black/10 text-rose-600 font-extrabold text-[11px] uppercase tracking-widest shadow-sm">
+                  <span className="material-symbols-outlined text-[16px] text-rose-600">verified</span>
                   Verified Partner
                 </div>
               ) : (
