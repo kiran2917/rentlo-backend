@@ -174,6 +174,18 @@ export const OwnerLayout = () => {
         </Link>
       </div>
 
+      {/* Action Button: Post New Listing */}
+      <div className="px-3 mb-2 flex-shrink-0">
+        <Link
+          to="/owner/new-listing"
+          onClick={onNavClick}
+          className="w-full h-9 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white flex items-center justify-center gap-2 text-[12px] font-extrabold shadow-md transition-all cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[16px]">add_circle</span>
+          {t("owner.postNewListing", "Post New Listing")}
+        </Link>
+      </div>
+
       {/* Navigation Links - Full Vertical Flow */}
       <div className="flex-1 px-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
@@ -204,6 +216,20 @@ export const OwnerLayout = () => {
             </Link>
           );
         })}
+      </div>
+
+      {/* Sign Out Button at bottom of Sidebar */}
+      <div className="px-3 py-2.5 mt-auto border-t flex-shrink-0" style={{ borderColor: "var(--border)" }}>
+        <button
+          onClick={() => {
+            logout();
+            if (onNavClick) onNavClick();
+          }}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-bold text-red-500 hover:bg-red-500/10 transition-all cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[20px]">logout</span>
+          {t("owner.signOut", "Sign Out")}
+        </button>
       </div>
     </>
   );
