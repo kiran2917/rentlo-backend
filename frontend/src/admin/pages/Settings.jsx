@@ -648,7 +648,7 @@ export const Settings = () => {
             { id: "credentials", label: "API Credentials", icon: "vpn_key" },
             { id: "estamp", label: "E-Stamp & Legal", icon: "verified" },
             { id: "auth", label: "Auth & Security", icon: "security" },
-            { id: "theme", label: "Theme & Branding", icon: "palette" },
+            { id: "theme", label: "Company Branding", icon: "palette" },
             { id: "audit", label: "Audit Log Trail", icon: "history" },
           ].map((tab) => (
             <button
@@ -1723,7 +1723,7 @@ export const Settings = () => {
           </div>
         )}
 
-        {/* TAB 5: THEME & BRANDING */}
+        {/* TAB 5: COMPANY BRANDING */}
         {activeTab === "theme" && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div
@@ -1737,7 +1737,7 @@ export const Settings = () => {
                 <span className="material-symbols-outlined text-purple-500 text-[22px]">
                   palette
                 </span>
-                Platform Theme & Design System
+                Company Branding
               </h2>
               <div className="space-y-8">
                 {/* 0. COMPANY BRANDING */}
@@ -1823,144 +1823,7 @@ export const Settings = () => {
                   </div>
                 </div>
 
-                {/* 1. BUYER MARKETPLACE THEME SELECTION */}
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-indigo-600 text-[20px]">storefront</span>
-                    <h3 className="text-[15px] font-extrabold text-ink">1. Buyer Marketplace Theme</h3>
-                    <span className="text-[11px] font-medium text-text-muted">(Applies to public property search & tenant web portal)</span>
-                  </div>
-                  <div className="space-y-6">
-                    {["Minimal Style", "Bento Grid Style", "Luxury Typography Style", "Neo-Brutalism Style", "Cyberpunk Style", "Neumorphic Style"].map((groupName) => {
-                      const groupThemes = THEME_OPTIONS.filter((t) => t.styleGroup === groupName);
-                      return (
-                        <div key={groupName} className="p-4 rounded-2xl bg-surface-alt/40 border border-border/60">
-                          <h4 className="text-[11px] font-black uppercase tracking-widest text-indigo-500 mb-3 border-l-2 border-indigo-500 pl-2">
-                            {groupName}
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            {groupThemes.map((opt) => {
-                              const isSelected = buyerTheme === opt.id;
-                              return (
-                                <div
-                                  key={`buyer-${opt.id}`}
-                                  onClick={() => {
-                                    setBuyerTheme(opt.id);
-                                    localStorage.setItem("rentlo_buyer_theme", opt.id);
-                                    window.dispatchEvent(new Event("themeChange"));
-                                    toast.info(`Set Buyer Marketplace Theme to ${opt.label}!`);
-                                    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`, {
-                                      method: "PUT",
-                                      credentials: "include",
-                                      headers: { "Content-Type": "application/json" },
-                                      body: JSON.stringify({ buyer_theme: opt.id }),
-                                    }).catch(() => {});
-                                  }}
-                                  style={{
-                                    backgroundColor: opt.cardBg.startsWith("rgba") ? "transparent" : opt.cardBg,
-                                    borderColor: isSelected ? opt.accentColor : opt.borderColor,
-                                  }}
-                                  className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 shadow-sm ${
-                                    isSelected
-                                      ? "ring-4 ring-emerald-500/30 shadow-lg scale-[1.02]"
-                                      : "hover:border-slate-400 opacity-90 hover:opacity-100"
-                                  } ${opt.id.startsWith("glass") ? "backdrop-blur-md" : ""}`}
-                                >
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2.5">
-                                      <div
-                                        style={{ backgroundColor: opt.accentColor }}
-                                        className="w-6 h-6 rounded-full shadow-md border-2 border-white flex items-center justify-center flex-shrink-0"
-                                      >
-                                        {isSelected && <span className="material-symbols-outlined text-[13px] text-white font-bold">check</span>}
-                                      </div>
-                                      <span style={{ color: opt.titleColor }} className="text-[14px] font-extrabold">
-                                        {opt.label}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div style={{ color: opt.descColor }} className="text-[12px] font-semibold leading-relaxed">
-                                    {opt.desc}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
 
-                {/* 2. DASHBOARDS THEME SELECTION (OWNER & ADMIN CONSOLES) */}
-                <div className="pt-4 border-t border-border">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-indigo-500 text-[20px]">dashboard</span>
-                    <h3 className="text-[15px] font-extrabold text-ink">2. Consoles & Dashboards Theme</h3>
-                    <span className="text-[11px] font-medium text-text-muted">(Applies to Owner Console & Admin Console)</span>
-                  </div>
-                  <div className="space-y-6">
-                    {["Minimal Style", "Bento Grid Style", "Luxury Typography Style", "Neo-Brutalism Style", "Cyberpunk Style", "Neumorphic Style"].map((groupName) => {
-                      const groupThemes = THEME_OPTIONS.filter((t) => t.styleGroup === groupName);
-                      return (
-                        <div key={groupName} className="p-4 rounded-2xl bg-surface-alt/40 border border-border/60">
-                          <h4 className="text-[11px] font-black uppercase tracking-widest text-indigo-500 mb-3 border-l-2 border-indigo-500 pl-2">
-                            {groupName}
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            {groupThemes.map((opt) => {
-                              const isSelected = dashboardTheme === opt.id;
-                              return (
-                                <div
-                                  key={`dash-${opt.id}`}
-                                  onClick={() => {
-                                    setDashboardTheme(opt.id);
-                                    localStorage.setItem("rentlo_dashboard_theme", opt.id);
-                                    document.body.className = `theme-${opt.id.replace(/_/g, '-')}`;
-                                    window.dispatchEvent(new Event("themeChange"));
-                                    toast.info(`Set Consoles & Dashboards Theme to ${opt.label}!`);
-                                    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`, {
-                                      method: "PUT",
-                                      credentials: "include",
-                                      headers: { "Content-Type": "application/json" },
-                                      body: JSON.stringify({ dashboard_theme: opt.id }),
-                                    }).catch(() => {});
-                                  }}
-                                  style={{
-                                    backgroundColor: opt.cardBg.startsWith("rgba") ? "transparent" : opt.cardBg,
-                                    borderColor: isSelected ? opt.accentColor : opt.borderColor,
-                                  }}
-                                  className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 shadow-sm ${
-                                    isSelected
-                                      ? "ring-4 ring-cyan-500/30 shadow-lg scale-[1.02]"
-                                      : "hover:border-slate-400 opacity-90 hover:opacity-100"
-                                  } ${opt.id.startsWith("glass") ? "backdrop-blur-md" : ""}`}
-                                >
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2.5">
-                                      <div
-                                        style={{ backgroundColor: opt.accentColor }}
-                                        className="w-6 h-6 rounded-full shadow-md border-2 border-white flex items-center justify-center flex-shrink-0"
-                                      >
-                                        {isSelected && <span className="material-symbols-outlined text-[13px] text-white font-bold">check</span>}
-                                      </div>
-                                      <span style={{ color: opt.titleColor }} className="text-[14px] font-extrabold">
-                                        {opt.label}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div style={{ color: opt.descColor }} className="text-[12px] font-semibold leading-relaxed">
-                                    {opt.desc}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
