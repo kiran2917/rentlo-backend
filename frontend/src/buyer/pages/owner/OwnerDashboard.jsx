@@ -31,8 +31,6 @@ export const OwnerDashboard = () => {
   const [customPgCount, setCustomPgCount] = useState(0);
   const [customPgDuration, setCustomPgDuration] = useState(30);
   const [customCommercialCount, setCustomCommercialCount] = useState(0);
-  const [customAddonFeatured, setCustomAddonFeatured] = useState(false);
-  const [customAddonHero, setCustomAddonHero] = useState(false);
 
   const [editingBedProp, setEditingBedProp] = useState(null);
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
@@ -672,9 +670,7 @@ export const OwnerDashboard = () => {
       const customSubtotal =
         customHouseCount * housePrice +
         customPgCount * pgPrice +
-        customCommercialCount * commercialPrice +
-        (customAddonFeatured ? 99 : 0) +
-        (customAddonHero ? 199 : 0);
+        customCommercialCount * commercialPrice;
 
       const totalProps = customHouseCount + customPgCount + customCommercialCount;
       const customDiscountPercent = totalProps >= 3 ? 15 : 0;
@@ -1761,9 +1757,7 @@ export const OwnerDashboard = () => {
                     const customSubtotal =
                       customHouseCount * housePrice +
                       customPgCount * pgPrice +
-                      customCommercialCount * commercialPrice +
-                      (customAddonFeatured ? 99 : 0) +
-                      (customAddonHero ? 199 : 0);
+                      customCommercialCount * commercialPrice;
 
                     const totalProps = customHouseCount + customPgCount + customCommercialCount;
                     const customDiscountPercent = totalProps >= 3 ? 15 : 0;

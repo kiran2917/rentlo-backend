@@ -3320,9 +3320,7 @@ export const OwnerNewListing = () => {
                   const customSubtotal =
                     customHouseCount * housePrice +
                     customPgCount * pgPrice +
-                    customCommercialCount * commercialPrice +
-                    (customAddonFeatured ? 99 : 0) +
-                    (customAddonHero ? 199 : 0);
+                    customCommercialCount * commercialPrice;
 
                   const totalProps = customHouseCount + customPgCount + customCommercialCount;
                   const customDiscountPercent = totalProps >= 3 ? 15 : 0;
@@ -3608,48 +3606,7 @@ export const OwnerNewListing = () => {
                             </div>
                           </div>
 
-                          {/* Boost Add-ons Section */}
-                          <div className="space-y-3 mb-8">
-                            <h3 className="text-[11px] font-black text-slate-700 uppercase tracking-wider border-b border-slate-100 pb-2">
-                              2. Optional Visibility Boosts
-                            </h3>
 
-                            <label className="flex items-center justify-between p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl cursor-pointer hover:bg-indigo-500/10 transition-colors">
-                              <div className="flex items-center gap-3">
-                                <input
-                                  type="checkbox"
-                                  checked={customAddonFeatured}
-                                  onChange={(e) => setCustomAddonFeatured(e.target.checked)}
-                                  className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
-                                />
-                                <div>
-                                  <h4 className="text-[13px] font-extrabold text-slate-900 flex items-center gap-1.5">
-                                    ★ Priority Top Search Placement
-                                  </h4>
-                                  <p className="text-[11px] text-slate-500 font-medium">Pins your listings to top search results with a Featured Badge.</p>
-                                </div>
-                              </div>
-                              <span className="text-[13px] font-black text-indigo-600">+₹99</span>
-                            </label>
-
-                            <label className="flex items-center justify-between p-4 bg-purple-500/5 border border-purple-500/20 rounded-2xl cursor-pointer hover:bg-purple-500/10 transition-colors">
-                              <div className="flex items-center gap-3">
-                                <input
-                                  type="checkbox"
-                                  checked={customAddonHero}
-                                  onChange={(e) => setCustomAddonHero(e.target.checked)}
-                                  className="w-5 h-5 accent-purple-600 rounded cursor-pointer"
-                                />
-                                <div>
-                                  <h4 className="text-[13px] font-extrabold text-slate-900 flex items-center gap-1.5">
-                                    🌟 Homepage Hero Banner Spotlight
-                                  </h4>
-                                  <p className="text-[11px] text-slate-500 font-medium">Renders your property in top sliding banner on homepage.</p>
-                                </div>
-                              </div>
-                              <span className="text-[13px] font-black text-purple-600">+₹199</span>
-                            </label>
-                          </div>
 
                           {/* Live Discount & Total Card */}
                           <div className="p-6 bg-slate-900 text-white rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
