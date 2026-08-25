@@ -1902,7 +1902,7 @@ export const OwnerDashboard = () => {
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
       {/* Relist Confirmation Modal */}
       {relistTarget && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
