@@ -649,19 +649,19 @@ export const Home = () => {
           {/* Floating Action Pill for Mobile Filters/Map */}
           <div className="md:hidden flex justify-center w-full mb-6 z-30 relative">
             <div 
-              className="rounded-full px-4 py-2 flex items-center gap-4 shadow-[0_8px_30px_rgba(0,0,0,0.2)]  backdrop-blur-xl transition-all"
+              className="rounded-full px-3.5 py-1.5 flex items-center gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)]  backdrop-blur-xl transition-all"
               style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
             >
               <button 
                 onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
-                className="flex items-center gap-1.5 text-sm font-extrabold active:scale-95 transition-transform"
+                className="flex items-center gap-1.5 text-xs font-extrabold active:scale-95 transition-transform"
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[14px]">
                   {viewMode === "grid" ? "map" : "grid_view"}
                 </span>
                 {viewMode === "grid" ? "Map View" : "List View"}
               </button>
-              <div className="w-[1px] h-4" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
+              <div className="w-[1px] h-3" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
               <button 
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -671,9 +671,9 @@ export const Home = () => {
                     if (firstFilter) firstFilter.focus();
                   }, 400);
                 }}
-                className="flex items-center gap-2 text-sm font-bold active:scale-95 transition-transform"
+                className="flex items-center gap-1.5 text-xs font-bold active:scale-95 transition-transform"
               >
-                <span className="material-symbols-outlined text-lg">tune</span>
+                <span className="material-symbols-outlined text-[15px]">tune</span>
                 Filters
               </button>
             </div>
