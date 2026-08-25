@@ -2470,7 +2470,7 @@ export const NewListing = () => {
                     onClick={handleNext}
                     className="h-10 px-8 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-white text-[11px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-md cursor-pointer"
                   >
-                    Continue to Photos &amp; Audio
+                    Continue to Photos
                     <span className="material-symbols-outlined text-[20px]">
                       arrow_forward
                     </span>
@@ -2486,10 +2486,10 @@ export const NewListing = () => {
                     <span className="material-symbols-outlined text-[24px]" style={{ color: "var(--accent)" }}>
                       perm_media
                     </span>
-                    Photos &amp; Audio
+                    Photos
                   </h2>
                   <p className="text-[11px] font-medium mt-2" style={{ color: "var(--text-muted)" }}>
-                    Upload property photos and record optional audio notes.
+                    Upload property photos.
                   </p>
                 </div>
 
@@ -2550,53 +2550,7 @@ export const NewListing = () => {
                   )}
                 </div>
 
-                <div className="rounded-2xl p-4 sm:p-8 border shadow-inner mt-6" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-[9px] font-extrabold uppercase tracking-widest flex items-center gap-2" style={{ color: "var(--text-muted)" }}>
-                      <span className="material-symbols-outlined text-[16px]">
-                        mic
-                      </span>{" "}
-                      Audio Note (Optional)
-                    </h3>
-                  </div>
 
-                  {!audioURL ? (
-                    <div className="flex flex-col items-center justify-center p-4 sm:p-8 border rounded-xl shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
-                      <button
-                        type="button"
-                        onClick={isRecording ? stopRecording : startRecording}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all cursor-pointer ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-black/10 hover:bg-black/20 text-indigo-600 shadow-sm"}`}
-                      >
-                        <span className="material-symbols-outlined text-[32px]">
-                          {isRecording ? "stop" : "mic"}
-                        </span>
-                      </button>
-                      <p className="mt-4 text-[11px] font-bold" style={{ color: "var(--text-muted)" }}>
-                        {isRecording
-                          ? "Recording..."
-                          : "Click to record an audio note for the property"}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center p-4 sm:p-8 border border-slate-200 rounded-xl bg-white shadow-sm gap-4">
-                      <audio
-                        src={audioURL}
-                        controls
-                        className="w-full max-w-md"
-                      />
-                      <button
-                        type="button"
-                        onClick={clearRecording}
-                        className="text-[9px] font-extrabold text-red-500 uppercase tracking-widest hover:text-red-600 transition-colors flex items-center gap-1"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">
-                          delete
-                        </span>{" "}
-                        Remove Recording
-                      </button>
-                    </div>
-                  )}
-                </div>
 
                 <div className="flex justify-between items-center pt-6 border-t mt-6" style={{ borderColor: "var(--border)" }}>
                   <button

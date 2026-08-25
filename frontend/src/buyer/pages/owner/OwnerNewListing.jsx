@@ -2914,7 +2914,7 @@ export const OwnerNewListing = () => {
                     onClick={handleNext}
                     className="h-10 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
                   >
-                    Continue to Photos &amp; Audio
+                    Continue to Photos
                     <span className="material-symbols-outlined text-[20px]">
                       arrow_forward
                     </span>
@@ -2930,10 +2930,10 @@ export const OwnerNewListing = () => {
                     <span className="material-symbols-outlined text-indigo-600 text-[24px]">
                       perm_media
                     </span>
-                    Photos & Audio
+                    Photos
                   </h2>
                   <p className="text-[9px] font-medium text-slate-600 mt-2">
-                    Upload property photos and record optional audio notes.
+                    Upload property photos.
                   </p>
                 </div>
 
@@ -2993,53 +2993,7 @@ export const OwnerNewListing = () => {
                   )}
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 shadow-inner mt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[16px]">
-                        mic
-                      </span>{" "}
-                      Audio Note (Optional)
-                    </h3>
-                  </div>
 
-                  {!audioURL ? (
-                    <div className="flex flex-col items-center justify-center p-8 border border-slate-200 rounded-xl bg-white shadow-sm">
-                      <button
-                        type="button"
-                        onClick={isRecording ? stopRecording : startRecording}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isRecording ? "bg-red-100 text-red-600 animate-pulse ring-4 ring-red-100" : "bg-slate-50 hover:bg-slate-100 text-indigo-600 shadow-sm"}`}
-                      >
-                        <span className="material-symbols-outlined text-[32px]">
-                          {isRecording ? "stop" : "mic"}
-                        </span>
-                      </button>
-                      <p className="mt-4 text-[9px] font-bold text-slate-600">
-                        {isRecording
-                          ? "Recording..."
-                          : "Click to record an audio note for the property"}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center p-8 border border-slate-200 rounded-xl bg-white shadow-sm gap-4">
-                      <audio
-                        src={audioURL}
-                        controls
-                        className="w-full max-w-md"
-                      />
-                      <button
-                        type="button"
-                        onClick={clearRecording}
-                        className="text-[9px] font-extrabold text-red-500 uppercase tracking-widest hover:text-red-600 transition-colors flex items-center gap-1"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">
-                          delete
-                        </span>{" "}
-                        Remove Recording
-                      </button>
-                    </div>
-                  )}
-                </div>
 
                 <div className="flex justify-between items-center pt-6 border-t border-slate-100 mt-6">
                   <button
