@@ -3750,7 +3750,7 @@ export const OwnerNewListing = () => {
                           <div className="flex justify-center items-center pt-6 border-t border-slate-800/80 mt-6">
                             <button
                               type="button"
-                              onClick={() => goToStep(4)}
+                              onClick={() => setStep(-1)}
                               className="h-10 px-8 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-extrabold uppercase tracking-widest hover:bg-slate-700 hover:text-white transition-all shadow-sm flex items-center gap-2 text-[10px] cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
@@ -3833,7 +3833,7 @@ export const OwnerNewListing = () => {
                         <div className="flex justify-between items-center pt-6 border-t border-slate-100 mt-8">
                           <button
                             type="button"
-                            onClick={() => setStep(4)}
+                            onClick={() => setStep(-1)}
                             className="h-10 px-8 rounded-xl border border-slate-200 bg-white text-slate-600 font-extrabold uppercase tracking-widest hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm flex items-center gap-2 text-[9px]"
                           >
                             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
