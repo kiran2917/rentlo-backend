@@ -867,6 +867,12 @@ export const OwnerNewListing = () => {
   };
 
   useEffect(() => {
+    if (step === -1 && user && !isStaff) {
+      setStep(3);
+    }
+  }, [step, user, isStaff]);
+
+  useEffect(() => {
     if (user && step === 4) {
       let targetCat = "residential";
       if (formData.property_category === "commercial" || ["shop", "office", "warehouse", "showroom", "industrial", "commercial_building"].includes(formData.property_type)) {
@@ -1273,6 +1279,28 @@ export const OwnerNewListing = () => {
           return;
         }
       }
+    }
+    if (step === 3) {
+      if (isStaff) {
+        setStep(-1);
+        localStorage.setItem("owner_onboarding_step", "-1");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+    if (step === -1) {
+      if (consentMethod === "signature" && !signatureData) {
+        toast.warn("Please sign your consent signature.");
+        return;
+      }
+      if (consentMethod === "photo" && !proofPhoto) {
+        toast.warn("Please upload a proof of identity document.");
+        return;
+      }
+      setStep(4);
+      localStorage.setItem("owner_onboarding_step", "4");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
     setStep((prev) => {
       const nextStep = Math.min(4, prev + 1);
@@ -1785,8 +1813,9 @@ export const OwnerNewListing = () => {
               "Plans & Payment",
             ].map((stepName, idx) => {
               const stepNum = idx + 1;
-              const isCompleted = step > stepNum;
-              const isActive = step === stepNum;
+              const currentStepNum = step === -1 ? 3.5 : step;
+              const isCompleted = currentStepNum > stepNum;
+              const isActive = Math.floor(currentStepNum) === stepNum;
               return (
                 <div
                   key={stepName}
@@ -1813,10 +1842,10 @@ export const OwnerNewListing = () => {
                   </div>
                   <span
                     className={`hidden sm:block text-[9px] font-extrabold text-center uppercase tracking-widest transition-colors duration-300 drop-shadow-sm ${
-                      isCompleted
-                        ? "text-slate-800"
-                        : isActive
-                          ? "text-slate-900"
+                      isActive
+                        ? "text-slate-900"
+                        : isCompleted
+                          ? "text-slate-800"
                           : "text-slate-500"
                     }`}
                   >
@@ -3027,7 +3056,7 @@ export const OwnerNewListing = () => {
                     onClick={handleNext}
                     className="h-10 px-8 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
                   >
-                    Continue to Consent
+                    {isStaff ? "Continue to Consent" : "Continue to Payment"}
                     <span className="material-symbols-outlined text-[20px]">
                       arrow_forward
                     </span>
@@ -3750,7 +3779,7 @@ export const OwnerNewListing = () => {
                           <div className="flex justify-center items-center pt-6 border-t border-slate-800/80 mt-6">
                             <button
                               type="button"
-                              onClick={() => setStep(-1)}
+                              onClick={() => setStep(isStaff ? -1 : 3)}
                               className="h-10 px-8 rounded-xl border border-slate-700 bg-slate-800 text-slate-300 font-extrabold uppercase tracking-widest hover:bg-slate-700 hover:text-white transition-all shadow-sm flex items-center gap-2 text-[10px] cursor-pointer"
                             >
                               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
@@ -3833,7 +3862,7 @@ export const OwnerNewListing = () => {
                         <div className="flex justify-between items-center pt-6 border-t border-slate-100 mt-8">
                           <button
                             type="button"
-                            onClick={() => setStep(-1)}
+                            onClick={() => setStep(isStaff ? -1 : 3)}
                             className="h-10 px-8 rounded-xl border border-slate-200 bg-white text-slate-600 font-extrabold uppercase tracking-widest hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm flex items-center gap-2 text-[9px]"
                           >
                             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
