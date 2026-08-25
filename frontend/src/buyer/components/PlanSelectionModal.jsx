@@ -943,7 +943,7 @@ export const PlanSelectionModal = ({
               </p>
             </div>
 
-            <div className="flex justify-center mb-6">
+            <div className="flex flex-col items-center gap-3 mb-6">
               <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm inline-block">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
@@ -953,6 +953,13 @@ export const PlanSelectionModal = ({
                   className="w-48 h-48 rounded-lg"
                 />
               </div>
+              <a
+                href={`upi://pay?pa=${upiOrderData?.upi_merchant_id || 'merchant@upi'}&pn=Rentlo&am=${upiOrderData?.amount}&cu=INR`}
+                className="w-full max-w-[240px] h-11 bg-slate-950 hover:bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-bold transition-all shadow-md cursor-pointer no-underline"
+              >
+                <span className="material-symbols-outlined text-[18px]">touch_app</span>
+                Pay ₹{upiOrderData?.amount} via GPay / PhonePe
+              </a>
             </div>
 
             <form onSubmit={handleSubmitUtr} className="space-y-4">
