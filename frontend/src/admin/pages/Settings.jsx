@@ -249,6 +249,14 @@ export const Settings = () => {
   const [validityAptPg10Pack, setValidityAptPg10Pack] = useState("180");
 
   const [ownerOnboardingFee, setOwnerOnboardingFee] = useState("0");
+  const [pgCustomDuration1Days, setPgCustomDuration1Days] = useState("30");
+  const [pgCustomDuration1Price, setPgCustomDuration1Price] = useState("0");
+  const [pgCustomDuration2Days, setPgCustomDuration2Days] = useState("60");
+  const [pgCustomDuration2Price, setPgCustomDuration2Price] = useState("49");
+  const [pgCustomDuration3Days, setPgCustomDuration3Days] = useState("90");
+  const [pgCustomDuration3Price, setPgCustomDuration3Price] = useState("89");
+  const [pgCustomDuration4Days, setPgCustomDuration4Days] = useState("180");
+  const [pgCustomDuration4Price, setPgCustomDuration4Price] = useState("149");
   const [bypassBuyer, setBypassBuyer] = useState(false);
   const [bypassOwner, setBypassOwner] = useState(false);
   
@@ -433,6 +441,14 @@ export const Settings = () => {
         setOwnerComboDiscount(data.owner_combo_discount_percent != null ? data.owner_combo_discount_percent : "15");
 
         setOwnerOnboardingFee(data.owner_onboarding_fee != null ? data.owner_onboarding_fee : "0");
+        setPgCustomDuration1Days(data.pg_custom_duration_1_days != null ? data.pg_custom_duration_1_days.toString() : "30");
+        setPgCustomDuration1Price(data.pg_custom_duration_1_price != null ? data.pg_custom_duration_1_price.toString() : "0");
+        setPgCustomDuration2Days(data.pg_custom_duration_2_days != null ? data.pg_custom_duration_2_days.toString() : "60");
+        setPgCustomDuration2Price(data.pg_custom_duration_2_price != null ? data.pg_custom_duration_2_price.toString() : "49");
+        setPgCustomDuration3Days(data.pg_custom_duration_3_days != null ? data.pg_custom_duration_3_days.toString() : "90");
+        setPgCustomDuration3Price(data.pg_custom_duration_3_price != null ? data.pg_custom_duration_3_price.toString() : "89");
+        setPgCustomDuration4Days(data.pg_custom_duration_4_days != null ? data.pg_custom_duration_4_days.toString() : "180");
+        setPgCustomDuration4Price(data.pg_custom_duration_4_price != null ? data.pg_custom_duration_4_price.toString() : "149");
         setValidityAptPg1Pack(data.validity_apt_pg_1pack_days != null ? data.validity_apt_pg_1pack_days.toString() : (data.validity_apt_pg_days != null ? data.validity_apt_pg_days.toString() : "60"));
         setValidityAptPg3Pack(data.validity_apt_pg_3pack_days != null ? data.validity_apt_pg_3pack_days.toString() : "60");
         setValidityAptPg6Pack(data.validity_apt_pg_6pack_days != null ? data.validity_apt_pg_6pack_days.toString() : "90");
@@ -534,6 +550,14 @@ export const Settings = () => {
           owner_combo_discount_percent: parseFloat(ownerComboDiscount) || 15,
 
           owner_onboarding_fee: parseFloat(ownerOnboardingFee) || 0,
+          pg_custom_duration_1_days: parseInt(pgCustomDuration1Days) || 30,
+          pg_custom_duration_1_price: parseFloat(pgCustomDuration1Price) || 0,
+          pg_custom_duration_2_days: parseInt(pgCustomDuration2Days) || 60,
+          pg_custom_duration_2_price: parseFloat(pgCustomDuration2Price) || 49,
+          pg_custom_duration_3_days: parseInt(pgCustomDuration3Days) || 90,
+          pg_custom_duration_3_price: parseFloat(pgCustomDuration3Price) || 89,
+          pg_custom_duration_4_days: parseInt(pgCustomDuration4Days) || 180,
+          pg_custom_duration_4_price: parseFloat(pgCustomDuration4Price) || 149,
           validity_residential_days: 0,
           validity_apt_pg_days: parseInt(validityAptPg1Pack) || 60,
           validity_apt_pg_1pack_days: parseInt(validityAptPg1Pack) || 60,
@@ -882,6 +906,81 @@ export const Settings = () => {
                     <div>
                       <label className="text-[10px] font-bold uppercase tracking-widest text-orange-600 block mb-1">Validity (Days)</label>
                       <input type="number" value={validityAptPg10Pack} onChange={(e) => setValidityAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Apartment / PG Custom Build Timings & Upgrade Prices */}
+              <div className="mb-6 p-5 rounded-2xl border-2 border-indigo-500/20 bg-indigo-500/[0.02]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <h3 className="text-[14px] font-extrabold text-ink flex items-center gap-2">
+                    🛠️ Apartment / PG Custom Build-Your-Own Duration & Upgrade Prices
+                  </h3>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 text-[11px] font-extrabold uppercase tracking-wider self-start sm:self-auto">
+                    <span className="material-symbols-outlined text-[14px]">tune</span>
+                    Configurable Upgrade Packs
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Slot 1 */}
+                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                      <span>Slot 1 Duration</span>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                      <input type="number" value={pgCustomDuration1Days} onChange={(e) => setPgCustomDuration1Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                      <input type="number" value={pgCustomDuration1Price} onChange={(e) => setPgCustomDuration1Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                  </div>
+
+                  {/* Slot 2 */}
+                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                      <span>Slot 2 Duration</span>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                      <input type="number" value={pgCustomDuration2Days} onChange={(e) => setPgCustomDuration2Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                      <input type="number" value={pgCustomDuration2Price} onChange={(e) => setPgCustomDuration2Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                  </div>
+
+                  {/* Slot 3 */}
+                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                      <span>Slot 3 Duration</span>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                      <input type="number" value={pgCustomDuration3Days} onChange={(e) => setPgCustomDuration3Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                      <input type="number" value={pgCustomDuration3Price} onChange={(e) => setPgCustomDuration3Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                  </div>
+
+                  {/* Slot 4 */}
+                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                      <span>Slot 4 Duration</span>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                      <input type="number" value={pgCustomDuration4Days} onChange={(e) => setPgCustomDuration4Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                      <input type="number" value={pgCustomDuration4Price} onChange={(e) => setPgCustomDuration4Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
                     </div>
                   </div>
                 </div>

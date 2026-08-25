@@ -246,7 +246,12 @@ export const OwnerNewListing = () => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data) setPlatformSettings(data);
+        if (data) {
+          setPlatformSettings(data);
+          if (data.pg_custom_duration_1_days) {
+            setCustomPgDuration(Number(data.pg_custom_duration_1_days));
+          }
+        }
       })
       .catch((err) => console.error(err));
 
@@ -3312,7 +3317,25 @@ export const OwnerNewListing = () => {
                   const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
                   const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
 
-                  const pgDurationFee = customPgDuration === 60 ? 49 : customPgDuration === 90 ? 89 : customPgDuration === 180 ? 149 : 0;
+                  const d1Days = Number(platformSettings?.pg_custom_duration_1_days) || 30;
+                  const d1Price = Number(platformSettings?.pg_custom_duration_1_price) || 0;
+                  const d2Days = Number(platformSettings?.pg_custom_duration_2_days) || 60;
+                  const d2Price = Number(platformSettings?.pg_custom_duration_2_price) || 49;
+                  const d3Days = Number(platformSettings?.pg_custom_duration_3_days) || 90;
+                  const d3Price = Number(platformSettings?.pg_custom_duration_3_price) || 89;
+                  const d4Days = Number(platformSettings?.pg_custom_duration_4_days) || 180;
+                  const d4Price = Number(platformSettings?.pg_custom_duration_4_price) || 149;
+
+                  let pgDurationFee = d1Price;
+                  if (customPgDuration === d2Days) {
+                    pgDurationFee = d2Price;
+                  } else if (customPgDuration === d3Days) {
+                    pgDurationFee = d3Price;
+                  } else if (customPgDuration === d4Days) {
+                    pgDurationFee = d4Price;
+                  } else if (customPgDuration === d1Days) {
+                    pgDurationFee = d1Price;
+                  }
 
                   const customSubtotal =
                     customHouseCount * housePrice +
@@ -3581,10 +3604,10 @@ export const OwnerNewListing = () => {
                                 </span>
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   {[
-                                    { days: 30, label: "30 Days", fee: "+₹0" },
-                                    { days: 60, label: "60 Days", fee: "+₹49" },
-                                    { days: 90, label: "90 Days", fee: "+₹89" },
-                                    { days: 180, label: "6 Months", fee: "+₹149" },
+                                    { days: Number(platformSettings?.pg_custom_duration_1_days) || 30, label: `${platformSettings?.pg_custom_duration_1_days || 30} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_1_price) || 0}` },
+                                    { days: Number(platformSettings?.pg_custom_duration_2_days) || 60, label: `${platformSettings?.pg_custom_duration_2_days || 60} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_2_price) || 49}` },
+                                    { days: Number(platformSettings?.pg_custom_duration_3_days) || 90, label: `${platformSettings?.pg_custom_duration_3_days || 90} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_3_price) || 89}` },
+                                    { days: Number(platformSettings?.pg_custom_duration_4_days) || 180, label: `${Number(platformSettings?.pg_custom_duration_4_days) === 180 ? "6 Months" : (platformSettings?.pg_custom_duration_4_days + " Days")}`, fee: `+₹${Number(platformSettings?.pg_custom_duration_4_price) || 149}` },
                                   ].map((d) => (
                                     <button
                                       key={d.days}

@@ -1156,6 +1156,16 @@ class PlatformSettingsView(views.APIView):
             'validity_apt_pg_6pack_days': settings.validity_apt_pg_6pack_days,
             'validity_apt_pg_10pack_days': settings.validity_apt_pg_10pack_days,
             'validity_commercial_days': settings.validity_commercial_days,
+
+            # Custom PG/Apartment durations & pricing
+            'pg_custom_duration_1_days': settings.pg_custom_duration_1_days,
+            'pg_custom_duration_1_price': settings.pg_custom_duration_1_price,
+            'pg_custom_duration_2_days': settings.pg_custom_duration_2_days,
+            'pg_custom_duration_2_price': settings.pg_custom_duration_2_price,
+            'pg_custom_duration_3_days': settings.pg_custom_duration_3_days,
+            'pg_custom_duration_3_price': settings.pg_custom_duration_3_price,
+            'pg_custom_duration_4_days': settings.pg_custom_duration_4_days,
+            'pg_custom_duration_4_price': settings.pg_custom_duration_4_price,
         }
 
         # Admin-only fields: bypass flags must never be exposed publicly
@@ -1207,7 +1217,11 @@ class PlatformSettingsView(views.APIView):
             'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements',
             'validity_residential_days', 'validity_apt_pg_days',
             'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
-            'validity_commercial_days'
+            'validity_commercial_days',
+            'pg_custom_duration_1_days', 'pg_custom_duration_1_price',
+            'pg_custom_duration_2_days', 'pg_custom_duration_2_price',
+            'pg_custom_duration_3_days', 'pg_custom_duration_3_price',
+            'pg_custom_duration_4_days', 'pg_custom_duration_4_price'
         ]
         
         # 1. Audit Log Tracking: Compare old vs new BEFORE mutating (strict normalization)
@@ -1293,6 +1307,25 @@ class PlatformSettingsView(views.APIView):
             settings.validity_apt_pg_10pack_days = int(request.data.get('validity_apt_pg_10pack_days', settings.validity_apt_pg_10pack_days))
         if 'validity_commercial_days' in request.data:
             settings.validity_commercial_days = int(request.data.get('validity_commercial_days', settings.validity_commercial_days))
+
+        from decimal import Decimal
+        if 'pg_custom_duration_1_days' in request.data:
+            settings.pg_custom_duration_1_days = int(request.data.get('pg_custom_duration_1_days'))
+        if 'pg_custom_duration_1_price' in request.data:
+            settings.pg_custom_duration_1_price = Decimal(request.data.get('pg_custom_duration_1_price'))
+        if 'pg_custom_duration_2_days' in request.data:
+            settings.pg_custom_duration_2_days = int(request.data.get('pg_custom_duration_2_days'))
+        if 'pg_custom_duration_2_price' in request.data:
+            settings.pg_custom_duration_2_price = Decimal(request.data.get('pg_custom_duration_2_price'))
+        if 'pg_custom_duration_3_days' in request.data:
+            settings.pg_custom_duration_3_days = int(request.data.get('pg_custom_duration_3_days'))
+        if 'pg_custom_duration_3_price' in request.data:
+            settings.pg_custom_duration_3_price = Decimal(request.data.get('pg_custom_duration_3_price'))
+        if 'pg_custom_duration_4_days' in request.data:
+            settings.pg_custom_duration_4_days = int(request.data.get('pg_custom_duration_4_days'))
+        if 'pg_custom_duration_4_price' in request.data:
+            settings.pg_custom_duration_4_price = Decimal(request.data.get('pg_custom_duration_4_price'))
+
         settings.buyer_theme = request.data.get('buyer_theme', settings.buyer_theme)
         settings.dashboard_theme = request.data.get('dashboard_theme', settings.dashboard_theme)
         if 'buyer_theme' in request.data:

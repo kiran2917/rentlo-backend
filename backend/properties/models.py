@@ -328,6 +328,16 @@ class PlatformSettings(models.Model):
     validity_apt_pg_3pack_days = models.IntegerField(default=60)
     validity_apt_pg_6pack_days = models.IntegerField(default=90)
     validity_apt_pg_10pack_days = models.IntegerField(default=180)
+    
+    # Custom PG/Apartment durations & pricing extensions
+    pg_custom_duration_1_days = models.IntegerField(default=30)
+    pg_custom_duration_1_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    pg_custom_duration_2_days = models.IntegerField(default=60)
+    pg_custom_duration_2_price = models.DecimalField(max_digits=10, decimal_places=2, default=49.00)
+    pg_custom_duration_3_days = models.IntegerField(default=90)
+    pg_custom_duration_3_price = models.DecimalField(max_digits=10, decimal_places=2, default=89.00)
+    pg_custom_duration_4_days = models.IntegerField(default=180)
+    pg_custom_duration_4_price = models.DecimalField(max_digits=10, decimal_places=2, default=149.00)
     validity_commercial_days = models.IntegerField(default=0)  # 0 = Unlimited / Until Rented
 
     owner_onboarding_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
