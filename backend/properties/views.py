@@ -386,7 +386,59 @@ class InitiateOwnerPassOrderView(views.APIView):
         from properties.models import PlatformSettings
         ps = PlatformSettings.load()
 
-        if plan_id == 'single':
+        if plan_id == 'custom':
+            price = float(request.data.get('amount', 0))
+            credits_count = int(request.data.get('credits_count', 0))
+            custom_passes = request.data.get('custom_passes', [])
+            
+            if ps.bypass_owner_payment:
+                from unlocks.models import OwnerListingPass
+                for item in custom_passes:
+                    cat = item.get('category')
+                    cnt = int(item.get('credits', 0))
+                    if cnt > 0:
+                        OwnerListingPass.objects.create(
+                            owner=request.user,
+                            plan_id='custom',
+                            category=cat,
+                            credits_total=cnt,
+                            credits_remaining=cnt,
+                            amount_paid=0.00,
+                            status='active'
+                        )
+                return Response({
+                    'bypassed': True,
+                    'detail': f'🎉 Custom passes activated successfully! {credits_count} credits added.'
+                })
+
+            if getattr(ps, 'owner_payment_gateway', 'razorpay') == 'upi':
+                from unlocks.models import OwnerListingPass
+                import uuid
+                group_order_id = f"custom_order_{uuid.uuid4().hex[:12]}"
+                for item in custom_passes:
+                    cat = item.get('category')
+                    cnt = int(item.get('credits', 0))
+                    if cnt > 0:
+                        OwnerListingPass.objects.create(
+                            owner=request.user,
+                            plan_id='custom',
+                            category=cat,
+                            credits_total=cnt,
+                            credits_remaining=cnt,
+                            amount_paid=0.00,
+                            order_id=group_order_id,
+                            status='pending',
+                            payment_method='upi'
+                        )
+                return Response({
+                    'payment_gateway': 'upi',
+                    'amount': price,
+                    'upi_merchant_id': ps.default_upi_id or 'merchant@upi',
+                    'plan_id': 'custom',
+                    'order_id': group_order_id,
+                    'credits_count': credits_count
+                })
+        elif plan_id == 'single':
             if category == 'residential':
                 price = float(ps.owner_residential_fee)
             elif category == 'commercial':
@@ -461,15 +513,19 @@ class InitiateOwnerPassOrderView(views.APIView):
         try:
             import razorpay
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            notes = {
+                'owner_id': str(request.user.id),
+                'plan_id': plan_id,
+                'credits_count': str(credits_count)
+            }
+            if plan_id == 'custom':
+                import json
+                notes['custom_passes'] = json.dumps(custom_passes)
             order = client.order.create({
                 'amount': amount_paise,
                 'currency': 'INR',
                 'payment_capture': '1',
-                'notes': {
-                    'owner_id': str(request.user.id),
-                    'plan_id': plan_id,
-                    'credits_count': str(credits_count)
-                }
+                'notes': notes
             })
             return Response({
                 'payment_gateway': 'razorpay',
@@ -498,19 +554,35 @@ class VerifyOwnerPassOrderView(views.APIView):
                 return Response({'detail': 'UTR is required for UPI payments.'}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 from unlocks.models import OwnerListingPass
-                p = OwnerListingPass.objects.filter(
-                    owner=request.user, 
-                    plan_id=plan_id, 
-                    category=category, 
-                    status='pending', 
-                    payment_method='upi'
-                ).latest('id')
-                
-                # Instantly activate for MVP
-                p.utr = utr
-                p.status = 'active'
-                p.save()
-                return Response({'detail': 'Pass activated successfully via UPI!', 'pass_id': p.id})
+                if plan_id == 'custom':
+                    order_id = request.data.get('order_id')
+                    passes = OwnerListingPass.objects.filter(
+                        owner=request.user,
+                        order_id=order_id,
+                        status='pending',
+                        payment_method='upi'
+                    )
+                    if not passes.exists():
+                        return Response({'detail': 'No pending custom pass order found.'}, status=status.HTTP_404_NOT_FOUND)
+                    for p in passes:
+                        p.utr = utr
+                        p.status = 'active'
+                        p.save()
+                    return Response({'detail': 'Custom passes activated successfully via UPI!', 'order_id': order_id})
+                else:
+                    p = OwnerListingPass.objects.filter(
+                        owner=request.user, 
+                        plan_id=plan_id, 
+                        category=category, 
+                        status='pending', 
+                        payment_method='upi'
+                    ).latest('id')
+                    
+                    # Instantly activate for MVP
+                    p.utr = utr
+                    p.status = 'active'
+                    p.save()
+                    return Response({'detail': 'Pass activated successfully via UPI!', 'pass_id': p.id})
             except OwnerListingPass.DoesNotExist:
                 return Response({'detail': 'No pending pass found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -536,17 +608,35 @@ class VerifyOwnerPassOrderView(views.APIView):
             if OwnerListingPass.objects.filter(gateway_txn_id=payment_id).exists():
                 return Response({'detail': 'This transaction has already been credited.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            p = OwnerListingPass.objects.create(
-                owner=request.user,
-                plan_id=plan_id,
-                category=category,
-                credits_total=credits_count,
-                credits_remaining=credits_count,
-                amount_paid=request.data.get('amount', 0),
-                order_id=order_id,
-                gateway_txn_id=payment_id,
-                status='active'
-            )
+            if plan_id == 'custom':
+                custom_passes = request.data.get('custom_passes', [])
+                for item in custom_passes:
+                    cat = item.get('category')
+                    cnt = int(item.get('credits', 0))
+                    if cnt > 0:
+                        OwnerListingPass.objects.create(
+                            owner=request.user,
+                            plan_id='custom',
+                            category=cat,
+                            credits_total=cnt,
+                            credits_remaining=cnt,
+                            amount_paid=0.00,
+                            order_id=order_id,
+                            gateway_txn_id=payment_id,
+                            status='active'
+                        )
+            else:
+                p = OwnerListingPass.objects.create(
+                    owner=request.user,
+                    plan_id=plan_id,
+                    category=category,
+                    credits_total=credits_count,
+                    credits_remaining=credits_count,
+                    amount_paid=request.data.get('amount', 0),
+                    order_id=order_id,
+                    gateway_txn_id=payment_id,
+                    status='active'
+                )
             
             # Create system notification for payment success
             from notifications.models import Notification

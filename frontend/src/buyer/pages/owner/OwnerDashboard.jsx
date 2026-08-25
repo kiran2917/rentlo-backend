@@ -26,6 +26,14 @@ export const OwnerDashboard = () => {
   const [isVerifyingUtr, setIsVerifyingUtr] = useState(false);
   const [successPassId, setSuccessPassId] = useState(null);
 
+  // Custom Plan Builder State for Passes Refill
+  const [customHouseCount, setCustomHouseCount] = useState(1);
+  const [customPgCount, setCustomPgCount] = useState(0);
+  const [customPgDuration, setCustomPgDuration] = useState(30);
+  const [customCommercialCount, setCustomCommercialCount] = useState(0);
+  const [customAddonFeatured, setCustomAddonFeatured] = useState(false);
+  const [customAddonHero, setCustomAddonHero] = useState(false);
+
   const [editingBedProp, setEditingBedProp] = useState(null);
   const [bedForm, setBedForm] = useState({ total_beds: 0, available_beds: 0 });
   const [updatingBeds, setUpdatingBeds] = useState(false);
@@ -262,7 +270,12 @@ export const OwnerDashboard = () => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data) setPlatformSettings(data);
+        if (data) {
+          setPlatformSettings(data);
+          if (data.pg_custom_duration_1_days) {
+            setCustomPgDuration(Number(data.pg_custom_duration_1_days));
+          }
+        }
       })
       .catch((err) => console.error("Could not fetch platform settings:", err));
   };
@@ -532,7 +545,8 @@ export const OwnerDashboard = () => {
           category: selectedPassCategory,
           credits_count: upiOrderData.credits_count,
           payment_method: 'upi',
-          utr: utrNumber
+          utr: utrNumber,
+          order_id: upiOrderData.order_id
         })
       });
       const verifyData = await res.json();
@@ -643,6 +657,137 @@ export const OwnerDashboard = () => {
       paymentObject.open();
     } catch (err) {
       toast.error(err.message || "Failed to purchase pass");
+    } finally {
+      setBuyingPassLoading(false);
+    }
+  };
+
+  const handleBuyCustomPass = async () => {
+    setBuyingPassLoading(true);
+    try {
+      const housePrice = Number(platformSettings?.owner_residential_fee) || 99;
+      const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
+      const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
+
+      const customSubtotal =
+        customHouseCount * housePrice +
+        customPgCount * pgPrice +
+        customCommercialCount * commercialPrice +
+        (customAddonFeatured ? 99 : 0) +
+        (customAddonHero ? 199 : 0);
+
+      const totalProps = customHouseCount + customPgCount + customCommercialCount;
+      const customDiscountPercent = totalProps >= 3 ? 15 : 0;
+      const customDiscountAmount = Math.round((customSubtotal * customDiscountPercent) / 100);
+      const customFinalAmount = Math.max(0, customSubtotal - customDiscountAmount);
+
+      if (customFinalAmount <= 0) {
+        toast.warn("Please select at least 1 property credit to purchase.");
+        return;
+      }
+
+      // Build custom passes array
+      const customPasses = [];
+      if (customHouseCount > 0) {
+        customPasses.push({ category: 'residential', credits: customHouseCount });
+      }
+      if (customPgCount > 0) {
+        customPasses.push({ category: 'apartment', credits: customPgCount });
+      }
+      if (customCommercialCount > 0) {
+        customPasses.push({ category: 'commercial', credits: customCommercialCount });
+      }
+
+      const payload = {
+        plan_id: 'custom',
+        category: 'custom',
+        amount: customFinalAmount,
+        credits_count: totalProps,
+        custom_passes: customPasses
+      };
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/owner-passes/initiate/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to initiate custom order.");
+      }
+
+      const data = await res.json();
+
+      if (data.bypassed) {
+        toast.success(data.detail || "🎉 Custom passes activated successfully!");
+        setShowCreditsModal(false);
+        fetchProperties();
+        return;
+      }
+
+      if (data.payment_gateway === 'upi') {
+        setUpiOrderData(data);
+        setShowUpiModal(true);
+        return;
+      }
+
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        toast.error("Razorpay SDK failed to load.");
+        return;
+      }
+
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: "INR",
+        name: "Rentlo Owner Listing Pass",
+        description: `Custom Pass Refill (${totalProps} Credits)`,
+        order_id: data.order_id,
+        handler: async (response) => {
+          try {
+            const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/properties/owner-passes/verify/`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                order_id: response.razorpay_order_id,
+                payment_id: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+                plan_id: 'custom',
+                category: 'custom',
+                credits_count: totalProps,
+                amount: customFinalAmount,
+                custom_passes: customPasses
+              }),
+            });
+
+            if (verifyRes.ok) {
+              const verifyData = await verifyRes.json();
+              toast.success(`🎉 Custom passes activated successfully!`);
+              setShowCreditsModal(false);
+              fetchProperties();
+            } else {
+              toast.error("Payment verification failed.");
+            }
+          } catch (e) {
+            toast.error("Verification error: " + e.message);
+          }
+        },
+        prefill: {
+          name: user?.first_name || user?.username,
+          email: user?.email,
+          contact: user?.phone,
+        },
+        theme: { color: "#10b981" },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (err) {
+      toast.error(err.message || "Failed to purchase custom passes");
     } finally {
       setBuyingPassLoading(false);
     }
@@ -1420,7 +1565,7 @@ export const OwnerDashboard = () => {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {Object.keys(CATEGORY_PLANS).map((catKey) => {
                     const catObj = CATEGORY_PLANS[catKey];
                     const isSelected = selectedPassCategory === catKey;
@@ -1455,12 +1600,234 @@ export const OwnerDashboard = () => {
                       </button>
                     );
                   })}
+                  
+                  {/* Custom Plan Builder Refill Card */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPassCategory('custom')}
+                    className="p-4 rounded-2xl border text-left transition-all cursor-pointer relative flex flex-col justify-between hover:border-indigo-600 bg-indigo-500/[0.02]"
+                    style={{ borderColor: "rgba(99, 102, 241, 0.2)", color: "#475569" }}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-xl text-indigo-600">
+                          tune
+                        </span>
+                        <span className="font-black text-sm" style={{ color: "#4f46e5" }}>Custom Builder</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[8px] font-black bg-indigo-600 text-white uppercase tracking-wider">
+                        ⚡ Custom
+                      </span>
+                    </div>
+                    <p className="text-xs leading-relaxed line-clamp-2 opacity-80">Build a customized mix of residential, PG, and commercial passes for maximum flexibility.</p>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Custom Refill Pass Builder Section */}
+            {selectedPassCategory === 'custom' && (
+              <div className="mt-8 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                {/* Back button */}
+                <div className="flex items-center gap-2 pb-4" style={{ borderBottom: "1px solid #e2e8f0" }}>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPassCategory(null)}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-extrabold uppercase tracking-widest text-slate-700 transition-all cursor-pointer shadow-sm hover:scale-102 w-fit"
+                  >
+                    <span className="material-symbols-outlined text-base font-black">arrow_back</span>
+                    Back
+                  </button>
+                  <div className="flex items-start gap-2 pt-1">
+                    <span className="material-symbols-outlined text-black text-xl shrink-0 mt-1">tune</span>
+                    <h4 className="text-sm font-black uppercase tracking-wider leading-snug" style={{ color: "#0F172A" }}>
+                      Custom Build-Your-Own Refill Plan
+                    </h4>
+                  </div>
+                </div>
+
+                {/* The Custom Builder Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Left Side: Select Quantities */}
+                  <div className="space-y-6">
+                    <h5 className="text-[10px] font-black uppercase tracking-wider text-slate-400">1. Select Property Quantities</h5>
+                    
+                    {/* Residential */}
+                    {(() => {
+                      const housePrice = Number(platformSettings?.owner_residential_fee) || 99;
+                      return (
+                        <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
+                          <div>
+                            <h6 className="font-extrabold text-[13px] text-slate-900 flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-indigo-600 text-[18px]">home</span>
+                              Residential House / Villa
+                            </h6>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{housePrice} per property (Unlimited Validity)</span>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                            <button
+                              type="button"
+                              onClick={() => setCustomHouseCount(Math.max(0, customHouseCount - 1))}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              -
+                            </button>
+                            <span className="text-sm font-black text-slate-800 w-6 text-center">{customHouseCount}</span>
+                            <button
+                              type="button"
+                              onClick={() => setCustomHouseCount(customHouseCount + 1)}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Apartment & PG */}
+                    {(() => {
+                      const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
+                      return (
+                        <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
+                          <div>
+                            <h6 className="font-extrabold text-[13px] text-slate-900 flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-indigo-600 text-[18px]">apartment</span>
+                              Apartment / PG & Hostel
+                            </h6>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{pgPrice} per property ({platformSettings?.validity_apt_pg_days || 60}d Validity & Room Tracker)</span>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                            <button
+                              type="button"
+                              onClick={() => setCustomPgCount(Math.max(0, customPgCount - 1))}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              -
+                            </button>
+                            <span className="text-sm font-black text-slate-800 w-6 text-center">{customPgCount}</span>
+                            <button
+                              type="button"
+                              onClick={() => setCustomPgCount(customPgCount + 1)}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Commercial */}
+                    {(() => {
+                      const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
+                      return (
+                        <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
+                          <div>
+                            <h6 className="font-extrabold text-[13px] text-slate-900 flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-indigo-600 text-[18px]">storefront</span>
+                              Commercial Shop / Office
+                            </h6>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{commercialPrice} per property (Unlimited Validity)</span>
+                          </div>
+                          <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                            <button
+                              type="button"
+                              onClick={() => setCustomCommercialCount(Math.max(0, customCommercialCount - 1))}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              -
+                            </button>
+                            <span className="text-sm font-black text-slate-800 w-6 text-center">{customCommercialCount}</span>
+                            <button
+                              type="button"
+                              onClick={() => setCustomCommercialCount(customCommercialCount + 1)}
+                              className="w-8 h-8 rounded-lg bg-slate-50 font-black text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center cursor-pointer"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Right Side: Total Summary & Refill Buttons */}
+                  {(() => {
+                    const housePrice = Number(platformSettings?.owner_residential_fee) || 99;
+                    const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
+                    const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
+
+                    const customSubtotal =
+                      customHouseCount * housePrice +
+                      customPgCount * pgPrice +
+                      customCommercialCount * commercialPrice +
+                      (customAddonFeatured ? 99 : 0) +
+                      (customAddonHero ? 199 : 0);
+
+                    const totalProps = customHouseCount + customPgCount + customCommercialCount;
+                    const customDiscountPercent = totalProps >= 3 ? 15 : 0;
+                    const customDiscountAmount = Math.round((customSubtotal * customDiscountPercent) / 100);
+                    const customFinalAmount = Math.max(0, customSubtotal - customDiscountAmount);
+
+                    return (
+                      <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50 flex flex-col justify-between space-y-6">
+                        <div>
+                          <h5 className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-4">2. Plan Refill Summary</h5>
+                          <div className="space-y-3 font-semibold text-xs text-slate-600">
+                            <div className="flex justify-between">
+                              <span>Residential Count:</span>
+                              <span className="text-slate-900 font-extrabold">{customHouseCount} properties</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Apartment/PG Count:</span>
+                              <span className="text-slate-900 font-extrabold">{customPgCount} properties</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Commercial Count:</span>
+                              <span className="text-slate-900 font-extrabold">{customCommercialCount} properties</span>
+                            </div>
+                            <div className="flex justify-between pt-3 border-t border-slate-200">
+                              <span>Subtotal:</span>
+                              <span className="text-slate-900 font-extrabold">₹{customSubtotal}</span>
+                            </div>
+                            {customDiscountPercent > 0 && (
+                              <div className="flex justify-between text-emerald-600 font-bold">
+                                <span>Combo Discount (15%):</span>
+                                <span>-₹{customDiscountAmount}</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between pt-3 border-t border-slate-300 text-sm font-black text-slate-900">
+                              <span>Total Refill Amount:</span>
+                              <span className="text-indigo-600 font-black text-lg">₹{customFinalAmount}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={buyingPassLoading || totalProps === 0}
+                          onClick={handleBuyCustomPass}
+                          className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+                        >
+                          {buyingPassLoading ? (
+                            <>
+                              <span className="material-symbols-outlined text-base animate-spin">progress_activity</span>
+                              Processing Refill...
+                            </>
+                          ) : (
+                            `REFILL ${totalProps} CREDITS NOW`
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             )}
 
             {/* Available Refill Passes Store */}
-            {selectedPassCategory && (
+            {selectedPassCategory && selectedPassCategory !== 'custom' && (
               <div className="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4" style={{ borderBottom: "1px solid #e2e8f0" }}>
                   <div className="flex flex-col items-start gap-2 w-full">

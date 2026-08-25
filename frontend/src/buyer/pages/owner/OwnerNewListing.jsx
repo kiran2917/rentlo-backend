@@ -3317,29 +3317,9 @@ export const OwnerNewListing = () => {
                   const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
                   const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
 
-                  const d1Days = Number(platformSettings?.pg_custom_duration_1_days) || 30;
-                  const d1Price = Number(platformSettings?.pg_custom_duration_1_price) || 0;
-                  const d2Days = Number(platformSettings?.pg_custom_duration_2_days) || 60;
-                  const d2Price = Number(platformSettings?.pg_custom_duration_2_price) || 49;
-                  const d3Days = Number(platformSettings?.pg_custom_duration_3_days) || 90;
-                  const d3Price = Number(platformSettings?.pg_custom_duration_3_price) || 89;
-                  const d4Days = Number(platformSettings?.pg_custom_duration_4_days) || 180;
-                  const d4Price = Number(platformSettings?.pg_custom_duration_4_price) || 149;
-
-                  let pgDurationFee = d1Price;
-                  if (customPgDuration === d2Days) {
-                    pgDurationFee = d2Price;
-                  } else if (customPgDuration === d3Days) {
-                    pgDurationFee = d3Price;
-                  } else if (customPgDuration === d4Days) {
-                    pgDurationFee = d4Price;
-                  } else if (customPgDuration === d1Days) {
-                    pgDurationFee = d1Price;
-                  }
-
                   const customSubtotal =
                     customHouseCount * housePrice +
-                    customPgCount * (pgPrice + pgDurationFee) +
+                    customPgCount * pgPrice +
                     customCommercialCount * commercialPrice +
                     (customAddonFeatured ? 99 : 0) +
                     (customAddonHero ? 199 : 0);
@@ -3573,7 +3553,7 @@ export const OwnerNewListing = () => {
                                     <span className="material-symbols-outlined text-indigo-600 text-[20px]">apartment</span>
                                     Apartment / PG & Hostel
                                   </h4>
-                                  <p className="text-[11px] text-slate-500 font-medium">₹{pgPrice + pgDurationFee} per property ({customPgDuration}d Validity & Room Tracker)</p>
+                                  <p className="text-[11px] text-slate-500 font-medium">₹{pgPrice} per property ({platformSettings?.validity_apt_pg_days || 60}d Validity & Room Tracker)</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                   <button
@@ -3593,35 +3573,6 @@ export const OwnerNewListing = () => {
                                   >
                                     +
                                   </button>
-                                </div>
-                              </div>
-
-                              {/* Duration Selector Buttons */}
-                              <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between gap-2 flex-wrap">
-                                <span className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-[14px] text-indigo-600">schedule</span>
-                                  Select Listing Duration:
-                                </span>
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  {[
-                                    { days: Number(platformSettings?.pg_custom_duration_1_days) || 30, label: `${platformSettings?.pg_custom_duration_1_days || 30} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_1_price) || 0}` },
-                                    { days: Number(platformSettings?.pg_custom_duration_2_days) || 60, label: `${platformSettings?.pg_custom_duration_2_days || 60} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_2_price) || 49}` },
-                                    { days: Number(platformSettings?.pg_custom_duration_3_days) || 90, label: `${platformSettings?.pg_custom_duration_3_days || 90} Days`, fee: `+₹${Number(platformSettings?.pg_custom_duration_3_price) || 89}` },
-                                    { days: Number(platformSettings?.pg_custom_duration_4_days) || 180, label: `${Number(platformSettings?.pg_custom_duration_4_days) === 180 ? "6 Months" : (platformSettings?.pg_custom_duration_4_days + " Days")}`, fee: `+₹${Number(platformSettings?.pg_custom_duration_4_price) || 149}` },
-                                  ].map((d) => (
-                                    <button
-                                      key={d.days}
-                                      type="button"
-                                      onClick={() => setCustomPgDuration(d.days)}
-                                      className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition-all cursor-pointer border ${
-                                        customPgDuration === d.days
-                                          ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                                          : "bg-white text-slate-700 border-slate-300 hover:border-slate-400 hover:bg-slate-100"
-                                      }`}
-                                    >
-                                      {d.label} ({d.fee})
-                                    </button>
-                                  ))}
                                 </div>
                               </div>
                             </div>
