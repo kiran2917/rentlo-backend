@@ -276,10 +276,10 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       <nav
         className="w-full top-0 sticky z-50 h-14 md:h-16 flex items-center transition-all duration-300 border-b shadow-sm"
         style={{
-          backgroundColor: "#000000",
+          backgroundColor: "#252259",
           borderColor: "rgba(255,255,255,0.08)",
           backdropFilter: scrolled ? "blur(20px)" : "none",
-          background: scrolled ? "rgba(0,0,0,0.85)" : "#000000",
+          background: scrolled ? "rgba(37,34,89,0.85)" : "#252259",
         }}
       >
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
