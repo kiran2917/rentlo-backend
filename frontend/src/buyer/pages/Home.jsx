@@ -678,12 +678,40 @@ export const Home = () => {
               </button>
             </div>
           </div>
-            <div className="flex flex-col items-end gap-4">
-              <span
-                className="text-[11px] font-bold uppercase tracking-widest text-accent"
-              >
-                {displayedProperties.length} {t("home.listingsCount", "listings")}
-              </span>
+            <div className="flex items-center gap-4">
+              {/* Desktop Toggle Switch for View Mode */}
+              <div className="hidden md:flex p-1 bg-slate-100 rounded-xl border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("grid")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${
+                    viewMode === "grid"
+                      ? "bg-white text-black shadow-sm"
+                      : "text-slate-500 hover:text-slate-900"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[16px]">grid_view</span>
+                  Grid
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("map")}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${
+                    viewMode === "map"
+                      ? "bg-white text-black shadow-sm"
+                      : "text-slate-500 hover:text-slate-900"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[16px]">map</span>
+                  Map
+                </button>
+              </div>
+
+              <div className="flex flex-col items-end gap-4">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-accent">
+                  {displayedProperties.length} {t("home.listingsCount", "listings")}
+                </span>
+              </div>
             </div>
           </div>
 
