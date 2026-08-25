@@ -2054,28 +2054,30 @@ export const OwnerDashboard = () => {
             </div>
 
             {/* Modal Tabs */}
-            <div className="flex border-b overflow-x-auto custom-scrollbar gap-2 pb-2 dark:border-slate-800">
+            <div className="bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl flex gap-1 overflow-x-auto scrollbar-none">
               {[
                 { id: "pricing", label: "Pricing & Info", icon: "payments" },
-                { id: "specs", label: "Layout & Specs", icon: "home_work" },
+                { id: "specs", label: "Specs", icon: "home_work" },
                 { id: "amenities", label: "Amenities & Rules", icon: "tune" },
-                { id: "photos", label: "Photos & Media", icon: "image" }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveEditTab(tab.id)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border"
-                  style={{
-                    backgroundColor: activeEditTab === tab.id ? "var(--ink, #000000)" : "transparent",
-                    color: activeEditTab === tab.id ? "#ffffff" : "var(--text-muted)",
-                    borderColor: activeEditTab === tab.id ? "var(--ink, #000000)" : "transparent"
-                  }}
-                >
-                  <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
+                { id: "photos", label: "Photos", icon: "image" }
+              ].map((tab) => {
+                const isActive = activeEditTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveEditTab(tab.id)}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                      isActive 
+                        ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/50 dark:border-slate-800/50" 
+                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-transparent"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             <form onSubmit={handleSaveEdits} className="space-y-4">
