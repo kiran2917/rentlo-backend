@@ -1673,6 +1673,22 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
         instance = serializer.instance
         user = self.request.user
         
+        # Check roles of the user
+        roles = user.roles if hasattr(user, 'roles') else [getattr(user, 'role', 'owner')]
+        is_admin_or_mod = 'admin' in roles or 'moderator' in roles
+        
+        trigger_review = False
+        if not is_admin_or_mod:
+            # Check price change
+            if 'price' in serializer.validated_data:
+                new_price = serializer.validated_data['price']
+                if instance.price != new_price:
+                    trigger_review = True
+            
+            # Check uploaded_media change (new photos added)
+            if 'uploaded_media' in serializer.validated_data:
+                trigger_review = True
+        
         changes = []
         for attr, value in serializer.validated_data.items():
             old_value = getattr(instance, attr, None)
@@ -1682,6 +1698,14 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                     'old_value': str(old_value),
                     'new_value': str(value)
                 })
+        
+        if trigger_review:
+            serializer.validated_data['status'] = 'pending_review'
+            changes.append({
+                'field_name': 'status',
+                'old_value': str(instance.status),
+                'new_value': 'pending_review'
+            })
         
         serializer.save()
         
@@ -1944,6 +1968,23 @@ class PropertyMediaDeleteView(views.APIView):
                 return Response({'detail': 'Not authorized to delete media for this property.'}, status=status.HTTP_403_FORBIDDEN)
                 
             media_item.delete()
+            
+            # If deleted by non-staff (owner/agent), trigger admin review
+            if not is_staff:
+                old_status = prop.status
+                prop.status = 'pending_review'
+                prop.save(update_fields=['status'])
+                
+                # Log the status change
+                from properties.models import PropertyAuditLog
+                PropertyAuditLog.objects.create(
+                    property=prop,
+                    changed_by=user,
+                    field_name='status',
+                    old_value=str(old_status),
+                    new_value='pending_review'
+                )
+                
             return Response({'detail': 'Media deleted successfully.'})
         except PropertyMedia.DoesNotExist:
             return Response({'detail': 'Media item not found.'}, status=status.HTTP_404_NOT_FOUND)

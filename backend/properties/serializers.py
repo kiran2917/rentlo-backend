@@ -420,6 +420,35 @@ class PropertySerializer(serializers.ModelSerializer):
             
         return property_obj
 
+    def update(self, instance, validated_data):
+        uploaded_media = validated_data.pop('uploaded_media', None)
+        
+        # Update model fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Append new media items if uploaded
+        if uploaded_media is not None:
+            start_order = instance.media.count()
+            for idx, media_dict in enumerate(uploaded_media):
+                if isinstance(media_dict, dict):
+                    PropertyMedia.objects.create(
+                        property=instance,
+                        image_url=media_dict.get('image_url', ''),
+                        medium_url=media_dict.get('medium_url', ''),
+                        thumbnail_url=media_dict.get('thumbnail_url', ''),
+                        image_hash=media_dict.get('image_hash', None),
+                        display_order=start_order + idx
+                    )
+                else:
+                    PropertyMedia.objects.create(
+                        property=instance,
+                        image_url=media_dict,
+                        display_order=start_order + idx
+                    )
+        return instance
+
 class RequestOTPSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=20)
 

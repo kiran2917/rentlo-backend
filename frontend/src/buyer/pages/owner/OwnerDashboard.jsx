@@ -32,6 +32,148 @@ export const OwnerDashboard = () => {
   const [relistTarget, setRelistTarget] = useState(null);
   const [statusTarget, setStatusTarget] = useState(null);
 
+  const [editingProp, setEditingProp] = useState(null);
+  const [editForm, setEditForm] = useState({
+    price: "",
+    security_deposit: "",
+    maintenance_charges: "",
+    description: "",
+    furnishing_status: "",
+    preferred_tenants: "",
+    media: []
+  });
+  const [newUploadedMedia, setNewUploadedMedia] = useState([]);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleEditClick = (prop) => {
+    setEditingProp(prop);
+    setEditForm({
+      price: prop.price || "",
+      security_deposit: prop.security_deposit || "",
+      maintenance_charges: prop.maintenance_charges || "",
+      description: prop.description || "",
+      furnishing_status: prop.furnishing_status || "unfurnished",
+      preferred_tenants: prop.preferred_tenants || "anyone",
+      media: prop.media || []
+    });
+    setNewUploadedMedia([]);
+  };
+
+  const handleMediaDelete = async (mediaId) => {
+    if (!window.confirm("Are you sure you want to delete this photo? This will instantly trigger admin review for safety.")) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/media/${mediaId}/`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+      if (res.ok) {
+        toast.success("Photo deleted successfully. Review pending.");
+        setEditForm(prev => ({
+          ...prev,
+          media: prev.media.filter(m => m.id !== mediaId)
+        }));
+      } else {
+        toast.error("Failed to delete photo.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error deleting photo.");
+    }
+  };
+
+  const handleNewMediaDelete = (index) => {
+    setNewUploadedMedia(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleMediaUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    setUploadingMedia(true);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/media/upload/`, {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          const newMediaItem = {
+            image_url: data.full_url,
+            medium_url: data.medium_url,
+            thumbnail_url: data.thumbnail_url,
+            image_hash: data.image_hash
+          };
+          setNewUploadedMedia(prev => [...prev, newMediaItem]);
+        } else {
+          toast.error(`Failed to upload ${file.name}`);
+        }
+      }
+      toast.success("Photos uploaded successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error uploading photos.");
+    } finally {
+      setUploadingMedia(false);
+      e.target.value = ""; // reset input
+    }
+  };
+
+  const handleSaveEdits = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    
+    const priceChanged = Number(editForm.price) !== Number(editingProp.price);
+    const photosAdded = newUploadedMedia.length > 0;
+    
+    const payload = {
+      price: editForm.price,
+      security_deposit: editForm.security_deposit,
+      maintenance_charges: editForm.maintenance_charges,
+      description: editForm.description,
+      furnishing_status: editForm.furnishing_status,
+      preferred_tenants: editForm.preferred_tenants,
+    };
+    
+    if (photosAdded) {
+      payload.uploaded_media = newUploadedMedia;
+    }
+    
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/${editingProp.id}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        if (priceChanged || photosAdded) {
+          toast.success("🎉 Edits saved! Because you changed rent/photos, listing is set to 'Pending Review' for admin approval.");
+        } else {
+          toast.success("✅ Edits saved and live instantly!");
+        }
+        setEditingProp(null);
+        fetchProperties();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error(errData.detail || "Failed to save edits.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error saving edits.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const fetchProperties = () => {
     setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/properties/my-properties/`, {
@@ -992,6 +1134,13 @@ export const OwnerDashboard = () => {
                   {/* Action Buttons Section */}
                   <div className="mt-auto pt-4 border-t border-border space-y-2">
                     <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleEditClick(prop)}
+                        className="w-full px-4 py-2 rounded-xl bg-slate-900/10 hover:bg-slate-900/20 text-slate-800 dark:text-slate-200 border border-slate-900/20 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm mb-1"
+                      >
+                        <span className="material-symbols-outlined text-base">edit</span>
+                        Edit Listing Details
+                      </button>
                       {/* Live → Under Negotiation */}
                       {prop.status === "live" && (
                         <button
@@ -1814,6 +1963,193 @@ export const OwnerDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Property Modal */}
+      {editingProp && createPortal(
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 overflow-y-auto" style={{ backgroundColor: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto scrollbar-thin border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b pb-4 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-indigo-600 text-2xl">edit_square</span>
+                <div>
+                  <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">Edit Listing Details</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Property ID #{editingProp.id} • Updates to Rent or Photos will require Admin Approval.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingProp(null)}
+                className="transition-colors border w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdits} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Monthly Rent (₹)</label>
+                  <input
+                    type="number"
+                    value={editForm.price}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, price: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    required
+                  />
+                  <p className="text-[10px] text-amber-600 font-semibold">⚠️ Editing rent puts listing in review.</p>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Security Deposit (₹)</label>
+                  <input
+                    type="number"
+                    value={editForm.security_deposit}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, security_deposit: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  />
+                  <p className="text-[10px] text-slate-400">Directly live instantly.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Maintenance Charges (₹/mo)</label>
+                  <input
+                    type="number"
+                    value={editForm.maintenance_charges}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, maintenance_charges: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Furnishing Status</label>
+                  <select
+                    value={editForm.furnishing_status}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, furnishing_status: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  >
+                    <option value="unfurnished">Unfurnished</option>
+                    <option value="semi_furnished">Semi-Furnished</option>
+                    <option value="fully_furnished">Fully Furnished</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Preferred Tenants</label>
+                <select
+                  value={editForm.preferred_tenants}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, preferred_tenants: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                >
+                  <option value="anyone">Anyone</option>
+                  <option value="family">Family Only</option>
+                  <option value="bachelors">Bachelors Only</option>
+                  <option value="girls_only">Girls Only</option>
+                  <option value="boys_only">Boys Only</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Description</label>
+                <textarea
+                  value={editForm.description}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="space-y-2 border-t pt-4 dark:border-slate-800">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400">Listing Photos</label>
+                  <span className="text-[10px] text-amber-600 font-semibold">⚠️ Adding/Deleting photos triggers review.</span>
+                </div>
+                
+                {/* Existing Photos Grid */}
+                <div className="grid grid-cols-4 gap-3">
+                  {editForm.media.map((m) => (
+                    <div key={m.id} className="relative h-20 rounded-xl overflow-hidden group border border-slate-200 dark:border-slate-800 bg-slate-50">
+                      <img src={m.thumbnail_url || m.image_url} alt="Photo" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleMediaDelete(m.id)}
+                        className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md transition-colors"
+                        title="Delete photo"
+                      >
+                        <span className="material-symbols-outlined text-[12px] font-bold">close</span>
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* New Uploads Grid */}
+                  {newUploadedMedia.map((m, idx) => (
+                    <div key={`new-${idx}`} className="relative h-20 rounded-xl overflow-hidden border border-emerald-300 bg-emerald-50/50">
+                      <img src={m.thumbnail_url || m.image_url} alt="New Photo" className="w-full h-full object-cover opacity-80" />
+                      <button
+                        type="button"
+                        onClick={() => handleNewMediaDelete(idx)}
+                        className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md transition-colors"
+                        title="Remove photo"
+                      >
+                        <span className="material-symbols-outlined text-[12px] font-bold">close</span>
+                      </button>
+                      <span className="absolute bottom-1 left-1 bg-emerald-600 text-white text-[8px] font-bold px-1 py-0.5 rounded">NEW</span>
+                    </div>
+                  ))}
+
+                  {/* Upload Trigger Box */}
+                  <label className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 hover:bg-indigo-50/10 rounded-xl h-20 flex flex-col items-center justify-center cursor-pointer transition-all">
+                    {uploadingMedia ? (
+                      <span className="material-symbols-outlined text-indigo-500 animate-spin text-xl">sync</span>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-slate-450 dark:text-slate-500 text-xl">add_a_photo</span>
+                        <span className="text-[9px] text-slate-400 font-bold mt-1">Upload</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleMediaUpload}
+                      disabled={uploadingMedia}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingProp(null)}
+                  className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer text-xs"
+                  disabled={isSaving}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 h-12 bg-black text-white dark:bg-white dark:text-black font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md flex items-center justify-center gap-2 hover:opacity-90"
+                  disabled={isSaving || uploadingMedia}
+                >
+                  {isSaving ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-base">sync</span>
+                      Saving Edits...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-base">save</span>
+                      Save Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      , document.getElementById('root'))}
     </div>
   );
 };
