@@ -23,6 +23,7 @@ class IsAdminOrReadOnly(BasePermission):
 class CityListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     serializer_class = CitySerializer
+    pagination_class = None
 
     def get_queryset(self):
         qs = City.objects.filter(is_active=True)
@@ -40,6 +41,7 @@ class CityDetailView(generics.RetrieveUpdateDestroyAPIView):
 class LocalityListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     serializer_class = LocalitySerializer
+    pagination_class = None
 
     def get_queryset(self):
         city_id = self.kwargs.get('city_id')
