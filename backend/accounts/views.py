@@ -1082,3 +1082,30 @@ class AdminUserToggleStatusView(APIView):
         })
 
 
+class AdminOwnerKYCListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(owner_kyc_status='submitted').order_by('-date_joined')
+
+
+class AdminOwnerKYCReviewView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        action = request.data.get('action') # 'approve' or 'reject'
+        if action == 'approve':
+            user.owner_kyc_status = 'verified'
+        elif action == 'reject':
+            user.owner_kyc_status = 'rejected'
+        else:
+            return Response({'detail': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
+        user.save()
+        return Response({'detail': f'Owner verification status updated to {user.owner_kyc_status}.', 'owner_kyc_status': user.owner_kyc_status})
+
+
+

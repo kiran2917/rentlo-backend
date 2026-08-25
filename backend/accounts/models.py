@@ -12,6 +12,9 @@ class User(AbstractUser):
     fraud_flag_count = models.IntegerField(default=0)
     assigned_cities = models.ManyToManyField('properties.City', blank=True, related_name='assigned_users')
     sub_admin_permissions = models.JSONField(default=dict, blank=True)
+    
+    ownership_document_url = models.TextField(blank=True, null=True)
+    owner_kyc_status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('submitted', 'Submitted'), ('verified', 'Verified'), ('rejected', 'Rejected')], default='pending')
 
     # DPDP Act 2023 Technical Baseline Fields
     dpdp_consent_given = models.BooleanField(default=False)

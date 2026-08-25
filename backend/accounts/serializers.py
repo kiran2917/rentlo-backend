@@ -59,7 +59,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'role', 'roles', 'phone', 'first_name', 'last_name', 'assigned_cities', 'is_phone_verified', 'force_password_change', 'sub_admin_permissions', 'kyc_status', 'kyc_upi_id', 'kyc_selfie_url', 'fraud_flag_count', 'fraud_flags', 'is_active')
+        fields = ('id', 'username', 'email', 'password', 'role', 'roles', 'phone', 'first_name', 'last_name', 'assigned_cities', 'is_phone_verified', 'force_password_change', 'sub_admin_permissions', 'kyc_status', 'kyc_upi_id', 'kyc_selfie_url', 'fraud_flag_count', 'fraud_flags', 'is_active', 'ownership_document_url', 'owner_kyc_status')
 
     def get_kyc_status(self, obj):
         try:
@@ -81,6 +81,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
+        if 'ownership_document_url' in validated_data and validated_data['ownership_document_url']:
+            validated_data['owner_kyc_status'] = 'submitted'
+            
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         if password:

@@ -4,7 +4,8 @@ from .views import (
     BuyerRequestOTPView, BuyerVerifyOTPView, CompleteRegistrationView, AgentProfileView, UserListView,
     SubAdminListView, SubAdminCreateView, SubAdminUpdatePermissionsView, SubAdminDeleteView,
     AgentKYCView, ChangePasswordView, ForgotPasswordRequestOTPView, ForgotPasswordResetView,
-    AdminAgentKYCListView, AdminAgentKYCReviewView, AdminCRMListView, AdminUserToggleStatusView, CheckPhoneView
+    AdminAgentKYCListView, AdminAgentKYCReviewView, AdminCRMListView, AdminUserToggleStatusView, CheckPhoneView,
+    AdminOwnerKYCListView, AdminOwnerKYCReviewView
 )
 
 urlpatterns = [
@@ -33,6 +34,11 @@ urlpatterns = [
     path('agent/kyc/', AgentKYCView.as_view(), name='agent-kyc'),
     path('admin/agent-kyc/', AdminAgentKYCListView.as_view(), name='admin-agent-kyc-list'),
     path('admin/agent-kyc/<int:pk>/review/', AdminAgentKYCReviewView.as_view(), name='admin-agent-kyc-review'),
+
+    # Owner KYC & Verification Review
+    path('admin/owner-kyc/', AdminOwnerKYCListView.as_view(), name='admin-owner-kyc-list'),
+    path('admin/owner-kyc/<int:pk>/review/', AdminOwnerKYCReviewView.as_view(), name='admin-owner-kyc-review'),
+
 
     # Sub-Admin Management Endpoints
     path('sub-admins/', SubAdminListView.as_view(), name='subadmin-list'),
