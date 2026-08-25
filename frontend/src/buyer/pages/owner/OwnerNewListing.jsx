@@ -128,6 +128,8 @@ const loadTrackingLibrary = () => {
 
 export const OwnerNewListing = () => {
   const { user, checkAuth } = useAuth();
+  const userRolesList = user?.roles || (user?.role ? [user.role] : []);
+  const isStaff = userRolesList.some(r => ['admin', 'sub_admin', 'subadmin', 'agent'].includes(r));
   const navigate = useNavigate();
   const location = useLocation();
   const isSubmittedRef = useRef(false);
@@ -938,8 +940,7 @@ export const OwnerNewListing = () => {
   };
 
 
-  const userRolesList = user?.roles || (user?.role ? [user.role] : []);
-  const isStaff = userRolesList.some(r => ['admin', 'sub_admin', 'subadmin', 'agent'].includes(r));
+
 
   const [ownerAccountExists, setOwnerAccountExists] = useState(null);
   const [ownerAccountDetails, setOwnerAccountDetails] = useState(null);
