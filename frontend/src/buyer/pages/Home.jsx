@@ -433,15 +433,9 @@ export const Home = () => {
             />
           </div>
 
-          <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl mx-auto pt-2 pb-4 sm:py-6">
-            {/* Top Verified Trust Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-black uppercase tracking-wider mb-3 sm:mb-4 shadow-lg animate-fade-in">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span>100% Zero-Brokerage Verified Properties</span>
-            </div>
-
+          <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl mx-auto pt-4 pb-6 sm:py-8">
             {/* Main Headline */}
-            <h1 className="font-display font-black leading-[1.12] sm:leading-[1.08] tracking-tight mb-2 sm:mb-3 text-white max-w-3xl text-2xl xs:text-[30px] sm:text-[46px] md:text-[58px] drop-shadow-md">
+            <h1 className="font-display font-black leading-[1.15] sm:leading-[1.08] tracking-tight mb-2 sm:mb-3 text-white max-w-3xl text-2xl xs:text-[30px] sm:text-[46px] md:text-[58px] drop-shadow-md">
               Find your next{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-amber-200">
                 perfect place
@@ -449,43 +443,15 @@ export const Home = () => {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-[13px] sm:text-base md:text-lg font-medium mb-4 sm:mb-6 max-w-lg text-slate-300 leading-relaxed drop-shadow">
+            <p className="text-[13px] sm:text-base md:text-lg font-medium mb-5 sm:mb-8 max-w-lg text-slate-300 leading-relaxed drop-shadow">
               Direct owner phone numbers • Transparent pricing • 0% Brokerage
             </p>
 
             {/* Glassmorphic Floating Search Card */}
-            <div className="w-full max-w-4xl mx-auto rounded-3xl p-4 sm:p-6 bg-white/95 dark:bg-[#0c1222]/95 backdrop-blur-2xl border border-white/60 dark:border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] text-left transition-all">
+            <div className="w-full max-w-4xl mx-auto rounded-3xl p-5 sm:p-7 bg-white/95 dark:bg-[#0c1222]/95 backdrop-blur-2xl border border-white/60 dark:border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] text-left transition-all">
               
-              {/* Top Property Type Segmented Chips */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-3.5 border-b border-slate-100 dark:border-slate-800/80 scrollbar-none">
-                {[
-                  { id: "", label: "All Rentals", icon: "domain" },
-                  { id: "apartment", label: "Flats / BHK", icon: "apartment" },
-                  { id: "pg", label: "PG & Hostels", icon: "bed" },
-                  { id: "house", label: "Houses / Villas", icon: "cottage" },
-                  { id: "commercial", label: "Commercial", icon: "storefront" },
-                ].map((tab) => {
-                  const isCurrent = filters.property_type === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => handleFilterChange("property_type", tab.id)}
-                      className={`px-3 py-1.5 rounded-xl text-[12px] font-extrabold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
-                        isCurrent
-                          ? "bg-slate-950 text-white shadow-md"
-                          : "bg-slate-100/90 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200"
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
-                      <span>{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
               {/* Primary Search Fields 2-Column Responsive Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 {/* City */}
                 <div className="col-span-1 flex flex-col gap-1">
                   <label className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500 ml-0.5">

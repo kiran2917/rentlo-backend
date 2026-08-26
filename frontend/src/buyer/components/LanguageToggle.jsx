@@ -23,16 +23,16 @@ export const LanguageToggle = () => {
     <div className="relative inline-block text-left z-40">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-sm hover:opacity-90 cursor-pointer"
+        className="flex items-center gap-1 px-2.5 py-1.5 rounded-full border text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-sm hover:opacity-90 cursor-pointer"
         style={{
-          backgroundColor: "rgba(255,255,255,0.12)",
-          borderColor: "rgba(255,255,255,0.2)",
+          backgroundColor: "rgba(255,255,255,0.10)",
+          borderColor: "rgba(255,255,255,0.18)",
           color: "#FFFFFF",
         }}
       >
-        <span className="material-symbols-outlined text-base text-indigo-600">translate</span>
-        <span>{currentLanguage.short}</span>
-        <span className="material-symbols-outlined text-sm">
+        <span className="material-symbols-outlined text-[15px] text-indigo-300">translate</span>
+        <span className="text-[11px]">{currentLanguage.short}</span>
+        <span className="material-symbols-outlined text-[14px] text-white/70">
           {isOpen ? "expand_less" : "expand_more"}
         </span>
       </button>

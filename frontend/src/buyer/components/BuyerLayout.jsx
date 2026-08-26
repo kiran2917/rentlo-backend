@@ -286,27 +286,18 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group h-10">
-            {platformSettings?.company_logo_url ? (
-              <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[140px] object-contain" />
-            ) : (
-              <div 
-                className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
-                style={{
-                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.35)",
-                }}
-              >
-                <span className="material-symbols-outlined text-[20px] text-white" data-weight="fill">real_estate_agent</span>
-              </div>
-            )}
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-[20px] font-black tracking-tight text-white">
-                {platformSettings?.company_name || "Rentlo"}
-              </span>
-              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                PRO
-              </span>
+            <div 
+              className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
+              style={{
+                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                boxShadow: "0 4px 14px rgba(79, 70, 229, 0.35)",
+              }}
+            >
+              <span className="material-symbols-outlined text-[20px] text-white" data-weight="fill">real_estate_agent</span>
             </div>
+            <span className="text-[21px] font-black tracking-tight text-white">
+              Rentlo
+            </span>
           </Link>
 
           {/* Desktop Nav */}
