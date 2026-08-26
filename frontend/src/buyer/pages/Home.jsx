@@ -591,7 +591,7 @@ export const Home = () => {
         </section>
 
         {/* Listings */}
-        <div className="max-w-[1600px] mx-auto w-full px-4 md:px-8 py-16">
+        <div className="max-w-[1600px] mx-auto w-full px-4 md:px-8 pt-8 pb-36 md:py-16">
           <div
             className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-8 pb-4 border-b"
             style={{ borderColor: "rgba(255,255,255,0.07)" }}
@@ -720,78 +720,110 @@ export const Home = () => {
               </div>
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
-              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[24px] md:rounded-3xl overflow-hidden shadow-xl relative md:sticky md:top-24 border mb-28 md:mb-0" style={{ borderColor: "var(--border)" }}>
-                {/* Top Floating Map Controls Bar */}
-                <div className="absolute top-3 left-3 right-3 z-[1000] flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-                  {/* District / City Dropdown */}
-                  <div className="flex-1 min-w-[140px] max-w-[240px] pointer-events-auto">
-                    <div className="relative flex items-center bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-xl shadow-md hover:border-indigo-400 transition-all">
-                      <span className="material-symbols-outlined absolute left-2.5 text-indigo-600 text-[18px] pointer-events-none">location_on</span>
+              <div className="lg:col-span-7 md:col-span-1 h-[520px] sm:h-[580px] md:h-[600px] lg:h-[750px] rounded-[24px] md:rounded-3xl overflow-hidden shadow-xl relative md:sticky md:top-24 border mb-32 md:mb-0" style={{ borderColor: "var(--border)" }}>
+                {/* Top Floating Map Controls Bar with Both State and District Selection */}
+                <div className="absolute top-3 left-3 right-3 z-[1000] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl pointer-events-auto">
+                  {/* Both State & District Cascading Dropdowns */}
+                  <div className="grid grid-cols-2 gap-2 flex-1">
+                    {/* 1. State Selector */}
+                    <div className="relative flex items-center bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 focus-within:border-indigo-500 focus-within:bg-white transition-all">
+                      <span className="material-symbols-outlined text-slate-500 text-[16px] mr-1.5 pointer-events-none">map</span>
+                      <select
+                        value={selectedStateKey}
+                        onChange={(e) => {
+                          const stateKey = e.target.value;
+                          setSelectedStateKey(stateKey);
+                          const stateData = STATE_CITY_DATA[stateKey];
+                          if (stateData) {
+                            const firstCity = stateData.cities[0];
+                            const newCityId = firstCity ? firstCity.id : "all";
+                            setSelectedCityId(newCityId);
+                            setMapCenter(firstCity ? firstCity.center : stateData.center);
+                            setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
+                          }
+                        }}
+                        className="w-full text-xs font-bold text-slate-800 bg-transparent appearance-none outline-none cursor-pointer truncate pr-4"
+                      >
+                        {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
+                          <option key={key} value={key}>
+                            {data.name.replace(" (All 31 Districts)", "")}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="material-symbols-outlined absolute right-1.5 text-slate-400 text-[14px] pointer-events-none">expand_more</span>
+                    </div>
+
+                    {/* 2. District / City Selector */}
+                    <div className="relative flex items-center bg-slate-50 border border-slate-200/80 rounded-xl px-2.5 py-1.5 focus-within:border-indigo-500 focus-within:bg-white transition-all">
+                      <span className="material-symbols-outlined text-indigo-600 text-[16px] mr-1.5 pointer-events-none">location_on</span>
                       <select
                         value={selectedCityId}
                         onChange={(e) => {
                           const cityId = e.target.value;
                           setSelectedCityId(cityId);
-                          for (const [stateKey, stateData] of Object.entries(STATE_CITY_DATA)) {
-                            const matchCity = stateData.cities.find((c) => c.id === cityId);
-                            if (matchCity) {
-                              setSelectedStateKey(stateKey);
-                              setMapCenter(matchCity.center);
-                              setMapZoom(matchCity.zoom);
-                              break;
+                          const stateData = STATE_CITY_DATA[selectedStateKey];
+                          if (stateData) {
+                            if (cityId === "all") {
+                              setMapCenter(stateData.center);
+                              setMapZoom(stateData.zoom);
+                            } else {
+                              const matchCity = stateData.cities.find((c) => c.id === cityId);
+                              if (matchCity) {
+                                setMapCenter(matchCity.center);
+                                setMapZoom(matchCity.zoom);
+                              }
                             }
                           }
                         }}
-                        className="w-full pl-8 pr-7 py-2 text-xs font-bold text-slate-800 bg-transparent appearance-none outline-none cursor-pointer truncate"
+                        className="w-full text-xs font-bold text-slate-800 bg-transparent appearance-none outline-none cursor-pointer truncate pr-4"
                       >
-                        {Object.entries(STATE_CITY_DATA).map(([stateKey, stateData]) => (
-                          <optgroup key={stateKey} label={stateData.name.replace(" (All 31 Districts)", "")}>
-                            {stateData.cities.map((city) => (
-                              <option key={city.id} value={city.id}>
-                                {city.name}
-                              </option>
-                            ))}
-                          </optgroup>
+                        <option value="all">All Districts</option>
+                        {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
+                          <option key={city.id} value={city.id}>
+                            {city.name}
+                          </option>
                         ))}
                       </select>
-                      <span className="material-symbols-outlined absolute right-2 text-slate-400 text-[16px] pointer-events-none">unfold_more</span>
+                      <span className="material-symbols-outlined absolute right-1.5 text-slate-400 text-[14px] pointer-events-none">expand_more</span>
                     </div>
                   </div>
 
                   {/* Draw Area Action Buttons */}
-                  <div className="flex items-center gap-1.5 pointer-events-auto">
+                  <div className="flex items-center gap-1.5 justify-end">
                     <button
+                      type="button"
                       onClick={() => {
                         setIsDrawingMode(!isDrawingMode);
                         if (isDrawingMode) setDrawnPolygon([]);
                       }}
-                      className={`px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-md backdrop-blur-md transition-all whitespace-nowrap ${
+                      className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
                         isDrawingMode
-                          ? "bg-indigo-600 text-white shadow-indigo-500/30"
-                          : "bg-white/95 text-slate-800 border border-slate-200/90 hover:bg-slate-50"
+                          ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/30"
+                          : "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200"
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[16px]">
+                      <span className="material-symbols-outlined text-[15px]">
                         {isDrawingMode ? "close" : "polyline"}
                       </span>
                       <span>{isDrawingMode ? "Cancel" : "Draw Area"}</span>
                     </button>
                     {drawnPolygon.length > 0 && (
                       <button
+                        type="button"
                         onClick={() => {
                           setDrawnPolygon([]);
                           setIsDrawingMode(false);
                         }}
-                        className="px-2.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1 shadow-md bg-white/95 text-rose-600 border border-rose-200 hover:bg-rose-50 transition-all"
+                        className="px-2 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 transition-all cursor-pointer"
                         title="Clear Custom Drawn Area"
                       >
-                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        <span className="material-symbols-outlined text-[15px]">delete</span>
                       </button>
                     )}
                   </div>
 
                   {isDrawingMode && drawnPolygon.length < 3 && (
-                    <div className="w-full bg-slate-900/90 backdrop-blur text-white text-[11px] font-medium py-1.5 px-3 rounded-lg text-center shadow-lg border border-white/10 pointer-events-auto">
+                    <div className="w-full bg-slate-900/90 backdrop-blur text-white text-[11px] font-medium py-1.5 px-3 rounded-lg text-center shadow-lg border border-white/10 mt-1">
                       Tap points on the map to outline your custom neighborhood boundary.
                     </div>
                   )}
