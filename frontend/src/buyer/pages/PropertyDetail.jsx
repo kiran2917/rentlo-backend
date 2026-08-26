@@ -73,32 +73,18 @@ export const PropertyDetail = () => {
   const [show3DTour, setShow3DTour] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
-  const mobileSliderRef = React.useRef(null);
 
-  const handleMobileScroll = (e) => {
-    const el = e.target;
-    if (!el) return;
-    const width = el.offsetWidth || 1;
-    const newIdx = Math.round(el.scrollLeft / width);
-    if (newIdx !== mobileSlideIndex && newIdx >= 0) {
-      setMobileSlideIndex(newIdx);
-    }
-  };
+  // Auto-slide every 3 seconds for mobile photo slideshow
+  useEffect(() => {
+    const mediaCount = (property?.media || []).length;
+    if (mediaCount <= 1) return;
 
-  const scrollMobileSlide = (direction) => {
-    if (!mobileSliderRef.current) return;
-    const el = mobileSliderRef.current;
-    const width = el.offsetWidth || 1;
-    const count = (property?.media || []).length;
-    let nextIdx = direction === 'next' ? mobileSlideIndex + 1 : mobileSlideIndex - 1;
-    if (nextIdx < 0) nextIdx = count - 1;
-    if (nextIdx >= count) nextIdx = 0;
-    el.scrollTo({
-      left: nextIdx * width,
-      behavior: 'smooth'
-    });
-    setMobileSlideIndex(nextIdx);
-  };
+    const timer = setInterval(() => {
+      setMobileSlideIndex((prev) => (prev + 1) % mediaCount);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [property?.media]);
   const [similarProperties, setSimilarProperties] = useState([]);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visitSlots, setVisitSlots] = useState([]);
@@ -569,97 +555,87 @@ export const PropertyDetail = () => {
 
     return (
       <div className="w-full">
-        {/* ─── Mobile Swipeable Slider (md:hidden) ─── */}
-        <div className="md:hidden relative w-full h-[36vh] sm:h-[45vh] rounded-3xl overflow-hidden shadow-sm border border-slate-200/80 bg-slate-900 group select-none">
-          <div
-            ref={mobileSliderRef}
-            onScroll={handleMobileScroll}
-            className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none scroll-smooth touch-pan-x"
-          >
-            {media.map((item, idx) => (
-              <div
-                key={item.id || idx}
-                className="w-full h-full flex-shrink-0 snap-center snap-always relative cursor-pointer"
-                onClick={() => openGallery(idx)}
-              >
-                <img
-                  src={item.image_url}
-                  alt={`Property Photo ${idx + 1}`}
-                  loading={idx === 0 ? "eager" : "lazy"}
-                  decoding={idx === 0 ? "sync" : "async"}
-                  className="w-full h-full object-cover select-none"
-                />
-              </div>
-            ))}
-          </div>
+        {/* ─── Mobile Auto-Sliding Carousel (md:hidden) ─── */}
+        <div
+          className="md:hidden relative w-full h-[36vh] sm:h-[45vh] rounded-3xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-950 cursor-pointer select-none group"
+          onClick={() => openGallery(mobileSlideIndex)}
+        >
+          {media.map((item, idx) => (
+            <div
+              key={item.id || idx}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                mobileSlideIndex === idx ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
+              }`}
+            >
+              <img
+                src={item.image_url}
+                alt={`Property Photo ${idx + 1}`}
+                loading={idx === 0 ? "eager" : "lazy"}
+                decoding={idx === 0 ? "sync" : "async"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
 
-          {/* Left / Right Chevron Arrows for Mobile Slider */}
+          {/* Left / Right Quick Tap Arrows */}
           {count > 1 && (
             <>
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  scrollMobileSlide('prev');
+                  setMobileSlideIndex((prev) => (prev - 1 + count) % count);
                 }}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-85 active:scale-90 shadow-md cursor-pointer z-10"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-80 active:scale-90 shadow-md cursor-pointer z-20"
                 aria-label="Previous photo"
               >
-                <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
               </button>
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  scrollMobileSlide('next');
+                  setMobileSlideIndex((prev) => (prev + 1) % count);
                 }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-85 active:scale-90 shadow-md cursor-pointer z-10"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-80 active:scale-90 shadow-md cursor-pointer z-20"
                 aria-label="Next photo"
               >
-                <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
               </button>
             </>
           )}
 
-          {/* Badge: e.g. "📷 1 / 6 Photos" */}
-          <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-black px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20 select-none z-10">
-            <span className="material-symbols-outlined text-[14px]">photo_library</span>
-            <span>{mobileSlideIndex + 1} / {count} Photos</span>
-          </div>
+          {/* Badge: "📷 1 / 6" */}
+          {count > 1 && (
+            <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20 z-20">
+              <span className="material-symbols-outlined text-[13px]">photo_library</span>
+              <span>{mobileSlideIndex + 1} / {count}</span>
+            </div>
+          )}
 
-          {/* Slide Dots Indicator */}
-          {count > 1 && count <= 8 && (
-            <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 select-none z-10">
+          {/* Slide Progress Indicators */}
+          {count > 1 && (
+            <div className="absolute bottom-3.5 left-4 right-20 flex items-center gap-1.5 z-20">
               {media.map((_, idx) => (
-                <button
+                <div
                   key={idx}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (mobileSliderRef.current) {
-                      const el = mobileSliderRef.current;
-                      el.scrollTo({ left: idx * (el.offsetWidth || 1), behavior: 'smooth' });
-                      setMobileSlideIndex(idx);
-                    }
-                  }}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    mobileSlideIndex === idx ? "w-4 bg-white shadow-xs" : "w-1.5 bg-white/50"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
+                  className="h-1 flex-1 rounded-full bg-white/30 overflow-hidden"
+                >
+                  <div
+                    className={`h-full bg-white transition-all duration-300 rounded-full ${
+                      mobileSlideIndex === idx ? "w-full" : "w-0"
+                    }`}
+                  />
+                </div>
               ))}
             </div>
           )}
 
-          {/* Full Gallery Prompt Button at top right */}
-          <button
-            type="button"
-            onClick={() => openGallery(mobileSlideIndex)}
-            className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 border border-white/20 transition-all shadow-md active:scale-95 z-10 cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[15px]">fullscreen</span>
+          {/* Top-Right "All (N)" Button */}
+          <div className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 border border-white/20 transition-all shadow-md z-20">
+            <span className="material-symbols-outlined text-[14px]">fullscreen</span>
             <span>All ({count})</span>
-          </button>
+          </div>
         </div>
 
         {/* ─── Desktop Multi-Grid (hidden md:grid) ─── */}
