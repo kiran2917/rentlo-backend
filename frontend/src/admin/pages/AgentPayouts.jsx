@@ -24,7 +24,10 @@ export const AgentPayouts = () => {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setAgents(data.filter((u) => u.role === "agent")))
+      .then((data) => {
+        const safeData = Array.isArray(data) ? data : [];
+        setAgents(safeData.filter((u) => u.role === "agent"));
+      })
       .catch(console.error);
   }, []);
 
@@ -51,49 +54,50 @@ export const AgentPayouts = () => {
     fetchBatches();
   }, [filters]);
 
-  const handleMarkPaid = async (e) => {
-    e.preventDefault();
-    if (!utrNumber) return toast.error("UTR number is required");
-    
+  const handlePayBatch = async (batchId) => {
+    if (!utrNumber.trim()) {
+      toast.warn("Please enter a UTR Number / Reference");
+      return;
+    }
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/earnings/payout-batches/${payingBatchId}/mark-paid/`,
+        `${import.meta.env.VITE_API_URL}/earnings/payout-batches/${batchId}/mark-paid/`,
         {
-          method: "PATCH",
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ utr_number: utrNumber })
+          body: JSON.stringify({ utr_number: utrNumber }),
         }
       );
-      
-      const data = await res.json();
       if (res.ok) {
-        toast.success("Payout marked as paid successfully!");
+        toast.success("Batch marked as PAID!");
         setPayingBatchId(null);
         setUtrNumber("");
         fetchBatches();
       } else {
-        toast.error(data.detail || "Failed to mark paid");
+        const err = await res.json();
+        toast.error(err.detail || "Failed to mark batch as paid");
       }
     } catch (e) {
       toast.error("Network error");
     }
   };
 
-  const totalProcessing = batches
+  const safeBatches = Array.isArray(batches) ? batches : [];
+  const totalProcessing = safeBatches
     .filter((b) => b.status === "processing")
-    .reduce((sum, b) => sum + parseFloat(b.total_amount), 0);
-  const totalPaid = batches
+    .reduce((sum, b) => sum + parseFloat(b.total_amount || 0), 0);
+  const totalPaid = safeBatches
     .filter((b) => b.status === "paid")
-    .reduce((sum, b) => sum + parseFloat(b.total_amount), 0);
+    .reduce((sum, b) => sum + parseFloat(b.total_amount || 0), 0);
 
-  const filteredBatches = batches.filter((b) => {
+  const filteredBatches = safeBatches.filter((b) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
       b.agent_details?.username?.toLowerCase().includes(q) ||
       b.utr_number?.toLowerCase().includes(q) ||
-      b.id.toString().includes(q)
+      b.id?.toString().includes(q)
     );
   });
 

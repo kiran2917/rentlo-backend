@@ -449,7 +449,7 @@ export const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y text-[13px] font-medium" style={{ borderColor: "var(--border)", color: "var(--ink)" }}>
-                  {agentEarnings.payout_batches.length === 0 ? (
+                  {(!agentEarnings?.payout_batches || agentEarnings.payout_batches.length === 0) ? (
                     <tr>
                       <td colSpan="4" className="px-6 py-12 text-center text-slate-500">
                         No payout history yet.

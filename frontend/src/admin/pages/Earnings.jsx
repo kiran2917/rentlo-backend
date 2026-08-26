@@ -25,7 +25,10 @@ export const Earnings = () => {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setAgents(data.filter((u) => u.role === "agent")))
+      .then((data) => {
+        const safeData = Array.isArray(data) ? data : [];
+        setAgents(safeData.filter((u) => u.role === "agent"));
+      })
       .catch(console.error);
   }, []);
 

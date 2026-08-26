@@ -139,6 +139,7 @@ class InitiateUnlockView(views.APIView):
                             'unlocked_at': timezone.now()
                         }
                     )
+                    if not created:
                         unlock.status = 'paid'
                         unlock.amount = 0.00
                         unlock.buyer_subscription = active_sub

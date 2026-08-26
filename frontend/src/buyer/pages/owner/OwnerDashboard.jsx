@@ -1491,7 +1491,7 @@ export const OwnerDashboard = () => {
                 </div>
 
                 {/* Category Pass Breakdown Badges */}
-                {ownerCredits?.active_passes && ownerCredits.active_passes.length > 0 ? (
+                {Array.isArray(ownerCredits?.active_passes) && ownerCredits.active_passes.length > 0 ? (
                   <div className="flex flex-wrap gap-2 pt-1">
                     {ownerCredits.active_passes.map((pass) => {
                       const cat = (pass.category || "all").toLowerCase();
