@@ -649,6 +649,23 @@ export const OwnerLogin = () => {
                       </>
                     )}
                   </button>
+
+                  <div className="pt-1.5 text-center">
+                    <p className="text-[11.5px] font-medium" style={{ color: "var(--text-muted)" }}>
+                      By signing in, you agree to our{" "}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setShowPrivacyModal(true);
+                        }}
+                        className="font-extrabold underline text-indigo-600 dark:text-indigo-400 hover:opacity-80 cursor-pointer"
+                      >
+                        Privacy Policy (v1.0)
+                      </button>
+                    </p>
+                  </div>
                 </form>
               )}
 
@@ -841,6 +858,23 @@ export const OwnerLogin = () => {
                           </>
                         )}
                       </button>
+
+                      <div className="pt-1.5 text-center">
+                        <p className="text-[11.5px] font-medium" style={{ color: "var(--text-muted)" }}>
+                          By continuing, you agree to our{" "}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setShowPrivacyModal(true);
+                            }}
+                            className="font-extrabold underline text-indigo-600 dark:text-indigo-400 hover:opacity-80 cursor-pointer"
+                          >
+                            Privacy Policy (v1.0)
+                          </button>
+                        </p>
+                      </div>
                     </form>
                   ) : !isNewUser ? (
                     <form onSubmit={handleVerifyOtp} className="space-y-5">

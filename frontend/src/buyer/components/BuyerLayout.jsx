@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../shared/context/AuthContext";
 import { OtpModal } from "./OtpModal";
 import { AuthRoleModal } from "../../shared/components/AuthRoleModal";
+import { PrivacyPolicyModal } from "../../shared/components/PrivacyPolicyModal";
 import { LanguageToggle } from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
 
@@ -149,73 +150,7 @@ export const BuyerLayout = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const [legalModal, setLegalModal] = useState(null);
-
-  const legalPolicies = {
-    privacy: {
-      title: "Privacy Policy (v1.0) & DPDP Act 2023 Compliance",
-      content: `1. DATA FIDUCIARY IDENTIFICATION
-Rentlo Technologies operates as the designated Data Fiduciary under India's Digital Personal Data Protection (DPDP) Act 2023. We collect Personally Identifiable Information (PII) including verified mobile numbers, email addresses, and location data exclusively for enabling zero-brokerage property transactions.
-
-2. LAWFUL BASIS & AFFIRMATIVE CONSENT
-Personal data processing occurs strictly upon explicit, affirmative consent granted during SMS OTP login or registration. Consent records are logged with timestamp and versioning (v1.0).
-
-3. DATA ENCRYPTION & SECURITY CONTROLS
-Session credentials are stored in HttpOnly, SameSite=Lax JWT cookies. All database PII fields are protected by TLS 1.3 in transit and AES-256 encryption at rest.
-
-4. USER DATA RIGHTS & GRIEVANCE OFFICER
-You possess statutory rights under the DPDP Act 2023:
-• Right to Access summary of processed personal data.
-• Right to Correction of inaccurate or outdated property details.
-• Right to Erasure of personal data via automated atomic data erasure.
-For grievances, contact our Data Protection Officer at privacy@rentlo.in.`
-    },
-    terms: {
-      title: "Terms of Service & Fair Usage Policy",
-      content: `1. PLATFORM SCOPE & ELIGIBILITY
-Rentlo provides a direct peer-to-peer real estate discovery portal connecting verified property owners with buyers and tenants across India. Users must be at least 18 years of age to register or initiate contact unlocks.
-
-2. LISTING VERIFICATION & OWNER ACCURACY MANDATE
-Property owners warrant that submitted residential, apartment/PG, or commercial listings reflect genuine, currently available properties with accurate pricing and coordinates. Submitting false pricing or misleading images violates platform integrity.
-
-3. PROHIBITED ACTIVITIES & ACCOUNT SUSPENSION
-The following activities are strictly prohibited:
-• Automated scraping or harvesting of owner contact numbers.
-• Unauthorized commercial reselling of lead data to third-party brokers.
-• Harassment or fraudulent payment solicitation.
-Violations trigger immediate account termination and IP-address blacklisting.
-
-4. CONTACT UNLOCK & PASS LICENSE
-Purchasing a contact unlock or buyer credit pass grants a non-transferable, limited license to contact the designated property owner for personal rental inquiry purposes.`
-    },
-    dpdp: {
-      title: "DPDP Act Data Retention & Erasure Boundaries",
-      content: `1. DATA RETENTION SPECIFICATIONS
-Rentlo retains user profile data and transaction logs only as long as necessary to fulfill real estate inquiry processing and financial reporting mandates under Indian tax laws.
-
-2. ATOMIC DATA ERASURE PROTOCOL
-You have the unconditional right to request total deletion of your personal data at any time. Invoking the Atomic Data Erasure endpoint (POST /api/v1/auth/data-erasure/) executes a single database transaction that:
-• Anonymizes user phone, email, and profile credentials.
-• Clears saved search criteria and alert preferences.
-• Scrubs outgoing chat messages and inquiry history.
-
-3. ZERO UNAUTHORIZED THIRD-PARTY DATA SHARING
-Rentlo never sells, rents, or shares user PII with third-party telemarketers or external broker agencies.`
-    },
-    zero_brokerage: {
-      title: "Zero Brokerage Protection Guarantee & Fraud Prevention",
-      content: `1. 100% DIRECT OWNER GUARANTEE
-Rentlo operates on a zero-brokerage business model. Buyers and tenants connect directly with verified property owners without paying traditional 1-2 month broker fees.
-
-2. REPORTING EXTORTION OR THIRD-PARTY BROKER CLAIMS
-If any individual posing as an owner demands a broker commission, security deposit prior to physical property inspection, or key delivery fee for a listing on Rentlo:
-• Click 'Report Fraud' on the property listing page immediately.
-• Do NOT transfer money outside the official Rentlo payment gateway.
-
-3. INVALID LEAD REFUND POLICY
-If an unlocked phone number belongs to an offline or unverified third party, submit an unlock feedback report within 48 hours for an instant credit pass refund.`
-    }
-  };
+  const [legalModalTab, setLegalModalTab] = useState(null);
 
   const navLinks = [
     { to: "/", label: t("nav.properties", "Properties"), icon: "home_work" },
@@ -499,31 +434,11 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         />
       )}
 
-      {legalModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 relative">
-            <button
-              onClick={() => setLegalModal(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold transition-all cursor-pointer"
-            >
-              ✕
-            </button>
-            <div className="flex items-start gap-3 mb-4 pr-10">
-              <span className="material-symbols-outlined text-2xl text-slate-800 mt-0.5">gavel</span>
-              <h3 className="text-lg font-extrabold text-slate-900 leading-tight">{legalModal.title}</h3>
-            </div>
-            <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6 whitespace-pre-line">
-              {legalModal.content}
-            </p>
-            <button
-              onClick={() => setLegalModal(null)}
-              className="w-full py-3 bg-black hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs shadow-md transition-all cursor-pointer"
-            >
-              Close &amp; Accept Policy
-            </button>
-          </div>
-        </div>
-      )}
+      <PrivacyPolicyModal 
+        isOpen={Boolean(legalModalTab)} 
+        initialTab={legalModalTab || "privacy"} 
+        onClose={() => setLegalModalTab(null)} 
+      />
 
       {/* Master Footer */}
       {!isChatRoute && (
@@ -533,74 +448,61 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             {/* Col 1: Brand Info */}
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
-                {platformSettings?.company_logo_url ? (
-                  <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
-                ) : (
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-md" style={{ backgroundColor: "#FFFFFF" }}>
-                    <span className="material-symbols-outlined text-lg text-white">real_estate_agent</span>
-                  </div>
-                )}
-                <span className="text-lg font-black tracking-tight text-white">
-                  {platformSettings?.company_name || "Rentlo"}
-                </span>
+                <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-sm">
+                  R
+                </div>
+                <span className="font-display font-black text-xl tracking-tight text-white">Rentlo</span>
               </div>
-              <p className="text-sm font-medium leading-relaxed text-gray-300">
-                {t("footer.desc", "Zero-Brokerage Real Estate Ecosystem. Directly connecting buyers, tenants, and property owners across India.")}
-              </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-white">
-                {t("footer.dpdpCompliant", "• DPDP Act 2023 Compliant Baseline")}
+              <p className="text-xs text-gray-300 font-medium leading-relaxed max-w-xs">
+                {t("footer.brandDescription", "India's premier 0% brokerage direct real estate discovery portal. Direct owner contacts, instant unlocks, transparent rentals.")}
               </p>
             </div>
 
-            {/* Col 2: Login Portals */}
+            {/* Col 2: Quick Navigation */}
             <div>
               <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4 text-white">
-                {t("footer.accessPortals", "Access Portals & Login")}
+                {t("footer.navigation", "Navigation")}
               </h4>
               <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
-                  <Link to="/login" className="flex items-center gap-2 hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-base text-white">person</span>
-                    {t("footer.tenantLogin", "Tenant & Buyer Login")}
+                  <Link to="/" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">storefront</span>
+                    {t("footer.exploreProperties", "Explore Properties")}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/owner/login" className="flex items-center gap-2 hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-base text-white">add_home</span>
-                    {t("footer.ownerLogin", "Landlord & Owner Login")}
+                  <Link to="/pricing" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">confirmation_number</span>
+                    {t("footer.creditPasses", "Passes & Pricing")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/my-unlocks" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">lock_open</span>
+                    {t("footer.myUnlocks", "My Unlocked Contacts")}
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Col 3: Platform Features */}
+            {/* Col 3: Owner & Partner Access */}
             <div>
               <h4 className="text-xs font-extrabold uppercase tracking-wider mb-4 text-white">
-                {t("footer.platformServices", "Platform Services")}
+                {t("footer.forPropertyOwners", "For Property Owners")}
               </h4>
               <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
-                  <Link to="/" className="flex items-center gap-2 hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-base text-white">home_work</span>
-                    {t("footer.exploreCatalog", "Explore Property Catalog")}
+                  <Link to="/owner/login" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">real_estate_agent</span>
+                    {t("footer.ownerPortalLogin", "Owner Portal Login")}
                   </Link>
                 </li>
-                {user && (
-                  <>
-                    <li>
-                      <Link to="/my-unlocks" className="flex items-center gap-2 hover:text-white transition-colors">
-                        <span className="material-symbols-outlined text-base text-white">lock_open</span>
-                        {t("footer.myUnlocks", "My Contact Unlocks")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/saved-searches" className="flex items-center gap-2 hover:text-white transition-colors">
-                        <span className="material-symbols-outlined text-base text-white">bookmark</span>
-                        {t("footer.savedSearches", "Saved Search Alerts")}
-                      </Link>
-                    </li>
-                  </>
-                )}
+                <li>
+                  <Link to="/owner/login?tab=signup" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <span className="material-symbols-outlined text-base text-white">add_home</span>
+                    {t("footer.postFreeListing", "Post Free Property Listing")}
+                  </Link>
+                </li>
                 <li>
                   <Link to="/pricing" className="flex items-center gap-2 hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-base text-white">confirmation_number</span>
@@ -618,8 +520,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               <ul className="space-y-2.5 text-sm font-semibold text-gray-300">
                 <li>
                   <button
-                    onClick={() => setLegalModal(legalPolicies.privacy)}
-                    className="footer-plain-btn hover:text-white font-semibold"
+                    type="button"
+                    onClick={() => setLegalModalTab("privacy")}
+                    className="footer-plain-btn hover:text-white font-semibold cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-base text-white shrink-0">privacy_tip</span>
                     {t("footer.privacyPolicy", "Privacy Policy (v1.0)")}
@@ -627,8 +530,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 </li>
                 <li>
                   <button
-                    onClick={() => setLegalModal(legalPolicies.terms)}
-                    className="footer-plain-btn hover:text-white font-semibold"
+                    type="button"
+                    onClick={() => setLegalModalTab("terms")}
+                    className="footer-plain-btn hover:text-white font-semibold cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-base text-white shrink-0">gavel</span>
                     {t("footer.termsOfService", "Terms of Service & Fair Usage")}
@@ -636,8 +540,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 </li>
                 <li>
                   <button
-                    onClick={() => setLegalModal(legalPolicies.dpdp)}
-                    className="footer-plain-btn hover:text-white font-semibold"
+                    type="button"
+                    onClick={() => setLegalModalTab("dpdp")}
+                    className="footer-plain-btn hover:text-white font-semibold cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-base text-white shrink-0">shield</span>
                     {t("footer.dpdpRetention", "DPDP Act Data Retention Boundary")}
@@ -645,8 +550,9 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
                 </li>
                 <li>
                   <button
-                    onClick={() => setLegalModal(legalPolicies.zero_brokerage)}
-                    className="footer-plain-btn hover:text-white font-semibold"
+                    type="button"
+                    onClick={() => setLegalModalTab("zero_brokerage")}
+                    className="footer-plain-btn hover:text-white font-semibold cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-base text-white shrink-0">verified_user</span>
                     {t("footer.zeroBrokerage", "Zero Brokerage Protection")}
@@ -655,7 +561,6 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               </ul>
             </div>
           </div>
-
 
           <div className="pt-6 pb-16 md:pb-0 text-center text-xs font-medium text-gray-300">
             <p>{t("footer.copyright", `${platformSettings?.company_name || "Rentlo Technologies"} © 2026. All rights reserved.`)}</p>

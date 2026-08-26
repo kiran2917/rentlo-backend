@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PrivacyPolicyModal } from "./PrivacyPolicyModal";
 
 export const AuthRoleModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   if (!isOpen) return null;
 
@@ -168,7 +170,31 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
             </div>
           </div>
         </div>
+
+        {/* DPDP Compliance & Privacy Policy Footer */}
+        <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: "var(--border)" }}>
+          <p className="text-[11.5px] font-medium opacity-70" style={{ color: "var(--ink)" }}>
+            By continuing, you agree to Rentlo's{" "}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowPrivacyModal(true);
+              }}
+              className="font-extrabold underline hover:opacity-100 cursor-pointer"
+              style={{ color: "#000000" }}
+            >
+              Privacy Policy (v1.0) &amp; DPDP Guidelines
+            </button>
+          </p>
+        </div>
       </div>
+
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
     </div>
   );
 };
