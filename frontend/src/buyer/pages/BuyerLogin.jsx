@@ -975,27 +975,6 @@ export const BuyerLogin = () => {
                   )}
                 </div>
               )}
-
-              {/* Sign In Footer Prompt */}
-              <div className="mt-6 pt-5 border-t text-center space-y-2" style={{ borderColor: "var(--border)" }}>
-                <p className="text-[13px] font-semibold" style={{ color: "var(--text-muted)" }}>
-                  Don't have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
-                    className="font-extrabold hover:underline cursor-pointer"
-                    style={{ color: "#000000" }}
-                  >
-                    Create Account / Sign Up →
-                  </button>
-                </p>
-                <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
-                  Are you a Property Owner?{" "}
-                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "#000000" }}>
-                    Owner Portal Login →
-                  </Link>
-                </p>
-              </div>
             </>
           )}
 
@@ -1121,26 +1100,6 @@ export const BuyerLogin = () => {
                 </button>
               </form>
 
-              {/* Sign Up Footer Prompt */}
-              <div className="mt-6 pt-5 border-t text-center space-y-2" style={{ borderColor: "var(--border)" }}>
-                <p className="text-[13px] font-semibold" style={{ color: "var(--text-muted)" }}>
-                  Already have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => { setActiveTab("login"); setAuthMode("password"); }}
-                    className="font-extrabold hover:underline cursor-pointer"
-                    style={{ color: "#000000" }}
-                  >
-                    Sign In to Account →
-                  </button>
-                </p>
-                <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
-                  Are you a Property Owner?{" "}
-                  <Link to="/owner/login" className="font-extrabold hover:underline" style={{ color: "#000000" }}>
-                    Owner Portal Login →
-                  </Link>
-                </p>
-              </div>
             </>
           )}
         </div>
