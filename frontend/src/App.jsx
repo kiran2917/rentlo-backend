@@ -97,10 +97,10 @@ function App() {
   return (
     <AuthProvider>
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
-      <NotificationPromptModal />
       <BrowserRouter>
+        <NotificationPromptModal />
         <KeyboardDismissHandler />
-                <Routes>
+        <Routes>
           {/* BUYER / OWNER AUTHENTICATION ROUTES */}
           <Route path="/login" element={<BuyerLogin />} />
           <Route path="/buyer/login" element={<BuyerLogin />} />
