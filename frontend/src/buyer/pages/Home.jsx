@@ -443,12 +443,8 @@ export const Home = () => {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-[13px] sm:text-base md:text-lg font-medium mb-3 max-w-lg text-slate-300 leading-relaxed drop-shadow">
+            <p className="text-[13px] sm:text-base md:text-lg font-medium mb-5 sm:mb-8 max-w-lg text-slate-300 leading-relaxed drop-shadow">
               Direct owner phone numbers • Transparent pricing • 0% Brokerage
-            </p>
-
-            <p className="text-xs sm:text-sm font-extrabold text-pink-300 mb-5 sm:mb-8 drop-shadow">
-              kiran loves anni
             </p>
 
             {/* Glassmorphic Floating Search Card */}
