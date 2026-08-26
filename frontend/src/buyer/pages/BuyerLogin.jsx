@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../shared/context/AuthContext";
 import { toast } from "react-toastify";
+import { PrivacyPolicyModal } from "../../shared/components/PrivacyPolicyModal";
 
 export const BuyerLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { checkAuth } = useAuth();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   // Main Tab: "login" (default) | "signup"
   const [activeTab, setActiveTab] = useState("login");
@@ -953,7 +955,19 @@ export const BuyerLogin = () => {
                           className="mt-0.5 h-4 w-4 rounded cursor-pointer"
                         />
                         <label htmlFor="dpdp-reg-buyer" className="text-[11px] font-medium leading-relaxed cursor-pointer" style={{ color: "var(--text-muted)" }}>
-                          I agree to the <span className="font-extrabold" style={{ color: "var(--ink)" }}>Privacy Policy (v1.0)</span> and consent to data processing under DPDP Act protocols.
+                          I agree to the{" "}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setShowPrivacyModal(true);
+                            }}
+                            className="font-extrabold underline text-indigo-600 dark:text-indigo-400 hover:opacity-80 cursor-pointer"
+                          >
+                            Privacy Policy (v1.0)
+                          </button>{" "}
+                          and consent to data processing under DPDP Act protocols.
                         </label>
                       </div>
 
@@ -1077,7 +1091,19 @@ export const BuyerLogin = () => {
                     className="mt-0.5 h-4 w-4 rounded cursor-pointer"
                   />
                   <label htmlFor="dpdp-consent-signup" className="text-[11px] font-medium leading-relaxed cursor-pointer" style={{ color: "var(--text-muted)" }}>
-                    I agree to the <span className="font-extrabold" style={{ color: "var(--ink)" }}>Privacy Policy (v1.0)</span> and consent to data processing under DPDP Act protocols.
+                    I agree to the{" "}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowPrivacyModal(true);
+                      }}
+                      className="font-extrabold underline text-indigo-600 dark:text-indigo-400 hover:opacity-80 cursor-pointer"
+                    >
+                      Privacy Policy (v1.0)
+                    </button>{" "}
+                    and consent to data processing under DPDP Act protocols.
                   </label>
                 </div>
 
@@ -1104,6 +1130,12 @@ export const BuyerLogin = () => {
           )}
         </div>
       </div>
+
+      {/* Privacy Policy & DPDP Act Modal */}
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
     </div>
   );
 };

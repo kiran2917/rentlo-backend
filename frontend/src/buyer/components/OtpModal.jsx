@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../shared/context/AuthContext";
+import { PrivacyPolicyModal } from "../../shared/components/PrivacyPolicyModal";
 
 export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, subtitle }) => {
   const { checkAuth } = useAuth();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [otpStep, setOtpStep] = useState(1);
@@ -346,7 +348,19 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, su
                 className="mt-0.5 h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer accent-indigo-600"
               />
               <label htmlFor="dpdp-consent-modal" className="text-[11.5px] font-medium leading-relaxed text-slate-600 dark:text-slate-400 cursor-pointer">
-                I agree to the <span className="font-bold text-slate-900 dark:text-white">Privacy Policy</span> and consent to data processing under DPDP Act protocols.
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPrivacyModal(true);
+                  }}
+                  className="font-bold underline text-indigo-600 dark:text-indigo-400 hover:opacity-80 cursor-pointer"
+                >
+                  Privacy Policy (v1.0)
+                </button>{" "}
+                and consent to data processing under DPDP Act protocols.
               </label>
             </div>
 
@@ -586,6 +600,12 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, su
           </div>
         )}
       </div>
+
+      {/* Privacy Policy & DPDP Act Modal */}
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
     </div>
   );
 };
