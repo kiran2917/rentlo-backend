@@ -20,7 +20,8 @@ export const MySavedSearches = () => {
         { credentials: "include" }
       );
       if (res.ok) {
-        setSearches(await res.json());
+        const data = await res.json();
+        setSearches(Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []));
       } else {
         if (res.status === 401 || res.status === 403) {
           setError("AUTH_REQUIRED");
@@ -43,7 +44,7 @@ export const MySavedSearches = () => {
         { method: "DELETE", credentials: "include" }
       );
       if (res.ok) {
-        setSearches((prev) => prev.filter((s) => s.id !== id));
+        setSearches((prev) => (Array.isArray(prev) ? prev.filter((s) => s.id !== id) : []));
         toast.success("Saved search alert deleted successfully");
       } else {
         toast.error("Failed to delete saved search");

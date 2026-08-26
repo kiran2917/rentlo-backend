@@ -110,10 +110,10 @@ export const PropertyList = () => {
     }
   };
 
-  // Get filtered usernames based on selected roleFilter (Cascading Dependent Dropdown)
+  const safeProperties = Array.isArray(properties) ? properties : [];
   const availableUsers = Array.from(
     new Set(
-      properties
+      safeProperties
         .filter((p) => {
           const role = p.creator_info?.role || "owner";
           if (roleFilter === "admin") return role === "admin";
@@ -127,7 +127,7 @@ export const PropertyList = () => {
   );
 
   // Filter Properties Logic
-  const filteredProperties = properties.filter((p) => {
+  const filteredProperties = safeProperties.filter((p) => {
     const creator = p.creator_info || {};
     const role = creator.role?.toLowerCase() || "owner";
     const username = creator.username || "";
@@ -139,40 +139,32 @@ export const PropertyList = () => {
     const city = (p.locality_details?.city_name || "").toLowerCase();
     const search = searchQuery.toLowerCase().trim();
 
-    // 1. Search Query
-    if (
-      search &&
-      !title.includes(search) &&
-      !ownerName.includes(search) &&
-      !ownerPhone.includes(search) &&
-      !username.toLowerCase().includes(search) &&
-      !locality.includes(search) &&
-      !city.includes(search)
-    ) {
-      return false;
+    // 1. Role Filter
+    if (roleFilter === "admin" && role !== "admin") return false;
+    if (roleFilter === "agent" && role !== "agent") return false;
+    if (roleFilter === "owner" && role !== "owner" && role !== "buyer") return false;
+
+    // 2. Cascading User Filter
+    if (userFilter !== "all") {
+      if (userFilter === "Self" && username !== "Self") return false;
+      if (userFilter !== "Self" && username !== userFilter) return false;
     }
 
-    // 2. Role Filter (Owner, Agent, Admin) - Admin Only
-    if (isAdmin && roleFilter !== "all" && role !== roleFilter) {
-      return false;
-    }
+    // 3. Status Filter
+    if (statusFilter !== "all" && p.status !== statusFilter) return false;
 
-    // 3. Specific User Filter - Admin Only
-    if (isAdmin && userFilter !== "all" && username !== userFilter) {
-      return false;
-    }
-
-    // 4. Status Filter (Hide rejected from 'all' view by default to keep active list clean)
-    if (statusFilter === "all" && p.status === "rejected") {
-      return false;
-    }
-    if (statusFilter !== "all" && p.status !== statusFilter) {
-      return false;
-    }
-
-    // 5. Type Filter
-    if (typeFilter !== "all" && p.property_type !== typeFilter) {
-      return false;
+    // 4. Search Filter
+    if (search) {
+      const matchTitle = title.includes(search);
+      const matchOwner = ownerName.includes(search);
+      const matchPhone = ownerPhone.includes(search);
+      const matchLocality = locality.includes(search);
+      const matchCity = city.includes(search);
+      const matchId = String(p.id).includes(search);
+      const matchCreator = username.toLowerCase().includes(search);
+      if (!matchTitle && !matchOwner && !matchPhone && !matchLocality && !matchCity && !matchId && !matchCreator) {
+        return false;
+      }
     }
 
     return true;
@@ -185,17 +177,17 @@ export const PropertyList = () => {
   );
 
   // Calculate Metrics
-  const totalCount = properties.length;
-  const adminCount = properties.filter((p) => p.creator_info?.role === "admin").length;
-  const agentCount = properties.filter((p) => p.creator_info?.role === "agent").length;
-  const ownerCount = properties.filter(
+  const totalCount = safeProperties.length;
+  const adminCount = safeProperties.filter((p) => p.creator_info?.role === "admin").length;
+  const agentCount = safeProperties.filter((p) => p.creator_info?.role === "agent").length;
+  const ownerCount = safeProperties.filter(
     (p) => !p.creator_info?.role || p.creator_info?.role === "owner" || p.creator_info?.role === "buyer"
   ).length;
-  const liveCount = properties.filter((p) => p.status === "live").length;
-  const pendingCount = properties.filter(
+  const liveCount = safeProperties.filter((p) => p.status === "live").length;
+  const pendingCount = safeProperties.filter(
     (p) => p.status === "pending" || p.status === "pending_review"
   ).length;
-  const rejectedCount = properties.filter((p) => p.status === "rejected").length;
+  const rejectedCount = safeProperties.filter((p) => p.status === "rejected").length;
 
   return (
     <AdminLayout activeTab="properties">

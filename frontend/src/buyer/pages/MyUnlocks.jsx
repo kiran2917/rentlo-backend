@@ -20,7 +20,8 @@ export const MyUnlocks = () => {
         ]);
 
         if (unlocksRes.ok) {
-          setProperties(await unlocksRes.json());
+          const data = await unlocksRes.json();
+          setProperties(Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []));
         } else {
           if (unlocksRes.status === 401 || unlocksRes.status === 403) {
             setError("AUTH_REQUIRED");
@@ -42,7 +43,8 @@ export const MyUnlocks = () => {
     fetchData();
   }, []);
 
-  const filteredProperties = properties.filter((item) => {
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const filteredProperties = safeProperties.filter((item) => {
     const prop = item.property || item;
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;

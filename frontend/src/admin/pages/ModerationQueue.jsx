@@ -156,7 +156,8 @@ export const ModerationQueue = () => {
     }
   };
 
-  const filteredProperties = properties.filter((p) => {
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const filteredProperties = safeProperties.filter((p) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
