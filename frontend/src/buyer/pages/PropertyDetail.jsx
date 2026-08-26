@@ -25,6 +25,31 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
+const getAmenityIcon = (name) => {
+  const lower = (name || '').toLowerCase();
+  if (lower.includes('wifi') || lower.includes('wi-fi') || lower.includes('internet')) return 'wifi';
+  if (lower.includes('security') || lower.includes('guard')) return 'shield';
+  if (lower.includes('gym') || lower.includes('fitness')) return 'fitness_center';
+  if (lower.includes('swimming') || lower.includes('pool')) return 'pool';
+  if (lower.includes('clubhouse') || lower.includes('club')) return 'deck';
+  if (lower.includes('power') || lower.includes('backup') || lower.includes('generator')) return 'bolt';
+  if (lower.includes('lift') || lower.includes('elevator')) return 'elevator';
+  if (lower.includes('gas') || lower.includes('pipeline')) return 'propane_tank';
+  if (lower.includes('ac') || lower.includes('air conditioning') || lower.includes('air conditioner')) return 'ac_unit';
+  if (lower.includes('parking') || lower.includes('garage')) return 'local_parking';
+  if (lower.includes('water') || lower.includes('geyser') || lower.includes('hot water')) return 'water_drop';
+  if (lower.includes('washroom') || lower.includes('bathroom') || lower.includes('bath')) return 'shower';
+  if (lower.includes('housekeeping') || lower.includes('cleaning') || lower.includes('maid')) return 'cleaning_services';
+  if (lower.includes('tv') || lower.includes('television')) return 'tv';
+  if (lower.includes('fridge') || lower.includes('refrigerator')) return 'kitchen';
+  if (lower.includes('laundry') || lower.includes('washing')) return 'local_laundry_service';
+  if (lower.includes('balcony')) return 'balcony';
+  if (lower.includes('garden') || lower.includes('park') || lower.includes('lawn')) return 'yard';
+  if (lower.includes('cctv') || lower.includes('camera')) return 'videocam';
+  if (lower.includes('food') || lower.includes('meal') || lower.includes('mess')) return 'restaurant';
+  return 'verified';
+};
+
 export const PropertyDetail = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
@@ -58,6 +83,28 @@ export const PropertyDetail = () => {
   const [showQrModal, setShowQrModal] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [userSub, setUserSub] = useState(null);
+
+  const amenitiesList = React.useMemo(() => {
+    if (!property) return [];
+    let items = [];
+    const collect = (val) => {
+      if (!val) return;
+      if (Array.isArray(val)) {
+        items.push(...val);
+      } else if (typeof val === 'string') {
+        try {
+          const parsed = JSON.parse(val);
+          if (Array.isArray(parsed)) items.push(...parsed);
+          else items.push(val);
+        } catch (e) {
+          items.push(...val.split(',').map(s => s.trim()).filter(Boolean));
+        }
+      }
+    };
+    collect(property.amenities);
+    collect(property.pg_amenities);
+    return Array.from(new Set(items.filter(Boolean)));
+  }, [property?.amenities, property?.pg_amenities]);
 
   const navigate = useNavigate();
   const { user, loading: authLoading, checkAuth } = useAuth();
@@ -764,6 +811,34 @@ export const PropertyDetail = () => {
                   )}
                 </div>
               )}
+
+              {/* Amenities directly on top */}
+              {amenitiesList && amenitiesList.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap w-full mt-2 pt-3 border-t border-slate-200">
+                  <span className="text-[12px] font-black text-[var(--ink)] flex items-center gap-1 mr-1">
+                    <span className="material-symbols-outlined text-[18px] text-[var(--accent)]">
+                      verified
+                    </span>
+                    Amenities:
+                  </span>
+                  {amenitiesList.map((amenity) => (
+                    <span
+                      key={amenity}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12.5px] font-bold shadow-2xs transition-colors"
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        color: "var(--ink)",
+                        border: "1px solid var(--border)",
+                      }}
+                    >
+                      <span className="material-symbols-outlined text-[16px]" style={{ color: "var(--accent)" }}>
+                        {getAmenityIcon(amenity)}
+                      </span>
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           {/* PG Room Sharing Per-Room Pricing Breakdown */}
@@ -1008,38 +1083,7 @@ export const PropertyDetail = () => {
             </div>
           )}
 
-          {/* Amenities */}
-          {property.amenities && property.amenities.length > 0 && (
-            <div
-              className="p-8 rounded-card"
-              style={{
-                backgroundColor: "var(--surface)",
-                border: "1px solid var(--border)",
-              }}
-            >
-              <h2
-                className="font-display font-semibold text-[22px] mb-6 tracking-tight"
-                style={{ color: "var(--ink)" }}
-              >
-                Amenities
-              </h2>
-              <div className="flex flex-wrap gap-3">
-                {Array.isArray(property.amenities) && property.amenities.map(amenity => (
-                  <span
-                    key={amenity}
-                    className="px-4 py-2.5 rounded-xl text-[13px] font-semibold"
-                    style={{
-                      backgroundColor: "var(--bg)",
-                      color: "var(--ink)",
-                      border: "1px solid var(--border)",
-                    }}
-                  >
-                    {amenity}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+
         </div>
 
         {/* ─── Right: Sticky Panel ─── */}
@@ -1930,6 +1974,8 @@ export const PropertyDetail = () => {
       
       {showOtpModal && (
         <OtpModal
+          title="Unlock Owner Details"
+          subtitle="Sign in or enter your mobile number to unlock direct owner contact & location."
           onSuccess={(name, phone) => {
             setShowOtpModal(false);
             handleUnlock(name, phone);
@@ -2080,6 +2126,8 @@ export const PropertyDetail = () => {
       {/* Login Modal for Protected Actions */}
       {showLoginModal && (
         <OtpModal
+          title="Sign in to Continue"
+          subtitle="Enter your mobile number to connect with the owner or manage your listings."
           onSuccess={async () => {
             setShowLoginModal(false);
             await checkAuth(); // Make sure user state is updated

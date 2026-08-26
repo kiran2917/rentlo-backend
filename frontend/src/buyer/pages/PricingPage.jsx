@@ -402,6 +402,8 @@ export const PricingPage = () => {
 
       {showLoginModal && (
         <OtpModal
+          title={t("pricing.loginModal.title", "Sign in to Continue")}
+          subtitle={t("pricing.loginModal.subtitle", "Enter your mobile number to purchase your pass and activate contact unlocks.")}
           onSuccess={() => {
             setShowLoginModal(false);
             if (pendingPlanId) {
