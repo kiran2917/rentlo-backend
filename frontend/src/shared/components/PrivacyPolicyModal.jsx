@@ -4,6 +4,7 @@ export const LEGAL_POLICIES = {
   privacy: {
     id: "privacy",
     label: "Privacy Policy",
+    icon: "policy",
     title: "Privacy Policy (v1.0) & DPDP Act 2023 Compliance",
     content: `1. DATA FIDUCIARY IDENTIFICATION
 Rentlo Technologies operates as the designated Data Fiduciary under India's Digital Personal Data Protection (DPDP) Act 2023. We collect Personally Identifiable Information (PII) including verified mobile numbers, email addresses, and location data exclusively for enabling zero-brokerage property transactions.
@@ -24,6 +25,7 @@ For grievances, contact our Data Protection Officer at privacy@rentlo.in.`
   terms: {
     id: "terms",
     label: "Terms of Service",
+    icon: "description",
     title: "Terms of Service & Fair Usage Policy",
     content: `1. PLATFORM SCOPE & ELIGIBILITY
 Rentlo provides a direct peer-to-peer real estate discovery portal connecting verified property owners with buyers and tenants across India. Users must be at least 18 years of age to register or initiate contact unlocks.
@@ -43,7 +45,8 @@ Purchasing a contact unlock or buyer credit pass grants a non-transferable, limi
   },
   dpdp: {
     id: "dpdp",
-    label: "DPDP Act Rights",
+    label: "DPDP Data Rights",
+    icon: "lock_reset",
     title: "DPDP Act Data Retention & Erasure Boundaries",
     content: `1. DATA RETENTION SPECIFICATIONS
 Rentlo retains user profile data and transaction logs only as long as necessary to fulfill real estate inquiry processing and financial reporting mandates under Indian tax laws.
@@ -59,7 +62,8 @@ Rentlo never sells, rents, or shares user PII with third-party telemarketers or 
   },
   zero_brokerage: {
     id: "zero_brokerage",
-    label: "Zero Brokerage Guarantee",
+    label: "Zero Brokerage",
+    icon: "verified_user",
     title: "Zero Brokerage Protection Guarantee & Fraud Prevention",
     content: `1. 100% DIRECT OWNER GUARANTEE
 Rentlo operates on a zero-brokerage business model. Buyers and tenants connect directly with verified property owners without paying traditional 1-2 month broker fees.
@@ -82,22 +86,22 @@ export const PrivacyPolicyModal = ({ isOpen, onClose, initialTab = "privacy" }) 
   const currentPolicy = LEGAL_POLICIES[activeTab] || LEGAL_POLICIES.privacy;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
       <div 
-        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl relative animate-scale-up"
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl relative animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Title & Close Button */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
               <span className="material-symbols-outlined text-[20px]">policy</span>
             </div>
             <div>
-              <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
+              <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white leading-tight">
                 Legal &amp; Compliance Hub
               </h3>
-              <p className="text-xs font-medium text-slate-500">
+              <p className="text-[11px] sm:text-xs font-medium text-slate-500">
                 DPDP Act 2023 Statutory Disclosures
               </p>
             </div>
@@ -111,20 +115,23 @@ export const PrivacyPolicyModal = ({ isOpen, onClose, initialTab = "privacy" }) 
           </button>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 py-3 overflow-x-auto border-b border-slate-100 dark:border-slate-800 custom-scrollbar">
+        {/* Tab Switcher Grid (2x2 on Mobile, 4x1 on Desktop - Zero clipping) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 py-3 border-b border-slate-100 dark:border-slate-800">
           {Object.values(LEGAL_POLICIES).map((policy) => (
             <button
               key={policy.id}
               type="button"
               onClick={() => setActiveTab(policy.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center ${
                 activeTab === policy.id
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20 font-extrabold"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
-              {policy.label}
+              <span className="material-symbols-outlined text-[15px] flex-shrink-0">
+                {policy.icon}
+              </span>
+              <span className="truncate">{policy.label}</span>
             </button>
           ))}
         </div>
