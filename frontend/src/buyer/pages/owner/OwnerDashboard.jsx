@@ -2422,12 +2422,12 @@ export const OwnerDashboard = () => {
             </div>
 
             {/* Modal Tabs */}
-            <div className="bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl flex gap-1 overflow-x-auto scrollbar-none">
+            <div className="grid grid-cols-4 gap-1 sm:gap-1.5 bg-slate-100 dark:bg-slate-800/60 p-1 sm:p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-800">
               {[
-                { id: "pricing", label: "Pricing & Info", icon: "payments" },
-                { id: "specs", label: "Specs", icon: "home_work" },
-                { id: "amenities", label: "Amenities & Rules", icon: "tune" },
-                { id: "photos", label: "Photos", icon: "image" }
+                { id: "pricing", label: "Pricing", fullLabel: "Pricing & Info", icon: "payments" },
+                { id: "specs", label: "Specs", fullLabel: "Specs", icon: "home_work" },
+                { id: "amenities", label: "Amenities", fullLabel: "Amenities & Rules", icon: "tune" },
+                { id: "photos", label: "Photos", fullLabel: "Photos", icon: "image" }
               ].map((tab) => {
                 const isActive = activeEditTab === tab.id;
                 return (
@@ -2435,14 +2435,15 @@ export const OwnerDashboard = () => {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveEditTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                    className={`flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1 sm:px-3 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer select-none ${
                       isActive 
-                        ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/50 dark:border-slate-800/50" 
+                        ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/60 dark:border-slate-800" 
                         : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-transparent"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
-                    <span>{tab.label}</span>
+                    <span className="material-symbols-outlined text-[17px] sm:text-[16px]">{tab.icon}</span>
+                    <span className="truncate hidden sm:inline">{tab.fullLabel}</span>
+                    <span className="truncate sm:hidden">{tab.label}</span>
                   </button>
                 );
               })}
@@ -2452,7 +2453,7 @@ export const OwnerDashboard = () => {
               {/* TAB 1: PRICING & GENERAL */}
               {activeEditTab === "pricing" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Monthly Rent (₹)</label>
                       <input
@@ -2475,7 +2476,7 @@ export const OwnerDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-center">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Maintenance Charges (₹/mo)</label>
                       <input
@@ -2485,19 +2486,19 @@ export const OwnerDashboard = () => {
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                       />
                     </div>
-                    <div className="flex items-center gap-3 pt-6">
+                    <div className="flex items-center gap-3 pt-1 sm:pt-6">
                       <input
                         type="checkbox"
                         id="maintenance_included"
                         checked={editForm.maintenance_included_in_rent}
                         onChange={(e) => setEditForm(prev => ({ ...prev, maintenance_included_in_rent: e.target.checked }))}
-                        className="w-5 h-5 accent-indigo-600 cursor-pointer"
+                        className="w-5 h-5 accent-indigo-600 cursor-pointer rounded"
                       />
                       <label htmlFor="maintenance_included" className="text-xs font-bold text-slate-600 dark:text-slate-400 cursor-pointer">Maintenance Included in Rent</label>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Available From</label>
                       <input

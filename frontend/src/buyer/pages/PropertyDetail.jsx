@@ -576,66 +576,6 @@ export const PropertyDetail = () => {
               />
             </div>
           ))}
-
-          {/* Left / Right Quick Tap Arrows */}
-          {count > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMobileSlideIndex((prev) => (prev - 1 + count) % count);
-                }}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-80 active:scale-90 shadow-md cursor-pointer z-20"
-                aria-label="Previous photo"
-              >
-                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-              </button>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMobileSlideIndex((prev) => (prev + 1) % count);
-                }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-80 active:scale-90 shadow-md cursor-pointer z-20"
-                aria-label="Next photo"
-              >
-                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-              </button>
-            </>
-          )}
-
-          {/* Badge: "📷 1 / 6" */}
-          {count > 1 && (
-            <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-black px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20 z-20">
-              <span className="material-symbols-outlined text-[13px]">photo_library</span>
-              <span>{mobileSlideIndex + 1} / {count}</span>
-            </div>
-          )}
-
-          {/* Slide Progress Indicators */}
-          {count > 1 && (
-            <div className="absolute bottom-3.5 left-4 right-20 flex items-center gap-1.5 z-20">
-              {media.map((_, idx) => (
-                <div
-                  key={idx}
-                  className="h-1 flex-1 rounded-full bg-white/30 overflow-hidden"
-                >
-                  <div
-                    className={`h-full bg-white transition-all duration-300 rounded-full ${
-                      mobileSlideIndex === idx ? "w-full" : "w-0"
-                    }`}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Top-Right "All (N)" Button */}
-          <div className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 border border-white/20 transition-all shadow-md z-20">
-            <span className="material-symbols-outlined text-[14px]">fullscreen</span>
-            <span>All ({count})</span>
-          </div>
         </div>
 
         {/* ─── Desktop Multi-Grid (hidden md:grid) ─── */}
