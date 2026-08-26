@@ -433,198 +433,193 @@ export const Home = () => {
             />
           </div>
 
-          <div className="relative z-10 flex flex-col items-center text-center w-full max-w-6xl mx-auto">
+          <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl mx-auto pt-2 pb-4 sm:py-6">
+            {/* Top Verified Trust Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-black uppercase tracking-wider mb-3 sm:mb-4 shadow-lg animate-fade-in">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>100% Zero-Brokerage Verified Properties</span>
+            </div>
+
             {/* Main Headline */}
-            <h1 className="font-display font-extrabold leading-[1.12] sm:leading-[1.08] tracking-tight mb-2 sm:mb-3 text-white max-w-4xl text-2xl xs:text-[28px] sm:text-[44px] md:text-[64px] drop-shadow-md">
-              {t("home.heroTitle", "Find your next perfect place.")}
+            <h1 className="font-display font-black leading-[1.12] sm:leading-[1.08] tracking-tight mb-2 sm:mb-3 text-white max-w-3xl text-2xl xs:text-[30px] sm:text-[46px] md:text-[58px] drop-shadow-md">
+              Find your next{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-200 to-amber-200">
+                perfect place
+              </span>.
             </h1>
 
             {/* Subtitle */}
-            <p className="text-[13px] sm:text-lg md:text-xl font-medium mb-4 sm:mb-6 max-w-xl text-slate-300 leading-relaxed drop-shadow">
-              {t("home.heroSubtitle", "Discover verified rental properties with transparent pricing and direct owner access.")}
+            <p className="text-[13px] sm:text-base md:text-lg font-medium mb-4 sm:mb-6 max-w-lg text-slate-300 leading-relaxed drop-shadow">
+              Direct owner phone numbers • Transparent pricing • 0% Brokerage
             </p>
 
             {/* Glassmorphic Floating Search Card */}
-            <div
-              className="w-full max-w-5xl mx-auto p-4 sm:p-6 md:p-6 rounded-2xl sm:rounded-3xl text-left transition-all border glass-card shadow-card-hover"
-            >
-              {/* Primary Search Fields Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
+            <div className="w-full max-w-4xl mx-auto rounded-3xl p-4 sm:p-6 bg-white/95 dark:bg-[#0c1222]/95 backdrop-blur-2xl border border-white/60 dark:border-slate-800 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] text-left transition-all">
+              
+              {/* Top Property Type Segmented Chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-3.5 border-b border-slate-100 dark:border-slate-800/80 scrollbar-none">
+                {[
+                  { id: "", label: "All Rentals", icon: "domain" },
+                  { id: "apartment", label: "Flats / BHK", icon: "apartment" },
+                  { id: "pg", label: "PG & Hostels", icon: "bed" },
+                  { id: "house", label: "Houses / Villas", icon: "cottage" },
+                  { id: "commercial", label: "Commercial", icon: "storefront" },
+                ].map((tab) => {
+                  const isCurrent = filters.property_type === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => handleFilterChange("property_type", tab.id)}
+                      className={`px-3 py-1.5 rounded-xl text-[12px] font-extrabold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+                        isCurrent
+                          ? "bg-slate-950 text-white shadow-md"
+                          : "bg-slate-100/90 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200"
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[16px]">{tab.icon}</span>
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Primary Search Fields 2-Column Responsive Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {/* City */}
-                <div className="lg:col-span-2 flex flex-col gap-1 sm:gap-2">
-                  <label className="text-xs font-extrabold uppercase tracking-widest ml-1 text-slate-600">
+                <div className="col-span-1 flex flex-col gap-1">
+                  <label className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500 ml-0.5">
                     {t("home.city", "City")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">location_on</span>
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px] pointer-events-none">location_on</span>
                     <select
                       value={filters.city_id}
                       onChange={(e) => handleFilterChange("city_id", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
+                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyCity", "Any City")}</option>
                       {cities.map((c) => (
                         <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
                     </select>
-                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-base pointer-events-none text-slate-400">expand_more</span>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-slate-400">expand_more</span>
                   </div>
                 </div>
 
                 {/* Locality */}
-                <div className="lg:col-span-2 flex flex-col gap-1 sm:gap-2">
-                  <label className="text-xs font-extrabold uppercase tracking-widest ml-1 text-slate-600">
+                <div className="col-span-1 flex flex-col gap-1">
+                  <label className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500 ml-0.5">
                     {t("home.localityLabel", "Locality")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">my_location</span>
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px] pointer-events-none">my_location</span>
                     <select
                       value={filters.locality}
                       onChange={(e) => handleFilterChange("locality", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
+                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyLocality", "Any Locality")}</option>
                       {localities.map((l) => (
                         <option key={l.id} value={l.id}>{l.name}</option>
                       ))}
                     </select>
-                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-base pointer-events-none text-slate-400">expand_more</span>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-slate-400">expand_more</span>
                   </div>
                 </div>
 
                 {/* Property Type */}
-                <div className="lg:col-span-2 flex flex-col gap-1 sm:gap-2">
-                  <label className="text-xs font-extrabold uppercase tracking-widest ml-1 text-slate-600">
+                <div className="col-span-1 flex flex-col gap-1">
+                  <label className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500 ml-0.5">
                     {t("home.type", "Type")}
                   </label>
                   <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">home_work</span>
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px] pointer-events-none">home_work</span>
                     <select
                       value={filters.property_type}
                       onChange={(e) => handleFilterChange("property_type", e.target.value)}
-                      className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
+                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyType", "Any Type")}</option>
                       {propertyTypes.map((p) => (
                         <option key={p} value={p}>{t(`home.${p}`)}</option>
                       ))}
                     </select>
-                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-base pointer-events-none text-slate-400">expand_more</span>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-slate-400">expand_more</span>
                   </div>
                 </div>
 
-                {/* Price Range / Budget */}
-                <div className="lg:col-span-4 flex flex-col gap-1 sm:gap-2">
-                  <label className="text-xs font-extrabold uppercase tracking-widest ml-1 flex justify-between items-center text-slate-600">
-                    <span>{t("home.priceRange", "Budget Range")}</span>
-                    {showCustomPriceInputs && (
-                      <button
-                        type="button"
-                        onClick={() => { setShowCustomPriceInputs(false); setFilters(prev => ({ ...prev, min_price: "", max_price: "" })); }}
-                        className="text-xs text-slate-800 font-extrabold flex items-center gap-1 hover:underline cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-xs">list</span>
-                        {t("home.useDropdown", "Use Dropdown")}
-                      </button>
-                    )}
+                {/* Budget Range */}
+                <div className="col-span-1 flex flex-col gap-1">
+                  <label className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500 ml-0.5">
+                    {t("home.priceRange", "Budget Range")}
                   </label>
-
-                  {showCustomPriceInputs ? (
-                    <div className="flex gap-2 items-center">
-                      <div className="relative flex-1">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
-                        <input
-                          type="number"
-                          placeholder={t("home.minPrice", "Min Price ₹")}
-                          value={filters.min_price}
-                          onChange={(e) => setFilters(prev => ({ ...prev, min_price: e.target.value }))}
-                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-800 text-slate-900 transition-all"
-                        />
-                      </div>
-                      <span className="text-slate-400 font-extrabold text-sm">-</span>
-                      <div className="relative flex-1">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
-                        <input
-                          type="number"
-                          placeholder={t("home.maxPrice", "Max Price ₹")}
-                          value={filters.max_price}
-                          onChange={(e) => setFilters(prev => ({ ...prev, max_price: e.target.value }))}
-                          className="w-full pl-11 pr-4 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold outline-none bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-800 text-slate-900 transition-all"
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none text-slate-800">payments</span>
-                      <select
-                        value={getBudgetOptionValue()}
-                        onChange={(e) => handleBudgetOptionChange(e.target.value)}
-                        className="w-full pl-11 pr-8 h-11 sm:h-12 rounded-xl text-xs sm:text-sm font-bold appearance-none cursor-pointer outline-none bg-slate-50 border border-slate-200 hover:border-slate-300 focus:bg-white focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 text-slate-900 transition-all"
-                      >
-                        <option value="">{t("home.anyBudget", "Any Budget")}</option>
-                        <option value="1000-3000">{t("home.1kTo3k", "₹1k to ₹3k")}</option>
-                        <option value="3000-7000">{t("home.3kTo7k", "₹3k to ₹7k")}</option>
-                        <option value="-10000">{t("home.below10k", "Below ₹10k")}</option>
-                        <option value="-15000">{t("home.below15k", "Below ₹15k")}</option>
-                        <option value="-20000">{t("home.below20k", "Below ₹20k")}</option>
-                        <option value="-30000">{t("home.below30k", "Below ₹30k")}</option>
-                        <option value="-50000">{t("home.below50k", "Below ₹50k")}</option>
-                        <option value="-75000">{t("home.below75k", "Below ₹75k")}</option>
-                        <option value="-100000">{t("home.below1Lakh", "Below ₹1 Lakh")}</option>
-                        <option value="custom" style={{ fontWeight: "bold" }}>{t("home.customMinMax", "✏️ Custom Min - Max...")}</option>
-                      </select>
-                      <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-base pointer-events-none text-slate-400">expand_more</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Save Search Button */}
-                <div className="lg:col-span-2 flex flex-col justify-end mt-2 lg:mt-0 w-full">
-                  <button
-                    onClick={handleSaveSearch}
-                    className="w-full h-11 sm:h-12 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold transition-all duration-200 bg-black hover:bg-slate-900 text-white shadow-md shadow-slate-900/20 hover:shadow-slate-900/30 hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      {saveSuccess ? "bookmark_added" : "bookmark_add"}
-                    </span>
-                    {saveSuccess ? t("home.saved", "Saved!") : t("home.saveSearch", "Save Search")}
-                  </button>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-[18px] pointer-events-none">payments</span>
+                    <select
+                      value={getBudgetOptionValue()}
+                      onChange={(e) => handleBudgetOptionChange(e.target.value)}
+                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
+                    >
+                      <option value="">{t("home.anyBudget", "Any Budget")}</option>
+                      <option value="1000-3000">{t("home.1kTo3k", "₹1k to ₹3k")}</option>
+                      <option value="3000-7000">{t("home.3kTo7k", "₹3k to ₹7k")}</option>
+                      <option value="-10000">{t("home.below10k", "Below ₹10k")}</option>
+                      <option value="-15000">{t("home.below15k", "Below ₹15k")}</option>
+                      <option value="-20000">{t("home.below20k", "Below ₹20k")}</option>
+                      <option value="-30000">{t("home.below30k", "Below ₹30k")}</option>
+                      <option value="-50000">{t("home.below50k", "Below ₹50k")}</option>
+                      <option value="-75000">{t("home.below75k", "Below ₹75k")}</option>
+                      <option value="-100000">{t("home.below1Lakh", "Below ₹1 Lakh")}</option>
+                    </select>
+                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-slate-400">expand_more</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Integrated GPS Location Radius Sub-Bar */}
-              <div className="mt-4 sm:mt-4 pt-4 sm:pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-                  <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">{t("home.gpsFilter", "GPS Filter:")}</span>
+              {/* Integrated GPS Location Radius Sub-Bar & Save Search */}
+              <div className="mt-3.5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={handleSearchNearMe}
-                    className={`h-10 px-4 rounded-xl flex items-center gap-2 text-xs sm:text-[11px] font-bold transition-all border cursor-pointer ${
+                    className={`h-9 px-3.5 rounded-xl flex items-center gap-1.5 text-[11px] font-extrabold transition-all border cursor-pointer active:scale-95 ${
                       filters.lat
-                        ? "bg-black text-white border-black shadow-md shadow-slate-900/20"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                        ? "bg-slate-950 text-white border-slate-950 shadow-sm"
+                        : "bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-base">my_location</span>
-                    {filters.lat ? t("home.gpsActive", "GPS Active") : t("home.useMyLocation", "Use My Location")}
+                    <span className="material-symbols-outlined text-[15px]">my_location</span>
+                    <span>{filters.lat ? t("home.gpsActive", "GPS Active") : t("home.useMyLocation", "Near Me (GPS)")}</span>
                   </button>
-                </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-                  <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">{t("home.distanceRadius", "Distance Radius:")}</span>
                   <select
                     value={filters.radius_km}
                     onChange={(e) => handleFilterChange("radius_km", e.target.value)}
                     disabled={!filters.lat && !filters.city_id}
-                    className="h-10 px-4 rounded-xl text-xs sm:text-[11px] font-bold outline-none cursor-pointer disabled:opacity-40 bg-slate-50 border border-slate-200 text-slate-900"
+                    className="h-9 px-2.5 rounded-xl text-[11px] font-extrabold outline-none cursor-pointer disabled:opacity-40 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                   >
                     <option value="">{t("home.anyDistance", "Any Distance")}</option>
-                    <option value="2">{t("home.within2km", "Within 2 km")}</option>
-                    <option value="5">{t("home.within5km", "Within 5 km")}</option>
-                    <option value="10">{t("home.within10km", "Within 10 km")}</option>
-                    <option value="20">{t("home.within20km", "Within 20 km")}</option>
+                    <option value="2">Within 2 km</option>
+                    <option value="5">Within 5 km</option>
+                    <option value="10">Within 10 km</option>
+                    <option value="20">Within 20 km</option>
                   </select>
                 </div>
+
+                {/* Save Search Button */}
+                <button
+                  type="button"
+                  onClick={handleSaveSearch}
+                  className="h-9 px-4 rounded-xl flex items-center gap-1.5 text-[11px] font-extrabold transition-all bg-slate-950 hover:bg-slate-900 text-white shadow-sm active:scale-95 cursor-pointer ml-auto"
+                >
+                  <span className="material-symbols-outlined text-[15px]">
+                    {saveSuccess ? "bookmark_added" : "bookmark_add"}
+                  </span>
+                  <span>{saveSuccess ? t("home.saved", "Saved!") : t("home.saveSearch", "Save Search")}</span>
+                </button>
               </div>
+
             </div>
           </div>
         </section>

@@ -277,25 +277,36 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       <nav
         className="w-full top-0 sticky z-50 h-14 md:h-16 flex items-center transition-all duration-300 border-b shadow-sm"
         style={{
-          backgroundColor: "#252259",
+          backgroundColor: scrolled ? "rgba(10, 14, 23, 0.94)" : "rgba(10, 14, 23, 0.88)",
           borderColor: "rgba(255,255,255,0.08)",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          background: scrolled ? "rgba(37,34,89,0.85)" : "#252259",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
         }}
       >
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-4 group h-10">
+          <Link to="/" className="flex items-center gap-2.5 group h-10">
             {platformSettings?.company_logo_url ? (
               <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[140px] object-contain" />
             ) : (
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)" }}>
-                <span className="material-symbols-outlined text-lg text-white" data-weight="fill">real_estate_agent</span>
+              <div 
+                className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
+                style={{
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.35)",
+                }}
+              >
+                <span className="material-symbols-outlined text-[20px] text-white" data-weight="fill">real_estate_agent</span>
               </div>
             )}
-            <span className="text-lg font-bold tracking-tight" style={{ color: "#FFFFFF" }}>
-              {platformSettings?.company_name || "Rentlo"}
-            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[20px] font-black tracking-tight text-white">
+                {platformSettings?.company_name || "Rentlo"}
+              </span>
+              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                PRO
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
@@ -334,15 +345,12 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               </Link>
             )}
 
-
-
             {/* Language Translator Dropdown */}
             <LanguageToggle />
 
             {/* User Profile Avatar Dropdown */}
             {user ? (
               <div className="relative group">
-                {/* ⚠️ FLAG: Avatar button is potentially < 44px total hit area. Added h-10 to enforce minimum. */}
                 <button
                   className="flex items-center gap-2 p-1 pl-1 pr-2 h-10 rounded-full border transition-all cursor-pointer"
                   style={{
@@ -445,12 +453,33 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
             )}
           </div>
 
-          {/* Mobile: language toggle only (bottom nav handles all navigation) */}
+          {/* Mobile Right Controls: User Avatar & Language Toggle */}
           <div className="md:hidden flex items-center gap-2">
-            {user && (
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold uppercase" style={{ color: "#FFFFFF" }}>
-                {(user.first_name || "U").charAt(0)}
-              </div>
+            {user ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (user.roles?.includes("owner")) {
+                    navigate("/owner/dashboard");
+                  } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent")) {
+                    navigate("/admin");
+                  } else {
+                    navigate("/my-unlocks");
+                  }
+                }}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-xs font-black uppercase text-white transition-all active:scale-95"
+              >
+                {(user.first_name || user.username || "U").charAt(0)}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowAuthRoleModal(true)}
+                className="h-8 px-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[11px] font-extrabold flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[14px]">login</span>
+                <span>Sign In</span>
+              </button>
             )}
             <LanguageToggle />
           </div>
