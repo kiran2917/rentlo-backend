@@ -76,7 +76,10 @@ class InitiateUnlockView(views.APIView):
                         changed_by=None,
                         field_name='status',
                         old_value=str(old_status),
-                        new_value='live'
+                        new_value='live',
+                        event_category='system',
+                        reason="48-hour negotiation lock elapsed. Automatically restored to live status.",
+                        user_agent="Rentlo Unlock Negotiation Engine"
                     )
                 else:
                     return Response({'detail': 'This property is currently under negotiation. Contact unlocks are temporarily paused for 48 hours to protect your payment.'}, status=status.HTTP_400_BAD_REQUEST)

@@ -1778,12 +1778,24 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
             
             if old_status != new_status:
                 from properties.models import PropertyAuditLog
+                ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+                if ip and ',' in ip: ip = ip.split(',')[0].strip()
+                ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+                
+                cat = 'moderation' if ('admin' in roles or 'moderator' in roles) else 'lifecycle'
+                reason_txt = f"Listing status updated from {old_status} to {new_status}"
+
                 PropertyAuditLog.objects.create(
                     property=instance,
                     changed_by=request.user,
                     field_name='status',
                     old_value=str(old_status),
-                    new_value=str(new_status)
+                    new_value=str(new_status),
+                    event_category=cat,
+                    reason=reason_txt,
+                    ip_address=ip,
+                    user_agent=ua,
+                    metadata={'action': 'status_update', 'old_status': str(old_status), 'new_status': str(new_status)}
                 )
 
             return Response({'detail': f'Status updated to {new_status}', 'status': instance.status, 'expires_at': instance.expires_at})
@@ -1836,10 +1848,19 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
         
         if changes:
             from properties.models import PropertyAuditLog
+            ip = self.request.META.get('HTTP_X_FORWARDED_FOR', self.request.META.get('REMOTE_ADDR'))
+            if ip and ',' in ip: ip = ip.split(',')[0].strip()
+            ua = self.request.META.get('HTTP_USER_AGENT', '')[:300]
+
             for change in changes:
+                cat = 'pricing' if change.get('field_name') == 'price' else ('moderation' if change.get('field_name') == 'status' else 'lifecycle')
                 PropertyAuditLog.objects.create(
                     property=instance,
                     changed_by=user,
+                    event_category=cat,
+                    reason=f"Updated {change.get('field_name')} from '{change.get('old_value')}' to '{change.get('new_value')}'",
+                    ip_address=ip,
+                    user_agent=ua,
                     **change
                 )
 
@@ -2102,12 +2123,20 @@ class PropertyMediaDeleteView(views.APIView):
                 
                 # Log the status change
                 from properties.models import PropertyAuditLog
+                ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+                if ip and ',' in ip: ip = ip.split(',')[0].strip()
+                ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+
                 PropertyAuditLog.objects.create(
                     property=prop,
                     changed_by=user,
                     field_name='status',
                     old_value=str(old_status),
-                    new_value='pending_review'
+                    new_value='pending_review',
+                    event_category='lifecycle',
+                    reason="Media photo deleted, listing sent to moderation review",
+                    ip_address=ip,
+                    user_agent=ua
                 )
                 
             return Response({'detail': 'Media deleted successfully.'})
