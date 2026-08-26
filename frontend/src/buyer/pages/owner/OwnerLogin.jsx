@@ -59,6 +59,15 @@ export const OwnerLogin = () => {
   const [loading, setLoading] = useState(false);
   const [requireOtpLogin, setRequireOtpLogin] = useState(false);
   const [requireOtpSignup, setRequireOtpSignup] = useState(true);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
@@ -181,6 +190,7 @@ export const OwnerLogin = () => {
         setOtpStep(2);
         setIsNewUser(true);
         setDemoCode(data.demo_code || "");
+        setResendCooldown(30);
         toast.success(data.detail || "Verification OTP sent to your owner mobile number.");
       } else {
         toast.error(data.detail || "Failed to send sign up verification OTP.");
@@ -214,6 +224,7 @@ export const OwnerLogin = () => {
       if (res.ok) {
         setForgotStep(2);
         setForgotDemoCode(data.demo_code || "");
+        setResendCooldown(30);
         toast.success(data.detail || "Reset OTP sent to your mobile number!");
       } else {
         toast.error(data.detail || "Failed to send reset OTP.");
@@ -299,6 +310,7 @@ export const OwnerLogin = () => {
       if (res.ok) {
         setOtpStep(2);
         setDemoCode(data.demo_code || "");
+        setResendCooldown(30);
         toast.success(data.detail || "OTP sent to your mobile number.");
       } else {
         toast.error(data.detail || "Failed to send OTP.");
@@ -714,11 +726,11 @@ export const OwnerLogin = () => {
                         </button>
                         <button
                           type="submit"
-                          disabled={loading}
-                          className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90"
+                          disabled={loading || resendCooldown > 0}
+                          className="w-2/3 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all hover:opacity-90 disabled:opacity-60"
                           style={{ backgroundColor: "#000000", color: "#ffffff" }}
                         >
-                          {loading ? "Sending OTP..." : "Send Reset OTP"}
+                          {loading ? "Sending OTP..." : resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Send Reset OTP"}
                         </button>
                       </div>
                     </form>
@@ -843,14 +855,16 @@ export const OwnerLogin = () => {
 
                       <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
+                        disabled={loading || resendCooldown > 0}
+                        className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90 disabled:opacity-60"
                         style={{
                           backgroundColor: "#000000", color: "#ffffff",
                         }}
                       >
                         {loading ? (
                           <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                        ) : resendCooldown > 0 ? (
+                          <span>Resend OTP in {resendCooldown}s</span>
                         ) : (
                           <>
                             <span>Get Verification OTP</span>

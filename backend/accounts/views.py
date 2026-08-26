@@ -384,6 +384,16 @@ class BuyerRequestOTPView(APIView):
                 'require_otp': False
             })
 
+        # Strict cooldown: prevent spamming OTP requests (minimum 30 seconds between requests for same number)
+        existing_otp = OTPVerification.objects.filter(phone=phone).first()
+        if existing_otp and existing_otp.expires_at:
+            seconds_remaining = (existing_otp.expires_at - timezone.now()).total_seconds()
+            if seconds_remaining > 570:
+                wait_seconds = int(seconds_remaining - 570) + 1
+                return Response({
+                    'detail': f'Please wait {wait_seconds}s before requesting a new OTP.'
+                }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
         # Generate real OTP if SMS is configured, otherwise use demo code
         sms_live = (getattr(ps, 'sms_provider', 'none') != 'none')
         code = str(secrets.randbelow(900000) + 100000) if sms_live else '000000'
@@ -789,8 +799,19 @@ class ForgotPasswordRequestOTPView(APIView):
             return Response({'detail': 'No registered account found with this username or mobile number.'}, status=status.HTTP_404_NOT_FOUND)
 
         target_phone = user.phone or phone_or_user
-        # Generate real OTP if SMS is configured, otherwise use demo code
         from properties.models import OTPVerification
+
+        # Strict cooldown: prevent spamming reset OTPs (minimum 30s)
+        existing_otp = OTPVerification.objects.filter(phone=target_phone).first()
+        if existing_otp and existing_otp.expires_at:
+            seconds_remaining = (existing_otp.expires_at - timezone.now()).total_seconds()
+            if seconds_remaining > 570:
+                wait_seconds = int(seconds_remaining - 570) + 1
+                return Response({
+                    'detail': f'Please wait {wait_seconds}s before requesting a new OTP.'
+                }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+        # Generate real OTP if SMS is configured, otherwise use demo code
         ps = PlatformSettings.load() if 'PlatformSettings' in dir() else None
         if ps is None:
             from properties.models import PlatformSettings
