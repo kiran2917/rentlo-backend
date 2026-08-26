@@ -720,109 +720,79 @@ export const Home = () => {
               </div>
 
               {/* RIGHT COLUMN (7 Cols): Interactive Map */}
-              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[30px] md:rounded-3xl overflow-hidden shadow-2xl relative md:sticky md:top-24 border mb-24 md:mb-0" style={{ borderColor: "var(--border)" }}>
-                {/* Map View Mode Controls */}
-                <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 w-[220px] max-w-[calc(100vw-120px)]">
-                  {/* State Selector Dropdown */}
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-slate-500 pointer-events-none">map</span>
-                    <select
-                      value={selectedStateKey}
-                      onChange={(e) => {
-                        const stateKey = e.target.value;
-                        setSelectedStateKey(stateKey);
-                        const stateData = STATE_CITY_DATA[stateKey];
-                        if (stateData) {
-                          const firstCity = stateData.cities[0];
-                          const newCityId = firstCity ? firstCity.id : "all";
-                          setSelectedCityId(newCityId);
-                          setMapCenter(firstCity ? firstCity.center : stateData.center);
-                          setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
-                        }
-                      }}
-                      className="w-full pl-9 pr-8 py-2.5 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl text-xs font-extrabold text-slate-800 shadow-lg appearance-none outline-none cursor-pointer hover:border-slate-300 transition-all truncate"
-                    >
-                      {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
-                        <option key={key} value={key}>
-                          {data.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">expand_more</span>
-                  </div>
-
-                  {/* City Selector Dropdown */}
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-slate-800 pointer-events-none">location_on</span>
-                    <select
-                      value={selectedCityId}
-                      onChange={(e) => {
-                        const cityId = e.target.value;
-                        setSelectedCityId(cityId);
-                        const stateData = STATE_CITY_DATA[selectedStateKey];
-                        if (stateData) {
-                          if (cityId === "all") {
-                            setMapCenter(stateData.center);
-                            setMapZoom(stateData.zoom);
-                          } else {
+              <div className="lg:col-span-7 md:col-span-1 h-[calc(100vh-210px)] md:h-[600px] lg:h-[750px] rounded-[24px] md:rounded-3xl overflow-hidden shadow-xl relative md:sticky md:top-24 border mb-28 md:mb-0" style={{ borderColor: "var(--border)" }}>
+                {/* Top Floating Map Controls Bar */}
+                <div className="absolute top-3 left-3 right-3 z-[1000] flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                  {/* District / City Dropdown */}
+                  <div className="flex-1 min-w-[140px] max-w-[240px] pointer-events-auto">
+                    <div className="relative flex items-center bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-xl shadow-md hover:border-indigo-400 transition-all">
+                      <span className="material-symbols-outlined absolute left-2.5 text-indigo-600 text-[18px] pointer-events-none">location_on</span>
+                      <select
+                        value={selectedCityId}
+                        onChange={(e) => {
+                          const cityId = e.target.value;
+                          setSelectedCityId(cityId);
+                          for (const [stateKey, stateData] of Object.entries(STATE_CITY_DATA)) {
                             const matchCity = stateData.cities.find((c) => c.id === cityId);
                             if (matchCity) {
+                              setSelectedStateKey(stateKey);
                               setMapCenter(matchCity.center);
                               setMapZoom(matchCity.zoom);
+                              break;
                             }
                           }
-                        }
-                      }}
-                      className="w-full pl-9 pr-8 py-2.5 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl text-xs font-extrabold text-slate-800 shadow-lg appearance-none outline-none cursor-pointer hover:border-slate-300 transition-all truncate"
-                    >
-                      <option value="all">All {STATE_CITY_DATA[selectedStateKey]?.name} Cities</option>
-                      {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
-                        <option key={city.id} value={city.id}>
-                          {city.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">expand_more</span>
+                        }}
+                        className="w-full pl-8 pr-7 py-2 text-xs font-bold text-slate-800 bg-transparent appearance-none outline-none cursor-pointer truncate"
+                      >
+                        {Object.entries(STATE_CITY_DATA).map(([stateKey, stateData]) => (
+                          <optgroup key={stateKey} label={stateData.name.replace(" (All 31 Districts)", "")}>
+                            {stateData.cities.map((city) => (
+                              <option key={city.id} value={city.id}>
+                                {city.name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+                      <span className="material-symbols-outlined absolute right-2 text-slate-400 text-[16px] pointer-events-none">unfold_more</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Map Controls Floating Toolbar */}
-                <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
-                  <button
-                    onClick={() => {
-                      setIsDrawingMode(!isDrawingMode);
-                      if (isDrawingMode) setDrawnPolygon([]);
-                    }}
-                    className={`px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all ${
-                      isDrawingMode
-                        ? "scale-105"
-                        : "backdrop-blur-xl"
-                    }`}
-                    style={isDrawingMode 
-                      ? { backgroundColor: "var(--accent)", color: "var(--btn-text, #ffffff)", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" } 
-                      : { backgroundColor: "color-mix(in srgb, var(--surface) 90%, transparent)", color: "var(--ink)", borderColor: "var(--border)", borderStyle: "solid", borderWidth: "1px" }
-                    }
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      {isDrawingMode ? "close" : "draw"}
-                    </span>
-                    {isDrawingMode ? "Cancel Drawing" : "Draw Area"}
-                  </button>
-                  {drawnPolygon.length > 0 && (
+                  {/* Draw Area Action Buttons */}
+                  <div className="flex items-center gap-1.5 pointer-events-auto">
                     <button
                       onClick={() => {
-                        setDrawnPolygon([]);
-                        setIsDrawingMode(false);
+                        setIsDrawingMode(!isDrawingMode);
+                        if (isDrawingMode) setDrawnPolygon([]);
                       }}
-                      className="px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-2 shadow-lg bg-white text-red-600 hover:bg-red-50 border border-red-100 transition-all"
+                      className={`px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-md backdrop-blur-md transition-all whitespace-nowrap ${
+                        isDrawingMode
+                          ? "bg-indigo-600 text-white shadow-indigo-500/30"
+                          : "bg-white/95 text-slate-800 border border-slate-200/90 hover:bg-slate-50"
+                      }`}
                     >
-                      <span className="material-symbols-outlined text-base">delete</span>
-                      Clear Area
+                      <span className="material-symbols-outlined text-[16px]">
+                        {isDrawingMode ? "close" : "polyline"}
+                      </span>
+                      <span>{isDrawingMode ? "Cancel" : "Draw Area"}</span>
                     </button>
-                  )}
+                    {drawnPolygon.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setDrawnPolygon([]);
+                          setIsDrawingMode(false);
+                        }}
+                        className="px-2.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1 shadow-md bg-white/95 text-rose-600 border border-rose-200 hover:bg-rose-50 transition-all"
+                        title="Clear Custom Drawn Area"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    )}
+                  </div>
+
                   {isDrawingMode && drawnPolygon.length < 3 && (
-                    <div className="bg-slate-900/90 backdrop-blur text-white text-xs font-medium p-4 rounded-xl text-center shadow-xl border border-white/10">
-                      Click points on map to draw area.<br />(Min 3 points)
+                    <div className="w-full bg-slate-900/90 backdrop-blur text-white text-[11px] font-medium py-1.5 px-3 rounded-lg text-center shadow-lg border border-white/10 pointer-events-auto">
+                      Tap points on the map to outline your custom neighborhood boundary.
                     </div>
                   )}
                 </div>
