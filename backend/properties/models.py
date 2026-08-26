@@ -487,13 +487,36 @@ class PlatformSettings(models.Model):
         return getattr(self, attr_name, True)
 
 class PropertyAuditLog(models.Model):
+    EVENT_CATEGORIES = (
+        ('lifecycle', 'Lifecycle & Status'),
+        ('moderation', 'Moderation & Safety'),
+        ('pricing', 'Pricing & Rent'),
+        ('lead_unlock', 'Leads & Contact Unlocks'),
+        ('media', 'Photos & Media'),
+        ('security', 'Security & Fraud Flags'),
+        ('system', 'System & Automation'),
+    )
+
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='audit_logs')
     changed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='property_changes')
     field_name = models.CharField(max_length=100)
     old_value = models.TextField(blank=True, null=True)
     new_value = models.TextField(blank=True, null=True)
+    event_category = models.CharField(max_length=50, choices=EVENT_CATEGORIES, default='lifecycle')
+    reason = models.TextField(blank=True, null=True)
+    ip_address = models.CharField(max_length=100, blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    metadata = models.JSONField(default=dict, blank=True)
     changed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-changed_at']
+        indexes = [
+            models.Index(fields=['property', '-changed_at']),
+            models.Index(fields=['event_category']),
+        ]
 
     def __str__(self):
         return f"{self.property.id} - {self.field_name} changed by {self.changed_by.username if self.changed_by else 'System'}"
+
 

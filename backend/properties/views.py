@@ -2171,14 +2171,54 @@ class PropertyLifecycleView(views.APIView):
 
         from properties.models import PropertyAuditLog
         audit_logs = PropertyAuditLog.objects.filter(property=property_instance).select_related('changed_by').order_by('-changed_at')
-        audit_data = [{
-            'id': al.id,
-            'field_name': al.field_name,
-            'old_value': al.old_value,
-            'new_value': al.new_value,
-            'changed_by': al.changed_by.username if al.changed_by else 'System',
-            'changed_at': al.changed_at
-        } for al in audit_logs]
+        
+        audit_data = []
+        for al in audit_logs:
+            device_label = "Unknown Device"
+            if al.user_agent:
+                ua = al.user_agent.lower()
+                os_n = "Desktop"
+                if "iphone" in ua: os_n = "iPhone"
+                elif "ipad" in ua: os_n = "iPad"
+                elif "android" in ua: os_n = "Android"
+                elif "windows" in ua: os_n = "Windows"
+                elif "mac" in ua: os_n = "Mac"
+                elif "linux" in ua: os_n = "Linux"
+
+                br_n = "Browser"
+                if "chrome" in ua and "edg" not in ua and "opr" not in ua: br_n = "Chrome"
+                elif "safari" in ua and "chrome" not in ua: br_n = "Safari"
+                elif "firefox" in ua: br_n = "Firefox"
+                elif "edg" in ua: br_n = "Edge"
+                device_label = f"{br_n} ({os_n})"
+
+            price_change_pct = None
+            if al.field_name == 'price' and al.old_value and al.new_value:
+                try:
+                    old_p = float(al.old_value)
+                    new_p = float(al.new_value)
+                    if old_p > 0:
+                        pct = ((new_p - old_p) / old_p) * 100
+                        price_change_pct = round(pct, 1)
+                except (ValueError, TypeError):
+                    pass
+
+            audit_data.append({
+                'id': al.id,
+                'field_name': al.field_name,
+                'old_value': al.old_value,
+                'new_value': al.new_value,
+                'event_category': al.event_category or 'lifecycle',
+                'reason': al.reason,
+                'ip_address': al.ip_address,
+                'user_agent': al.user_agent,
+                'device_label': device_label,
+                'price_change_pct': price_change_pct,
+                'metadata': al.metadata or {},
+                'changed_by': al.changed_by.username if al.changed_by else 'System',
+                'changed_by_role': al.changed_by.role if al.changed_by and hasattr(al.changed_by, 'role') else ('admin' if al.changed_by and al.changed_by.is_staff else 'system'),
+                'changed_at': al.changed_at
+            })
 
         return Response({
             'property': property_data,

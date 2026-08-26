@@ -52,12 +52,21 @@ class ModeratePropertyView(views.APIView):
                 ModerationLog.objects.create(property=prop, moderator=request.user, action='approved', notes=notes)
                 
                 from properties.models import PropertyAuditLog
+                ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+                if ip and ',' in ip: ip = ip.split(',')[0].strip()
+                ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+
                 PropertyAuditLog.objects.create(
                     property=prop,
                     changed_by=request.user,
                     field_name='status',
                     old_value=str(old_status),
-                    new_value='live'
+                    new_value='live',
+                    event_category='moderation',
+                    reason=notes or "Listing approved and published by moderator",
+                    ip_address=ip,
+                    user_agent=ua,
+                    metadata={'action': 'approved', 'notes': notes}
                 )
                 
                 audit_logger.info(f"Property {prop.id} approved by moderator {request.user.username}")
@@ -99,12 +108,21 @@ class ModeratePropertyView(views.APIView):
             ModerationLog.objects.create(property=prop, moderator=request.user, action='rejected', notes=notes)
             
             from properties.models import PropertyAuditLog
+            ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+            if ip and ',' in ip: ip = ip.split(',')[0].strip()
+            ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+
             PropertyAuditLog.objects.create(
                 property=prop,
                 changed_by=request.user,
                 field_name='status',
                 old_value=str(old_status),
-                new_value='rejected'
+                new_value='rejected',
+                event_category='moderation',
+                reason=notes or "Listing rejected by moderator",
+                ip_address=ip,
+                user_agent=ua,
+                metadata={'action': 'rejected', 'rejection_reason': notes}
             )
             
             audit_logger.info(f"Property {prop.id} rejected by moderator {request.user.username}. Reason: {notes}")
@@ -127,12 +145,21 @@ class ModeratePropertyView(views.APIView):
             ModerationLog.objects.create(property=prop, moderator=request.user, action='rejected', notes=f"FRAUD FLAG: {notes}")
             
             from properties.models import PropertyAuditLog
+            ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+            if ip and ',' in ip: ip = ip.split(',')[0].strip()
+            ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+
             PropertyAuditLog.objects.create(
                 property=prop,
                 changed_by=request.user,
-                field_name='status',
-                old_value=str(old_status),
-                new_value='rejected'
+                field_name='is_fraud_flagged',
+                old_value='False',
+                new_value='True',
+                event_category='security',
+                reason=f"Flagged for fraud: {notes}",
+                ip_address=ip,
+                user_agent=ua,
+                metadata={'action': 'fraud_flag', 'flagged_user': target_username, 'notes': notes}
             )
             
             audit_logger.info(f"FRAUD FLAG: Property {prop.id} and User {target_username} flagged by {request.user.username}")

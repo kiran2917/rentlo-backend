@@ -136,12 +136,28 @@ class InitiateUnlockView(views.APIView):
                             'unlocked_at': timezone.now()
                         }
                     )
-                    if not created:
                         unlock.status = 'paid'
                         unlock.amount = 0.00
                         unlock.buyer_subscription = active_sub
                         unlock.unlocked_at = timezone.now()
                         unlock.save()
+
+                    from properties.models import PropertyAuditLog
+                    ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+                    if ip and ',' in ip: ip = ip.split(',')[0].strip()
+                    ua = request.META.get('HTTP_USER_AGENT', '')[:300]
+                    PropertyAuditLog.objects.create(
+                        property=prop,
+                        changed_by=buyer_user,
+                        field_name='contact_unlocked',
+                        old_value='locked',
+                        new_value='unlocked',
+                        event_category='lead_unlock',
+                        reason=f"Owner contact unlocked using Buyer Pass ({getattr(active_sub, 'pass_type', 'Pass')})",
+                        ip_address=ip,
+                        user_agent=ua,
+                        metadata={'buyer_id': buyer_user.id, 'buyer_username': buyer_user.username, 'unlock_id': unlock.id}
+                    )
 
                 return Response({
                     'instant_unlocked': True,

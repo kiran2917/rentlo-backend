@@ -21,7 +21,10 @@ def expire_old_properties():
             changed_by=None,
             field_name='status',
             old_value=str(old_status),
-            new_value='expired'
+            new_value='expired',
+            event_category='system',
+            reason="Listing validity period elapsed. Automatically expired by platform cron task.",
+            user_agent="Rentlo Automated Expiration Engine"
         )
         count += 1
     return f"Expired {count} properties."
