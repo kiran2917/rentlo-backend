@@ -573,7 +573,7 @@ export const PlanSelectionModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-fade-in">
       <div
         className="rounded-3xl p-6 sm:p-8 w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl relative border"
         style={{
@@ -1063,8 +1063,8 @@ export const PlanSelectionModal = ({
                   <div
                     key={plan.id}
                     onClick={() => setSelectedPlan(plan.id)}
-                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between relative ${
-                      isSelected ? "shadow-lg scale-[1.01]" : "hover:opacity-90"
+                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between relative select-none ${
+                      isSelected ? "shadow-lg scale-[1.01] ring-2 ring-indigo-500/40" : "hover:opacity-90"
                     }`}
                     style={{
                       backgroundColor: isSelected
@@ -1087,9 +1087,16 @@ export const PlanSelectionModal = ({
                         <span className="text-xs font-extrabold uppercase" style={{ color: "var(--text-muted)" }}>
                           {plan.tag}
                         </span>
-                        <span className="text-xl font-extrabold" style={{ color: "var(--ink)" }}>
-                          ₹{plan.price}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl font-extrabold" style={{ color: "var(--ink)" }}>
+                            ₹{plan.price}
+                          </span>
+                          {isSelected && (
+                            <span className="material-symbols-outlined text-[20px]" style={{ color: "var(--accent)" }}>
+                              check_circle
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <h3 className="font-extrabold text-base mb-1" style={{ color: "var(--ink)" }}>
@@ -1125,20 +1132,26 @@ export const PlanSelectionModal = ({
             </div>
 
             {/* Selected Plan Checkout Button */}
-            <button
-              onClick={() => handleBuyPass(selectedPlan, user)}
-              disabled={purchasing}
-              className="w-full h-14 rounded-2xl text-base font-extrabold transition-all shadow-xl hover:scale-[1.01] flex items-center justify-center gap-2 hover:opacity-90 cursor-pointer"
-              style={{
-                backgroundColor: "var(--accent)",
-                color: "var(--btn-text, #ffffff)",
-              }}
-            >
-              <span className="material-symbols-outlined text-xl">shopping_bag</span>
-              {purchasing
-                ? "Processing Payment..."
-                : `Pay ₹${PLANS.find((p) => p.id === selectedPlan)?.price} & Get ${PLANS.find((p) => p.id === selectedPlan)?.name}`}
-            </button>
+            {(() => {
+              const currentPlan = PLANS.find((p) => p.id === selectedPlan) || PLANS[0];
+              return (
+                <button
+                  type="button"
+                  onClick={() => handleBuyPass(selectedPlan, user)}
+                  disabled={purchasing}
+                  className="w-full h-14 rounded-2xl text-base font-extrabold transition-all shadow-xl hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer"
+                  style={{
+                    backgroundColor: "var(--accent)",
+                    color: "var(--btn-text, #ffffff)",
+                  }}
+                >
+                  <span className="material-symbols-outlined text-xl">shopping_bag</span>
+                  {purchasing
+                    ? "Processing Payment..."
+                    : `Pay ₹${currentPlan.price} & Get ${currentPlan.name}`}
+                </button>
+              );
+            })()}
           </>
         )}
       </div>
