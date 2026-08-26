@@ -21,19 +21,21 @@ const AuditLogSection = ({ logs = [], propertyId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("timeline"); // "timeline" or "table"
 
+  const safeLogs = Array.isArray(logs) ? logs : [];
+
   // Categorize counts
-  const modCount = logs.filter(l => l.event_category === 'moderation' || l.field_name === 'status').length;
-  const priceCount = logs.filter(l => l.event_category === 'pricing' || l.field_name === 'price').length;
-  const leadCount = logs.filter(l => l.event_category === 'lead_unlock' || l.field_name === 'contact_unlocked').length;
-  const sysCount = logs.filter(l => l.event_category === 'system' || l.changed_by === 'System').length;
-  const lifeCount = logs.filter(l => l.event_category === 'lifecycle' && l.changed_by !== 'System').length;
+  const modCount = safeLogs.filter(l => l.event_category === 'moderation' || l.field_name === 'status').length;
+  const priceCount = safeLogs.filter(l => l.event_category === 'pricing' || l.field_name === 'price').length;
+  const leadCount = safeLogs.filter(l => l.event_category === 'lead_unlock' || l.field_name === 'contact_unlocked').length;
+  const sysCount = safeLogs.filter(l => l.event_category === 'system' || l.changed_by === 'System').length;
+  const lifeCount = safeLogs.filter(l => l.event_category === 'lifecycle' && l.changed_by !== 'System').length;
 
   // Price trend calculation
-  const priceLogs = logs.filter(l => l.field_name === 'price' && l.price_change_pct != null);
+  const priceLogs = safeLogs.filter(l => l.field_name === 'price' && l.price_change_pct != null);
   const latestPriceDiff = priceLogs.length > 0 ? priceLogs[0].price_change_pct : null;
 
   // Filtered logs
-  const filteredLogs = logs.filter(log => {
+  const filteredLogs = safeLogs.filter(log => {
     if (categoryFilter === 'moderation' && log.event_category !== 'moderation' && log.field_name !== 'status') return false;
     if (categoryFilter === 'pricing' && log.event_category !== 'pricing' && log.field_name !== 'price') return false;
     if (categoryFilter === 'lead_unlock' && log.event_category !== 'lead_unlock' && log.field_name !== 'contact_unlocked') return false;
@@ -54,9 +56,9 @@ const AuditLogSection = ({ logs = [], propertyId }) => {
 
   // Export CSV Handler
   const handleExportCsv = () => {
-    if (!logs.length) return;
+    if (!safeLogs.length) return;
     const headers = ["Timestamp", "Category", "Actor", "Actor Role", "Field", "Old Value", "New Value", "Reason / Notes", "IP Address", "Device"];
-    const rows = logs.map(l => [
+    const rows = safeLogs.map(l => [
       `"${new Date(l.changed_at).toLocaleString()}"`,
       `"${l.event_category || 'lifecycle'}"`,
       `"${l.changed_by || 'System'}"`,

@@ -817,18 +817,19 @@ export const OwnerDashboard = () => {
   };
 
   // KPI Calculations
-  const totalProperties = properties.length;
-  const liveCount = properties.filter((p) => p.status === "live").length;
-  const totalUnlocks = properties.reduce(
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const totalProperties = safeProperties.length;
+  const liveCount = safeProperties.filter((p) => p.status === "live").length;
+  const totalUnlocks = safeProperties.reduce(
     (acc, p) => acc + (p.unlock_count || 0),
     0
   );
-  const inTalksCount = properties.filter(
+  const inTalksCount = safeProperties.filter(
     (p) => p.status === "under_negotiation" || p.status === "rented"
   ).length;
 
   // Filtered properties
-  const filteredProperties = properties.filter((prop) => {
+  const filteredProperties = safeProperties.filter((prop) => {
     if (selectedStatusFilter === "all" && prop.status === "rejected") {
       return false;
     }

@@ -131,9 +131,10 @@ export const OwnerLeads = () => {
   ];
 
   // Unique properties for filter dropdown
-  const uniqueProperties = Array.from(new Set(leads.map((l) => l.property_id))).filter(Boolean);
+  const safeLeads = Array.isArray(leads) ? leads : [];
+  const uniqueProperties = Array.from(new Set(safeLeads.map((l) => l.property_id))).filter(Boolean);
 
-  const filteredLeads = leads.filter((lead) => {
+  const filteredLeads = safeLeads.filter((lead) => {
     if (selectedPropFilter !== "all" && String(lead.property_id) !== String(selectedPropFilter)) {
       return false;
     }
