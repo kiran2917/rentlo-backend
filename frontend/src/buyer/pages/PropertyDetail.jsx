@@ -72,6 +72,33 @@ export const PropertyDetail = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [show3DTour, setShow3DTour] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
+  const mobileSliderRef = React.useRef(null);
+
+  const handleMobileScroll = (e) => {
+    const el = e.target;
+    if (!el) return;
+    const width = el.offsetWidth || 1;
+    const newIdx = Math.round(el.scrollLeft / width);
+    if (newIdx !== mobileSlideIndex && newIdx >= 0) {
+      setMobileSlideIndex(newIdx);
+    }
+  };
+
+  const scrollMobileSlide = (direction) => {
+    if (!mobileSliderRef.current) return;
+    const el = mobileSliderRef.current;
+    const width = el.offsetWidth || 1;
+    const count = (property?.media || []).length;
+    let nextIdx = direction === 'next' ? mobileSlideIndex + 1 : mobileSlideIndex - 1;
+    if (nextIdx < 0) nextIdx = count - 1;
+    if (nextIdx >= count) nextIdx = 0;
+    el.scrollTo({
+      left: nextIdx * width,
+      behavior: 'smooth'
+    });
+    setMobileSlideIndex(nextIdx);
+  };
   const [similarProperties, setSimilarProperties] = useState([]);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [visitSlots, setVisitSlots] = useState([]);
@@ -527,7 +554,7 @@ export const PropertyDetail = () => {
     if (count === 0) {
       return (
         <div
-          className="w-full h-[400px] rounded-3xl flex items-center justify-center border border-slate-200"
+          className="w-full h-[300px] sm:h-[400px] rounded-3xl flex items-center justify-center border border-slate-200"
           style={{ backgroundColor: "var(--surface)" }}
         >
           <span className="material-symbols-outlined text-[40px] text-text-muted opacity-50">home_work</span>
@@ -540,87 +567,169 @@ export const PropertyDetail = () => {
       setShowGallery(true);
     };
 
-    if (count === 1) {
-      return (
-        <div
-          className="w-full h-[35vh] sm:h-[45vh] md:h-[55vh] overflow-hidden cursor-pointer group rounded-3xl border border-slate-200"
-          onClick={() => openGallery(0)}
-        >
-          <img
-            src={media[0].image_url}
-            alt="Main"
-            loading="eager"
-            decoding="sync"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-      );
-    }
-
-    if (count === 2) {
-      return (
-        <div className="grid grid-cols-2 gap-2 h-[35vh] sm:h-[45vh] md:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200">
-          <div className="overflow-hidden group" onClick={() => openGallery(0)}>
-            <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </div>
-          <div className="overflow-hidden group" onClick={() => openGallery(1)}>
-            <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </div>
-        </div>
-      );
-    }
-
-    if (count === 3) {
-      return (
-        <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[40vh] sm:h-[50vh] md:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
-          {/* Main image: Left 50% width */}
-          <div className="col-span-4 md:col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
-            <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </div>
-          {/* Small 1: Right-top 50% width */}
-          <div className="col-span-2 md:col-span-2 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(1)}>
-            <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </div>
-          {/* Small 2: Right-bottom 50% width */}
-          <div className="col-span-2 md:col-span-2 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(2)}>
-            <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          </div>
-        </div>
-      );
-    }
-
-    // 4 or more images: Premium Airbnb-style layout
     return (
-      <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[45vh] md:h-[58vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
-        {/* Main image: Left 50% width */}
-        <div className="col-span-4 md:col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
-          <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        </div>
-        {/* Small 1 */}
-        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(1)}>
-          <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        </div>
-        {/* Small 2 */}
-        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(2)}>
-          <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        </div>
-        {/* Small 3 */}
-        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden group hidden md:block" onClick={() => openGallery(3)}>
-          <img src={media[3].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        </div>
-        {/* Small 4 / Show More Overlay */}
-        <div className="col-span-2 md:col-span-1 row-span-1 overflow-hidden relative group hidden md:block" onClick={() => openGallery(4)}>
-          <img src={media[4].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-          {count > 5 && (
-            <div
-              className="absolute inset-0 flex items-center justify-center flex-col transition-all hover:bg-black/40 duration-300"
-              style={{ backgroundColor: "rgba(11,12,14,0.55)", backdropFilter: "blur(4px)" }}
-            >
-              <span className="material-symbols-outlined text-[26px] mb-1 text-white">photo_library</span>
-              <span className="text-[13px] font-black tracking-wide text-white">+{count - 5} Photos</span>
+      <div className="w-full">
+        {/* ─── Mobile Swipeable Slider (md:hidden) ─── */}
+        <div className="md:hidden relative w-full h-[36vh] sm:h-[45vh] rounded-3xl overflow-hidden shadow-sm border border-slate-200/80 bg-slate-900 group select-none">
+          <div
+            ref={mobileSliderRef}
+            onScroll={handleMobileScroll}
+            className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none scroll-smooth touch-pan-x"
+          >
+            {media.map((item, idx) => (
+              <div
+                key={item.id || idx}
+                className="w-full h-full flex-shrink-0 snap-center snap-always relative cursor-pointer"
+                onClick={() => openGallery(idx)}
+              >
+                <img
+                  src={item.image_url}
+                  alt={`Property Photo ${idx + 1}`}
+                  loading={idx === 0 ? "eager" : "lazy"}
+                  decoding={idx === 0 ? "sync" : "async"}
+                  className="w-full h-full object-cover select-none"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Left / Right Chevron Arrows for Mobile Slider */}
+          {count > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  scrollMobileSlide('prev');
+                }}
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-85 active:scale-90 shadow-md cursor-pointer z-10"
+                aria-label="Previous photo"
+              >
+                <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  scrollMobileSlide('next');
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center transition-all opacity-85 active:scale-90 shadow-md cursor-pointer z-10"
+                aria-label="Next photo"
+              >
+                <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+              </button>
+            </>
+          )}
+
+          {/* Badge: e.g. "📷 1 / 6 Photos" */}
+          <div className="absolute bottom-3 right-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-black px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg border border-white/20 select-none z-10">
+            <span className="material-symbols-outlined text-[14px]">photo_library</span>
+            <span>{mobileSlideIndex + 1} / {count} Photos</span>
+          </div>
+
+          {/* Slide Dots Indicator */}
+          {count > 1 && count <= 8 && (
+            <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 select-none z-10">
+              {media.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (mobileSliderRef.current) {
+                      const el = mobileSliderRef.current;
+                      el.scrollTo({ left: idx * (el.offsetWidth || 1), behavior: 'smooth' });
+                      setMobileSlideIndex(idx);
+                    }
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    mobileSlideIndex === idx ? "w-4 bg-white shadow-xs" : "w-1.5 bg-white/50"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
             </div>
           )}
+
+          {/* Full Gallery Prompt Button at top right */}
+          <button
+            type="button"
+            onClick={() => openGallery(mobileSlideIndex)}
+            className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 border border-white/20 transition-all shadow-md active:scale-95 z-10 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[15px]">fullscreen</span>
+            <span>All ({count})</span>
+          </button>
         </div>
+
+        {/* ─── Desktop Multi-Grid (hidden md:grid) ─── */}
+        {count === 1 ? (
+          <div
+            className="hidden md:block w-full h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer group rounded-3xl border border-slate-200 shadow-xs"
+            onClick={() => openGallery(0)}
+          >
+            <img
+              src={media[0].image_url}
+              alt="Main"
+              loading="eager"
+              decoding="sync"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        ) : count === 2 ? (
+          <div className="hidden md:grid grid-cols-2 gap-2 h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200 shadow-xs">
+            <div className="overflow-hidden group" onClick={() => openGallery(0)}>
+              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="overflow-hidden group" onClick={() => openGallery(1)}>
+              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          </div>
+        ) : count === 3 ? (
+          <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
+            <div className="col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
+              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="col-span-2 row-span-1 overflow-hidden group" onClick={() => openGallery(1)}>
+              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="col-span-2 row-span-1 overflow-hidden group" onClick={() => openGallery(2)}>
+              <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          </div>
+        ) : (
+          <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[48vh] lg:h-[58vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
+            {/* Main image: Left 50% width */}
+            <div className="col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
+              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            {/* Small 1 */}
+            <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(1)}>
+              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            {/* Small 2 */}
+            <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(2)}>
+              <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            {/* Small 3 */}
+            <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(3)}>
+              <img src={media[3].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            {/* Small 4 / Show More Overlay */}
+            <div className="col-span-1 row-span-1 overflow-hidden relative group" onClick={() => openGallery(4)}>
+              <img src={media[4].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              {count > 5 && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center flex-col transition-all hover:bg-black/40 duration-300"
+                  style={{ backgroundColor: "rgba(11,12,14,0.55)", backdropFilter: "blur(4px)" }}
+                >
+                  <span className="material-symbols-outlined text-[26px] mb-1 text-white">photo_library</span>
+                  <span className="text-[13px] font-black tracking-wide text-white">+{count - 5} Photos</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
