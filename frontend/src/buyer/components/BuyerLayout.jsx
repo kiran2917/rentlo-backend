@@ -12,6 +12,7 @@ export const BuyerLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isChatRoute = location.pathname.startsWith("/chat/");
+  const isPropertyDetailRoute = location.pathname.startsWith("/property/") && location.pathname !== "/property/lease";
   const navigate = useNavigate();
   const { user, logout, checkAuth } = useAuth();
   
@@ -644,50 +645,51 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
       )}
 
       {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR FOR BUYERS / TENANTS */}
-      {!isChatRoute && (
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 flex items-center justify-around px-1 pb-0 shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300 border-t"
+      {!isChatRoute && !isPropertyDetailRoute && (
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] sm:h-[72px] flex items-center justify-around px-2 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-10px_35px_rgba(0,0,0,0.5)] transition-all duration-300 border-t"
         style={{
-          backgroundColor: "rgba(0,0,0,0.85)",
-          backdropFilter: "blur(20px)",
+          backgroundColor: "rgba(10,14,23,0.94)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
           borderColor: "rgba(255,255,255,0.08)",
         }}
       >
         {/* Tab 1: Home / Explore */}
         <Link
           to="/"
-          className="flex flex-col items-center justify-center w-14 h-full transition-all"
+          className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
           style={{
-            color: location.pathname === "/" ? "#FFFFFF" : "#64748B",
+            color: location.pathname === "/" ? "#FFFFFF" : "#94A3B8",
           }}
         >
-          <span className="material-symbols-outlined text-lg" data-weight={location.pathname === "/" ? "fill" : "regular"}>storefront</span>
-          <span className="text-[10px] font-extrabold mt-0.5" style={{ fontWeight: location.pathname === "/" ? "800" : "600" }}>Explore</span>
+          <span className="material-symbols-outlined text-[22px]" data-weight={location.pathname === "/" ? "fill" : "regular"}>storefront</span>
+          <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: location.pathname === "/" ? "800" : "600" }}>Explore</span>
         </Link>
 
         {/* Tab 2: Passes / Pricing */}
         <Link
           to="/pricing"
-          className="flex flex-col items-center justify-center w-14 h-full transition-all"
+          className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
           style={{
-            color: location.pathname.startsWith("/pricing") ? "#FFFFFF" : "#64748B",
+            color: location.pathname.startsWith("/pricing") ? "#FFFFFF" : "#94A3B8",
           }}
         >
-          <span className="material-symbols-outlined text-lg" data-weight={location.pathname.startsWith("/pricing") ? "fill" : "regular"}>confirmation_number</span>
-          <span className="text-[10px] font-extrabold mt-0.5" style={{ fontWeight: location.pathname.startsWith("/pricing") ? "800" : "600" }}>Passes</span>
+          <span className="material-symbols-outlined text-[22px]" data-weight={location.pathname.startsWith("/pricing") ? "fill" : "regular"}>confirmation_number</span>
+          <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: location.pathname.startsWith("/pricing") ? "800" : "600" }}>Passes</span>
         </Link>
 
         {/* Tab 3: CENTER HERO (+) ACTION BUTTON - Post New Listing */}
         <Link
           to={user?.roles?.includes("owner") || user?.roles?.includes("agent") ? "/owner/new-listing" : "/owner/login"}
-          className="flex flex-col items-center justify-center relative -mt-6 group"
+          className="flex flex-col items-center justify-center relative -mt-7 group px-2"
         >
           <div
-            className="w-12 h-12 rounded-full text-white flex items-center justify-center shadow-[0_8px_20px_rgba(79,70,229,0.3)] transition-transform active:scale-95 group-hover:scale-105 border-[4px]"
-            style={{ backgroundColor: "var(--accent)", borderColor: "#000000", color: "#FFFFFF" }}
+            className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(99,102,241,0.5)] transition-all active:scale-90 group-hover:scale-105 border-[4px]"
+            style={{ backgroundColor: "var(--accent)", borderColor: "#0A0E17", color: "#FFFFFF" }}
           >
-            <span className="material-symbols-outlined text-[24px]" data-weight="fill">add</span>
+            <span className="material-symbols-outlined text-[26px]" data-weight="fill">add</span>
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest mt-1" style={{ color: "#64748B" }}>
+          <span className="text-[10px] font-black uppercase tracking-wider mt-1 text-slate-400 group-hover:text-white transition-colors">
             Post Ad
           </span>
         </Link>
@@ -695,13 +697,13 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
         {/* Tab 4: My Unlocks */}
         <Link
           to="/my-unlocks"
-          className="flex flex-col items-center justify-center w-14 h-full transition-all"
+          className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
           style={{
-            color: location.pathname.startsWith("/my-unlocks") ? "#FFFFFF" : "#64748B",
+            color: location.pathname.startsWith("/my-unlocks") ? "#FFFFFF" : "#94A3B8",
           }}
         >
-          <span className="material-symbols-outlined text-lg" data-weight={location.pathname.startsWith("/my-unlocks") ? "fill" : "regular"}>lock_open</span>
-          <span className="text-[10px] font-extrabold mt-0.5" style={{ fontWeight: location.pathname.startsWith("/my-unlocks") ? "800" : "600" }}>Unlocks</span>
+          <span className="material-symbols-outlined text-[22px]" data-weight={location.pathname.startsWith("/my-unlocks") ? "fill" : "regular"}>lock_open</span>
+          <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: location.pathname.startsWith("/my-unlocks") ? "800" : "600" }}>Unlocks</span>
         </Link>
 
         {/* Tab 5: Owner / Agent Portal or Sign Out */}
@@ -721,32 +723,32 @@ If an unlocked phone number belongs to an offline or unverified third party, sub
               setShowAuthRoleModal(true);
             }
           }}
-          className="flex flex-col items-center justify-center w-14 h-full transition-all bg-transparent border-none outline-none cursor-pointer"
+          className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1 bg-transparent border-none outline-none cursor-pointer"
           style={{
-            color: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "#FFFFFF" : "#64748B",
+            color: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "#FFFFFF" : "#94A3B8",
           }}
         >
           {(() => {
             if (!user) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-lg" data-weight={(location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "fill" : "regular"}>person</span>
-                  <span className="text-[10px] font-extrabold mt-0.5" style={{ fontWeight: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "800" : "600" }}>Login</span>
+                  <span className="material-symbols-outlined text-[22px]" data-weight={(location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "fill" : "regular"}>person</span>
+                  <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "800" : "600" }}>Login</span>
                 </>
               );
             } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.roles?.includes("owner")) {
               return (
                 <>
-                  <span className="material-symbols-outlined text-lg" data-weight="fill">admin_panel_settings</span>
-                  <span className="text-[10px] font-extrabold mt-0.5" style={{ fontWeight: "800" }}>Console</span>
+                  <span className="material-symbols-outlined text-[22px]" data-weight="fill">admin_panel_settings</span>
+                  <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: "800" }}>Console</span>
                 </>
               );
             } else {
               // Pure buyer - sign out
               return (
                 <>
-                  <span className="material-symbols-outlined text-lg text-red-500" data-weight="fill">logout</span>
-                  <span className="text-[10px] font-extrabold mt-0.5 text-red-500" style={{ fontWeight: "800" }}>Sign Out</span>
+                  <span className="material-symbols-outlined text-[22px] text-red-400" data-weight="fill">logout</span>
+                  <span className="text-[11px] font-extrabold mt-1 tracking-tight text-red-400" style={{ fontWeight: "800" }}>Sign Out</span>
                 </>
               );
             }

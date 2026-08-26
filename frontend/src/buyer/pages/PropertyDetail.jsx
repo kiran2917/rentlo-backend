@@ -627,7 +627,7 @@ export const PropertyDetail = () => {
 
   return (
     <div
-      className="w-full flex flex-col font-sans pb-20 md:pb-0"
+      className="w-full flex flex-col font-sans pb-28 md:pb-0"
       style={{ backgroundColor: "var(--bg)", color: "var(--ink)" }}
     >
       <SeoHead
@@ -2198,10 +2198,10 @@ export const PropertyDetail = () => {
       />
 
       {!isUnlocked && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 p-3 px-4 flex items-center justify-between gap-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border-t border-slate-200 dark:border-slate-800 px-5 py-3 pb-[max(12px,env(safe-area-inset-bottom))] flex items-center justify-between gap-4 shadow-[0_-10px_35px_rgba(0,0,0,0.15)]">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Unlock Fee</span>
-            <span className="text-xl font-black text-slate-950">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Unlock Fee</span>
+            <span className="text-[22px] font-black text-slate-950 dark:text-white leading-tight">
               ₹{property.unlock_fee != null ? Number(property.unlock_fee).toFixed(0) : 99}
             </span>
           </div>
@@ -2214,10 +2214,10 @@ export const PropertyDetail = () => {
               }
             }}
             disabled={unlocking}
-            className="flex-1 h-12 rounded-xl text-sm font-extrabold flex items-center justify-center gap-2 bg-black text-white hover:bg-slate-900 transition-all active:scale-[0.98] cursor-pointer"
+            className="flex-1 h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">
-              {unlocking ? "hourglass_empty" : (userSub && userSub.has_active_pass && userSub.credits_remaining > 0 ? "bolt" : "credit_card")}
+              {unlocking ? "hourglass_empty" : (userSub && userSub.has_active_pass && userSub.credits_remaining > 0 ? "bolt" : "lock_open")}
             </span>
             {unlocking
               ? "Processing..."

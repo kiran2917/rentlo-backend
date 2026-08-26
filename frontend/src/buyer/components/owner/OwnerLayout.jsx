@@ -422,48 +422,48 @@ export const OwnerLayout = () => {
         </div>
 
         {/* 📱 NATIVE APP MOBILE BOTTOM NAVIGATION BAR (Mobile App UX) */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-14 border-t border-slate-800 flex items-center justify-around px-1 pb-0 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] bg-black transition-all duration-300">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] sm:h-[72px] border-t border-slate-800 flex items-center justify-around px-2 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-10px_40px_rgba(0,0,0,0.6)] bg-slate-950/95 backdrop-blur-2xl transition-all duration-300">
           {/* Tab 1: Properties / Dashboard */}
           <Link
             to="/owner/dashboard"
-            className="flex flex-col items-center justify-center w-14 h-full transition-all"
+            className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
             style={{
-              color: location.pathname === "/owner/dashboard" ? "#FFFFFF" : "#9CA3AF",
+              color: location.pathname === "/owner/dashboard" ? "#FFFFFF" : "#94A3B8",
               fontWeight: location.pathname === "/owner/dashboard" ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-xl">grid_view</span>
-            <span className="text-xs font-bold mt-0.5">Dashboard</span>
+            <span className="material-symbols-outlined text-[22px]">grid_view</span>
+            <span className="text-[11px] font-extrabold mt-1 tracking-tight">Dashboard</span>
           </Link>
 
           {/* Tab 2: Leads */}
           <Link
             to="/owner/leads"
-            className="flex flex-col items-center justify-center w-14 h-full transition-all"
+            className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
             style={{
-              color: location.pathname.startsWith("/owner/leads") ? "#FFFFFF" : "#9CA3AF",
+              color: location.pathname.startsWith("/owner/leads") ? "#FFFFFF" : "#94A3B8",
               fontWeight: location.pathname.startsWith("/owner/leads") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-xl">contacts</span>
-            <span className="text-xs font-bold mt-0.5">Leads</span>
+            <span className="material-symbols-outlined text-[22px]">contacts</span>
+            <span className="text-[11px] font-extrabold mt-1 tracking-tight">Leads</span>
           </Link>
 
           {/* Tab 3: CENTER HERO (+) ACTION BUTTON - Post New Listing */}
           <Link
             to="/owner/new-listing"
-            className="flex flex-col items-center justify-center relative -mt-6 group"
+            className="flex flex-col items-center justify-center relative -mt-7 group px-2"
           >
             <div
-              className="w-13 h-13 rounded-full text-white flex items-center justify-center shadow-xl transition-transform active:scale-95 group-hover:scale-105 border-4"
+              className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(99,102,241,0.5)] transition-all active:scale-90 group-hover:scale-105 border-[4px]"
               style={{
                 background: "linear-gradient(135deg, var(--accent), var(--accent-soft))",
-                borderColor: "#000000",
+                borderColor: "#020617",
               }}
             >
-              <span className="material-symbols-outlined text-2xl">add</span>
+              <span className="material-symbols-outlined text-[26px]">add</span>
             </div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 group-hover:text-white mt-1 transition-colors">
               Add New
             </span>
           </Link>
@@ -471,30 +471,30 @@ export const OwnerLayout = () => {
           {/* Tab 4: Messages / Chat */}
           <Link
             to="/owner/chat"
-            className="flex flex-col items-center justify-center w-14 h-full relative transition-all"
+            className="flex-1 flex flex-col items-center justify-center h-full relative transition-all duration-200 active:scale-95 py-1"
             style={{
-              color: location.pathname.startsWith("/owner/chat") ? "#FFFFFF" : "#9CA3AF",
+              color: location.pathname.startsWith("/owner/chat") ? "#FFFFFF" : "#94A3B8",
               fontWeight: location.pathname.startsWith("/owner/chat") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-xl">forum</span>
+            <span className="material-symbols-outlined text-[22px]">forum</span>
             {unreadCount > 0 && (
-              <span className="absolute top-2 right-3 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="absolute top-2 right-4 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             )}
-            <span className="text-xs font-bold mt-0.5">Chat</span>
+            <span className="text-[11px] font-extrabold mt-1 tracking-tight">Chat</span>
           </Link>
 
           {/* Tab 5: Visits */}
           <Link
             to="/owner/visits"
-            className="flex flex-col items-center justify-center w-14 h-full transition-all"
+            className="flex-1 flex flex-col items-center justify-center h-full transition-all duration-200 active:scale-95 py-1"
             style={{
-              color: location.pathname.startsWith("/owner/visits") ? "#FFFFFF" : "#9CA3AF",
+              color: location.pathname.startsWith("/owner/visits") ? "#FFFFFF" : "#94A3B8",
               fontWeight: location.pathname.startsWith("/owner/visits") ? "800" : "600",
             }}
           >
-            <span className="material-symbols-outlined text-xl">calendar_month</span>
-            <span className="text-xs font-bold mt-0.5">Visits</span>
+            <span className="material-symbols-outlined text-[22px]">calendar_month</span>
+            <span className="text-[11px] font-extrabold mt-1 tracking-tight">Visits</span>
           </Link>
         </nav>
       </main>
