@@ -312,6 +312,8 @@ export const Settings = () => {
   const [smsApiSecretSet, setSmsApiSecretSet] = useState(false);
   const [showSmsSecret, setShowSmsSecret] = useState(false);
   const [smsTestLoading, setSmsTestLoading] = useState(false);
+  const [testSmsPhone, setTestSmsPhone] = useState("");
+  const [testSmsSending, setTestSmsSending] = useState(false);
 
   // Change Password state
   const [changePassNew, setChangePassNew] = useState("");
@@ -1307,7 +1309,7 @@ export const Settings = () => {
           const handleTestSms = async () => {
             setSmsTestLoading(true);
             try {
-              // First save current config, then trigger a test
+              // First save current config
               await fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`, {
                 method: "PUT", credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -1316,9 +1318,40 @@ export const Settings = () => {
                   sms_sender_id: smsSenderId, sms_template_id: smsTemplateId, sms_from_number: smsFromNumber,
                 })
               });
-              toast.success("SMS config saved. Test OTP (000000) will be sent on next login attempt.");
+              if (smsProvider === "none") {
+                toast.success("SMS config saved in Demo Mode. Default code (000000) is active.");
+              } else {
+                const pLabel = SMS_PROVIDERS.find(p => p.value === smsProvider)?.label || smsProvider;
+                toast.success(`SMS config saved! Real OTPs will now be delivered via ${pLabel}.`);
+              }
             } catch { toast.error("Failed to save SMS config."); }
             finally { setSmsTestLoading(false); }
+          };
+
+          const handleSendLiveTestSms = async () => {
+            if (!testSmsPhone || testSmsPhone.length !== 10) {
+              toast.error("Please enter a valid 10-digit mobile number for test SMS.");
+              return;
+            }
+            setTestSmsSending(true);
+            try {
+              const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/admin/test-sms/`, {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: testSmsPhone })
+              });
+              const data = await res.json();
+              if (res.ok) {
+                toast.success(data.detail || "Test SMS delivered successfully!");
+              } else {
+                toast.error(data.detail || "Failed to send test SMS. Check your credentials.");
+              }
+            } catch {
+              toast.error("Network error while communicating with SMS gateway.");
+            } finally {
+              setTestSmsSending(false);
+            }
           };
 
           return (
@@ -1521,15 +1554,54 @@ export const Settings = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 pt-2">
                       <button type="button" onClick={handleTestSms} disabled={smsTestLoading}
                         className="h-10 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-[12px] font-extrabold flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50">
                         {smsTestLoading
                           ? <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
-                          : <span className="material-symbols-outlined text-[18px]">send</span>}
+                          : <span className="material-symbols-outlined text-[18px]">save</span>}
                         Save & Apply Config
                       </button>
-                      <p className="text-[12px]" style={{ color: "var(--text-muted)" }}>Config is applied immediately. Real OTPs will be sent on next login attempt.</p>
+                      <p className="text-[12px]" style={{ color: "var(--text-muted)" }}>Config is applied immediately. Real OTPs will be dispatched via {SMS_PROVIDERS.find(p=>p.value===smsProvider)?.label || smsProvider}.</p>
+                    </div>
+
+                    {/* Live Test SMS Delivery Block */}
+                    <div className="mt-4 pt-5 border-t border-purple-500/20 bg-purple-500/5 p-4 rounded-2xl">
+                      <label className="text-[11px] font-bold uppercase tracking-widest block mb-2 text-purple-700">
+                        ⚡ Send Live Test SMS OTP
+                      </label>
+                      <p className="text-[12px] mb-3" style={{ color: "var(--text-muted)" }}>
+                        Enter your 10-digit mobile number to verify that your API Key &amp; Sender ID successfully deliver SMS in real-time.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="relative flex-1">
+                          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none font-bold text-xs" style={{ color: "var(--text-muted)" }}>
+                            +91
+                          </div>
+                          <input
+                            type="tel"
+                            maxLength={10}
+                            value={testSmsPhone}
+                            onChange={(e) => setTestSmsPhone(e.target.value.replace(/\D/g, ""))}
+                            placeholder="Enter 10-digit mobile number"
+                            className="w-full h-11 pl-12 pr-4 rounded-xl border text-[13px] font-bold outline-none transition-all"
+                            style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", color: "var(--ink)" }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleSendLiveTestSms}
+                          disabled={testSmsSending || !testSmsPhone || testSmsPhone.length !== 10}
+                          className="h-11 px-5 rounded-xl bg-slate-900 hover:bg-black text-white text-[12px] font-extrabold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-sm"
+                        >
+                          {testSmsSending ? (
+                            <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                          ) : (
+                            <span className="material-symbols-outlined text-[18px]">send</span>
+                          )}
+                          Send Test OTP to Phone
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

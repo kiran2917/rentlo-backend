@@ -5,7 +5,7 @@ from .views import (
     SubAdminListView, SubAdminCreateView, SubAdminUpdatePermissionsView, SubAdminDeleteView,
     AgentKYCView, ChangePasswordView, ForgotPasswordRequestOTPView, ForgotPasswordResetView,
     AdminAgentKYCListView, AdminAgentKYCReviewView, AdminCRMListView, AdminUserToggleStatusView, CheckPhoneView,
-    AdminOwnerKYCListView, AdminOwnerKYCReviewView
+    AdminOwnerKYCListView, AdminOwnerKYCReviewView, AdminTestSMSView
 )
 
 urlpatterns = [
@@ -45,5 +45,8 @@ urlpatterns = [
     path('sub-admins/create/', SubAdminCreateView.as_view(), name='subadmin-create'),
     path('sub-admins/<int:pk>/permissions/', SubAdminUpdatePermissionsView.as_view(), name='subadmin-update-permissions'),
     path('sub-admins/<int:pk>/delete/', SubAdminDeleteView.as_view(), name='subadmin-delete'),
+
+    # Live SMS Gateway Testing
+    path('admin/test-sms/', AdminTestSMSView.as_view(), name='admin-test-sms'),
 ]
 

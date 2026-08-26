@@ -1108,4 +1108,34 @@ class AdminOwnerKYCReviewView(APIView):
         return Response({'detail': f'Owner verification status updated to {user.owner_kyc_status}.', 'owner_kyc_status': user.owner_kyc_status})
 
 
+class AdminTestSMSView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def post(self, request):
+        from properties.models import PlatformSettings
+        phone = request.data.get('phone', '')
+        is_valid, phone_or_err = validate_indian_phone(phone)
+        if not is_valid:
+            return Response({'detail': phone_or_err}, status=status.HTTP_400_BAD_REQUEST)
+
+        ps = PlatformSettings.load()
+        provider = getattr(ps, 'sms_provider', 'none')
+        if provider == 'none' or not provider:
+            return Response({'detail': 'SMS Provider is currently set to Demo Mode (None). Please select and save a live SMS gateway first.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        test_code = str(secrets.randbelow(900000) + 100000)
+        success = send_sms_otp(phone_or_err, test_code, ps)
+        if success:
+            return Response({
+                'detail': f'Test SMS OTP ({test_code}) successfully delivered to +91 {phone_or_err} via {provider.upper()}!',
+                'code': test_code,
+                'provider': provider
+            })
+        else:
+            return Response({
+                'detail': f'Failed to send SMS via {provider.upper()}. Please verify your API Key / Auth Token / Sender ID and ensure account balance/DLT approval.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
