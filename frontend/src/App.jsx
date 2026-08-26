@@ -96,7 +96,14 @@ function App() {
 
   return (
     <AuthProvider>
-      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <ToastContainer 
+        position="top-right" 
+        autoClose={2500} 
+        limit={1} 
+        newestOnTop={true} 
+        hideProgressBar={false}
+        theme="light" 
+      />
       <BrowserRouter>
         <NotificationPromptModal />
         <KeyboardDismissHandler />

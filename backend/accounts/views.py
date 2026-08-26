@@ -1124,7 +1124,7 @@ class AdminTestSMSView(APIView):
             return Response({'detail': 'SMS Provider is currently set to Demo Mode (None). Please select and save a live SMS gateway first.'}, status=status.HTTP_400_BAD_REQUEST)
 
         test_code = str(secrets.randbelow(900000) + 100000)
-        success = send_sms_otp(phone_or_err, test_code, ps)
+        success = send_otp_sms(phone_or_err, test_code, ps)
         if success:
             return Response({
                 'detail': f'Test SMS OTP ({test_code}) successfully delivered to +91 {phone_or_err} via {provider.upper()}!',
