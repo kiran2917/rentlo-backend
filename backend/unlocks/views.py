@@ -36,6 +36,18 @@ def _get_effective_razorpay_keys():
         pass
     return getattr(settings, 'RAZORPAY_KEY_ID', ''), getattr(settings, 'RAZORPAY_KEY_SECRET', '')
 
+def _get_effective_razorpay_webhook_secret():
+    """Returns effective Razorpay webhook secret — prefers DB PlatformSettings over env vars."""
+    try:
+        from properties.models import PlatformSettings
+        ps = PlatformSettings.load()
+        db_wh = (ps.razorpay_webhook_secret or '').strip()
+        if db_wh and 'REPLACE_WITH' not in db_wh:
+            return db_wh
+    except Exception:
+        pass
+    return getattr(settings, 'RAZORPAY_WEBHOOK_SECRET', '')
+
 def razorpay_configured():
     """Returns True only if real (non-placeholder) Razorpay credentials are available."""
     key_id, key_secret = _get_effective_razorpay_keys()
@@ -297,7 +309,8 @@ class VerifyUnlockView(views.APIView):
             except Unlock.DoesNotExist:
                 return Response({'detail': 'Pending unlock not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        if not razorpay_client:
+        client = get_razorpay_client()
+        if not client:
             return Response({'detail': 'Razorpay not configured on server.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         razorpay_payment_id = request.data.get('razorpay_payment_id')
@@ -314,7 +327,7 @@ class VerifyUnlockView(views.APIView):
                 'razorpay_payment_id': razorpay_payment_id,
                 'razorpay_signature': razorpay_signature
             }
-            razorpay_client.utility.verify_payment_signature(params_dict)
+            client.utility.verify_payment_signature(params_dict)
         except razorpay.errors.SignatureVerificationError:
             return Response({'detail': 'Invalid payment signature.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -417,8 +430,14 @@ class RazorpayWebhookView(views.APIView):
             return Response({'detail': 'Missing signature'}, status=status.HTTP_400_BAD_REQUEST)
 
         # 1. Verify HMAC SHA-256 signature over raw request body
+        client = get_razorpay_client()
+        webhook_secret = _get_effective_razorpay_webhook_secret()
+        if not client or not webhook_secret:
+            security_logger.error("Razorpay client or webhook secret not configured")
+            return Response({'detail': 'Webhook not configured on server'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         try:
-            razorpay_client.utility.verify_webhook_signature(payload_body, webhook_signature, settings.RAZORPAY_WEBHOOK_SECRET)
+            client.utility.verify_webhook_signature(payload_body, webhook_signature, webhook_secret)
         except razorpay.errors.SignatureVerificationError:
             security_logger.warning(f"Webhook signature verification failed for signature: {webhook_signature}")
             return Response({'detail': 'Invalid signature'}, status=status.HTTP_400_BAD_REQUEST)
@@ -963,9 +982,11 @@ class InitiatePassPurchaseView(views.APIView):
             return Response({'detail': 'Payment gateway is not configured.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         amount = int(config['price'] * 100)
+        client = get_razorpay_client()
+        effective_key_id, _ = _get_effective_razorpay_keys()
 
         try:
-            order = razorpay_client.order.create({
+            order = client.order.create({
                 'amount': amount,
                 'currency': 'INR',
                 'payment_capture': '1',
@@ -978,7 +999,7 @@ class InitiatePassPurchaseView(views.APIView):
             return Response({
                 'order_id': order['id'],
                 'amount': amount,
-                'key_id': settings.RAZORPAY_KEY_ID,
+                'key_id': effective_key_id,
                 'pass_type': pass_type,
                 'price': config['price']
             })
@@ -1035,7 +1056,8 @@ class VerifyPassPurchaseView(views.APIView):
             except BuyerSubscription.DoesNotExist:
                 return Response({'detail': 'No pending pass purchase found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        if not razorpay_client:
+        client = get_razorpay_client()
+        if not client:
             return Response({'detail': 'Razorpay not configured on server.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         razorpay_payment_id = request.data.get('razorpay_payment_id')
@@ -1046,7 +1068,7 @@ class VerifyPassPurchaseView(views.APIView):
             return Response({'detail': 'Missing payment verification details.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            razorpay_client.utility.verify_payment_signature({
+            client.utility.verify_payment_signature({
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': razorpay_payment_id,
                 'razorpay_signature': razorpay_signature
@@ -1135,13 +1157,14 @@ class InitiateRefundView(views.APIView):
         if not unlock.gateway_txn_id:
             return Response({'detail': 'Cannot refund an unlock that has no gateway transaction ID.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not razorpay_client:
+        client = get_razorpay_client()
+        if not client:
             return Response({'detail': 'Razorpay client is not configured.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         try:
             # Initiate Razorpay refund
             refund_amount_paise = int(unlock.amount * 100)
-            refund_response = razorpay_client.payment.refund(
+            refund_response = client.payment.refund(
                 unlock.gateway_txn_id,
                 {
                     'amount': refund_amount_paise,

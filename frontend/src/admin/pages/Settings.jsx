@@ -612,6 +612,7 @@ export const Settings = () => {
       });
       if (res.ok) {
         toast.success("Settings saved successfully!");
+        await fetchSettings();
         if (buyerTheme) {
           localStorage.setItem("rentlo_buyer_theme", buyerTheme);
         }
@@ -1295,7 +1296,7 @@ export const Settings = () => {
           const labelStyle = { color: "var(--text-muted)" };
 
           const isRzpLive = rzpKeyId.startsWith("rzp_live_");
-          const isRzpConfigured = rzpKeyId && rzpKeySecretSet;
+          const isRzpConfigured = Boolean(rzpKeyId && (rzpKeySecretSet || (rzpKeySecret && rzpKeySecret.length > 0)));
 
           const SMS_PROVIDERS = [
             { value: "none", label: "None — Demo Mode (000000)", icon: "block" },

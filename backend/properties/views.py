@@ -241,9 +241,11 @@ class PropertyListCreateView(generics.ListCreateAPIView):
         
         if registration_razorpay_order_id and registration_razorpay_payment_id and registration_razorpay_signature:
             try:
+                from unlocks.views import _get_effective_razorpay_keys
+                _, effective_secret = _get_effective_razorpay_keys()
                 msg = f"{registration_razorpay_order_id}|{registration_razorpay_payment_id}"
                 expected_signature = hmac.new(
-                    bytes(settings.RAZORPAY_KEY_SECRET, 'latin-1'),
+                    bytes(effective_secret, 'latin-1'),
                     bytes(msg, 'latin-1'),
                     hashlib.sha256
                 ).hexdigest()
@@ -511,8 +513,12 @@ class InitiateOwnerPassOrderView(views.APIView):
 
         amount_paise = int(price * 100)
         try:
-            import razorpay
-            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            from unlocks.views import get_razorpay_client, _get_effective_razorpay_keys
+            client = get_razorpay_client()
+            effective_key_id, _ = _get_effective_razorpay_keys()
+            if not client:
+                raise ValueError("Razorpay client not configured")
+
             notes = {
                 'owner_id': str(request.user.id),
                 'plan_id': plan_id,
@@ -531,7 +537,7 @@ class InitiateOwnerPassOrderView(views.APIView):
                 'payment_gateway': 'razorpay',
                 'order_id': order['id'],
                 'amount': amount_paise,
-                'key_id': settings.RAZORPAY_KEY_ID,
+                'key_id': effective_key_id,
                 'plan_id': plan_id,
                 'credits_count': credits_count,
                 'price': price
@@ -594,9 +600,11 @@ class VerifyOwnerPassOrderView(views.APIView):
             return Response({'detail': 'Missing payment details'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            from unlocks.views import _get_effective_razorpay_keys
+            _, effective_secret = _get_effective_razorpay_keys()
             msg = f"{order_id}|{payment_id}"
             expected = hmac.new(
-                bytes(settings.RAZORPAY_KEY_SECRET, 'latin-1'),
+                bytes(effective_secret, 'latin-1'),
                 bytes(msg, 'latin-1'),
                 hashlib.sha256
             ).hexdigest()
@@ -684,10 +692,12 @@ class CreateRegistrationOrderView(views.APIView):
 
             amount = float(fee) * 100 # in paise
             
-            import razorpay
-            key_id = settings.RAZORPAY_KEY_ID
-            key_secret = settings.RAZORPAY_KEY_SECRET
-            client = razorpay.Client(auth=(key_id, key_secret))
+            from unlocks.views import get_razorpay_client, _get_effective_razorpay_keys
+            effective_key_id, _ = _get_effective_razorpay_keys()
+            client = get_razorpay_client()
+            if not client:
+                raise ValueError("Razorpay client not configured")
+
             payment = client.order.create({
                 'amount': int(amount),
                 'currency': 'INR',
@@ -697,7 +707,7 @@ class CreateRegistrationOrderView(views.APIView):
             return Response({
                 'order_id': payment['id'],
                 'amount': payment['amount'],
-                'key_id': key_id
+                'key_id': effective_key_id
             })
         except Exception as e:
             return Response({'detail': 'Payment gateway configuration error. Please contact the support team.'}, status=500)
@@ -1107,13 +1117,9 @@ class VerifyOnboardingPaymentView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            import razorpay
-            from django.conf import settings
-            razorpay_client = razorpay.Client(
-                auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-            )
-        except Exception:
+        from unlocks.views import get_razorpay_client
+        razorpay_client = get_razorpay_client()
+        if not razorpay_client:
             return Response(
                 {'detail': 'Razorpay is not configured on this server.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
