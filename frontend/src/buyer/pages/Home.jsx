@@ -48,15 +48,39 @@ const MapDrawEvents = ({ isDrawingMode, drawnPolygon, setDrawnPolygon }) => {
 };
 
 const PropertyCardSkeleton = () => (
-  <div className="rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full bg-white border-slate-200">
-    <div className="aspect-[4/3] w-full bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+  <div 
+    className="rounded-2xl overflow-hidden border shadow-sm flex flex-col h-full"
+    style={{
+      backgroundColor: "var(--surface)",
+      borderColor: "var(--border)"
+    }}
+  >
+    <div 
+      className="aspect-[4/3] w-full animate-pulse"
+      style={{ backgroundColor: "var(--surface-alt)" }}
+    />
     <div className="p-4 flex flex-col gap-4">
-      <div className="h-7 w-1/2 rounded-lg bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
-      <div className="h-4 w-3/4 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+      <div 
+        className="h-7 w-1/2 rounded-lg animate-pulse"
+        style={{ backgroundColor: "var(--surface-alt)" }}
+      />
+      <div 
+        className="h-4 w-3/4 rounded-md animate-pulse"
+        style={{ backgroundColor: "var(--surface-alt)" }}
+      />
       <div className="flex gap-2">
-        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
-        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
-        <div className="h-6 w-16 rounded-md bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-[length:400%_100%] animate-shimmer"></div>
+        <div 
+          className="h-6 w-16 rounded-md animate-pulse"
+          style={{ backgroundColor: "var(--surface-alt)" }}
+        />
+        <div 
+          className="h-6 w-16 rounded-md animate-pulse"
+          style={{ backgroundColor: "var(--surface-alt)" }}
+        />
+        <div 
+          className="h-6 w-16 rounded-md animate-pulse"
+          style={{ backgroundColor: "var(--surface-alt)" }}
+        />
       </div>
     </div>
   </div>
@@ -65,15 +89,33 @@ const PropertyCardSkeleton = () => (
 const EmptyState = () => {
   const { t } = useTranslation();
   return (
-    <div className="col-span-full py-20 flex flex-col items-center justify-center text-center animate-fade-in bg-white rounded-card shadow-sm border border-slate-100">
-      <div className="w-48 h-48 mb-6 relative">
-        <svg viewBox="0 0 200 200" className="w-full h-full text-slate-50" fill="currentColor">
-          <path d="M100,20 L20,100 L40,100 L40,180 L160,180 L160,100 L180,100 Z" />
-        </svg>
-        <span className="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-orange-500 text-[64px] bg-white rounded-full p-4 shadow-lg shadow-orange-500/20">search_off</span>
+    <div 
+      className="col-span-full py-20 flex flex-col items-center justify-center text-center animate-fade-in rounded-3xl shadow-sm border"
+      style={{
+        backgroundColor: "var(--surface)",
+        borderColor: "var(--border)",
+        color: "var(--ink)"
+      }}
+    >
+      <div className="w-24 h-24 mb-6 rounded-3xl flex items-center justify-center border shadow-sm"
+        style={{
+          backgroundColor: "var(--surface-alt)",
+          borderColor: "var(--border)"
+        }}
+      >
+        <span 
+          className="material-symbols-outlined text-[44px]"
+          style={{ color: "var(--accent)" }}
+        >
+          search_off
+        </span>
       </div>
-      <h3 className="font-display text-3xl text-slate-900 font-bold mb-2">{t("home.noPropertiesFound", "No Properties Found")}</h3>
-      <p className="text-slate-500 text-base max-w-md">{t("home.noPropertiesDesc", "Try adjusting your filters, searching a different area, or clearing your custom drawn boundary to discover more homes.")}</p>
+      <h3 className="font-display text-2xl font-extrabold mb-2" style={{ color: "var(--ink)" }}>
+        {t("home.noPropertiesFound", "No Properties Found")}
+      </h3>
+      <p className="text-sm max-w-md px-4 leading-relaxed" style={{ color: "var(--text-muted)" }}>
+        {t("home.noPropertiesDesc", "Try adjusting your filters, searching a different area, or clearing your custom drawn boundary to discover more homes.")}
+      </p>
     </div>
   );
 };

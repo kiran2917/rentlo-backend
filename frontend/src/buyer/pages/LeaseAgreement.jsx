@@ -20,7 +20,7 @@ export const LeaseAgreement = () => {
 
   // Custom Landlord Rules State
   const [customRules, setCustomRules] = useState([
-    "1 Month painting charges will be deducted from security deposit upon vacating (Karnataka Rule).",
+    "1 Month painting charges will be deducted from security deposit upon vacating as per standard tenancy norms.",
     "Subletting or operating paying guest (PG) accommodation is strictly prohibited.",
     "Premises shall be used strictly for residential purposes by the tenant & immediate family.",
     "Day-to-day minor electrical and plumbing repairs under ₹1,000 shall be borne by the tenant."

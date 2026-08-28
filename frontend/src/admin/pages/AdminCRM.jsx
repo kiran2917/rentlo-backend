@@ -95,8 +95,6 @@ export const AdminCRM = () => {
 
   return (
     <AdminLayout activeTab="users">
-      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
-
       <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16 pt-2">
         
         {/* Page Header */}

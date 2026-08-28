@@ -123,7 +123,6 @@ export const FraudFlags = () => {
 
   return (
     <AdminLayout activeTab="fraud">
-      <ToastContainer position="top-right" />
       <div className="max-w-5xl mx-auto relative z-10 w-full">
         {/* Sub-Tab Navigation Bar */}
         <div className="flex gap-2 p-1.5 rounded-2xl border mb-8 max-w-md shadow-sm" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>

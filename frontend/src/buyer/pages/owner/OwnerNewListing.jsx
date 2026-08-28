@@ -1734,8 +1734,6 @@ export const OwnerNewListing = () => {
 
   return (
     <div className="pb-20">
-      <ToastContainer position="top-right" />
-
       <div className="relative z-10 w-full max-w-4xl mx-auto">
         {offlineDrafts.length > 0 && (
           <div className="mb-10">

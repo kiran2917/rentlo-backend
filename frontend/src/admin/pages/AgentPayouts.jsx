@@ -109,7 +109,6 @@ export const AgentPayouts = () => {
 
   return (
     <AdminLayout activeTab="payouts">
-      <ToastContainer position="top-right" />
       <div className="relative z-10 w-full">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">

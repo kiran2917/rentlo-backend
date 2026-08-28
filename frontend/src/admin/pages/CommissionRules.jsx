@@ -118,8 +118,6 @@ export const CommissionRules = () => {
 
   return (
     <AdminLayout activeTab="rules">
-      <ToastContainer position="top-right" />
-
       <div className="relative z-10 w-full">
         {/* Header */}
         <div className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-4">

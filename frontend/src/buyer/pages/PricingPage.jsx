@@ -19,11 +19,31 @@ export const PricingPage = () => {
   const [utrNumber, setUtrNumber] = useState("");
   const [isVerifyingUtr, setIsVerifyingUtr] = useState(false);
 
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) setSettings(data);
+      })
+      .catch(err => console.error("Failed to fetch settings on pricing page", err));
+  }, []);
+
+  const singleFee = settings?.buyer_unlock_fee || 14;
+  const starterFee = settings?.buyer_pass_starter_price || 39;
+  const smartFee = settings?.buyer_pass_smart_price || 79;
+  const proFee = settings?.buyer_pass_pro_price || 129;
+
+  const starterSavings = (3 * singleFee) - starterFee;
+  const smartSavings = (6 * singleFee) - smartFee;
+  const proSavings = (10 * singleFee) - proFee;
+
   const PLANS = [
     {
       id: "single_14",
       name: t("pricing.plans.single_14.name", "Single Unlock"),
-      price: 14,
+      price: singleFee,
       unlocks: 1,
       agreements: 0,
       badge: null,
@@ -38,14 +58,14 @@ export const PricingPage = () => {
     {
       id: "starter_39",
       name: t("pricing.plans.starter_39.name", "Starter Pass"),
-      price: 39,
+      price: starterFee,
       unlocks: 3,
       agreements: 0,
       badge: t("pricing.plans.starter_39.badge", "POPULAR"),
       validity: t("pricing.plans.starter_39.validity", "3 Credits Pack"),
       description: t("pricing.plans.starter_39.description", "Ideal for casual house hunters exploring a locality"),
       features: [
-        t("pricing.plans.starter_39.features.0", "3 Contact Unlocks (Save ₹3)"),
+        `3 Direct Contact Unlocks${starterSavings > 0 ? ` (Save ₹${starterSavings})` : ""}`,
         t("pricing.plans.starter_39.features.1", "1-Click Instant Unlock (No Gateway PIN)"),
         t("pricing.plans.starter_39.features.2", "WhatsApp & Google Maps Navigation")
       ]
@@ -53,14 +73,14 @@ export const PricingPage = () => {
     {
       id: "smart_79",
       name: t("pricing.plans.smart_79.name", "Smart Pass"),
-      price: 79,
+      price: smartFee,
       unlocks: 6,
       agreements: 1,
       badge: t("pricing.plans.smart_79.badge", "BEST SELLER ⭐"),
       validity: t("pricing.plans.smart_79.validity", "6 Credits Pack"),
       description: t("pricing.plans.smart_79.description", "Best for active tenants comparing multiple properties"),
       features: [
-        t("pricing.plans.smart_79.features.0", "6 Contact Unlocks (Save ₹5)"),
+        `6 Direct Contact Unlocks${smartSavings > 0 ? ` (Save ₹${smartSavings})` : ""}`,
         t("pricing.plans.smart_79.features.1", "1 Free Legal Rental Lease Agreement (Value ₹299)"),
         t("pricing.plans.smart_79.features.2", "1-Click Instant Unlock Speed"),
         t("pricing.plans.smart_79.features.3", "WhatsApp & Google Maps Pin Access")
@@ -69,14 +89,14 @@ export const PricingPage = () => {
     {
       id: "pro_129",
       name: t("pricing.plans.pro_129.name", "Pro Hunter Pass"),
-      price: 129,
+      price: proFee,
       unlocks: 10,
       agreements: 3,
       badge: t("pricing.plans.pro_129.badge", "VIP VALUE 👑"),
       validity: t("pricing.plans.pro_129.validity", "10 Credits Pack"),
       description: t("pricing.plans.pro_129.description", "VIP pass for families & urgent movers needing top choices"),
       features: [
-        t("pricing.plans.pro_129.features.0", "10 Contact Unlocks (Save ₹11)"),
+        `10 Direct Contact Unlocks${proSavings > 0 ? ` (Save ₹${proSavings})` : ""}`,
         t("pricing.plans.pro_129.features.1", "3 Free Legal Rental Lease Agreements (Value ₹899)"),
         t("pricing.plans.pro_129.features.2", "VIP Early Access Listing Alerts (2 Hours Early)")
       ]
@@ -374,17 +394,20 @@ export const PricingPage = () => {
 
             <form onSubmit={handleUpiSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1 text-left">{t("pricing.upi.enterUtr", "Enter 12-Digit UTR Number *")}</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1 text-left">{t("pricing.upi.enterUtr", "Enter 12-Digit UPI Reference / UTR Number *")}</label>
                 <input
                   type="text"
                   value={utrNumber}
                   onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, ''))}
-                  placeholder={t("pricing.upi.utrPlaceholder", "e.g. 325412345678")}
+                  placeholder={t("pricing.upi.utrPlaceholder", "e.g. 12-digit number from GPay / PhonePe / Paytm")}
                   maxLength={20}
                   required
                   className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-indigo-600 transition-all"
                   autoFocus
                 />
+                <p className="text-[11px] text-slate-400 mt-1.5 text-left">
+                  Check your payment app receipt for 12-digit <strong>UPI Ref No.</strong> or <strong>UTR</strong>.
+                </p>
               </div>
 
               <button

@@ -59,7 +59,6 @@ export const OwnerVerification = () => {
 
   return (
     <div>
-      <ToastContainer position="top-right" />
       <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className="text-2xl font-bold">Identity Verification</h2>

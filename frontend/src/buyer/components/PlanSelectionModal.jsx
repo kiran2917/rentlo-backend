@@ -65,6 +65,10 @@ export const PlanSelectionModal = ({
   const smartFee = settings?.buyer_pass_smart_price || 79;
   const proFee = settings?.buyer_pass_pro_price || 129;
 
+  const starterSavings = (3 * singleFee) - starterFee;
+  const smartSavings = (6 * singleFee) - smartFee;
+  const proSavings = (10 * singleFee) - proFee;
+
   const PLANS = [
     {
       id: "single_14",
@@ -82,8 +86,8 @@ export const PlanSelectionModal = ({
       price: starterFee,
       unlocks: 3,
       agreements: 0,
-      badge: null,
-      description: "Ideal for quick local search",
+      badge: starterSavings > 0 ? `Save ₹${starterSavings}` : "POPULAR",
+      description: `3 Unlocks${starterSavings > 0 ? ` · Save ₹${starterSavings}` : ""}`,
       tag: "Popular"
     },
     {
@@ -93,7 +97,7 @@ export const PlanSelectionModal = ({
       unlocks: 6,
       agreements: 1,
       badge: "BEST SELLER ⭐",
-      description: "6 Unlocks + 1 Free Legal Rental Agreement",
+      description: `6 Unlocks + 1 Free Agreement${smartSavings > 0 ? ` · Save ₹${smartSavings}` : ""}`,
       tag: "Best Value"
     },
     {
@@ -103,7 +107,7 @@ export const PlanSelectionModal = ({
       unlocks: 10,
       agreements: 3,
       badge: "VIP VALUE 👑",
-      description: "10 Unlocks + 3 Free Agreements + 45d Validity & Free Extension",
+      description: `10 Unlocks + 3 Free Agreements${proSavings > 0 ? ` · Save ₹${proSavings}` : ""}`,
       tag: "VIP"
     }
   ];
@@ -964,19 +968,19 @@ export const PlanSelectionModal = ({
 
             <form onSubmit={handleSubmitUtr} className="space-y-4">
               <div>
-                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Enter 12-Digit UTR Number *</label>
+                <label className="text-xs font-extrabold text-slate-600 uppercase block mb-1">Enter 12-Digit UPI Reference / UTR Number *</label>
                 <input
                   type="text"
                   value={utrNumber}
                   onChange={(e) => setUtrNumber(e.target.value.replace(/[^0-9a-zA-Z]/g, ''))}
-                  placeholder="e.g. 325412345678"
+                  placeholder="e.g. 12-digit number from GPay / PhonePe / Paytm"
                   maxLength={20}
                   required
                   className="w-full h-12 px-4 text-center tracking-widest text-lg font-bold rounded-xl border border-slate-200 outline-none focus:border-indigo-600 transition-all"
                   autoFocus
                 />
-                <p className="text-[10px] text-slate-400 font-medium text-center mt-2">
-                  You can find the UTR (Transaction ID) in your UPI app's payment history.
+                <p className="text-[11px] text-slate-400 font-medium text-center mt-2">
+                  Check your payment receipt for 12-digit <strong>UPI Ref No.</strong> or <strong>UTR</strong>.
                 </p>
               </div>
 

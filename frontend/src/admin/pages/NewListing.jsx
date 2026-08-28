@@ -1306,8 +1306,6 @@ export const NewListing = () => {
 
   return (
     <AdminLayout activeTab="listings">
-      <ToastContainer position="top-right" />
-
       <div className="relative z-10 w-full max-w-4xl mx-auto">
         {offlineDrafts.length > 0 && (
           <div className="mb-10">

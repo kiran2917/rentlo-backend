@@ -640,13 +640,6 @@ export const Settings = () => {
 
   return (
     <AdminLayout activeTab="settings">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="dark"
-        hideProgressBar
-      />
-
       <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
         {/* Header Title + Subtitle + Top Save Button */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">

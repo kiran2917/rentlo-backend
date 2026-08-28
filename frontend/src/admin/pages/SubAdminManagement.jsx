@@ -167,8 +167,6 @@ export const SubAdminManagement = () => {
 
   return (
     <AdminLayout activeTab="team">
-      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
-
       <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
