@@ -455,10 +455,11 @@ export const OwnerLayout = () => {
             className="flex flex-col items-center justify-center relative -mt-7 group px-2"
           >
             <div
-              className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(99,102,241,0.5)] transition-all active:scale-90 group-hover:scale-105 border-[4px]"
+              className="w-[50px] h-[50px] rounded-full text-white flex items-center justify-center shadow-[0_10px_25px_rgba(79,70,229,0.5)] transition-all active:scale-90 group-hover:scale-105 border-[4px]"
               style={{
-                background: "linear-gradient(135deg, var(--accent), var(--accent-soft))",
+                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                 borderColor: "#020617",
+                color: "#FFFFFF"
               }}
             >
               <span className="material-symbols-outlined text-[26px]">add</span>
