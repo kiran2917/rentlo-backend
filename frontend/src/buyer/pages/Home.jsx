@@ -461,8 +461,8 @@ export const Home = () => {
             <div
               className="w-full h-full bg-cover bg-center transition-all duration-700 scale-105"
               style={{
-                backgroundImage: "var(--hero-img)",
-                filter: "brightness(0.92) contrast(1.08) blur(4px)",
+                backgroundImage: "var(--hero-img, url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop'))",
+                filter: "brightness(0.95) contrast(1.05)",
               }}
             />
 
@@ -471,8 +471,7 @@ export const Home = () => {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.7) 50%, #0B0F19 100%)",
-                backdropFilter: "blur(2px)",
+                  "linear-gradient(180deg, rgba(11, 15, 25, 0.45) 0%, rgba(11, 15, 25, 0.65) 50%, #0B0F19 100%)",
               }}
             />
           </div>
