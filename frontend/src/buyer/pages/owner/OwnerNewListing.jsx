@@ -2186,9 +2186,9 @@ export const OwnerNewListing = () => {
                           )}
                         </div>
                       </div>
-                      <div className="h-[350px] rounded-2xl overflow-hidden border-2 border-slate-200 shadow-inner relative group z-0">
+                      <div className="h-[350px] rounded-2xl overflow-hidden border-2 border-slate-200 shadow-inner relative group z-0 isolate">
                         {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
-                        <div className="absolute top-3 left-14 right-3 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200/90 p-2 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-2 transition-all">
+                        <div className="absolute top-3 left-14 right-3 z-10 bg-white/95 backdrop-blur-md border border-slate-200/90 p-2 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-2 transition-all">
                           <div className="flex items-center gap-1.5 px-2 text-slate-800 text-[11px] font-black uppercase tracking-wider shrink-0">
                             <span className="material-symbols-outlined text-[16px] text-indigo-600">travel_explore</span>
                             <span className="hidden sm:inline">Zoom Map To:</span>
