@@ -515,41 +515,6 @@ export const BuyerLogin = () => {
             borderColor: "var(--border)",
           }}
         >
-          {/* PRIMARY SWITCHER: SIGN IN vs SIGN UP */}
-          {authMode !== "forgot_password" && (
-            <div
-              className="flex p-0.5 rounded-xl mb-3 border shadow-inner"
-              style={{ backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)", borderColor: "var(--border)" }}
-            >
-              <button
-                type="button"
-                onClick={() => { setActiveTab("login"); setAuthMode("password"); setOtpStep(1); }}
-                className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
-                style={{
-                  backgroundColor: activeTab === "login" ? "#000000" : "transparent",
-                  color: activeTab === "login" ? "#ffffff" : "var(--ink)",
-                  opacity: activeTab === "login" ? 1 : 0.6,
-                }}
-              >
-                <span className="material-symbols-outlined text-[15px]">login</span>
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
-                className="flex-1 py-1.5 text-[11px] font-extrabold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1"
-                style={{
-                  backgroundColor: activeTab === "signup" ? "#000000" : "transparent",
-                  color: activeTab === "signup" ? "#ffffff" : "var(--ink)",
-                  opacity: activeTab === "signup" ? 1 : 0.6,
-                }}
-              >
-                <span className="material-symbols-outlined text-[15px]">person_add</span>
-                Sign Up
-              </button>
-            </div>
-          )}
-
           {/* ========================================================= */}
           {/* TAB 1: SIGN IN MODE */}
           {/* ========================================================= */}
@@ -1037,6 +1002,20 @@ export const BuyerLogin = () => {
                   )}
                 </div>
               )}
+              {authMode !== "forgot_password" && (
+                <div className="mt-5 pt-4 border-t text-center" style={{ borderColor: "var(--border)" }}>
+                  <p className="text-[12.5px] font-medium" style={{ color: "var(--text-muted)" }}>
+                    Don't have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => { setActiveTab("signup"); setOtpStep(1); setIsNewUser(false); }}
+                      className="font-extrabold text-black dark:text-white underline cursor-pointer hover:opacity-80 ml-1"
+                    >
+                      Sign Up
+                    </button>
+                  </p>
+                </div>
+              )}
             </>
           )}
 
@@ -1174,6 +1153,18 @@ export const BuyerLogin = () => {
                 </button>
               </form>
 
+              <div className="mt-5 pt-4 border-t text-center" style={{ borderColor: "var(--border)" }}>
+                <p className="text-[12.5px] font-medium" style={{ color: "var(--text-muted)" }}>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab("login"); setAuthMode("password"); setOtpStep(1); }}
+                    className="font-extrabold text-black dark:text-white underline cursor-pointer hover:opacity-80 ml-1"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              </div>
             </>
           )}
         </div>
