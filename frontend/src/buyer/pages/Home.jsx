@@ -152,9 +152,9 @@ export const Home = () => {
   const [isDrawingMode, setIsDrawingMode] = useState(false);
   const [drawnPolygon, setDrawnPolygon] = useState([]);
   const [selectedStateKey, setSelectedStateKey] = useState("karnataka");
-  const [selectedCityId, setSelectedCityId] = useState("hubli");
-  const [mapCenter, setMapCenter] = useState([15.3647, 75.1240]);
-  const [mapZoom, setMapZoom] = useState(13);
+  const [selectedCityId, setSelectedCityId] = useState("all");
+  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]);
+  const [mapZoom, setMapZoom] = useState(5);
 
   const [platformSettings, setPlatformSettings] = useState(null);
 
@@ -296,8 +296,6 @@ export const Home = () => {
       .then((data) => {
         const cityData = Array.isArray(data) ? data : [];
         setCities(cityData);
-        if (cityData.length === 1 && !filters.city_id)
-          setFilters((p) => ({ ...p, city_id: cityData[0].id.toString() }));
       })
       .catch(err => { if (err.name !== 'AbortError') console.error(err); });
       
