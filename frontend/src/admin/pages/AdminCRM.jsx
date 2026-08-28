@@ -3,6 +3,8 @@ import { AdminLayout } from "../components/AdminLayout";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { PropertyLifecycleModal } from "../components/PropertyLifecycleModal";
+
 export const AdminCRM = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +16,7 @@ export const AdminCRM = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [inspectUser, setInspectUser] = useState(null);
   const [confirmToggleUser, setConfirmToggleUser] = useState(null);
+  const [selectedPropertyForLifecycle, setSelectedPropertyForLifecycle] = useState(null);
 
   useEffect(() => {
     fetchCrmUsers();
@@ -554,16 +557,26 @@ export const AdminCRM = () => {
                   {inspectUser.owner_stats?.listed_properties?.length > 0 ? (
                     <div className="space-y-2">
                       {inspectUser.owner_stats.listed_properties.map(p => (
-                        <div key={p.id} className="p-3 rounded-2xl border flex items-center justify-between text-[12px]" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                        <div 
+                          key={p.id} 
+                          onClick={() => setSelectedPropertyForLifecycle(p.id)}
+                          className="p-3 rounded-2xl border flex items-center justify-between text-[12px] hover:border-indigo-400 hover:shadow-xs transition-all cursor-pointer group" 
+                          style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                        >
                           <div>
-                            <p className="font-extrabold" style={{ color: "var(--ink)" }}>{p.title}</p>
+                            <p className="font-extrabold group-hover:text-indigo-600 transition-colors" style={{ color: "var(--ink)" }}>{p.title}</p>
                             <p className="text-[10.5px] mt-0.5" style={{ color: "var(--text-muted)" }}>{p.city} • Listed: {new Date(p.created_at).toLocaleDateString()}</p>
                           </div>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                            p.status === 'active' ? 'bg-black/10 text-indigo-600' : 'bg-amber-500/10 text-amber-500'
-                          }`}>
-                            {p.status}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                              p.status === 'active' || p.status === 'live' ? 'bg-black/10 text-indigo-600' : 'bg-amber-500/10 text-amber-500'
+                            }`}>
+                              {p.status}
+                            </span>
+                            <span className="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all">
+                              chevron_right
+                            </span>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -599,6 +612,15 @@ export const AdminCRM = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Property Lifecycle & Consent Modal */}
+        {selectedPropertyForLifecycle && (
+          <PropertyLifecycleModal
+            propertyId={selectedPropertyForLifecycle}
+            isOpen={!!selectedPropertyForLifecycle}
+            onClose={() => setSelectedPropertyForLifecycle(null)}
+          />
         )}
 
         {/* Block/Unblock Confirmation Modal */}

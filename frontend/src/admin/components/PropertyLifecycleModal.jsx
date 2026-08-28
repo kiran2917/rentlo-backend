@@ -414,6 +414,7 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [imageModalUrl, setImageModalUrl] = useState(null);
 
   useEffect(() => {
     if (!isOpen || !propertyId) return;
@@ -574,6 +575,85 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
                     </div>
                   </div>
 
+                  {/* Consent & Verification Proof Card */}
+                  <div className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group md:col-span-2">
+                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform duration-300">
+                          <span className="material-symbols-outlined">verified_user</span>
+                        </div>
+                        <div>
+                          <h3 className="text-[14px] font-extrabold text-slate-700 tracking-wide">OWNER CONSENT & VERIFICATION PROOF</h3>
+                          <p className="text-[12px] text-slate-400 font-medium mt-0.5">Proof captured when property was submitted</p>
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider border ${
+                        data.property.consent_proof_url ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}>
+                        {data.property.consent_proof_url ? "Consent Captured ✓" : "OTP Consent Record"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                      {/* Proof Image / Selfie Display */}
+                      <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                        {data.property.consent_proof_url ? (
+                          <div 
+                            onClick={() => setImageModalUrl(data.property.consent_proof_url)}
+                            className="relative group/img cursor-pointer text-center"
+                          >
+                            <img 
+                              src={data.property.consent_proof_url} 
+                              alt="Owner Consent Proof" 
+                              className="max-h-36 max-w-full rounded-xl border border-slate-200 bg-white p-1.5 shadow-xs group-hover/img:scale-105 transition-transform object-contain"
+                            />
+                            <div className="absolute inset-0 bg-slate-900/60 text-white opacity-0 group-hover/img:opacity-100 flex items-center justify-center rounded-xl font-bold text-[11px] uppercase tracking-wider transition-opacity gap-1 backdrop-blur-[2px]">
+                              <span className="material-symbols-outlined text-[16px]">zoom_in</span>
+                              <span>Zoom</span>
+                            </div>
+                            <p className="text-[11px] font-extrabold text-slate-500 mt-2">Click to enlarge</p>
+                          </div>
+                        ) : (
+                          <div className="text-center py-6 text-slate-400">
+                            <span className="material-symbols-outlined text-[36px] text-slate-300">sms</span>
+                            <p className="text-[12px] font-bold text-slate-600 mt-1">Verified via Phone OTP</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">Authorized directly by owner phone</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Verification Meta Details */}
+                      <div className="md:col-span-2 space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="p-3.5 bg-white rounded-xl border border-slate-100 shadow-2xs">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verification Method</p>
+                            <p className="text-[13px] font-extrabold text-slate-800 mt-1">
+                              {data.property.consent_proof_url ? "Live Selfie / Photo Capture" : "Owner Mobile OTP"}
+                            </p>
+                          </div>
+                          <div className="p-3.5 bg-white rounded-xl border border-slate-100 shadow-2xs">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Authorized Phone</p>
+                            <p className="text-[13px] font-extrabold text-slate-800 mt-1">
+                              {data.property.owner_phone || "N/A"}
+                            </p>
+                          </div>
+                          <div className="p-3.5 bg-white rounded-xl border border-slate-100 shadow-2xs">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registered By Actor</p>
+                            <p className="text-[13px] font-extrabold text-slate-800 mt-1 capitalize">
+                              {data.property.added_by || "Owner Direct"}
+                            </p>
+                          </div>
+                          <div className="p-3.5 bg-white rounded-xl border border-slate-100 shadow-2xs">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Listing Verification Status</p>
+                            <p className="text-[13px] font-extrabold text-indigo-600 mt-1 uppercase">
+                              {data.property.verification_status?.replace('_', ' ') || "Verified"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               )}
 
@@ -649,6 +729,35 @@ export const PropertyLifecycleModal = ({ propertyId, isOpen, onClose }) => {
 
             </div>
           </>
+        )}
+
+        {/* Full-Screen Image Preview Modal for Consent Proof */}
+        {imageModalUrl && (
+          <div 
+            className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+            onClick={() => setImageModalUrl(null)}
+          >
+            <div 
+              className="relative max-w-3xl max-h-[85vh] bg-white rounded-2xl p-3 shadow-2xl border border-white/20 flex flex-col items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setImageModalUrl(null)}
+                className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-slate-800 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+              <img
+                src={imageModalUrl}
+                alt="Owner Verification Full Preview"
+                className="max-h-[75vh] w-auto rounded-xl object-contain"
+              />
+              <p className="text-[12px] font-extrabold text-slate-700 mt-2">
+                Owner Verification Proof • Property #{propertyId}
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
