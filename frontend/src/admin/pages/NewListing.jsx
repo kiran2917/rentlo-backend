@@ -511,6 +511,31 @@ export const NewListing = () => {
     }
   };
 
+  const detectMyLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser.");
+      return;
+    }
+    toast.info("Detecting your location...");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setPosition(latlng);
+        setMapCenter([latlng.lat, latlng.lng]);
+        setMapZoom(16);
+        handleLocationUpdate(latlng);
+      },
+      (err) => {
+        toast.error("Could not detect location. Please click on the map to drop a pin.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
+    );
+  };
+
   const [regConfig, setRegConfig] = useState(null);
   const [files, setFiles] = useState([]);
   const [uploadedMediaList, setUploadedMediaList] = useState(() => {
@@ -1732,11 +1757,21 @@ export const NewListing = () => {
                         <label className="block text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                           Map Location *
                         </label>
-                        {!position && (
-                          <span className="text-[9px] font-bold text-red-500 bg-red-50 px-3 py-1 rounded-full">
-                            Pin Required
-                          </span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={detectMyLocation}
+                            className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-indigo-800 text-[10px] font-bold rounded-lg transition flex items-center gap-1 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">my_location</span>
+                            Detect My Location
+                          </button>
+                          {!position && (
+                            <span className="text-[9px] font-bold text-red-500 bg-red-50 px-3 py-1 rounded-full">
+                              Pin Required
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div className="h-[350px] rounded-2xl overflow-hidden border-2 border-slate-200 shadow-inner relative group z-0">
                         {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}

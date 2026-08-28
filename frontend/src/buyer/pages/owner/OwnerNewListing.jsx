@@ -831,10 +831,17 @@ export const OwnerNewListing = () => {
       (pos) => {
         const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         setPosition(latlng);
+        setMapCenter([latlng.lat, latlng.lng]);
+        setMapZoom(16);
         handleLocationUpdate(latlng);
       },
       (err) => {
         toast.error("Could not detect location. Please click on the map to drop a pin.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
       }
     );
   };

@@ -401,20 +401,24 @@ export const Home = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
           setFilters((prev) => ({
             ...prev,
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
+            lat: lat,
+            lng: lng,
             radius_km: prev.radius_km || "5",
             city_id: "",
             locality: ""
           }));
+          setMapCenter([lat, lng]);
+          setMapZoom(14);
         },
         (error) => {
           toast.error("Unable to detect location. Please check browser location permissions and try again.");
         },
         {
-          enableHighAccuracy: false,
+          enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 60000
         }
@@ -502,7 +506,7 @@ export const Home = () => {
                     <select
                       value={filters.city_id}
                       onChange={(e) => handleFilterChange("city_id", e.target.value)}
-                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
+                      className="w-full pl-10 sm:pl-10 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyCity", "Any City")}</option>
                       {cities.map((c) => (
@@ -523,7 +527,7 @@ export const Home = () => {
                     <select
                       value={filters.locality}
                       onChange={(e) => handleFilterChange("locality", e.target.value)}
-                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
+                      className="w-full pl-10 sm:pl-10 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyLocality", "Any Locality")}</option>
                       {localities.map((l) => (
@@ -544,7 +548,7 @@ export const Home = () => {
                     <select
                       value={filters.property_type}
                       onChange={(e) => handleFilterChange("property_type", e.target.value)}
-                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
+                      className="w-full pl-10 sm:pl-10 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyType", "Any Type")}</option>
                       {propertyTypes.map((p) => (
@@ -565,7 +569,7 @@ export const Home = () => {
                     <select
                       value={getBudgetOptionValue()}
                       onChange={(e) => handleBudgetOptionChange(e.target.value)}
-                      className="w-full pl-8 sm:pl-9 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
+                      className="w-full pl-10 sm:pl-10 pr-6 h-11 rounded-xl text-xs sm:text-sm font-extrabold appearance-none cursor-pointer outline-none bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 text-slate-900 dark:text-white transition-all truncate"
                     >
                       <option value="">{t("home.anyBudget", "Any Budget")}</option>
                       <option value="1000-3000">{t("home.1kTo3k", "₹1k to ₹3k")}</option>
@@ -633,53 +637,62 @@ export const Home = () => {
         {/* Listings */}
         <div className="max-w-[1600px] mx-auto w-full px-4 md:px-8 pt-8 pb-36 md:py-16">
           <div
-            className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-8 pb-4 border-b"
+            className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-8 pb-4 border-b"
             style={{ borderColor: "rgba(255,255,255,0.07)" }}
           >
-            <h2
-              className="font-display font-black tracking-tight"
-              style={{ fontSize: "clamp(22px,4vw,38px)", color: "var(--ink)" }}
-            >
-              {filters.lat 
-                ? t("home.propertiesWithinRadius", { radius: filters.radius_km || 5 }, `Properties within ${filters.radius_km || 5}km`) 
-                : (selectedLocality 
-                    ? t("home.propertiesInLocality", { locality: selectedLocality }, `Properties in ${selectedLocality}`) 
-                    : t("home.discoverProperties", "Discover Properties"))}
-            </h2>
-
-          {/* Floating Action Pill for Mobile Filters/Map */}
-          <div className="md:hidden flex justify-center w-full mb-6 z-30 relative">
-            <div 
-              className="rounded-full px-3.5 py-1.5 flex items-center gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)]  backdrop-blur-xl transition-all"
-              style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
-            >
-              <button 
-                onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
-                className="flex items-center gap-1.5 text-xs font-extrabold active:scale-95 transition-transform"
+            <div>
+              <h2
+                className="font-display font-black tracking-tight"
+                style={{ fontSize: "clamp(22px,4vw,38px)", color: "var(--ink)" }}
               >
-                <span className="material-symbols-outlined text-[14px]">
-                  {viewMode === "grid" ? "map" : "grid_view"}
-                </span>
-                {viewMode === "grid" ? "Map View" : "List View"}
-              </button>
-              <div className="w-[1px] h-3" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
-              <button 
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  // Focus the first filter input to trigger mobile UI scroll
-                  setTimeout(() => {
-                    const firstFilter = document.querySelector('select[name="city_id"]');
-                    if (firstFilter) firstFilter.focus();
-                  }, 400);
-                }}
-                className="flex items-center gap-1.5 text-xs font-bold active:scale-95 transition-transform"
-              >
-                <span className="material-symbols-outlined text-[15px]">tune</span>
-                Filters
-              </button>
+                {filters.lat 
+                  ? t("home.propertiesWithinRadius", { radius: filters.radius_km || 5 }, `Properties within ${filters.radius_km || 5}km`) 
+                  : (selectedLocality 
+                      ? t("home.propertiesInLocality", { locality: selectedLocality }, `Properties in ${selectedLocality}`) 
+                      : t("home.discoverProperties", "Discover Properties"))}
+              </h2>
             </div>
-          </div>
-            <div className="flex items-center gap-4">
+
+            {/* Controls Row */}
+            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
+              {/* Mobile Listing Count */}
+              <span className="md:hidden text-[11px] font-bold uppercase tracking-widest text-accent">
+                {displayedProperties.length} {t("home.listingsCount", "listings")}
+              </span>
+
+              {/* Mobile Action Pill aligned to the side */}
+              <div className="md:hidden flex items-center z-30 relative">
+                <div 
+                  className="rounded-full px-3.5 py-1.5 flex items-center gap-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] backdrop-blur-xl transition-all"
+                  style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
+                >
+                  <button 
+                    onClick={() => setViewMode(viewMode === "grid" ? "map" : "grid")}
+                    className="flex items-center gap-1.5 text-xs font-extrabold active:scale-95 transition-transform"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">
+                      {viewMode === "grid" ? "map" : "grid_view"}
+                    </span>
+                    {viewMode === "grid" ? "Map View" : "List View"}
+                  </button>
+                  <div className="w-[1px] h-3" style={{ backgroundColor: "var(--btn-text, #ffffff)", opacity: 0.3 }}></div>
+                  <button 
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      // Focus the first filter input to trigger mobile UI scroll
+                      setTimeout(() => {
+                        const firstFilter = document.querySelector('select[name="city_id"]');
+                        if (firstFilter) firstFilter.focus();
+                      }, 400);
+                    }}
+                    className="flex items-center gap-1.5 text-xs font-bold active:scale-95 transition-transform"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">tune</span>
+                    Filters
+                  </button>
+                </div>
+              </div>
+
               {/* Desktop Toggle Switch for View Mode */}
               <div className="hidden md:flex p-1 bg-slate-100 rounded-xl border border-slate-200">
                 <button
@@ -708,7 +721,8 @@ export const Home = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col items-end gap-4">
+              {/* Desktop Listing Count */}
+              <div className="hidden md:flex flex-col items-end">
                 <span className="text-[11px] font-bold uppercase tracking-widest text-accent">
                   {displayedProperties.length} {t("home.listingsCount", "listings")}
                 </span>
