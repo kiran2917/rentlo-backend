@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../shared/context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,6 +9,7 @@ export const AgentPayouts = () => {
   const { user } = useAuth();
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [platformSettings, setPlatformSettings] = useState(null);
   const [filters, setFilters] = useState({
     status: "",
     agent: "",
@@ -18,6 +20,13 @@ export const AgentPayouts = () => {
   const [payingBatchId, setPayingBatchId] = useState(null);
   const [utrNumber, setUtrNumber] = useState("");
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setPlatformSettings(data))
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/auth/users/`, {
@@ -177,6 +186,38 @@ export const AgentPayouts = () => {
               <span className="material-symbols-outlined text-[20px]">refresh</span>
             </button>
           </div>
+        </div>
+
+        {/* Configured Source Bank Banner */}
+        <div className="mb-6 p-5 rounded-3xl border bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-slate-800">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center justify-center">
+              <span className="material-symbols-outlined text-[24px]">account_balance</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-400/20">
+                  Outgoing Payout Source
+                </span>
+                <span className="text-xs text-slate-400 font-medium">⚡ 1-Click Instant Payouts Active</span>
+              </div>
+              <p className="font-extrabold text-sm text-white mt-1">
+                {platformSettings?.payout_bank_name || "Primary Bank"} • A/C:{" "}
+                <span className="font-mono text-emerald-300">
+                  {platformSettings?.payout_account_number ? `••••${platformSettings.payout_account_number.slice(-4)}` : "502000••••4850"}
+                </span>{" "}
+                (IFSC: <span className="font-mono text-slate-300">{platformSettings?.payout_ifsc_code || "HDFC0001234"}</span>)
+                {platformSettings?.payout_account_holder_name && ` • ${platformSettings.payout_account_holder_name}`}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/admin/settings"
+            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer border border-white/10 shrink-0"
+          >
+            <span className="material-symbols-outlined text-[16px]">tune</span>
+            <span>Configure Bank</span>
+          </Link>
         </div>
 
         {/* KPI Grid */}

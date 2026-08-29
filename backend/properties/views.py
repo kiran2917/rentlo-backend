@@ -1291,6 +1291,16 @@ class PlatformSettingsView(views.APIView):
             data['sms_sender_id'] = settings.sms_sender_id
             data['sms_template_id'] = settings.sms_template_id
             data['sms_from_number'] = settings.sms_from_number
+
+            # Payout Disbursement Bank & RazorpayX Account (admin-only)
+            data['payout_bank_name'] = settings.payout_bank_name
+            data['payout_account_holder_name'] = settings.payout_account_holder_name
+            data['payout_account_number'] = settings.payout_account_number
+            data['payout_ifsc_code'] = settings.payout_ifsc_code
+            data['razorpayx_account_number'] = settings.razorpayx_account_number
+            data['razorpayx_key_id'] = settings.razorpayx_key_id
+            data['razorpayx_key_secret_set'] = bool(settings.razorpayx_key_secret)
+            data['razorpayx_key_secret_masked'] = ('••••' + settings.razorpayx_key_secret[-4:]) if (settings.razorpayx_key_secret and len(settings.razorpayx_key_secret) > 4) else ''
         else:
             # Non-admin: expose Razorpay Key ID only (needed for frontend Razorpay.js checkout)
             data['razorpay_key_id'] = settings.razorpay_key_id
@@ -1499,6 +1509,29 @@ class PlatformSettingsView(views.APIView):
         sms_from_number = request.data.get('sms_from_number')
         if sms_from_number is not None:
             settings.sms_from_number = sms_from_number.strip()
+
+        # Payout Bank Account & RazorpayX credentials
+        payout_bank = request.data.get('payout_bank_name')
+        if payout_bank is not None:
+            settings.payout_bank_name = payout_bank.strip()
+        payout_holder = request.data.get('payout_account_holder_name')
+        if payout_holder is not None:
+            settings.payout_account_holder_name = payout_holder.strip()
+        payout_acc = request.data.get('payout_account_number')
+        if payout_acc is not None:
+            settings.payout_account_number = payout_acc.strip()
+        payout_ifsc = request.data.get('payout_ifsc_code')
+        if payout_ifsc is not None:
+            settings.payout_ifsc_code = payout_ifsc.strip().upper()
+        rzpx_acc = request.data.get('razorpayx_account_number')
+        if rzpx_acc is not None:
+            settings.razorpayx_account_number = rzpx_acc.strip()
+        rzpx_key = request.data.get('razorpayx_key_id')
+        if rzpx_key is not None:
+            settings.razorpayx_key_id = rzpx_key.strip()
+        rzpx_secret = request.data.get('razorpayx_key_secret', '')
+        if rzpx_secret and '•' not in rzpx_secret:
+            settings.razorpayx_key_secret = rzpx_secret.strip()
 
         settings.save()
         return Response({'detail': 'Platform settings updated successfully.'})

@@ -315,6 +315,17 @@ export const Settings = () => {
   const [testSmsPhone, setTestSmsPhone] = useState("");
   const [testSmsSending, setTestSmsSending] = useState(false);
 
+  // ─── Payout Disbursement: Bank Account & RazorpayX ──────────────────────
+  const [payoutBankName, setPayoutBankName] = useState("HDFC Bank");
+  const [payoutAccountHolder, setPayoutAccountHolder] = useState("");
+  const [payoutAccountNumber, setPayoutAccountNumber] = useState("");
+  const [payoutIfscCode, setPayoutIfscCode] = useState("");
+  const [razorpayxAccountNumber, setRazorpayxAccountNumber] = useState("");
+  const [razorpayxKeyId, setRazorpayxKeyId] = useState("");
+  const [razorpayxKeySecret, setRazorpayxKeySecret] = useState("");
+  const [razorpayxKeySecretSet, setRazorpayxKeySecretSet] = useState(false);
+  const [showRzpxSecret, setShowRzpxSecret] = useState(false);
+
   // Change Password state
   const [changePassNew, setChangePassNew] = useState("");
   const [changePassConfirm, setChangePassConfirm] = useState("");
@@ -504,6 +515,16 @@ export const Settings = () => {
         setSmsSenderId(data.sms_sender_id || "");
         setSmsTemplateId(data.sms_template_id || "");
         setSmsFromNumber(data.sms_from_number || "");
+
+        // Payout Disbursement Bank & RazorpayX
+        setPayoutBankName(data.payout_bank_name || "HDFC Bank");
+        setPayoutAccountHolder(data.payout_account_holder_name || "");
+        setPayoutAccountNumber(data.payout_account_number || "");
+        setPayoutIfscCode(data.payout_ifsc_code || "");
+        setRazorpayxAccountNumber(data.razorpayx_account_number || "");
+        setRazorpayxKeyId(data.razorpayx_key_id || "");
+        setRazorpayxKeySecretSet(data.razorpayx_key_secret_set || false);
+        setRazorpayxKeySecret(data.razorpayx_key_secret_masked || "");
       }
     } catch (err) {
       console.error("Failed to fetch settings:", err);
@@ -608,6 +629,15 @@ export const Settings = () => {
           sms_sender_id: smsSenderId,
           sms_template_id: smsTemplateId,
           sms_from_number: smsFromNumber,
+
+          // Payout Disbursement Bank & RazorpayX
+          payout_bank_name: payoutBankName,
+          payout_account_holder_name: payoutAccountHolder,
+          payout_account_number: payoutAccountNumber,
+          payout_ifsc_code: payoutIfscCode,
+          razorpayx_account_number: razorpayxAccountNumber,
+          razorpayx_key_id: razorpayxKeyId,
+          razorpayx_key_secret: razorpayxKeySecret,
         })
       });
       if (res.ok) {
@@ -1136,6 +1166,141 @@ export const Settings = () => {
                   </div>
                 );
               })()}
+            </div>
+
+            {/* 🏦 Payout Disbursement Bank & RazorpayX Account */}
+            <div
+              className="rounded-3xl p-8 border shadow-sm transition-all duration-300"
+              style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+            >
+              <div className="flex items-center justify-between border-b pb-4 mb-6" style={{ borderColor: "var(--border)" }}>
+                <div>
+                  <h2 className="text-[16px] font-extrabold tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
+                    <span className="material-symbols-outlined text-emerald-500 text-[24px]">
+                      account_balance
+                    </span>
+                    Agent Payout Source Bank &amp; RazorpayX Account
+                  </h2>
+                  <p className="text-[12.5px] font-medium mt-1" style={{ color: "var(--text-muted)" }}>
+                    Configure the bank account from which commissions and agent payouts will be debited automatically.
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                  ⚡ 1-Click Payout Engine
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: "var(--text-muted)" }}>
+                    Bank Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={payoutBankName}
+                    onChange={(e) => setPayoutBankName(e.target.value)}
+                    placeholder="e.g. HDFC Bank / ICICI Bank"
+                    className="w-full h-12 px-4 rounded-2xl border text-[14px] font-bold outline-none focus:border-emerald-500 transition-all shadow-xs"
+                    style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: "var(--text-muted)" }}>
+                    Account Holder Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={payoutAccountHolder}
+                    onChange={(e) => setPayoutAccountHolder(e.target.value)}
+                    placeholder="e.g. Rentlo Technologies Pvt Ltd"
+                    className="w-full h-12 px-4 rounded-2xl border text-[14px] font-bold outline-none focus:border-emerald-500 transition-all shadow-xs"
+                    style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: "var(--text-muted)" }}>
+                    Bank Account Number *
+                  </label>
+                  <input
+                    type="text"
+                    value={payoutAccountNumber}
+                    onChange={(e) => setPayoutAccountNumber(e.target.value)}
+                    placeholder="e.g. 50200098765432"
+                    className="w-full h-12 px-4 rounded-2xl border text-[14px] font-mono font-bold outline-none focus:border-emerald-500 transition-all shadow-xs"
+                    style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-1.5" style={{ color: "var(--text-muted)" }}>
+                    Bank IFSC Code *
+                  </label>
+                  <input
+                    type="text"
+                    value={payoutIfscCode}
+                    onChange={(e) => setPayoutIfscCode(e.target.value.toUpperCase())}
+                    placeholder="e.g. HDFC0001234"
+                    className="w-full h-12 px-4 rounded-2xl border text-[14px] font-mono font-bold outline-none focus:border-emerald-500 transition-all shadow-xs uppercase"
+                    style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                  />
+                </div>
+              </div>
+
+              {/* RazorpayX Automated Payout API (Optional for direct API disbursement) */}
+              <div className="p-5 rounded-2xl border bg-emerald-500/5 border-emerald-500/20 mt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="material-symbols-outlined text-emerald-600 text-[20px]">bolt</span>
+                  <h4 className="text-[13px] font-extrabold text-emerald-800">
+                    Automated RazorpayX Payouts API (Optional 24/7 IMPS/UPI Payouts)
+                  </h4>
+                </div>
+                <p className="text-[11.5px] text-emerald-700/80 mb-4">
+                  Add your RazorpayX virtual current account number to enable automatic 1-second disbursements directly from code without opening your netbanking app.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1">
+                      RazorpayX Account Number
+                    </label>
+                    <input
+                      type="text"
+                      value={razorpayxAccountNumber}
+                      onChange={(e) => setRazorpayxAccountNumber(e.target.value)}
+                      placeholder="e.g. 2323230012345678"
+                      className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white font-mono font-bold text-[12px] text-slate-800 outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1">
+                      Payout Key ID (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={razorpayxKeyId}
+                      onChange={(e) => setRazorpayxKeyId(e.target.value)}
+                      placeholder="rzp_live_..."
+                      className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white font-mono font-bold text-[12px] text-slate-800 outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1">
+                      Payout Key Secret
+                    </label>
+                    <input
+                      type={showRzpxSecret ? "text" : "password"}
+                      value={razorpayxKeySecret}
+                      onChange={(e) => setRazorpayxKeySecret(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white font-mono font-bold text-[12px] text-slate-800 outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Payment Bypasses */}

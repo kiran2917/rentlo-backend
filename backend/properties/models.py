@@ -438,6 +438,22 @@ class PlatformSettings(models.Model):
     razorpay_webhook_secret = models.CharField(max_length=255, blank=True, default='',
         help_text="Razorpay Webhook Secret — never exposed in API responses")
 
+    # ─── Payout Disbursement: Bank Account & RazorpayX Payouts ──────────────
+    payout_bank_name = models.CharField(max_length=100, blank=True, default='HDFC Bank',
+        help_text="Bank Name for outgoing payouts")
+    payout_account_holder_name = models.CharField(max_length=255, blank=True, default='',
+        help_text="Company / Admin Account Holder Name")
+    payout_account_number = models.CharField(max_length=50, blank=True, default='',
+        help_text="Bank Account Number from which payouts are sent")
+    payout_ifsc_code = models.CharField(max_length=20, blank=True, default='',
+        help_text="IFSC Code of the payout bank branch")
+    razorpayx_account_number = models.CharField(max_length=50, blank=True, default='',
+        help_text="RazorpayX Virtual Payout Account Number (e.g. 23232300XXXXXXXX)")
+    razorpayx_key_id = models.CharField(max_length=100, blank=True, default='',
+        help_text="RazorpayX Payout Key ID (defaults to razorpay_key_id if blank)")
+    razorpayx_key_secret = models.CharField(max_length=255, blank=True, default='',
+        help_text="RazorpayX Payout Key Secret — never exposed in API responses")
+
     # ─── SMS / OTP Provider ───────────────────────────────────────────────────
     SMS_PROVIDER_CHOICES = [
         ('none',      'None (Demo mode — use 000000)'),
