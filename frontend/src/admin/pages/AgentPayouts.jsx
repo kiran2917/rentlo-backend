@@ -54,6 +54,30 @@ export const AgentPayouts = () => {
     fetchBatches();
   }, [filters]);
 
+  const handleInstantPayout = async (batchId) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/earnings/payout-batches/${batchId}/disburse-instant/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ mode: "upi" }),
+        }
+      );
+      if (res.ok) {
+        const json = await res.json();
+        toast.success(`⚡ ${json.message} (UTR: ${json.utr_number})`);
+        fetchBatches();
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to disburse instant payout");
+      }
+    } catch (e) {
+      toast.error("Network error during instant payout");
+    }
+  };
+
   const handlePayBatch = async (batchId) => {
     if (!utrNumber.trim()) {
       toast.warn("Please enter a UTR Number / Reference");
@@ -278,14 +302,27 @@ export const AgentPayouts = () => {
                         </td>
                         <td className="px-6 py-4 text-right">
                           {b.status === "processing" ? (
-                            <button
-                              onClick={() => setPayingBatchId(b.id)}
-                              className="px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[11px] font-bold shadow-sm hover:bg-slate-800 transition-colors"
-                            >
-                              Settle & Pay
-                            </button>
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleInstantPayout(b.id)}
+                                className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg text-[11px] font-black uppercase tracking-wider shadow-sm transition-all flex items-center gap-1 cursor-pointer"
+                                title="Instant UPI Payout"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">bolt</span>
+                                <span>1-Click UPI</span>
+                              </button>
+                              <button
+                                onClick={() => setPayingBatchId(b.id)}
+                                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg text-[11px] font-bold shadow-xs transition-colors cursor-pointer"
+                              >
+                                Manual UTR
+                              </button>
+                            </div>
                           ) : (
-                            <span className="text-[11px] font-bold text-slate-400">Settled</span>
+                            <span className="text-[11px] font-bold text-emerald-600 flex items-center justify-end gap-1">
+                              <span className="material-symbols-outlined text-[14px]">done_all</span>
+                              Disbursed
+                            </span>
                           )}
                         </td>
                       </tr>

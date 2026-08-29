@@ -15,8 +15,23 @@ from .views import (
     TriggerMigrationView, IPLookupView
 )
 from .reconfirm_view import PropertyReconfirmView
+from .tenant_kyc import TenantKYCListCreateView, TenantKYCDetailView
+from .pg_residents import PGResidentListCreateView, PGResidentDetailView
+from .maintenance import MaintenanceTicketListCreateView, MaintenanceTicketDetailView
 
 urlpatterns = [
+    # Tenant KYC & Background Verification
+    path('tenant-kyc/', TenantKYCListCreateView.as_view(), name='tenant-kyc-list-create'),
+    path('tenant-kyc/<int:pk>/', TenantKYCDetailView.as_view(), name='tenant-kyc-detail'),
+
+    # PG / Hostel Resident Management
+    path('pg-residents/', PGResidentListCreateView.as_view(), name='pg-resident-list-create'),
+    path('pg-residents/<int:pk>/', PGResidentDetailView.as_view(), name='pg-resident-detail'),
+
+    # Maintenance & Repair Tickets
+    path('maintenance-tickets/', MaintenanceTicketListCreateView.as_view(), name='maintenance-tickets-list-create'),
+    path('maintenance-tickets/<int:pk>/', MaintenanceTicketDetailView.as_view(), name='maintenance-tickets-detail'),
+
     path('ip-lookup/', IPLookupView.as_view(), name='ip-lookup'),
     path('cities/', CityListCreateView.as_view(), name='city-list'),
     path('cities/localities/', LocalityListCreateView.as_view(), name='all-locality-list'),

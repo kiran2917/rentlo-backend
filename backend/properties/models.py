@@ -520,3 +520,8 @@ class PropertyAuditLog(models.Model):
         return f"{self.property.id} - {self.field_name} changed by {self.changed_by.username if self.changed_by else 'System'}"
 
 
+from .tenant_kyc import TenantVerificationRequest
+from .pg_residents import PGResident
+from .maintenance import MaintenanceTicket
+
+

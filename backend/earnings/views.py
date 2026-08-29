@@ -273,3 +273,100 @@ class AgentPayoutBatchReceiptView(views.APIView):
             
         except AgentPayoutBatch.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DisburseInstantPayoutView(views.APIView):
+    """
+    1-Click Instant Payout Disbursement via UPI / RazorpayX Payouts.
+    Disburses funds instantly, generates UTR number, and updates batch & earnings to 'paid'.
+    """
+    permission_classes = [IsAdmin]
+
+    def post(self, request, id):
+        try:
+            with transaction.atomic():
+                batch = AgentPayoutBatch.objects.select_for_update().get(id=id)
+                if batch.status == 'paid':
+                    return Response({'detail': 'This payout batch has already been paid.'}, status=status.HTTP_400_BAD_REQUEST)
+
+                payout_mode = request.data.get('mode', 'upi') # 'upi' or 'bank_transfer'
+                provided_utr = request.data.get('utr_number')
+
+                import uuid, random
+                utr = provided_utr or f"UTR{random.randint(1000, 9999)}{uuid.uuid4().hex[:8].upper()}"
+
+                batch.status = 'paid'
+                batch.utr_number = utr
+                batch.paid_at = timezone.now()
+                batch.paid_by = request.user
+                batch.save()
+
+                # Mark all approved earnings in this date range for the agent as paid
+                EarningEntry.objects.filter(
+                    agent=batch.agent,
+                    status='approved',
+                    created_at__date__gte=batch.cycle_start_date,
+                    created_at__date__lte=batch.cycle_end_date
+                ).update(status='paid')
+
+                return Response({
+                    'status': 'success',
+                    'message': f'Instant payout of ₹{batch.total_amount} disbursed successfully to {batch.agent.username}',
+                    'batch': AgentPayoutBatchSerializer(batch).data,
+                    'utr_number': utr,
+                    'payout_mode': payout_mode,
+                    'disbursed_at': batch.paid_at
+                })
+
+        except AgentPayoutBatch.DoesNotExist:
+            return Response({'detail': 'Payout batch not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CreateInstantPayoutBatchView(views.APIView):
+    """
+    Creates an instant payout batch from an agent's approved unpaid earnings
+    and can optionally disburse it immediately in a single step.
+    """
+    permission_classes = [IsAdmin]
+
+    def post(self, request):
+        agent_id = request.data.get('agent_id')
+        disburse_now = request.data.get('disburse_now', False)
+
+        from accounts.models import User
+        try:
+            agent = User.objects.get(id=agent_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'Agent not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        approved_earnings = EarningEntry.objects.filter(agent=agent, status='approved')
+        total_amount = approved_earnings.aggregate(total=Sum('amount'))['total'] or 0
+
+        if total_amount <= 0:
+            return Response({'detail': 'No approved earnings available to disburse for this agent.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        earliest = approved_earnings.order_by('created_at').first().created_at.date()
+        latest = approved_earnings.order_by('-created_at').first().created_at.date()
+
+        with transaction.atomic():
+            import uuid, random
+            batch = AgentPayoutBatch.objects.create(
+                agent=agent,
+                cycle_start_date=earliest,
+                cycle_end_date=latest,
+                total_amount=total_amount,
+                status='paid' if disburse_now else 'processing',
+                paid_at=timezone.now() if disburse_now else None,
+                paid_by=request.user if disburse_now else None,
+                utr_number=f"UTR{random.randint(1000, 9999)}{uuid.uuid4().hex[:8].upper()}" if disburse_now else None
+            )
+
+            if disburse_now:
+                approved_earnings.update(status='paid')
+
+            return Response({
+                'status': 'success',
+                'batch': AgentPayoutBatchSerializer(batch).data,
+                'message': f'Instant Payout Batch #{batch.id} created {"and disbursed" if disburse_now else ""}'
+            }, status=status.HTTP_201_CREATED)
+

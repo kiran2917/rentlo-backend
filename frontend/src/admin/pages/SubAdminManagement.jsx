@@ -373,10 +373,83 @@ export const SubAdminManagement = () => {
                   </div>
                 )}
 
+                {/* Quick Role Presets */}
+                <div>
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider block mb-2" style={{ color: "var(--ink)" }}>
+                    ⚡ 1-Click Role Presets (Quick Setup):
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                    <button
+                      type="button"
+                      onClick={() => setPermissions({
+                        can_manage_properties: true,
+                        can_review_moderation: true,
+                        can_view_earnings: false,
+                        can_view_analytics: false,
+                        can_manage_users: false,
+                        can_edit_settings: false
+                      })}
+                      className="p-2.5 rounded-xl border text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                      style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                    >
+                      <p className="font-extrabold text-[11px] text-indigo-600">Listing Moderator</p>
+                      <p className="text-[9.5px] text-slate-400">Queue & Flags</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPermissions({
+                        can_manage_properties: false,
+                        can_review_moderation: false,
+                        can_view_earnings: true,
+                        can_view_analytics: true,
+                        can_manage_users: false,
+                        can_edit_settings: false
+                      })}
+                      className="p-2.5 rounded-xl border text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                      style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                    >
+                      <p className="font-extrabold text-[11px] text-emerald-600">Finance Officer</p>
+                      <p className="text-[9.5px] text-slate-400">Payouts & Revenue</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPermissions({
+                        can_manage_properties: true,
+                        can_review_moderation: true,
+                        can_view_earnings: false,
+                        can_view_analytics: true,
+                        can_manage_users: true,
+                        can_edit_settings: false
+                      })}
+                      className="p-2.5 rounded-xl border text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                      style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                    >
+                      <p className="font-extrabold text-[11px] text-purple-600">City Manager</p>
+                      <p className="text-[9.5px] text-slate-400">Ops & CRM</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPermissions({
+                        can_manage_properties: true,
+                        can_review_moderation: true,
+                        can_view_earnings: true,
+                        can_view_analytics: true,
+                        can_manage_users: true,
+                        can_edit_settings: true
+                      })}
+                      className="p-2.5 rounded-xl border text-center hover:border-indigo-500 transition-colors cursor-pointer"
+                      style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                    >
+                      <p className="font-extrabold text-[11px] text-amber-600">Super Admin</p>
+                      <p className="text-[9.5px] text-slate-400">All Modules</p>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Granular Module Checkboxes */}
                 <div>
                   <label className="text-[11px] font-extrabold uppercase tracking-wider block mb-3 border-b pb-2" style={{ color: "var(--ink)", borderColor: "var(--border)" }}>
-                    Authorized Modules &amp; Powers (Select what they can do):
+                    Authorized Modules &amp; Powers (Customize Granularly):
                   </label>
 
                   <div className="space-y-3">
