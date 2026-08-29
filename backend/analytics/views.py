@@ -32,11 +32,15 @@ class AnalyticsSummaryView(views.APIView):
         total_live = Property.objects.filter(property_filter, status='live').count()
 
         # 2. Total unlocks and revenue this month + all time
-        from unlocks.models import OwnerListingPass
+        # 2. Total unlocks and revenue this month + all time
+        from unlocks.models import OwnerListingPass, BuyerSubscription
         
         unlocks_this_month = Unlock.objects.filter(unlock_filter, status='paid', unlocked_at__gte=start_of_month)
         total_unlocks = unlocks_this_month.count()
         total_revenue = unlocks_this_month.aggregate(total=Sum('amount'))['total'] or 0
+
+        buyer_passes_this_month = BuyerSubscription.objects.filter(status='active', created_at__gte=start_of_month)
+        total_revenue += buyer_passes_this_month.aggregate(total=Sum('amount_paid'))['total'] or 0
         
         passes_this_month = OwnerListingPass.objects.filter(status__in=['active', 'depleted'], created_at__gte=start_of_month)
         if city_id:
@@ -46,20 +50,46 @@ class AnalyticsSummaryView(views.APIView):
         unlocks_all_time_qs = Unlock.objects.filter(unlock_filter, status='paid')
         total_unlocks_all_time = unlocks_all_time_qs.count()
         total_revenue_all_time = unlocks_all_time_qs.aggregate(total=Sum('amount'))['total'] or 0
+
+        buyer_passes_all_time = BuyerSubscription.objects.filter(status='active')
+        total_revenue_all_time += buyer_passes_all_time.aggregate(total=Sum('amount_paid'))['total'] or 0
         
         passes_all_time = OwnerListingPass.objects.filter(status__in=['active', 'depleted'])
         if city_id:
             passes_all_time = passes_all_time.filter(owner__owned_properties__locality__city_id=city_id).distinct()
         total_revenue_all_time += passes_all_time.aggregate(total=Sum('amount_paid'))['total'] or 0
 
-        # 3. Chart: Unlocks per day over the last 30 days
-        unlocks_last_30 = Unlock.objects.filter(unlock_filter, status='paid', unlocked_at__gte=thirty_days_ago) \
-            .annotate(date=TruncDate('unlocked_at')) \
-            .values('date') \
-            .annotate(count=Count('id'), total_rev=Sum('amount')) \
-            .order_by('date')
-            
-        unlocks_chart = [{'date': entry['date'].strftime('%Y-%m-%d'), 'count': entry['count'], 'total_rev': float(entry['total_rev'] or 0)} for entry in unlocks_last_30]
+        # 3. Chart: Combined daily revenue per day over the last 30 days
+        daily_rev_dict = {}
+        
+        # Unlocks daily
+        for u in Unlock.objects.filter(unlock_filter, status='paid', unlocked_at__gte=thirty_days_ago) \
+                .annotate(date=TruncDate('unlocked_at')).values('date').annotate(count=Count('id'), total=Sum('amount')):
+            d_str = u['date'].strftime('%Y-%m-%d')
+            daily_rev_dict.setdefault(d_str, {'count': 0, 'total_rev': 0.0})
+            daily_rev_dict[d_str]['count'] += u['count']
+            daily_rev_dict[d_str]['total_rev'] += float(u['total'] or 0)
+
+        # Buyer Passes daily
+        for bp in BuyerSubscription.objects.filter(status='active', created_at__gte=thirty_days_ago) \
+                .annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id'), total=Sum('amount_paid')):
+            d_str = bp['date'].strftime('%Y-%m-%d')
+            daily_rev_dict.setdefault(d_str, {'count': 0, 'total_rev': 0.0})
+            daily_rev_dict[d_str]['count'] += bp['count']
+            daily_rev_dict[d_str]['total_rev'] += float(bp['total'] or 0)
+
+        # Owner Passes daily
+        for op in OwnerListingPass.objects.filter(status__in=['active', 'depleted'], created_at__gte=thirty_days_ago) \
+                .annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id'), total=Sum('amount_paid')):
+            d_str = op['date'].strftime('%Y-%m-%d')
+            daily_rev_dict.setdefault(d_str, {'count': 0, 'total_rev': 0.0})
+            daily_rev_dict[d_str]['count'] += op['count']
+            daily_rev_dict[d_str]['total_rev'] += float(op['total'] or 0)
+
+        unlocks_chart = [
+            {'date': k, 'count': v['count'], 'total_rev': round(v['total_rev'], 2)}
+            for k, v in sorted(daily_rev_dict.items())
+        ]
 
         # 4. Chart: Listings by status
         listings_by_status = Property.objects.filter(property_filter).values('status').annotate(count=Count('id')).order_by('status')
