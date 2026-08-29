@@ -15,11 +15,167 @@ const formatDate = (isoString) => {
   });
 };
 
+// ─── IP INTEL MODAL SUB-COMPONENT ───
+const IPIntelModal = ({ ip, isOpen, onClose }) => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || !ip) return;
+    setLoading(true);
+    fetch(`${import.meta.env.VITE_API_URL}/properties/ip-lookup/?ip=${encodeURIComponent(ip)}`, {
+      credentials: "include",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        setData(json);
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => setLoading(false));
+  }, [ip, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(ip);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success("IP copied to clipboard!");
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[130] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+        >
+          <span className="material-symbols-outlined text-[18px]">close</span>
+        </button>
+
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5 pb-4 border-b border-slate-100">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+            <span className="material-symbols-outlined text-[24px]">public</span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-[17px] font-black text-slate-900 font-mono tracking-tight">{ip}</h3>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+                title="Copy IP"
+              >
+                <span className="material-symbols-outlined text-[16px]">{copied ? "check" : "content_copy"}</span>
+              </button>
+            </div>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+              IP Geolocation & Threat Intelligence
+            </p>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="py-12 flex flex-col items-center justify-center">
+            <div className="w-8 h-8 rounded-full border-2 border-indigo-200 border-t-indigo-600 animate-spin mb-3"></div>
+            <p className="text-[12px] font-semibold text-slate-500">Tracing IP geolocation & carrier network...</p>
+          </div>
+        ) : !data ? (
+          <div className="py-8 text-center text-slate-500">
+            <p className="font-semibold text-sm">Failed to resolve IP details</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Location Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-50 to-indigo-50/40 border border-indigo-100/60">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Estimated Location</p>
+                  <p className="text-[16px] font-extrabold text-slate-900 mt-1 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-indigo-600 text-[18px]">location_on</span>
+                    {data.city}, {data.region}
+                  </p>
+                  <p className="text-[12px] font-semibold text-slate-600 mt-0.5 ml-6">
+                    {data.country} {data.zip ? `(${data.zip})` : ""}
+                  </p>
+                </div>
+                {data.country_code && data.country_code !== "LOCAL" && (
+                  <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[12px] font-black text-slate-700 shadow-2xs">
+                    {data.country_code}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Grid of Details */}
+            <div className="grid grid-cols-2 gap-3 text-[12px]">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Internet Provider (ISP)</p>
+                <p className="font-extrabold text-slate-800 mt-1 truncate" title={data.isp}>{data.isp || "N/A"}</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Organization / Network</p>
+                <p className="font-extrabold text-slate-800 mt-1 truncate" title={data.org}>{data.org || "N/A"}</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Timezone</p>
+                <p className="font-extrabold text-slate-800 mt-1">{data.timezone || "UTC"}</p>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Network Type</p>
+                <p className="font-extrabold text-slate-800 mt-1">
+                  {data.is_private ? "Internal LAN / Private" : "Public Broadband / Cellular"}
+                </p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+              {data.maps_url && (
+                <a
+                  href={data.maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 h-10 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-[12px] flex items-center justify-center gap-1.5 transition-colors border border-indigo-200/60"
+                >
+                  <span className="material-symbols-outlined text-[16px]">map</span>
+                  <span>View on Google Maps</span>
+                </a>
+              )}
+              <a
+                href={`https://ipinfo.io/${ip}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[12px] flex items-center justify-center gap-1.5 transition-colors border border-slate-200"
+              >
+                <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                <span>IPInfo Profile</span>
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ─── AUDIT LOG TAB SUB-COMPONENT ───
 const AuditLogSection = ({ logs = [], propertyId }) => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("timeline"); // "timeline" or "table"
+  const [activeIpForIntel, setActiveIpForIntel] = useState(null);
 
   const safeLogs = Array.isArray(logs) ? logs : [];
 
@@ -318,10 +474,16 @@ const AuditLogSection = ({ logs = [], propertyId }) => {
 
                     <div className="flex flex-wrap items-center gap-2 text-slate-500">
                       {log.ip_address && (
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200/60 font-mono text-[10px] flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[12px] text-slate-400">lan</span>
-                          {log.ip_address}
-                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveIpForIntel(log.ip_address)}
+                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 border border-slate-200/60 hover:border-indigo-300 font-mono text-[10px] flex items-center gap-1 transition-all cursor-pointer shadow-2xs group/ip"
+                          title="Click to view IP Geolocation & Network Details"
+                        >
+                          <span className="material-symbols-outlined text-[12px] text-slate-400 group-hover/ip:text-indigo-600 transition-colors">public</span>
+                          <span>{log.ip_address}</span>
+                          <span className="material-symbols-outlined text-[10px] text-slate-400 group-hover/ip:text-indigo-600">info</span>
+                        </button>
                       )}
                       {log.device_label && log.device_label !== 'Unknown Device' && (
                         <span className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200/60 font-medium text-[10px] flex items-center gap-1">
@@ -391,8 +553,20 @@ const AuditLogSection = ({ logs = [], propertyId }) => {
                         {log.reason || "-"}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-slate-500 text-[11px]">
-                        <div className="flex flex-col">
-                          <span className="font-mono text-[10px]">{log.ip_address || "N/A"}</span>
+                        <div className="flex flex-col gap-1">
+                          {log.ip_address ? (
+                            <button
+                              type="button"
+                              onClick={() => setActiveIpForIntel(log.ip_address)}
+                              className="font-mono text-[10px] text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 cursor-pointer w-fit"
+                              title="Click for IP details"
+                            >
+                              <span className="material-symbols-outlined text-[11px]">public</span>
+                              {log.ip_address}
+                            </button>
+                          ) : (
+                            <span className="font-mono text-[10px] text-slate-400">N/A</span>
+                          )}
                           <span className="text-[10px] text-slate-400">{log.device_label || ""}</span>
                         </div>
                       </td>
@@ -403,6 +577,15 @@ const AuditLogSection = ({ logs = [], propertyId }) => {
             </table>
           </div>
         </div>
+      )}
+
+      {/* IP Intelligence Modal */}
+      {activeIpForIntel && (
+        <IPIntelModal
+          ip={activeIpForIntel}
+          isOpen={!!activeIpForIntel}
+          onClose={() => setActiveIpForIntel(null)}
+        />
       )}
 
     </div>

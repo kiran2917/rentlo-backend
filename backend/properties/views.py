@@ -2261,3 +2261,81 @@ class PropertyLifecycleView(views.APIView):
             'audit_logs': audit_data
         })
 
+
+class IPLookupView(views.APIView):
+    """
+    Provides IP intelligence (Geolocation, ISP, Organization, City, Coordinates)
+    for security audit inspection in the Admin console.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ip = (request.query_params.get('ip') or '').strip()
+        if not ip or ip.lower() in ('unknown', 'null', 'none', 'n/a'):
+            return Response({'detail': 'Valid IP address required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Handle local / private IPs
+        if ip in ('127.0.0.1', 'localhost', '::1') or ip.startswith(('10.', '192.168.', '172.16.', '172.31.')):
+            return Response({
+                'ip': ip,
+                'status': 'success',
+                'is_private': True,
+                'city': 'Local / Development Network',
+                'region': 'Internal LAN',
+                'country': 'Localhost / Private Network',
+                'country_code': 'LOCAL',
+                'isp': 'Internal Loopback / LAN',
+                'org': 'Development Server',
+                'timezone': 'Local',
+                'maps_url': None
+            })
+
+        from django.core.cache import cache
+        cache_key = f"ip_lookup_intel:{ip}"
+        cached = cache.get(cache_key)
+        if cached:
+            return Response(cached)
+
+        import requests
+        try:
+            resp = requests.get(
+                f"http://ip-api.com/json/{ip}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query",
+                timeout=3.5
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get('status') == 'success':
+                    result = {
+                        'ip': ip,
+                        'status': 'success',
+                        'is_private': False,
+                        'city': data.get('city') or 'Unknown City',
+                        'region': data.get('regionName') or data.get('region') or 'Unknown Region',
+                        'country': data.get('country') or 'Unknown Country',
+                        'country_code': data.get('countryCode') or '',
+                        'zip': data.get('zip') or '',
+                        'lat': data.get('lat'),
+                        'lon': data.get('lon'),
+                        'timezone': data.get('timezone') or 'UTC',
+                        'isp': data.get('isp') or 'Unknown ISP',
+                        'org': data.get('org') or data.get('as') or 'Unknown Org',
+                        'asn': data.get('as') or '',
+                        'maps_url': f"https://www.google.com/maps?q={data.get('lat')},{data.get('lon')}" if data.get('lat') and data.get('lon') else None
+                    }
+                    cache.set(cache_key, result, 86400) # Cache for 24h
+                    return Response(result)
+        except Exception:
+            pass
+
+        # Fallback response
+        return Response({
+            'ip': ip,
+            'status': 'fallback',
+            'city': 'Public IP',
+            'region': 'External Network',
+            'country': 'Remote Client',
+            'isp': 'Internet Service Provider',
+            'org': 'External Network',
+            'maps_url': f"https://www.ipinfo.io/{ip}"
+        })
+

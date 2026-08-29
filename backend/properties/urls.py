@@ -12,11 +12,12 @@ from .views import (
     InitiateOwnerPassOrderView, VerifyOwnerPassOrderView,
     SettingsVersionView, EstimatePriceView, CalculateListingFeeView,
     PlatformSettingsAuditLogListView, PGOccupancyUpdateView, PropertyMediaDeleteView, PropertyLifecycleView,
-    TriggerMigrationView
+    TriggerMigrationView, IPLookupView
 )
 from .reconfirm_view import PropertyReconfirmView
 
 urlpatterns = [
+    path('ip-lookup/', IPLookupView.as_view(), name='ip-lookup'),
     path('cities/', CityListCreateView.as_view(), name='city-list'),
     path('cities/localities/', LocalityListCreateView.as_view(), name='all-locality-list'),
     path('cities/<int:pk>/', CityDetailView.as_view(), name='city-detail'),
