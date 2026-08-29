@@ -24,17 +24,124 @@ const IPIntelModal = ({ ip, isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen || !ip) return;
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL}/properties/ip-lookup/?ip=${encodeURIComponent(ip)}`, {
-      credentials: "include",
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json) => {
-        setData(json);
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => setLoading(false));
+
+    const resolveIp = async () => {
+      // 1. Check local/private IP first
+      if (
+        ip === "127.0.0.1" ||
+        ip === "localhost" ||
+        ip === "::1" ||
+        ip.startsWith("192.168.") ||
+        ip.startsWith("10.") ||
+        ip.startsWith("172.16.") ||
+        ip.startsWith("172.31.")
+      ) {
+        setData({
+          ip,
+          is_private: true,
+          city: "Localhost / Internal Network",
+          region: "LAN / Development",
+          country: "Private Network",
+          country_code: "LOCAL",
+          isp: "Internal Loopback",
+          org: "Development Environment",
+          timezone: "Local",
+          maps_url: null,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Try Backend API
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/ip-lookup/?ip=${encodeURIComponent(ip)}`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.city && json.status !== "fallback") {
+            setData(json);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Backend IP lookup failed, falling back to direct provider:", e);
+      }
+
+      // 3. Fallback to ipwho.is (Direct HTTPS, CORS enabled)
+      try {
+        const res = await fetch(`https://ipwho.is/${ip}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success !== false) {
+            setData({
+              ip: json.ip || ip,
+              is_private: false,
+              city: json.city || "Unknown City",
+              region: json.region || "Unknown State",
+              country: json.country || "Unknown Country",
+              country_code: json.country_code || "",
+              zip: json.postal || "",
+              lat: json.latitude,
+              lon: json.longitude,
+              timezone: json.timezone?.id || "UTC",
+              isp: json.connection?.isp || json.connection?.org || "Internet Service Provider",
+              org: json.connection?.org || json.connection?.isp || "Network Carrier",
+              asn: json.connection?.asn ? `AS${json.connection.asn}` : "",
+              maps_url: json.latitude && json.longitude ? `https://www.google.com/maps?q=${json.latitude},${json.longitude}` : `https://ipinfo.io/${ip}`,
+            });
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("ipwho.is failed, trying ipapi.co fallback:", err);
+      }
+
+      // 4. Fallback to ipapi.co
+      try {
+        const res = await fetch(`https://ipapi.co/${ip}/json/`);
+        if (res.ok) {
+          const json = await res.json();
+          setData({
+            ip: json.ip || ip,
+            is_private: false,
+            city: json.city || "Public IP",
+            region: json.region || "External Region",
+            country: json.country_name || "External Country",
+            country_code: json.country_code || "",
+            zip: json.postal || "",
+            lat: json.latitude,
+            lon: json.longitude,
+            timezone: json.timezone || "UTC",
+            isp: json.org || "Internet Provider",
+            org: json.org || "Network Carrier",
+            maps_url: json.latitude && json.longitude ? `https://www.google.com/maps?q=${json.latitude},${json.longitude}` : `https://ipinfo.io/${ip}`,
+          });
+          setLoading(false);
+          return;
+        }
+      } catch (err2) {
+        console.error("All IP resolvers failed:", err2);
+      }
+
+      // 5. Generic Fallback
+      setData({
+        ip,
+        is_private: false,
+        city: "Public IP Address",
+        region: "Internet Network",
+        country: "External Location",
+        country_code: "NET",
+        isp: "Telecom / Broadband Provider",
+        org: "Internet Service Provider",
+        maps_url: `https://ipinfo.io/${ip}`,
+      });
+      setLoading(false);
+    };
+
+    resolveIp();
   }, [ip, isOpen]);
 
   if (!isOpen) return null;
