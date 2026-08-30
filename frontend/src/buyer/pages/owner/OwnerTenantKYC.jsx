@@ -278,9 +278,19 @@ export const OwnerTenantKYC = () => {
                   onChange={(e) => setFormData({ ...formData, property: e.target.value })}
                   className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
                 >
-                  {properties.map((p) => (
-                    <option key={p.id} value={p.id}>{p.title} ({p.locality?.name || p.city_name || "Listed"})</option>
-                  ))}
+                  {properties.map((p) => {
+                    const buildingName = p.exact_address ? p.exact_address.split(",")[0].trim() : "";
+                    const locality = p.locality_details?.name || p.locality_name || "";
+                    const city = p.locality_details?.city_name || p.city_name || "";
+                    const locationStr = locality ? (city ? `${locality}, ${city}` : locality) : city;
+                    const typeStr = p.property_type ? p.property_type.replace(/_/g, " ").toUpperCase() : (p.property_category || "Property");
+                    const bhk = p.bedrooms ? `${p.bedrooms} BHK ` : "";
+                    const title = p.display_title || p.title || `${bhk}${typeStr}${locationStr ? ` in ${locationStr}` : ""}`;
+                    const label = buildingName && !title.includes(buildingName) ? `${buildingName} — ${title}` : title;
+                    return (
+                      <option key={p.id} value={p.id}>{label}</option>
+                    );
+                  })}
                   <option value="">General / Outside Listing</option>
                 </select>
               </div>

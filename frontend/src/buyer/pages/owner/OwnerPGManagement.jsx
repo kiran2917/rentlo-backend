@@ -148,6 +148,31 @@ export const OwnerPGManagement = () => {
     }
   };
 
+  const formatPGLabel = (p) => {
+    if (!p) return "PG Building";
+    const buildingName = p.exact_address ? p.exact_address.split(",")[0].trim() : "";
+    const locality = p.locality_details?.name || (typeof p.locality === "string" ? p.locality : "") || p.locality_name || "";
+    const city = p.locality_details?.city_name || p.city_name || "";
+    const locationStr = locality ? (city ? `${locality}, ${city}` : locality) : city;
+    
+    const gender = p.pg_gender 
+      ? `${p.pg_gender.charAt(0).toUpperCase() + p.pg_gender.slice(1)} PG` 
+      : (p.property_type === "pg_hostel" ? "Co-Living PG" : "PG / Hostel");
+
+    let titleStr = p.display_title || p.title || (buildingName ? `${buildingName} (${gender})` : `${gender} in ${locationStr || "Karnataka"}`);
+
+    if (buildingName && !titleStr.includes(buildingName)) {
+      titleStr = `${buildingName} — ${titleStr}`;
+    }
+
+    const meta = [];
+    if (p.total_beds) meta.push(`${p.total_beds} Beds`);
+    if (p.price) meta.push(`₹${Number(p.price).toLocaleString("en-IN")}/mo`);
+
+    const metaStr = meta.join(" • ");
+    return metaStr ? `${titleStr} (${metaStr})` : titleStr;
+  };
+
   const activeResidents = residents.filter((r) => r.status === "active");
   const noticeResidents = residents.filter((r) => r.status === "notice_period");
   const currentProperty = properties.find((p) => p.id === Number(selectedPropertyId)) || properties[0];
@@ -190,12 +215,18 @@ export const OwnerPGManagement = () => {
           <select
             value={selectedPropertyId}
             onChange={(e) => setSelectedPropertyId(e.target.value)}
-            className="w-full md:max-w-md h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm text-slate-800 outline-none focus:border-indigo-500"
+            className="w-full md:max-w-lg h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm text-slate-800 outline-none focus:border-indigo-500 transition-all shadow-xs"
           >
             {properties.map((p) => (
-              <option key={p.id} value={p.id}>{p.title} ({p.locality?.name || p.city_name || "PG Property"})</option>
+              <option key={p.id} value={p.id}>{formatPGLabel(p)}</option>
             ))}
           </select>
+          {currentProperty && (
+            <p className="text-[11.5px] font-semibold text-slate-500 mt-2 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-indigo-600">location_on</span>
+              <span>{currentProperty.exact_address || currentProperty.display_address || currentProperty.display_title || "PG Building Location"}</span>
+            </p>
+          )}
         </div>
 
         {/* Real-Time KPI Stats */}

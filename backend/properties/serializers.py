@@ -95,12 +95,13 @@ class PropertySerializer(serializers.ModelSerializer):
     # owner_name and owner_phone are defined at the top
     
     display_title = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
 
     class Meta:
         model = Property
         fields = (
             'id', 'agent', 'owner_name', 'owner_phone', 'exact_lat', 'exact_lng', 'exact_address',
-            'display_title', 'owner_name_display', 'owner_phone_display', 'owner_has_whatsapp', 'display_lat', 'display_lng', 'display_address',
+            'display_title', 'title', 'owner_name_display', 'owner_phone_display', 'owner_has_whatsapp', 'display_lat', 'display_lng', 'display_address',
             'price', 'property_category', 'property_type', 'description', 'status', 'consent_proof_url', 'voice_note_url',
             'rejection_reason', 'created_at', 'updated_at', 'expires_at', 'media', 'uploaded_media',
             'is_unlocked', 'locality', 'locality_details', 'is_verified', 'last_confirmed_at',
@@ -217,6 +218,9 @@ class PropertySerializer(serializers.ModelSerializer):
         bhk_prefix = f"{obj.bedrooms} BHK " if obj.bedrooms else ""
         type_label = obj.get_property_type_display() if hasattr(obj, 'get_property_type_display') else 'Property'
         return f"{bhk_prefix}{type_label} {location_str}".strip()
+
+    def get_title(self, obj):
+        return self.get_display_title(obj)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
