@@ -3,6 +3,30 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import "./buyer/i18n";
+
+// Global Fetch Interceptor: Attach Bearer token for seamless cross-origin auth in Incognito & Safari
+const originalFetch = window.fetch;
+window.fetch = async (input, init = {}) => {
+  const token = localStorage.getItem("rentlo_access_token");
+  if (token) {
+    init = init || {};
+    if (init.headers instanceof Headers) {
+      if (!init.headers.has("Authorization")) {
+        init.headers.set("Authorization", `Bearer ${token}`);
+      }
+    } else if (Array.isArray(init.headers)) {
+      if (!init.headers.some(([k]) => k.toLowerCase() === "authorization")) {
+        init.headers.push(["Authorization", `Bearer ${token}`]);
+      }
+    } else {
+      init.headers = {
+        ...init.headers,
+        Authorization: init.headers?.Authorization || init.headers?.authorization || `Bearer ${token}`,
+      };
+    }
+  }
+  return originalFetch(input, init);
+};
 class GlobalErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
 

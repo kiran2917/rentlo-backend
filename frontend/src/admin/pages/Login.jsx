@@ -101,6 +101,13 @@ export const Login = () => {
       });
 
       if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }

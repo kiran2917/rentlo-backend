@@ -15,11 +15,18 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setUser(data);
+        return data;
       } else {
+        if (response.status === 401) {
+          localStorage.removeItem("rentlo_access_token");
+          localStorage.removeItem("rentlo_refresh_token");
+        }
         setUser(null);
+        return null;
       }
     } catch (error) {
       setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }

@@ -352,6 +352,12 @@ export const PlanSelectionModal = ({
           setRegistrationToken(verifyData.registration_token);
           setAuthStep("COMPLETE_REGISTRATION");
         } else if (verifyRes.ok) {
+          if (verifyData.access) {
+            localStorage.setItem("rentlo_access_token", verifyData.access);
+          }
+          if (verifyData.refresh) {
+            localStorage.setItem("rentlo_refresh_token", verifyData.refresh);
+          }
           const authenticatedUser = verifyData.user || { phone };
           setAuthedUser(authenticatedUser);
           await checkAuth();
@@ -360,7 +366,6 @@ export const PlanSelectionModal = ({
             setSub(subRes);
             setAuthStep("ACTIVE_PASS_DETECTED");
           } else {
-            setAuthStep("IDLE");
             handleBuyPass(selectedPlan, authenticatedUser);
           }
         } else {
@@ -396,6 +401,12 @@ export const PlanSelectionModal = ({
         setAuthLoading(false);
         return;
       }
+      if (data.access) {
+        localStorage.setItem("rentlo_access_token", data.access);
+      }
+      if (data.refresh) {
+        localStorage.setItem("rentlo_refresh_token", data.refresh);
+      }
       const authenticatedUser = data.user || data;
       setAuthedUser(authenticatedUser);
       await checkAuth();
@@ -404,7 +415,6 @@ export const PlanSelectionModal = ({
         setSub(subRes);
         setAuthStep("ACTIVE_PASS_DETECTED");
       } else {
-        setAuthStep("IDLE");
         handleBuyPass(selectedPlan, authenticatedUser);
       }
     } catch (err) {
@@ -464,6 +474,12 @@ export const PlanSelectionModal = ({
       });
       const loginData = await loginRes.json();
       if (loginRes.ok) {
+        if (loginData.access) {
+          localStorage.setItem("rentlo_access_token", loginData.access);
+        }
+        if (loginData.refresh) {
+          localStorage.setItem("rentlo_refresh_token", loginData.refresh);
+        }
         const authenticatedUser = loginData.user || loginData;
         setAuthedUser(authenticatedUser);
         await checkAuth();
@@ -472,7 +488,6 @@ export const PlanSelectionModal = ({
           setSub(subRes);
           setAuthStep("ACTIVE_PASS_DETECTED");
         } else {
-          setAuthStep("IDLE");
           handleBuyPass(selectedPlan, authenticatedUser);
         }
       } else {
@@ -514,6 +529,12 @@ export const PlanSelectionModal = ({
         setRegistrationToken(data.registration_token);
         setAuthStep("COMPLETE_REGISTRATION");
       } else {
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         const authenticatedUser = data.user || { id: 999, phone };
         setAuthedUser(authenticatedUser);
 
@@ -526,7 +547,6 @@ export const PlanSelectionModal = ({
           setSub(subRes);
           setAuthStep("ACTIVE_PASS_DETECTED");
         } else {
-          setAuthStep("IDLE");
           handleBuyPass(selectedPlan, authenticatedUser);
         }
       }
@@ -564,10 +584,16 @@ export const PlanSelectionModal = ({
         return;
       }
 
+      if (data.access) {
+        localStorage.setItem("rentlo_access_token", data.access);
+      }
+      if (data.refresh) {
+        localStorage.setItem("rentlo_refresh_token", data.refresh);
+      }
+
       const authenticatedUser = data.user || { first_name: firstName, phone };
       setAuthedUser(authenticatedUser);
       await checkAuth();
-      setAuthStep("IDLE");
       handleBuyPass(selectedPlan, authenticatedUser);
     } catch (err) {
       setAuthError("Registration error.");
@@ -1141,7 +1167,7 @@ export const PlanSelectionModal = ({
               return (
                 <button
                   type="button"
-                  onClick={() => handleBuyPass(selectedPlan, user)}
+                  onClick={() => handleBuyPass(selectedPlan, user || authedUser)}
                   disabled={purchasing}
                   className="w-full h-14 rounded-2xl text-base font-extrabold transition-all shadow-xl hover:scale-[1.01] active:scale-[0.98] flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer"
                   style={{

@@ -114,12 +114,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 samesite='None' if not settings.DEBUG else 'Lax',
                 secure=not settings.DEBUG,
             )
-            # Remove tokens from response body for extra security, 
-            # but keep user data so frontend knows the role.
-            if 'access' in response.data:
-                del response.data['access']
-            if 'refresh' in response.data:
-                del response.data['refresh']
+            # Retain tokens in response body so cross-origin frontends (Vercel)
+            # can use Bearer tokens even when Incognito/Safari blocks third-party cookies.
         return response
 
 from django.db import transaction
@@ -509,6 +505,8 @@ class BuyerVerifyOTPView(APIView):
 
         response = Response({
             'detail': 'Verified successfully',
+            'access': access_token,
+            'refresh': refresh_token,
             'role': user.roles[0] if user.roles else 'buyer',
             'roles': user.roles,
             'user': {
@@ -605,6 +603,8 @@ class CompleteRegistrationView(APIView):
 
         response = Response({
             'detail': 'Registration completed successfully.',
+            'access': access_token,
+            'refresh': refresh_token,
             'role': user.roles[0] if user.roles else intended_role,
             'roles': user.roles,
             'user': {

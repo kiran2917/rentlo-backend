@@ -99,6 +99,12 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, su
           setRegistrationToken(data.registration_token);
           setOtpStep(isRequireOtp ? 3 : 2); // Name step
         } else {
+          if (data.access) {
+            localStorage.setItem("rentlo_access_token", data.access);
+          }
+          if (data.refresh) {
+            localStorage.setItem("rentlo_refresh_token", data.refresh);
+          }
           if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
           }
@@ -146,6 +152,13 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, su
       });
       
       if (res.ok) {
+        const data = await res.json();
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -175,6 +188,13 @@ export const OtpModal = ({ onSuccess, onClose, intendedRole = "buyer", title, su
         body: JSON.stringify({ username: phone, password: password }),
       });
       if (res.ok) {
+        const data = await res.json();
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
