@@ -1349,53 +1349,80 @@ export const PropertyDetail = () => {
                   </button>
                 </div>
 
-                {/* Visit Slots */}
-                {Array.isArray(visitSlots) && visitSlots.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--text-muted)" }}>
-                      🗓️ Available Visit Slots
-                    </h4>
+                {/* Visit Slots & Inspection Scheduling */}
+                <div className="mt-5 p-4 rounded-2xl border border-slate-200/90 bg-slate-50/80">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900">Property Visit & Viewing</h4>
+                        <p className="text-[10.5px] text-slate-500">In-person physical inspection</p>
+                      </div>
+                    </div>
+                    {Array.isArray(visitSlots) && visitSlots.length > 0 && (
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200">
+                        {visitSlots.length} {visitSlots.length === 1 ? 'Slot' : 'Slots'} Open
+                      </span>
+                    )}
+                  </div>
+
+                  {Array.isArray(visitSlots) && visitSlots.length > 0 ? (
                     <div className="space-y-2">
                       {visitSlots.map((slot) => (
                         <div
                           key={slot.id}
-                          className="flex items-center justify-between p-3 rounded-xl border"
-                          style={{ borderColor: "var(--border)", background: "var(--surface)" }}
+                          className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white shadow-xs"
                         >
                           <div>
-                            <p className="text-[13px] font-bold" style={{ color: "var(--ink)" }}>
+                            <p className="text-[13px] font-bold text-slate-900">
                               {new Date(slot.slot_date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
                             </p>
-                            <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+                            <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+                              <span className="material-symbols-outlined text-[14px]">schedule</span>
                               {new Date(`1970-01-01T${slot.slot_time}`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                               {slot.is_full && " · Full"}
                             </p>
                           </div>
                           {slot.my_booking ? (
-                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${
-                              slot.my_booking.status === "approved" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                              slot.my_booking.status === "approved" ? "bg-emerald-100 text-emerald-700 border border-emerald-200" : "bg-amber-100 text-amber-700 border border-amber-200"
                             }`}>
                               {slot.my_booking.status}
                             </span>
                           ) : slot.is_full ? (
-                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[var(--border)] text-[var(--text-muted)] uppercase">Full</span>
+                            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-400 uppercase">Full</span>
                           ) : (
                             <button
                               onClick={() => {
                                 setBookingSlot(slot);
-                                setBookingNote("Hi, I will come with my spouse to inspect the flat.");
+                                setBookingNote("Hi, I will come with my spouse to inspect the property.");
                               }}
-                              className="text-[11px] font-bold px-3 py-1.5 rounded-lg text-white transition-all hover:shadow-sm"
-                              style={{ background: "var(--success)" }}
+                              className="text-xs font-black px-3.5 py-1.5 rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-xs cursor-pointer"
                             >
-                              Book
+                              Book Slot
                             </button>
                           )}
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div>
+                      <p className="text-xs text-slate-600 mb-3 leading-relaxed font-medium">
+                        No pre-scheduled open slots yet. You can chat directly with the owner to coordinate a convenient visit timing.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => handleProtectedAction(e, "chat")}
+                        className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">chat</span>
+                        Request Visit via Direct Chat
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                 {/* Booking Confirm Modal */}
                 {bookingSlot && (
