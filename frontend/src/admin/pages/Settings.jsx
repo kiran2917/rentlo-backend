@@ -534,7 +534,7 @@ export const Settings = () => {
   };
 
   const handleSave = async () => {
-    if (!upiId.includes("@")) {
+    if (upiId && !upiId.includes("@")) {
       toast.error("Please enter a valid UPI ID (e.g. name@bank)");
       return;
     }
@@ -607,9 +607,6 @@ export const Settings = () => {
           otp_bypass_enabled: otpBypassEnabled,
           owner_listing_verification_method: ownerListingVerificationMethod,
 
-          buyer_theme: buyerTheme,
-          dashboard_theme: dashboardTheme,
-
           // E-Stamp Settings
           enable_e_stamp_agreements: enableEStamp,
           e_stamp_price: parseFloat(eStampPrice) || 499,
@@ -650,6 +647,7 @@ export const Settings = () => {
           localStorage.setItem("rentlo_dashboard_theme", dashboardTheme);
         }
         window.dispatchEvent(new Event("themeChange"));
+        window.dispatchEvent(new Event("settingsChange"));
       } else {
         toast.error("Failed to save settings");
       }
@@ -2074,80 +2072,136 @@ export const Settings = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className="material-symbols-outlined text-purple-500 text-[20px]">store</span>
-                    <h3 className="text-[15px] font-extrabold text-ink">Company Branding</h3>
-                    <span className="text-[11px] font-medium text-text-muted">(Applies to PDF receipts and reports)</span>
+                    <h3 className="text-[15px] font-extrabold text-ink">Company Branding &amp; Logo</h3>
+                    <span className="text-[11px] font-medium text-text-muted">(Applies across public website navbar, footer, owner/agent portal, and PDF receipts)</span>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-surface-alt/40 border border-border/60">
-                    <div className="space-y-2">
-                      <label className="text-[13px] font-bold text-slate-700 block">Company Name</label>
-                      <input
-                        type="text"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-indigo-600 text-[14px] bg-white transition-all shadow-sm"
-                        placeholder="e.g. Rentlo Technologies Private Limited"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-[13px] font-bold text-slate-700 block">Company Logo</label>
-                      <div className="flex items-center gap-4">
-                        {companyLogoUrl ? (
-                          <div className="relative h-12 w-32 border border-slate-200 rounded-lg overflow-hidden bg-white flex items-center justify-center p-1">
-                            <img src={companyLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
-                            <button
-                              onClick={() => setCompanyLogoUrl("")}
-                              className="absolute top-0 right-0 bg-red-500/80 hover:bg-red-500 text-white rounded-bl-lg p-0.5 transition-colors"
-                              title="Remove Logo"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">close</span>
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="h-12 w-32 border border-dashed border-slate-300 rounded-lg bg-slate-50 flex items-center justify-center">
-                            <span className="text-[11px] text-slate-400 font-medium">No logo</span>
-                          </div>
-                        )}
-                        
-                        <label className="px-4 py-2 bg-emerald-50 text-indigo-600 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-[13px] font-bold cursor-pointer transition-colors shadow-sm flex items-center gap-2">
-                          {uploadingLogo ? (
-                            <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
-                          ) : (
-                            <span className="material-symbols-outlined text-[16px]">upload</span>
-                          )}
-                          {uploadingLogo ? "Uploading..." : "Upload Logo"}
+
+                  <div className="p-6 rounded-2xl bg-surface-alt/40 border border-border/60 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[13px] font-bold text-slate-700 block">Company Name</label>
+                        <input
+                          type="text"
+                          value={companyName}
+                          onChange={(e) => setCompanyName(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-indigo-600 text-[14px] bg-white transition-all shadow-sm font-bold"
+                          placeholder="e.g. Rentlo Technologies Private Limited"
+                        />
+                        <p className="text-[11px] text-text-muted">Brand name shown beside logo across the portal.</p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-[13px] font-bold text-slate-700 block">Company Logo URL / File</label>
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                           <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-                              setUploadingLogo(true);
-                              try {
-                                const formData = new FormData();
-                                formData.append("file", file);
-                                const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/media/upload/`, {
-                                  method: "POST",
-                                  credentials: "include",
-                                  body: formData,
-                                });
-                                if (uploadRes.ok) {
-                                  const data = await uploadRes.json();
-                                  setCompanyLogoUrl(data.full_url);
-                                  toast.success("Logo uploaded successfully");
-                                } else {
-                                  toast.error("Failed to upload logo");
-                                }
-                              } catch (err) {
-                                toast.error("Error uploading logo");
-                              } finally {
-                                setUploadingLogo(false);
-                                e.target.value = ""; // Reset input
-                              }
-                            }}
+                            type="url"
+                            value={companyLogoUrl}
+                            onChange={(e) => setCompanyLogoUrl(e.target.value)}
+                            placeholder="https://... or upload below"
+                            className="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-indigo-600 text-[13px] bg-white font-mono transition-all shadow-sm"
                           />
-                        </label>
+                          <label className="px-4 py-3 bg-emerald-50 text-indigo-600 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-[13px] font-bold cursor-pointer transition-colors shadow-sm flex items-center justify-center gap-2 shrink-0">
+                            {uploadingLogo ? (
+                              <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
+                            ) : (
+                              <span className="material-symbols-outlined text-[16px]">upload</span>
+                            )}
+                            {uploadingLogo ? "Uploading..." : "Upload File"}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                setUploadingLogo(true);
+                                try {
+                                  const formData = new FormData();
+                                  formData.append("file", file);
+                                  const uploadRes = await fetch(`${import.meta.env.VITE_API_URL}/media/upload/`, {
+                                    method: "POST",
+                                    credentials: "include",
+                                    body: formData,
+                                  });
+                                  if (uploadRes.ok) {
+                                    const data = await uploadRes.json();
+                                    setCompanyLogoUrl(data.full_url);
+                                    toast.success("Logo uploaded successfully! Click 'Save Branding' below to apply.");
+                                  } else {
+                                    toast.error("Failed to upload logo");
+                                  }
+                                } catch (err) {
+                                  toast.error("Error uploading logo");
+                                } finally {
+                                  setUploadingLogo(false);
+                                  e.target.value = "";
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Live Preview Bar */}
+                    <div className="p-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 space-y-3">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+                        Live Navbar Brand Preview
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Dark Header Preview */}
+                        <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-3">
+                          {companyLogoUrl ? (
+                            <img src={companyLogoUrl} alt="Preview" className="h-9 max-w-[140px] object-contain" />
+                          ) : (
+                            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-sm">
+                              <span className="material-symbols-outlined text-[20px]">real_estate_agent</span>
+                            </div>
+                          )}
+                          <span className="text-[17px] font-black text-white tracking-tight">
+                            {companyName || "Rentlo"}
+                          </span>
+                          <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-white/10 text-slate-400">Dark Nav</span>
+                        </div>
+
+                        {/* Light Card Preview */}
+                        <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-center gap-3 shadow-xs">
+                          {companyLogoUrl ? (
+                            <img src={companyLogoUrl} alt="Preview" className="h-9 max-w-[140px] object-contain" />
+                          ) : (
+                            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-black text-white shadow-sm">
+                              <span className="material-symbols-outlined text-[20px]">real_estate_agent</span>
+                            </div>
+                          )}
+                          <span className="text-[17px] font-black text-slate-900 tracking-tight">
+                            {companyName || "Rentlo"}
+                          </span>
+                          <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">Light Card</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Direct Save Button */}
+                    <div className="flex items-center justify-between pt-2 border-t border-border/40">
+                      {companyLogoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setCompanyLogoUrl("")}
+                          className="px-3.5 py-2 text-[12px] font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                          Remove Custom Logo
+                        </button>
+                      )}
+                      <div className="ml-auto">
+                        <button
+                          type="button"
+                          onClick={handleSave}
+                          className="h-11 px-6 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white text-[13px] font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">save</span>
+                          Save Branding
+                        </button>
                       </div>
                     </div>
                   </div>

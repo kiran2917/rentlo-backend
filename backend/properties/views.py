@@ -1321,6 +1321,7 @@ class PlatformSettingsView(views.APIView):
             'owner_residential_fee', 'owner_apt_pg_fee', 'owner_commercial_fee', 'e_stamp_price',
             'bypass_buyer_payment', 'bypass_owner_payment', 'buyer_theme', 'dashboard_theme',
             'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements',
+            'company_name', 'company_logo_url',
             'validity_residential_days', 'validity_apt_pg_days',
             'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
             'validity_commercial_days',
@@ -1337,12 +1338,12 @@ class PlatformSettingsView(views.APIView):
                 old_raw = getattr(settings, field, None)
                 new_raw = request.data.get(field)
 
-                if old_raw is None or new_raw is None:
+                if old_raw is None and new_raw is None:
                     continue
 
                 is_changed = False
-                old_str_display = str(old_raw)
-                new_str_display = str(new_raw)
+                old_str_display = str(old_raw or '')
+                new_str_display = str(new_raw or '')
 
                 if isinstance(old_raw, bool):
                     new_bool = str(new_raw).lower() in ['true', '1', 'yes']
@@ -1359,9 +1360,9 @@ class PlatformSettingsView(views.APIView):
                     except (ValueError, TypeError):
                         is_changed = (str(old_raw).strip() != str(new_raw).strip())
                 else:
-                    is_changed = (str(old_raw).strip() != str(new_raw).strip())
-                    old_str_display = str(old_raw).strip()
-                    new_str_display = str(new_raw).strip()
+                    is_changed = (str(old_raw or '').strip() != str(new_raw or '').strip())
+                    old_str_display = str(old_raw or '').strip()
+                    new_str_display = str(new_raw or '').strip()
 
                 if is_changed:
                     PlatformSettingsAuditLog.objects.create(
@@ -1373,9 +1374,12 @@ class PlatformSettingsView(views.APIView):
                     )
 
         # 2. Mutate settings fields
-        settings.default_upi_id = request.data.get('default_upi_id', settings.default_upi_id)
-        settings.company_name = request.data.get('company_name', settings.company_name)
-        settings.company_logo_url = request.data.get('company_logo_url', settings.company_logo_url)
+        if 'default_upi_id' in request.data:
+            settings.default_upi_id = request.data.get('default_upi_id', '')
+        if 'company_name' in request.data:
+            settings.company_name = request.data.get('company_name', '')
+        if 'company_logo_url' in request.data:
+            settings.company_logo_url = request.data.get('company_logo_url', '')
         settings.buyer_unlock_fee = request.data.get('buyer_unlock_fee', settings.buyer_unlock_fee)
         settings.buyer_pass_starter_price = request.data.get('buyer_pass_starter_price', settings.buyer_pass_starter_price)
         settings.buyer_pass_smart_price = request.data.get('buyer_pass_smart_price', settings.buyer_pass_smart_price)

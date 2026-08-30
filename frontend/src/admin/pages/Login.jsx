@@ -9,6 +9,14 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState(null);
   const [throttleMessage, setThrottleMessage] = useState("");
+  const [platformSettings, setPlatformSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+      .then((res) => res.json())
+      .then((data) => setPlatformSettings(data))
+      .catch(() => {});
+  }, []);
   // Forgot Password States
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotStep, setForgotStep] = useState(1);
@@ -134,13 +142,19 @@ export const Login = () => {
       <div className="w-full max-w-md">
         {/* Logo & Header */}
         <div className="text-center mb-10 flex flex-col items-center">
-          <div className="w-16 h-16 bg-slate-950 rounded-xl flex items-center justify-center mb-6 shadow-md border border-slate-800/80">
-            <span className="material-symbols-outlined text-white text-4xl">
-              real_estate_agent
-            </span>
-          </div>
+          {platformSettings?.company_logo_url ? (
+            <div className="mb-6 flex items-center justify-center p-2 rounded-2xl bg-white border border-slate-200 shadow-sm max-h-20 max-w-[220px]">
+              <img src={platformSettings.company_logo_url} alt="Logo" className="max-h-16 max-w-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 bg-slate-950 rounded-xl flex items-center justify-center mb-6 shadow-md border border-slate-800/80">
+              <span className="material-symbols-outlined text-white text-4xl">
+                real_estate_agent
+              </span>
+            </div>
+          )}
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">
-            Rentlo Admin
+            {platformSettings?.company_name ? `${platformSettings.company_name} Admin` : "Rentlo Admin"}
           </h1>
           <p className="text-[13px] text-slate-500 font-medium text-center max-w-xs">
             Secure access to the management portal. Sign in to continue.

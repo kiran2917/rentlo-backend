@@ -24,14 +24,24 @@ export const BuyerLayout = () => {
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
   
   const [platformSettings, setPlatformSettings] = useState(null);
+  const [logoError, setLogoError] = useState(false);
 
-  useEffect(() => {
+  const fetchPlatformSettings = () => {
     fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if(data) setPlatformSettings(data);
+        if(data) {
+          setPlatformSettings(data);
+          setLogoError(false);
+        }
       })
       .catch(err => console.error("Failed to fetch platform settings", err));
+  };
+
+  useEffect(() => {
+    fetchPlatformSettings();
+    window.addEventListener("settingsChange", fetchPlatformSettings);
+    return () => window.removeEventListener("settingsChange", fetchPlatformSettings);
   }, []);
 
   const { t } = useTranslation();
@@ -221,17 +231,26 @@ export const BuyerLayout = () => {
         <div className="flex justify-between items-center w-full px-4 md:px-10 h-16 max-w-[1600px] mx-auto">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group h-10">
-            <div 
-              className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
-              style={{
-                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                boxShadow: "0 4px 14px rgba(79, 70, 229, 0.35)",
-              }}
-            >
-              <span className="material-symbols-outlined text-[20px] text-white" data-weight="fill">real_estate_agent</span>
-            </div>
+            {platformSettings?.company_logo_url && !logoError ? (
+              <img 
+                src={platformSettings.company_logo_url} 
+                alt={platformSettings?.company_name || "Logo"} 
+                onError={() => setLogoError(true)}
+                className="h-9 max-h-9 max-w-[160px] object-contain transition-transform group-hover:scale-105"
+              />
+            ) : (
+              <div 
+                className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105"
+                style={{
+                  background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                  boxShadow: "0 4px 14px rgba(79, 70, 229, 0.35)",
+                }}
+              >
+                <span className="material-symbols-outlined text-[20px] text-white" data-weight="fill">real_estate_agent</span>
+              </div>
+            )}
             <span className="text-[21px] font-black tracking-tight text-white">
-              Rentlo
+              {platformSettings?.company_name || "Rentlo"}
             </span>
           </Link>
 
@@ -448,10 +467,20 @@ export const BuyerLayout = () => {
             {/* Col 1: Brand Info */}
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-sm">
-                  R
-                </div>
-                <span className="font-display font-black text-xl tracking-tight text-white">Rentlo</span>
+                {platformSettings?.company_logo_url && !logoError ? (
+                  <img
+                    src={platformSettings.company_logo_url}
+                    alt={platformSettings?.company_name || "Logo"}
+                    className="h-8 max-w-[120px] object-contain rounded-lg bg-white/10 p-0.5"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-black text-sm">
+                    {(platformSettings?.company_name || "R").charAt(0)}
+                  </div>
+                )}
+                <span className="font-display font-black text-xl tracking-tight text-white">
+                  {platformSettings?.company_name || "Rentlo"}
+                </span>
               </div>
               <p className="text-xs text-gray-300 font-medium leading-relaxed max-w-xs">
                 {t("footer.brandDescription", "India's premier 0% brokerage direct real estate discovery portal. Direct owner contacts, instant unlocks, transparent rentals.")}

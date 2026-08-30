@@ -12,10 +12,14 @@ export const AdminLayout = ({ children, activeTab }) => {
   const [platformSettings, setPlatformSettings] = useState(null);
 
   React.useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
-      .then((res) => res.json())
-      .then((data) => setPlatformSettings(data))
-      .catch((err) => console.error("Error fetching settings", err));
+    const fetchSettings = () => {
+      fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
+        .then((res) => res.json())
+        .then((data) => setPlatformSettings(data))
+        .catch((err) => console.error("Error fetching settings", err));
+    };
+
+    fetchSettings();
       
     const applyDashTheme = (themeName) => {
       const formatted = `theme-${themeName.replace(/_/g, '-')}`;
@@ -32,7 +36,11 @@ export const AdminLayout = ({ children, activeTab }) => {
     handleThemeChange();
 
     window.addEventListener("themeChange", handleThemeChange);
-    return () => window.removeEventListener("themeChange", handleThemeChange);
+    window.addEventListener("settingsChange", fetchSettings);
+    return () => {
+      window.removeEventListener("themeChange", handleThemeChange);
+      window.removeEventListener("settingsChange", fetchSettings);
+    };
   }, []);
 
   const navItems = [
