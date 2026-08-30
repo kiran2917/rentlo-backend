@@ -5,21 +5,30 @@ from django.conf import settings
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         header = self.get_header(request)
+        raw_token = None
         
-        if header is None:
-            raw_token = request.COOKIES.get(settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token')) or None
-        else:
+        if header is not None:
             raw_token = self.get_raw_token(header)
+            
+        if raw_token is None:
+            raw_token = (
+                request.COOKIES.get('access_token') or 
+                request.COOKIES.get(settings.SIMPLE_JWT.get('AUTH_COOKIE', 'access_token')) or 
+                request.COOKIES.get('jwt_access_token') or
+                None
+            )
             
         if raw_token is None:
             return None
 
         try:
             validated_token = self.get_validated_token(raw_token)
-            return self.get_user(validated_token), validated_token
-        except (InvalidToken, AuthenticationFailed):
-            # If the token is invalid or expired, just treat as unauthenticated
-            # This prevents 401 errors on AllowAny public endpoints
+            user = self.get_user(validated_token)
+            if user and user.is_active:
+                return user, validated_token
+            return None
+        except Exception:
+            # If the token is invalid or expired, treat as unauthenticated
             return None
 
 

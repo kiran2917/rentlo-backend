@@ -851,9 +851,16 @@ class AdminFeedbackListView(generics.ListAPIView):
 from .models import BuyerSubscription
 
 class MySubscriptionView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
+        if not request.user or not request.user.is_authenticated:
+            return Response({
+                'has_active_pass': False,
+                'credits_remaining': 0,
+                'agreement_credits_remaining': 0
+            })
+
         sub = BuyerSubscription.objects.filter(
             buyer=request.user,
             status='active',

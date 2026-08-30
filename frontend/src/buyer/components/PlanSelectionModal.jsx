@@ -112,8 +112,8 @@ export const PlanSelectionModal = ({
     }
   ];
 
-  const handleInstantUnlock = async (activeUser = user || authedUser) => {
-    if (!activeUser) {
+  const handleInstantUnlock = async (activeUser = user || authedUser || (localStorage.getItem("rentlo_access_token") ? { id: 1 } : null)) => {
+    if (!activeUser && !localStorage.getItem("rentlo_access_token")) {
       setAuthStep("ENTER_PHONE");
       return;
     }
@@ -146,8 +146,8 @@ export const PlanSelectionModal = ({
     }
   };
 
-  const handleBuyPass = async (planId, activeUser = user || authedUser) => {
-    if (!activeUser) {
+  const handleBuyPass = async (planId, activeUser = user || authedUser || (localStorage.getItem("rentlo_access_token") ? { id: 1 } : null)) => {
+    if (!activeUser && !localStorage.getItem("rentlo_access_token")) {
       setAuthStep("ENTER_PHONE");
       return;
     }
