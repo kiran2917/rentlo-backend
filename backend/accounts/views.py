@@ -1116,7 +1116,18 @@ class AdminUserToggleStatusView(APIView):
 class AdminOwnerKYCListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserSerializer
-    queryset = User.objects.filter(owner_kyc_status='submitted').order_by('-date_joined')
+
+    def get_queryset(self):
+        from django.db.models import Q
+        status_filter = self.request.query_params.get('status')
+        if status_filter == 'all':
+            return User.objects.filter(
+                Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='')
+            ).order_by('-date_joined')
+        return User.objects.filter(
+            Q(owner_kyc_status='submitted') | 
+            (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='') & ~Q(owner_kyc_status__in=['verified', 'rejected']))
+        ).order_by('-date_joined')
 
 
 class AdminOwnerKYCReviewView(APIView):
