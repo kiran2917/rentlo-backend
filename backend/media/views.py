@@ -144,10 +144,12 @@ import io
 class UploadMediaView(views.APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
-
     def post(self, request):
-        if request.user.role not in ['admin', 'agent', 'owner']:
-            return Response({'detail': 'Only owners, agents, and admins can upload media.'}, status=status.HTTP_403_FORBIDDEN)
+        user_roles = set(getattr(request.user, 'roles', []) or [])
+        user_roles.add(getattr(request.user, 'role', 'buyer'))
+        allowed_roles = {'admin', 'agent', 'owner', 'buyer'}
+        if not user_roles.intersection(allowed_roles):
+            return Response({'detail': 'You do not have permission to upload media.'}, status=status.HTTP_403_FORBIDDEN)
 
         file_obj = request.FILES.get('file')
         property_id = request.data.get('property_id') # Optional
