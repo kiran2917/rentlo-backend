@@ -362,6 +362,8 @@ class OwnerCreditsView(views.APIView):
             matching_passes = all_passes
 
         total_credits = sum(p.credits_remaining for p in matching_passes)
+        all_user_passes = OwnerListingPass.objects.filter(pass_filter).order_by('-created_at')
+
         return Response({
             'has_active_credits': total_credits > 0,
             'total_credits_remaining': total_credits,
@@ -373,8 +375,24 @@ class OwnerCreditsView(views.APIView):
                     'category': getattr(p, 'category', 'all') or 'all',
                     'credits_remaining': p.credits_remaining,
                     'credits_total': p.credits_total,
+                    'amount_paid': float(p.amount_paid) if p.amount_paid else 0,
+                    'payment_method': p.payment_method,
+                    'status': p.status,
                     'created_at': p.created_at
                 } for p in matching_passes
+            ],
+            'invoices': [
+                {
+                    'id': p.id,
+                    'plan_id': p.plan_id,
+                    'category': getattr(p, 'category', 'all') or 'all',
+                    'credits_remaining': p.credits_remaining,
+                    'credits_total': p.credits_total,
+                    'amount_paid': float(p.amount_paid) if p.amount_paid else 0,
+                    'payment_method': p.payment_method,
+                    'status': p.status,
+                    'created_at': p.created_at
+                } for p in all_user_passes
             ]
         })
 

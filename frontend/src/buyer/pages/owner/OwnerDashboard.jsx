@@ -16,6 +16,7 @@ export const OwnerDashboard = () => {
 
   const [ownerCredits, setOwnerCredits] = useState({ has_active_credits: false, total_credits_remaining: 0, active_passes: [] });
   const [showCreditsModal, setShowCreditsModal] = useState(false);
+  const [showInvoicesModal, setShowInvoicesModal] = useState(false);
   const [buyingPassLoading, setBuyingPassLoading] = useState(false);
   const [selectedPassCategory, setSelectedPassCategory] = useState(null);
   const [platformSettings, setPlatformSettings] = useState(null);
@@ -1453,8 +1454,8 @@ export const OwnerDashboard = () => {
             {/* Header */}
             <div className="flex items-center justify-between pb-6 border-b" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br bg-black flex items-center justify-center text-slate-950 shadow-lg shadow-black/10">
-                  <span className="material-symbols-outlined text-3xl font-black">workspace_premium</span>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center shadow-xs">
+                  <span className="material-symbols-outlined text-2xl font-black">workspace_premium</span>
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
@@ -1475,79 +1476,118 @@ export const OwnerDashboard = () => {
             </div>
 
             {/* Current Balance & Active Credits Banner */}
-            <div className="my-6 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" style={{ background: "#000000", boxShadow: "0 4px 24px rgba(0,0,0,0.25)" }}>
-              <div className="relative z-10 space-y-2">
-                  <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
-                  <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                  Active Balance
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-black text-white">
-                    {ownerCredits?.total_credits_remaining || 0}
-                  </span>
-                  <span className="text-sm font-bold" style={{ color: "rgba(255,255,255,0.85)" }}>
-                    Listing Credit{(ownerCredits?.total_credits_remaining || 0) === 1 ? "" : "s"} Remaining
-                  </span>
-                </div>
+            {(() => {
+              const counts = { residential: 0, apartment: 0, commercial: 0, all: 0 };
+              (ownerCredits?.active_passes || []).forEach((pass) => {
+                const cat = (pass.category || "all").toLowerCase();
+                if (cat === "residential") counts.residential += (pass.credits_remaining || 0);
+                else if (cat === "apartment" || cat === "pg") counts.apartment += (pass.credits_remaining || 0);
+                else if (cat === "commercial") counts.commercial += (pass.credits_remaining || 0);
+                else counts.all += (pass.credits_remaining || 0);
+              });
+              const invoiceCount = (ownerCredits?.invoices || ownerCredits?.active_passes || []).length;
 
-                {/* Category Pass Breakdown Badges */}
-                {Array.isArray(ownerCredits?.active_passes) && ownerCredits.active_passes.length > 0 ? (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {ownerCredits.active_passes.map((pass) => {
-                      const cat = (pass.category || "all").toLowerCase();
-                      const catLabel =
-                        cat === "residential"
-                          ? "Residential Pass"
-                          : cat === "apartment" || cat === "pg"
-                          ? "Apartment & PG Pass"
-                          : cat === "commercial"
-                          ? "Commercial Pass"
-                          : "All-Category Pass";
-                      const icon =
-                        cat === "residential"
-                          ? "home"
-                          : cat === "commercial"
-                          ? "store"
-                          : cat === "apartment" || cat === "pg"
-                          ? "apartment"
-                          : "stars";
-                      return (
-                        <div
-                          key={pass.id}
-                          className="px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}
-                        >
-                          <span className="material-symbols-outlined text-base text-white">{icon}</span>
-                          <span>{catLabel}:</span>
-                          <span className="font-black text-white">
-                            {pass.credits_remaining} / {pass.credits_total} Credits
-                          </span>
-                          <button
-                            onClick={() => window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${pass.id}/receipt/`, "_blank")}
-                            className="ml-2 bg-black/20 hover:bg-black/40 text-white p-1 rounded-lg transition-colors flex items-center justify-center"
-                            title="Download Receipt"
-                          >
-                            <span className="material-symbols-outlined text-[14px]">download</span>
-                          </button>
+              return (
+                <div className="my-6 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0b0f19 0%, #020617 100%)", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}>
+                  <div className="relative z-10 space-y-3 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-white/10 text-white border border-white/10">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Active Balance
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowInvoicesModal(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[15px] text-amber-400">receipt_long</span>
+                        Invoices ({invoiceCount})
+                      </button>
+                    </div>
+
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl sm:text-4xl font-black text-white">
+                        {ownerCredits?.total_credits_remaining || 0}
+                      </span>
+                      <span className="text-sm font-bold text-slate-300">
+                        Listing Credit{(ownerCredits?.total_credits_remaining || 0) === 1 ? "" : "s"} Remaining
+                      </span>
+                    </div>
+
+                    {/* Category Breakdown Cards */}
+                    <div className="pt-1">
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[14px]">pie_chart</span>
+                        Credits by Property Category:
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-w-xl">
+                        <div className={`p-2.5 rounded-2xl border flex items-center gap-2.5 transition-all ${counts.apartment > 0 ? "bg-blue-500/10 border-blue-500/30 text-white" : "bg-white/5 border-white/10 opacity-70"}`}>
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-lg">apartment</span>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Apartment & PG</p>
+                            <p className="text-sm font-black text-white">{counts.apartment} Credits</p>
+                          </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.85)" }}>
-                    No active pass credits available. Select a category below to refill listing credits!
-                  </p>
-                )}
-              </div>
 
-              <Link
-                to="/owner/new-listing"
-                onClick={() => setShowCreditsModal(false)}
-                className="px-4 py-4 bg-gradient-to-r bg-white hover:bg-slate-200 text-black text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-black/10 flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-slate-300"
-              >
-                <span className="material-symbols-outlined text-lg">add_circle</span>
-                Publish Listing Now
-              </Link>
-            </div>
+                        <div className={`p-2.5 rounded-2xl border flex items-center gap-2.5 transition-all ${counts.residential > 0 ? "bg-emerald-500/10 border-emerald-500/30 text-white" : "bg-white/5 border-white/10 opacity-70"}`}>
+                          <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-lg">home</span>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Residential</p>
+                            <p className="text-sm font-black text-white">{counts.residential} Credits</p>
+                          </div>
+                        </div>
+
+                        <div className={`p-2.5 rounded-2xl border flex items-center gap-2.5 transition-all ${counts.commercial > 0 ? "bg-purple-500/10 border-purple-500/30 text-white" : "bg-white/5 border-white/10 opacity-70"}`}>
+                          <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-lg">store</span>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Commercial</p>
+                            <p className="text-sm font-black text-white">{counts.commercial} Credits</p>
+                          </div>
+                        </div>
+
+                        {counts.all > 0 && (
+                          <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-white flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                              <span className="material-symbols-outlined text-lg">stars</span>
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">All-Category</p>
+                              <p className="text-sm font-black text-white">{counts.all} Credits</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
+                    <Link
+                      to="/owner/new-listing"
+                      onClick={() => setShowCreditsModal(false)}
+                      className="px-5 py-3.5 bg-white hover:bg-slate-100 text-slate-950 text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-lg text-emerald-600">add_circle</span>
+                      Publish Listing Now
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setShowInvoicesModal(true)}
+                      className="px-5 py-3 bg-white/10 hover:bg-white/15 text-white text-xs font-black uppercase tracking-wider rounded-2xl border border-white/15 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-base text-amber-400">receipt</span>
+                      View Invoices ({invoiceCount})
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Category Selector Tabs */}
             {!selectedPassCategory && (
@@ -2399,6 +2439,111 @@ export const OwnerDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Invoices & Purchase Receipts Modal */}
+      {showInvoicesModal && createPortal(
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 overflow-y-auto" style={{ backgroundColor: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}>
+          <div className="rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[85vh] overflow-y-auto scrollbar-none animate-in fade-in zoom-in-95 duration-200" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", border: "1px solid var(--border)" }}>
+            <div className="flex items-center justify-between pb-5 border-b" style={{ borderColor: "var(--border)" }}>
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-2xl font-bold">receipt_long</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black tracking-tight" style={{ color: "var(--ink)" }}>
+                    Pass Invoices & Receipts
+                  </h3>
+                  <p className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+                    Download official payment receipts for all your pass purchases
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowInvoicesModal(false)}
+                className="w-10 h-10 rounded-2xl flex items-center justify-center cursor-pointer border hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--surface-alt)", color: "var(--text-muted)", borderColor: "var(--border)" }}
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            <div className="py-5 space-y-3">
+              {(ownerCredits?.invoices || ownerCredits?.active_passes || []).length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                    <span className="material-symbols-outlined text-3xl">receipt</span>
+                  </div>
+                  <h4 className="text-base font-bold" style={{ color: "var(--ink)" }}>No Invoices Yet</h4>
+                  <p className="text-xs text-text-muted mt-1">When you purchase listing refill passes, your downloadable PDF receipts will appear here.</p>
+                </div>
+              ) : (
+                (ownerCredits?.invoices || ownerCredits?.active_passes || []).map((pass) => {
+                  const cat = (pass.category || "all").toLowerCase();
+                  const catLabel =
+                    cat === "residential"
+                      ? "Residential Pass"
+                      : cat === "apartment" || cat === "pg"
+                      ? "Apartment & PG Pass"
+                      : cat === "commercial"
+                      ? "Commercial Pass"
+                      : "All-Category Pass";
+                  const passDate = pass.created_at ? new Date(pass.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent Purchase';
+                  const formattedAmount = pass.amount_paid ? `₹${pass.amount_paid}` : (pass.plan_id ? `Pass Refill` : 'Paid');
+
+                  return (
+                    <div
+                      key={pass.id}
+                      className="p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
+                      style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                    >
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                          <span className="material-symbols-outlined text-lg">description</span>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-extrabold" style={{ color: "var(--ink)" }}>
+                              {catLabel}
+                            </h4>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                              {pass.credits_total || pass.credits_remaining} Credits
+                            </span>
+                          </div>
+                          <p className="text-xs text-text-muted mt-0.5">
+                            Purchased on {passDate} • {formattedAmount} • {pass.payment_method ? pass.payment_method.toUpperCase() : 'Online'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => window.open(`${import.meta.env.VITE_API_URL}/owner-passes/${pass.id}/receipt/`, "_blank")}
+                        className="px-4 py-2.5 bg-slate-950 hover:bg-slate-800 text-white rounded-xl text-xs font-black tracking-wide flex items-center justify-center gap-2 transition-colors cursor-pointer shrink-0 shadow-sm"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-amber-400">download</span>
+                        Download PDF
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="pt-4 border-t flex justify-end" style={{ borderColor: "var(--border)" }}>
+              <button
+                type="button"
+                onClick={() => setShowInvoicesModal(false)}
+                className="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider border cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                style={{ borderColor: "var(--border)", color: "var(--ink)" }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* Edit Property Modal */}
