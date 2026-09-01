@@ -13,6 +13,7 @@ export const FraudFlags = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [agentToSuspend, setAgentToSuspend] = useState(null);
   const itemsPerPage = 10;
 
   const fetchFraudList = async () => {
