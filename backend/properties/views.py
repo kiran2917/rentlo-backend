@@ -1264,12 +1264,22 @@ class PlatformSettingsView(views.APIView):
 
             # Validity durations
             'validity_residential_days': settings.validity_residential_days,
+            'validity_residential_1pack_days': settings.validity_residential_1pack_days,
+            'validity_residential_3pack_days': settings.validity_residential_3pack_days,
+            'validity_residential_6pack_days': settings.validity_residential_6pack_days,
+            'validity_residential_10pack_days': settings.validity_residential_10pack_days,
+
             'validity_apt_pg_days': settings.validity_apt_pg_days,
             'validity_apt_pg_1pack_days': settings.validity_apt_pg_1pack_days,
             'validity_apt_pg_3pack_days': settings.validity_apt_pg_3pack_days,
             'validity_apt_pg_6pack_days': settings.validity_apt_pg_6pack_days,
             'validity_apt_pg_10pack_days': settings.validity_apt_pg_10pack_days,
+
             'validity_commercial_days': settings.validity_commercial_days,
+            'validity_commercial_1pack_days': settings.validity_commercial_1pack_days,
+            'validity_commercial_3pack_days': settings.validity_commercial_3pack_days,
+            'validity_commercial_6pack_days': settings.validity_commercial_6pack_days,
+            'validity_commercial_10pack_days': settings.validity_commercial_10pack_days,
 
             # Custom PG/Apartment durations & pricing
             'pg_custom_duration_1_days': settings.pg_custom_duration_1_days,
@@ -1340,9 +1350,9 @@ class PlatformSettingsView(views.APIView):
             'bypass_buyer_payment', 'bypass_owner_payment', 'buyer_theme', 'dashboard_theme',
             'buyer_payment_gateway', 'owner_payment_gateway', 'enable_e_stamp_agreements',
             'company_name', 'company_logo_url',
-            'validity_residential_days', 'validity_apt_pg_days',
-            'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
-            'validity_commercial_days',
+            'validity_residential_days', 'validity_residential_1pack_days', 'validity_residential_3pack_days', 'validity_residential_6pack_days', 'validity_residential_10pack_days',
+            'validity_apt_pg_days', 'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
+            'validity_commercial_days', 'validity_commercial_1pack_days', 'validity_commercial_3pack_days', 'validity_commercial_6pack_days', 'validity_commercial_10pack_days',
             'pg_custom_duration_1_days', 'pg_custom_duration_1_price',
             'pg_custom_duration_2_days', 'pg_custom_duration_2_price',
             'pg_custom_duration_3_days', 'pg_custom_duration_3_price',
@@ -1423,6 +1433,15 @@ class PlatformSettingsView(views.APIView):
         
         if 'validity_residential_days' in request.data:
             settings.validity_residential_days = int(request.data.get('validity_residential_days', settings.validity_residential_days))
+        if 'validity_residential_1pack_days' in request.data:
+            settings.validity_residential_1pack_days = int(request.data.get('validity_residential_1pack_days', settings.validity_residential_1pack_days))
+        if 'validity_residential_3pack_days' in request.data:
+            settings.validity_residential_3pack_days = int(request.data.get('validity_residential_3pack_days', settings.validity_residential_3pack_days))
+        if 'validity_residential_6pack_days' in request.data:
+            settings.validity_residential_6pack_days = int(request.data.get('validity_residential_6pack_days', settings.validity_residential_6pack_days))
+        if 'validity_residential_10pack_days' in request.data:
+            settings.validity_residential_10pack_days = int(request.data.get('validity_residential_10pack_days', settings.validity_residential_10pack_days))
+
         if 'validity_apt_pg_days' in request.data:
             settings.validity_apt_pg_days = int(request.data.get('validity_apt_pg_days', settings.validity_apt_pg_days))
         if 'validity_apt_pg_1pack_days' in request.data:
@@ -1433,8 +1452,17 @@ class PlatformSettingsView(views.APIView):
             settings.validity_apt_pg_6pack_days = int(request.data.get('validity_apt_pg_6pack_days', settings.validity_apt_pg_6pack_days))
         if 'validity_apt_pg_10pack_days' in request.data:
             settings.validity_apt_pg_10pack_days = int(request.data.get('validity_apt_pg_10pack_days', settings.validity_apt_pg_10pack_days))
+
         if 'validity_commercial_days' in request.data:
             settings.validity_commercial_days = int(request.data.get('validity_commercial_days', settings.validity_commercial_days))
+        if 'validity_commercial_1pack_days' in request.data:
+            settings.validity_commercial_1pack_days = int(request.data.get('validity_commercial_1pack_days', settings.validity_commercial_1pack_days))
+        if 'validity_commercial_3pack_days' in request.data:
+            settings.validity_commercial_3pack_days = int(request.data.get('validity_commercial_3pack_days', settings.validity_commercial_3pack_days))
+        if 'validity_commercial_6pack_days' in request.data:
+            settings.validity_commercial_6pack_days = int(request.data.get('validity_commercial_6pack_days', settings.validity_commercial_6pack_days))
+        if 'validity_commercial_10pack_days' in request.data:
+            settings.validity_commercial_10pack_days = int(request.data.get('validity_commercial_10pack_days', settings.validity_commercial_10pack_days))
 
         from decimal import Decimal
         if 'pg_custom_duration_1_days' in request.data:
@@ -1829,9 +1857,15 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                 ps = PlatformSettings.load()
                 prop_cat = instance.property_category
                 prop_type = instance.property_type
-                if prop_cat == 'pg' or prop_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-                    pg_validity = ps.validity_apt_pg_1pack_days or ps.validity_apt_pg_days or 60
-                    instance.expires_at = timezone.now() + timedelta(days=pg_validity)
+                if prop_cat == 'pg' or prop_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'hostel']:
+                    val_days = ps.validity_apt_pg_1pack_days if (ps.validity_apt_pg_1pack_days is not None) else (ps.validity_apt_pg_days or 60)
+                elif prop_cat == 'commercial' or prop_type in ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building']:
+                    val_days = ps.validity_commercial_1pack_days if (ps.validity_commercial_1pack_days is not None) else (ps.validity_commercial_days or 0)
+                else:
+                    val_days = ps.validity_residential_1pack_days if (ps.validity_residential_1pack_days is not None) else (ps.validity_residential_days or 0)
+
+                if val_days and int(val_days) > 0:
+                    instance.expires_at = timezone.now() + timedelta(days=int(val_days))
                 else:
                     instance.expires_at = None  # Active until rented!
 

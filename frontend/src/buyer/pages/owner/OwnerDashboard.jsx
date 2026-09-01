@@ -378,6 +378,11 @@ export const OwnerDashboard = () => {
     }
   };
 
+  const getValidityLabel = (days) => {
+    const d = Number(days);
+    return d > 0 ? `Live for ${d} Days (Each Listing)` : "Valid Until Rented (Never Expires)";
+  };
+
   const CATEGORY_PLANS = {
     residential: {
       label: "Residential House / Villa / Flat",
@@ -393,7 +398,7 @@ export const OwnerDashboard = () => {
           price: platformSettings ? Number(platformSettings.owner_residential_fee) : 99,
           originalPrice: null,
           badge: "Standard",
-          features: ["1 Residential Listing Credit", "Valid Until Rented (Never Expires)", "Direct Owner WhatsApp Contact", "Exact Map Pin Navigation", "Instant Buyer Inquiries"],
+          features: ["1 Residential Listing Credit", getValidityLabel(platformSettings?.validity_residential_1pack_days ?? platformSettings?.validity_residential_days ?? 0), "Direct Owner WhatsApp Contact", "Exact Map Pin Navigation", "Instant Buyer Inquiries"],
         },
         {
           id: "3pack",
@@ -404,7 +409,7 @@ export const OwnerDashboard = () => {
           badge: "MOST POPULAR",
           saveBadge: platformSettings && Number(platformSettings.owner_residential_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_residential_3pack_price) / (Number(platformSettings.owner_residential_fee) * 3))) * 100)}%` : "Save 13%",
           highlight: true,
-          features: ["3 Residential Listing Credits", "Valid Until Rented (Never Expires)", "WhatsApp Tenant Broadcast", "Verified Owner Ribbon", "Credits Never Expire"],
+          features: ["3 Residential Listing Credits", getValidityLabel(platformSettings?.validity_residential_3pack_days ?? 0), "WhatsApp Tenant Broadcast", "Verified Owner Ribbon", "Credits Never Expire"],
         },
         {
           id: "6pack",
@@ -414,7 +419,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_residential_fee) * 6) : 594,
           badge: "BEST VALUE",
           saveBadge: platformSettings && Number(platformSettings.owner_residential_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_residential_6pack_price) / (Number(platformSettings.owner_residential_fee) * 6))) * 100)}%` : "Save 16%",
-          features: ["6 Residential Listing Credits", "Valid Until Rented (Never Expires)", "Top Search Placement Badge", "Free Rental Agreement Drafts", "High-Priority Verification"],
+          features: ["6 Residential Listing Credits", getValidityLabel(platformSettings?.validity_residential_6pack_days ?? 0), "Top Search Placement Badge", "Free Rental Agreement Drafts", "High-Priority Verification"],
         },
         {
           id: "10pack",
@@ -424,7 +429,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_residential_fee) * 10) : 990,
           badge: "PRO BUILDER",
           saveBadge: platformSettings && Number(platformSettings.owner_residential_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_residential_10pack_price) / (Number(platformSettings.owner_residential_fee) * 10))) * 100)}%` : "Save 14%",
-          features: ["10 Residential Listing Credits", "Valid Until Rented (Never Expires)", "Featured Property Ribbon", "Dedicated Account Manager", "Bulk Multi-Unit Import"],
+          features: ["10 Residential Listing Credits", getValidityLabel(platformSettings?.validity_residential_10pack_days ?? 0), "Featured Property Ribbon", "Dedicated Account Manager", "Bulk Multi-Unit Import"],
         },
       ],
     },
@@ -442,7 +447,7 @@ export const OwnerDashboard = () => {
           price: platformSettings ? Number(platformSettings.owner_apt_pg_fee) : 149,
           originalPrice: null,
           badge: "Standard",
-          features: ["1 Apartment/PG Listing Credit", `Listing active for ${platformSettings?.validity_apt_pg_1pack_days || platformSettings?.validity_apt_pg_days || 60} days`, "Room & Bed Capacity Tracker", "Direct Student/Working Lead Chat", "Instant Contact Access"],
+          features: ["1 Apartment/PG Listing Credit", getValidityLabel(platformSettings?.validity_apt_pg_1pack_days ?? platformSettings?.validity_apt_pg_days ?? 60), "Room & Bed Capacity Tracker", "Direct Student/Working Lead Chat", "Instant Contact Access"],
         },
         {
           id: "3pack",
@@ -453,7 +458,7 @@ export const OwnerDashboard = () => {
           badge: "MOST POPULAR",
           saveBadge: platformSettings && Number(platformSettings.owner_apt_pg_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_apt_pg_3pack_price) / (Number(platformSettings.owner_apt_pg_fee) * 3))) * 100)}%` : "Save 22%",
           highlight: true,
-          features: ["3 Apartment/PG Credits", `Listings active for ${platformSettings?.validity_apt_pg_3pack_days || 60} days each`, "Realtime Bed Occupancy Sync", "WhatsApp Buyer Broadcast", "Zero Commission Tag"],
+          features: ["3 Apartment/PG Credits", getValidityLabel(platformSettings?.validity_apt_pg_3pack_days ?? 60), "Realtime Bed Occupancy Sync", "WhatsApp Buyer Broadcast", "Zero Commission Tag"],
         },
         {
           id: "6pack",
@@ -463,7 +468,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_apt_pg_fee) * 6) : 894,
           badge: "VIP VALUE",
           saveBadge: platformSettings && Number(platformSettings.owner_apt_pg_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_apt_pg_6pack_price) / (Number(platformSettings.owner_apt_pg_fee) * 6))) * 100)}%` : "Save 27%",
-          features: ["6 Apartment/PG Credits", `Listings active for ${platformSettings?.validity_apt_pg_6pack_days || 90} days each`, "Top Search Placement Badge", "Free Rental Agreement Drafts", "High-Priority Verification"],
+          features: ["6 Apartment/PG Credits", getValidityLabel(platformSettings?.validity_apt_pg_6pack_days ?? 90), "Top Search Placement Badge", "Free Rental Agreement Drafts", "High-Priority Verification"],
         },
         {
           id: "10pack",
@@ -473,7 +478,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_apt_pg_fee) * 10) : 1490,
           badge: "HOSTEL OWNER",
           saveBadge: platformSettings && Number(platformSettings.owner_apt_pg_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_apt_pg_10pack_price) / (Number(platformSettings.owner_apt_pg_fee) * 10))) * 100)}%` : "Save 33%",
-          features: ["10 Apartment/PG Credits", `Listings active for ${platformSettings?.validity_apt_pg_10pack_days || 180} days each`, "Full Hostel Inventory Management", "Unlimited Bed Status Edits", "Dedicated Support"],
+          features: ["10 Apartment/PG Credits", getValidityLabel(platformSettings?.validity_apt_pg_10pack_days ?? 180), "Full Hostel Inventory Management", "Unlimited Bed Status Edits", "Dedicated Support"],
         },
       ],
     },
@@ -491,7 +496,7 @@ export const OwnerDashboard = () => {
           price: platformSettings ? Number(platformSettings.owner_commercial_fee) : 199,
           originalPrice: null,
           badge: "Standard",
-          features: ["1 Commercial Property Submission", "Valid Until Rented (Never Expires)", "Office/Seating Details Tag", "Direct Corporate Business Leads", "Full Search Indexing"],
+          features: ["1 Commercial Property Submission", getValidityLabel(platformSettings?.validity_commercial_1pack_days ?? platformSettings?.validity_commercial_days ?? 0), "Office/Seating Details Tag", "Direct Corporate Business Leads", "Full Search Indexing"],
         },
         {
           id: "3pack",
@@ -501,7 +506,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_commercial_fee) * 3) : 597,
           badge: "MOST POPULAR",
           saveBadge: platformSettings && Number(platformSettings.owner_commercial_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_commercial_3pack_price) / (Number(platformSettings.owner_commercial_fee) * 3))) * 100)}%` : "Save 25%",
-          features: ["3 Commercial Property Submissions", "Valid Until Rented (Never Expires)", "Priority Corporate Listing Badge", "Zero Brokerage Guaranteed"],
+          features: ["3 Commercial Property Submissions", getValidityLabel(platformSettings?.validity_commercial_3pack_days ?? 0), "Priority Corporate Listing Badge", "Zero Brokerage Guaranteed"],
         },
         {
           id: "6pack",
@@ -511,7 +516,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_commercial_fee) * 6) : 1194,
           badge: "BEST VALUE",
           saveBadge: platformSettings && Number(platformSettings.owner_commercial_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_commercial_6pack_price) / (Number(platformSettings.owner_commercial_fee) * 6))) * 100)}%` : "Save 33%",
-          features: ["6 Commercial Property Submissions", "Valid Until Rented (Never Expires)", "Top Search Placement Badge", "Free Commercial Agreement Drafts"],
+          features: ["6 Commercial Property Submissions", getValidityLabel(platformSettings?.validity_commercial_6pack_days ?? 0), "Top Search Placement Badge", "Free Commercial Agreement Drafts"],
         },
         {
           id: "10pack",
@@ -521,7 +526,7 @@ export const OwnerDashboard = () => {
           originalPrice: platformSettings ? Math.round(Number(platformSettings.owner_commercial_fee) * 10) : 1990,
           badge: "PRO BUILDER",
           saveBadge: platformSettings && Number(platformSettings.owner_commercial_fee) > 0 ? `Save ${Math.round((1 - (Number(platformSettings.owner_commercial_10pack_price) / (Number(platformSettings.owner_commercial_fee) * 10))) * 100)}%` : "Save 40%",
-          features: ["10 Commercial Property Submissions", "Valid Until Rented (Never Expires)", "Featured Commercial Ribbon", "Dedicated Account Manager"],
+          features: ["10 Commercial Property Submissions", getValidityLabel(platformSettings?.validity_commercial_10pack_days ?? 0), "Featured Commercial Ribbon", "Dedicated Account Manager"],
         },
       ],
     },

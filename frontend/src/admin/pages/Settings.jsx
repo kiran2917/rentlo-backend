@@ -225,28 +225,41 @@ export const Settings = () => {
   const [buyerPassPro, setBuyerPassPro] = useState("129");
 
   // Owner Pricing States
+  const [pricingSubTab, setPricingSubTab] = useState("residential");
   const [ownerResFee, setOwnerResFee] = useState("99");
   const [ownerRes3Pack, setOwnerRes3Pack] = useState("259");
   const [ownerRes6Pack, setOwnerRes6Pack] = useState("499");
   const [ownerRes10Pack, setOwnerRes10Pack] = useState("859");
+
+  // Validity Duration States (in Days) for Residential (0 = Until Rented)
+  const [validityRes1Pack, setValidityRes1Pack] = useState("0");
+  const [validityRes3Pack, setValidityRes3Pack] = useState("0");
+  const [validityRes6Pack, setValidityRes6Pack] = useState("0");
+  const [validityRes10Pack, setValidityRes10Pack] = useState("0");
 
   const [ownerAptPgFee, setOwnerAptPgFee] = useState("149");
   const [ownerAptPg3Pack, setOwnerAptPg3Pack] = useState("349");
   const [ownerAptPg6Pack, setOwnerAptPg6Pack] = useState("649");
   const [ownerAptPg10Pack, setOwnerAptPg10Pack] = useState("999");
 
+  // Validity Duration States (in Days) for PG / Apartment Plans (0 = Until Rented)
+  const [validityAptPg1Pack, setValidityAptPg1Pack] = useState("60");
+  const [validityAptPg3Pack, setValidityAptPg3Pack] = useState("60");
+  const [validityAptPg6Pack, setValidityAptPg6Pack] = useState("90");
+  const [validityAptPg10Pack, setValidityAptPg10Pack] = useState("180");
+
   const [ownerCommFee, setOwnerCommFee] = useState("199");
   const [ownerComm3Pack, setOwnerComm3Pack] = useState("449");
   const [ownerComm6Pack, setOwnerComm6Pack] = useState("799");
   const [ownerComm10Pack, setOwnerComm10Pack] = useState("1199");
 
-  const [ownerComboDiscount, setOwnerComboDiscount] = useState("15");
+  // Validity Duration States (in Days) for Commercial Plans (0 = Until Rented)
+  const [validityComm1Pack, setValidityComm1Pack] = useState("0");
+  const [validityComm3Pack, setValidityComm3Pack] = useState("0");
+  const [validityComm6Pack, setValidityComm6Pack] = useState("0");
+  const [validityComm10Pack, setValidityComm10Pack] = useState("0");
 
-  // Validity Duration States (in Days) for PG / Apartment Plans
-  const [validityAptPg1Pack, setValidityAptPg1Pack] = useState("60");
-  const [validityAptPg3Pack, setValidityAptPg3Pack] = useState("60");
-  const [validityAptPg6Pack, setValidityAptPg6Pack] = useState("90");
-  const [validityAptPg10Pack, setValidityAptPg10Pack] = useState("180");
+  const [ownerComboDiscount, setOwnerComboDiscount] = useState("15");
 
   const [ownerOnboardingFee, setOwnerOnboardingFee] = useState("0");
   const [pgCustomDuration1Days, setPgCustomDuration1Days] = useState("30");
@@ -462,10 +475,20 @@ export const Settings = () => {
         setPgCustomDuration3Price(data.pg_custom_duration_3_price != null ? data.pg_custom_duration_3_price.toString() : "89");
         setPgCustomDuration4Days(data.pg_custom_duration_4_days != null ? data.pg_custom_duration_4_days.toString() : "180");
         setPgCustomDuration4Price(data.pg_custom_duration_4_price != null ? data.pg_custom_duration_4_price.toString() : "149");
+        setValidityRes1Pack(data.validity_residential_1pack_days != null ? data.validity_residential_1pack_days.toString() : (data.validity_residential_days != null ? data.validity_residential_days.toString() : "0"));
+        setValidityRes3Pack(data.validity_residential_3pack_days != null ? data.validity_residential_3pack_days.toString() : "0");
+        setValidityRes6Pack(data.validity_residential_6pack_days != null ? data.validity_residential_6pack_days.toString() : "0");
+        setValidityRes10Pack(data.validity_residential_10pack_days != null ? data.validity_residential_10pack_days.toString() : "0");
+
         setValidityAptPg1Pack(data.validity_apt_pg_1pack_days != null ? data.validity_apt_pg_1pack_days.toString() : (data.validity_apt_pg_days != null ? data.validity_apt_pg_days.toString() : "60"));
         setValidityAptPg3Pack(data.validity_apt_pg_3pack_days != null ? data.validity_apt_pg_3pack_days.toString() : "60");
         setValidityAptPg6Pack(data.validity_apt_pg_6pack_days != null ? data.validity_apt_pg_6pack_days.toString() : "90");
         setValidityAptPg10Pack(data.validity_apt_pg_10pack_days != null ? data.validity_apt_pg_10pack_days.toString() : "180");
+
+        setValidityComm1Pack(data.validity_commercial_1pack_days != null ? data.validity_commercial_1pack_days.toString() : (data.validity_commercial_days != null ? data.validity_commercial_days.toString() : "0"));
+        setValidityComm3Pack(data.validity_commercial_3pack_days != null ? data.validity_commercial_3pack_days.toString() : "0");
+        setValidityComm6Pack(data.validity_commercial_6pack_days != null ? data.validity_commercial_6pack_days.toString() : "0");
+        setValidityComm10Pack(data.validity_commercial_10pack_days != null ? data.validity_commercial_10pack_days.toString() : "0");
         setBypassBuyer(data.bypass_buyer_payment || false);
         setBypassOwner(data.bypass_owner_payment || false);
         
@@ -581,13 +604,23 @@ export const Settings = () => {
           pg_custom_duration_3_price: parseFloat(pgCustomDuration3Price) || 89,
           pg_custom_duration_4_days: parseInt(pgCustomDuration4Days) || 180,
           pg_custom_duration_4_price: parseFloat(pgCustomDuration4Price) || 149,
-          validity_residential_days: 0,
-          validity_apt_pg_days: parseInt(validityAptPg1Pack) || 60,
-          validity_apt_pg_1pack_days: parseInt(validityAptPg1Pack) || 60,
-          validity_apt_pg_3pack_days: parseInt(validityAptPg3Pack) || 60,
-          validity_apt_pg_6pack_days: parseInt(validityAptPg6Pack) || 90,
-          validity_apt_pg_10pack_days: parseInt(validityAptPg10Pack) || 180,
-          validity_commercial_days: 0,
+          validity_residential_days: parseInt(validityRes1Pack) || 0,
+          validity_residential_1pack_days: parseInt(validityRes1Pack) || 0,
+          validity_residential_3pack_days: parseInt(validityRes3Pack) || 0,
+          validity_residential_6pack_days: parseInt(validityRes6Pack) || 0,
+          validity_residential_10pack_days: parseInt(validityRes10Pack) || 0,
+
+          validity_apt_pg_days: parseInt(validityAptPg1Pack) || 0,
+          validity_apt_pg_1pack_days: parseInt(validityAptPg1Pack) || 0,
+          validity_apt_pg_3pack_days: parseInt(validityAptPg3Pack) || 0,
+          validity_apt_pg_6pack_days: parseInt(validityAptPg6Pack) || 0,
+          validity_apt_pg_10pack_days: parseInt(validityAptPg10Pack) || 0,
+
+          validity_commercial_days: parseInt(validityComm1Pack) || 0,
+          validity_commercial_1pack_days: parseInt(validityComm1Pack) || 0,
+          validity_commercial_3pack_days: parseInt(validityComm3Pack) || 0,
+          validity_commercial_6pack_days: parseInt(validityComm6Pack) || 0,
+          validity_commercial_10pack_days: parseInt(validityComm10Pack) || 0,
           bypass_buyer_payment: bypassBuyer,
           bypass_owner_payment: bypassOwner,
           buyer_theme: buyerTheme,
@@ -750,294 +783,1011 @@ export const Settings = () => {
               </div>
             </div>
 
-            {/* Buyer Unlock & Pass Pricing */}
+            {/* ═══════════════════════════════════════════════════════════════════════════ */}
+            {/* PLAN & PRICING CONFIGURATION CENTER                                         */}
+            {/* ═══════════════════════════════════════════════════════════════════════════ */}
             <div
-              className="rounded-3xl p-8 border shadow-sm transition-all duration-300"
+              className="rounded-3xl p-6 sm:p-8 border shadow-sm transition-all duration-300 space-y-6"
               style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
             >
-              <h2
-                className="text-[16px] font-extrabold tracking-tight flex items-center gap-2 mb-6 border-b pb-4"
-                style={{ color: "var(--ink)", borderColor: "var(--border)" }}
-              >
-                <span className="material-symbols-outlined text-blue-500 text-[22px]">
-                  shopping_cart
-                </span>
-                Buyer Contact Unlock & Pass Pricing
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-5" style={{ borderColor: "var(--border)" }}>
                 <div>
-                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-2 text-text-muted">
-                    Single Contact Unlock (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={buyerUnlockFee}
-                    onChange={(e) => setBuyerUnlockFee(e.target.value)}
-                    className="w-full h-11 px-3 rounded-xl border border-border bg-surface-alt text-ink font-bold outline-none"
-                  />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider mb-2 bg-indigo-500/10 text-indigo-600">
+                    <span className="material-symbols-outlined text-[15px]">price_change</span>
+                    Dynamic Pricing Engine
+                  </div>
+                  <h2 className="text-[18px] sm:text-[20px] font-black tracking-tight" style={{ color: "var(--ink)" }}>
+                    Platform Plans, Pricing &amp; Validity Management
+                  </h2>
+                  <p className="text-[13px] font-medium mt-0.5" style={{ color: "var(--text-muted)" }}>
+                    Configure listing fees, package bundles, and custom expiration durations per category.
+                  </p>
                 </div>
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-2 text-text-muted">
-                    Starter Pass (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={buyerPassStarter}
-                    onChange={(e) => setBuyerPassStarter(e.target.value)}
-                    className="w-full h-11 px-3 rounded-xl border border-border bg-surface-alt text-ink font-bold outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-2 text-text-muted">
-                    Smart Pass (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={buyerPassSmart}
-                    onChange={(e) => setBuyerPassSmart(e.target.value)}
-                    className="w-full h-11 px-3 rounded-xl border border-border bg-surface-alt text-ink font-bold outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] font-bold uppercase tracking-widest block mb-2 text-text-muted">
-                    Pro Unlimited Pass (₹)
-                  </label>
-                  <input
-                    type="number"
-                    value={buyerPassPro}
-                    onChange={(e) => setBuyerPassPro(e.target.value)}
-                    className="w-full h-11 px-3 rounded-xl border border-border bg-surface-alt text-ink font-bold outline-none"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Owner Listing Packages */}
-            <div
-              className="rounded-3xl p-8 border shadow-sm transition-all duration-300"
-              style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
-            >
-              <h2
-                className="text-[16px] font-extrabold tracking-tight flex items-center gap-2 mb-6 border-b pb-4"
-                style={{ color: "var(--ink)", borderColor: "var(--border)" }}
-              >
-                <span className="material-symbols-outlined text-indigo-600 text-[22px]">
-                  storefront
-                </span>
-                Owner Property Listing Packages
-              </h2>
-              
-              {/* Residential */}
-              <div className="mb-6 p-5 rounded-2xl border border-border bg-surface-alt">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                  <h3 className="text-[14px] font-extrabold text-ink">🏠 Independent House / Villa / Plot Pricing</h3>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/10 text-indigo-600 text-[11px] font-extrabold uppercase tracking-wider self-start sm:self-auto">
-                    <span className="material-symbols-outlined text-[14px]">all_inclusive</span>
-                    Valid Until Rented (Never Expires)
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1.5 rounded-xl text-[12px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Auto-Applied
                   </span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">1 Listing (₹)</label>
-                    <input type="number" value={ownerResFee} onChange={(e) => setOwnerResFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">3 Pack (₹)</label>
-                    <input type="number" value={ownerRes3Pack} onChange={(e) => setOwnerRes3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">6 Pack (₹)</label>
-                    <input type="number" value={ownerRes6Pack} onChange={(e) => setOwnerRes6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">10 Pack (₹)</label>
-                    <input type="number" value={ownerRes10Pack} onChange={(e) => setOwnerRes10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                </div>
               </div>
 
-              {/* Apartment / PG */}
-              <div className="mb-6 p-5 rounded-2xl border-2 border-orange-500/20 bg-orange-500/[0.02]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                  <h3 className="text-[14px] font-extrabold text-ink flex items-center gap-2">
-                    🏢 Apartment / Flat / PG Co-Living Pricing & Validity
-                  </h3>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 text-[11px] font-extrabold uppercase tracking-wider self-start sm:self-auto">
-                    <span className="material-symbols-outlined text-[14px]">schedule</span>
-                    Custom Expiration Per Pack
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {/* Single Listing */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>1 Single Listing</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">Standard</span>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
-                      <input type="number" value={ownerAptPgFee} onChange={(e) => setOwnerAptPgFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-orange-600 block mb-1">Validity (Days)</label>
-                      <input type="number" value={validityAptPg1Pack} onChange={(e) => setValidityAptPg1Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-500" />
-                    </div>
-                  </div>
-
-                  {/* 3-Pack */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>3-Pack Pass</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-bold">Popular</span>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
-                      <input type="number" value={ownerAptPg3Pack} onChange={(e) => setOwnerAptPg3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-orange-600 block mb-1">Validity (Days)</label>
-                      <input type="number" value={validityAptPg3Pack} onChange={(e) => setValidityAptPg3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-500" />
-                    </div>
-                  </div>
-
-                  {/* 6-Pack */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>6-Pack Pass</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold">VIP Value</span>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
-                      <input type="number" value={ownerAptPg6Pack} onChange={(e) => setOwnerAptPg6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-orange-600 block mb-1">Validity (Days)</label>
-                      <input type="number" value={validityAptPg6Pack} onChange={(e) => setValidityAptPg6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-500" />
-                    </div>
-                  </div>
-
-                  {/* 10-Pack */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>10-Pack Pass</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">Hostel</span>
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
-                      <input type="number" value={ownerAptPg10Pack} onChange={(e) => setOwnerAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-orange-600 block mb-1">Validity (Days)</label>
-                      <input type="number" value={validityAptPg10Pack} onChange={(e) => setValidityAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-500" />
-                    </div>
-                  </div>
-                </div>
+              {/* Sub-Tabs Navigation */}
+              <div className="flex p-1.5 rounded-2xl gap-1.5 overflow-x-auto bg-surface-alt border border-border">
+                {[
+                  { id: "residential", label: "🏡 Residential", badge: "House / Flat" },
+                  { id: "pg_hostel", label: "🛏️ PG & Hostel", badge: "Co-Living" },
+                  { id: "commercial", label: "🏬 Commercial", badge: "Shop / Office" },
+                  { id: "buyer", label: "👤 Buyer Passes", badge: "Unlocks" },
+                  { id: "pg_upgrades", label: "🛠️ PG Duration Extensions", badge: "Upgrades" }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setPricingSubTab(tab.id)}
+                    className={`flex-1 min-w-[150px] py-2.5 px-3.5 rounded-xl text-[12px] font-extrabold transition-all duration-200 flex flex-col sm:flex-row items-center justify-center gap-1.5 cursor-pointer ${
+                      pricingSubTab === tab.id
+                        ? "bg-surface text-ink shadow-sm border border-border scale-[1.01]"
+                        : "text-text-muted hover:text-ink hover:bg-surface/50"
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${pricingSubTab === tab.id ? 'bg-indigo-500/10 text-indigo-600' : 'bg-black/5 text-text-muted'}`}>
+                      {tab.badge}
+                    </span>
+                  </button>
+                ))}
               </div>
 
-              {/* Apartment / PG Custom Build Timings & Upgrade Prices */}
-              <div className="mb-6 p-5 rounded-2xl border-2 border-indigo-500/20 bg-indigo-500/[0.02]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                  <h3 className="text-[14px] font-extrabold text-ink flex items-center gap-2">
-                    🛠️ Apartment / PG Custom Build-Your-Own Duration & Upgrade Prices
-                  </h3>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 text-[11px] font-extrabold uppercase tracking-wider self-start sm:self-auto">
-                    <span className="material-symbols-outlined text-[14px]">tune</span>
-                    Configurable Upgrade Packs
-                  </span>
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 1: RESIDENTIAL PRICING & VALIDITY                                     */}
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {pricingSubTab === "residential" && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-extrabold text-[14px] text-ink flex items-center gap-2">
+                        <span>🏡 Residential Property Listings</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 font-bold">1RK, 1BHK, 2BHK, 3BHK, Villa, House</span>
+                      </h3>
+                      <p className="text-[12px] text-text-muted mt-0.5">
+                        Set prices and select whether listings are valid <b>Until Rented (Never Expires)</b> or expire after a <b>custom number of days</b>.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* 1 Single Listing */}
+                    <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs space-y-4 hover:border-indigo-500/50 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">1 Single Listing</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Standard</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={ownerResFee}
+                          onChange={(e) => setOwnerResFee(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes1Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes1Pack === "0" || validityRes1Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes1Pack(validityRes1Pack === "0" || validityRes1Pack === "" ? "30" : validityRes1Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes1Pack !== "0" && validityRes1Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityRes1Pack !== "0" && validityRes1Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityRes1Pack}
+                              onChange={(e) => setValidityRes1Pack(e.target.value)}
+                              placeholder="Days (e.g. 30, 60)"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 3 Pack */}
+                    <div className="p-5 rounded-2xl border-2 border-indigo-500/30 bg-indigo-500/[0.02] shadow-xs space-y-4 hover:border-indigo-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">3-Listing Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500 text-white font-black">POPULAR</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-indigo-600">₹{Math.round((parseFloat(ownerRes3Pack) || 0) / 3)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerRes3Pack}
+                          onChange={(e) => setOwnerRes3Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes3Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes3Pack === "0" || validityRes3Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes3Pack(validityRes3Pack === "0" || validityRes3Pack === "" ? "60" : validityRes3Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes3Pack !== "0" && validityRes3Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityRes3Pack !== "0" && validityRes3Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityRes3Pack}
+                              onChange={(e) => setValidityRes3Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 6 Pack */}
+                    <div className="p-5 rounded-2xl border-2 border-purple-500/30 bg-purple-500/[0.02] shadow-xs space-y-4 hover:border-purple-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">6-Listing Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-600 text-white font-black">BEST VALUE ⭐</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-purple-600">₹{Math.round((parseFloat(ownerRes6Pack) || 0) / 6)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerRes6Pack}
+                          onChange={(e) => setOwnerRes6Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes6Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes6Pack === "0" || validityRes6Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes6Pack(validityRes6Pack === "0" || validityRes6Pack === "" ? "90" : validityRes6Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes6Pack !== "0" && validityRes6Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityRes6Pack !== "0" && validityRes6Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityRes6Pack}
+                              onChange={(e) => setValidityRes6Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 10 Pack */}
+                    <div className="p-5 rounded-2xl border-2 border-amber-500/30 bg-amber-500/[0.02] shadow-xs space-y-4 hover:border-amber-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">10-Listing Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-600 text-white font-black">PRO AGENT 👑</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-amber-600">₹{Math.round((parseFloat(ownerRes10Pack) || 0) / 10)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerRes10Pack}
+                          onChange={(e) => setOwnerRes10Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes10Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes10Pack === "0" || validityRes10Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityRes10Pack(validityRes10Pack === "0" || validityRes10Pack === "" ? "180" : validityRes10Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityRes10Pack !== "0" && validityRes10Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityRes10Pack !== "0" && validityRes10Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityRes10Pack}
+                              onChange={(e) => setValidityRes10Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {/* Slot 1 */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>Slot 1 Duration</span>
-                    </div>
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 2: PG & HOSTEL PRICING & VALIDITY                                     */}
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {pricingSubTab === "pg_hostel" && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-4 rounded-2xl bg-orange-500/5 border border-orange-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
-                      <input type="number" value={pgCustomDuration1Days} onChange={(e) => setPgCustomDuration1Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
-                      <input type="number" value={pgCustomDuration1Price} onChange={(e) => setPgCustomDuration1Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      <h3 className="font-extrabold text-[14px] text-ink flex items-center gap-2">
+                        <span>🛏️ PG, Hostel &amp; Co-Living Listings</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-600 font-bold">Single/Double/Triple Beds, Co-Living</span>
+                      </h3>
+                      <p className="text-[12px] text-text-muted mt-0.5">
+                        Configure pricing and timing validity (e.g. 60, 90, 180 days or Until Rented) for PG listings.
+                      </p>
                     </div>
                   </div>
 
-                  {/* Slot 2 */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>Slot 2 Duration</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* 1 Single PG */}
+                    <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs space-y-4 hover:border-orange-500/50 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">1 Single PG Listing</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Standard</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={ownerAptPgFee}
+                          onChange={(e) => setOwnerAptPgFee(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg1Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg1Pack === "0" || validityAptPg1Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg1Pack(validityAptPg1Pack === "0" || validityAptPg1Pack === "" ? "60" : validityAptPg1Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg1Pack !== "0" && validityAptPg1Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityAptPg1Pack !== "0" && validityAptPg1Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityAptPg1Pack}
+                              onChange={(e) => setValidityAptPg1Pack(e.target.value)}
+                              placeholder="Days (e.g. 60)"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
-                      <input type="number" value={pgCustomDuration2Days} onChange={(e) => setPgCustomDuration2Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
-                      <input type="number" value={pgCustomDuration2Price} onChange={(e) => setPgCustomDuration2Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                  </div>
 
-                  {/* Slot 3 */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>Slot 3 Duration</span>
+                    {/* 3 Pack PG */}
+                    <div className="p-5 rounded-2xl border-2 border-orange-500/30 bg-orange-500/[0.02] shadow-xs space-y-4 hover:border-orange-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">3-PG &amp; Hostel Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500 text-white font-black">POPULAR</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-orange-600">₹{Math.round((parseFloat(ownerAptPg3Pack) || 0) / 3)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerAptPg3Pack}
+                          onChange={(e) => setOwnerAptPg3Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg3Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg3Pack === "0" || validityAptPg3Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg3Pack(validityAptPg3Pack === "0" || validityAptPg3Pack === "" ? "60" : validityAptPg3Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg3Pack !== "0" && validityAptPg3Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityAptPg3Pack !== "0" && validityAptPg3Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityAptPg3Pack}
+                              onChange={(e) => setValidityAptPg3Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
-                      <input type="number" value={pgCustomDuration3Days} onChange={(e) => setPgCustomDuration3Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
-                      <input type="number" value={pgCustomDuration3Price} onChange={(e) => setPgCustomDuration3Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                  </div>
 
-                  {/* Slot 4 */}
-                  <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
-                    <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
-                      <span>Slot 4 Duration</span>
+                    {/* 6 Pack PG */}
+                    <div className="p-5 rounded-2xl border-2 border-purple-500/30 bg-purple-500/[0.02] shadow-xs space-y-4 hover:border-purple-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">6-PG &amp; Hostel Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-600 text-white font-black">BEST VALUE ⭐</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-purple-600">₹{Math.round((parseFloat(ownerAptPg6Pack) || 0) / 6)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerAptPg6Pack}
+                          onChange={(e) => setOwnerAptPg6Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg6Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg6Pack === "0" || validityAptPg6Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg6Pack(validityAptPg6Pack === "0" || validityAptPg6Pack === "" ? "90" : validityAptPg6Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg6Pack !== "0" && validityAptPg6Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityAptPg6Pack !== "0" && validityAptPg6Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityAptPg6Pack}
+                              onChange={(e) => setValidityAptPg6Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
-                      <input type="number" value={pgCustomDuration4Days} onChange={(e) => setPgCustomDuration4Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
-                      <input type="number" value={pgCustomDuration4Price} onChange={(e) => setPgCustomDuration4Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+
+                    {/* 10 Pack PG */}
+                    <div className="p-5 rounded-2xl border-2 border-amber-500/30 bg-amber-500/[0.02] shadow-xs space-y-4 hover:border-amber-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">10-PG &amp; Hostel Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-600 text-white font-black">HOSTEL PRO 👑</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-amber-600">₹{Math.round((parseFloat(ownerAptPg10Pack) || 0) / 10)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerAptPg10Pack}
+                          onChange={(e) => setOwnerAptPg10Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg10Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg10Pack === "0" || validityAptPg10Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityAptPg10Pack(validityAptPg10Pack === "0" || validityAptPg10Pack === "" ? "180" : validityAptPg10Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityAptPg10Pack !== "0" && validityAptPg10Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityAptPg10Pack !== "0" && validityAptPg10Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityAptPg10Pack}
+                              onChange={(e) => setValidityAptPg10Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Commercial */}
-              <div className="p-5 rounded-2xl border border-border bg-surface-alt">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                  <h3 className="text-[14px] font-extrabold text-ink">🏬 Commercial Space / Office / Warehouse Pricing</h3>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/10 text-indigo-600 text-[11px] font-extrabold uppercase tracking-wider self-start sm:self-auto">
-                    <span className="material-symbols-outlined text-[14px]">all_inclusive</span>
-                    Valid Until Rented (Never Expires)
-                  </span>
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 3: COMMERCIAL PRICING & VALIDITY                                      */}
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {pricingSubTab === "commercial" && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-extrabold text-[14px] text-ink flex items-center gap-2">
+                        <span>🏬 Commercial Space Listings</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-600 font-bold">Shop, Office, Showroom, Warehouse, Plot</span>
+                      </h3>
+                      <p className="text-[12px] text-text-muted mt-0.5">
+                        Configure pricing and choose between <b>Until Rented (Never Expires)</b> or <b>Custom Days validity</b> for commercial listings.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* 1 Single Commercial */}
+                    <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs space-y-4 hover:border-teal-500/50 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">1 Single Commercial</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Standard</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={ownerCommFee}
+                          onChange={(e) => setOwnerCommFee(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm1Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm1Pack === "0" || validityComm1Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm1Pack(validityComm1Pack === "0" || validityComm1Pack === "" ? "30" : validityComm1Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm1Pack !== "0" && validityComm1Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityComm1Pack !== "0" && validityComm1Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityComm1Pack}
+                              onChange={(e) => setValidityComm1Pack(e.target.value)}
+                              placeholder="Days (e.g. 30, 60)"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 3 Pack Commercial */}
+                    <div className="p-5 rounded-2xl border-2 border-teal-500/30 bg-teal-500/[0.02] shadow-xs space-y-4 hover:border-teal-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">3-Commercial Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-600 text-white font-black">POPULAR</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-teal-600">₹{Math.round((parseFloat(ownerComm3Pack) || 0) / 3)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerComm3Pack}
+                          onChange={(e) => setOwnerComm3Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm3Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm3Pack === "0" || validityComm3Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm3Pack(validityComm3Pack === "0" || validityComm3Pack === "" ? "60" : validityComm3Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm3Pack !== "0" && validityComm3Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityComm3Pack !== "0" && validityComm3Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityComm3Pack}
+                              onChange={(e) => setValidityComm3Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 6 Pack Commercial */}
+                    <div className="p-5 rounded-2xl border-2 border-purple-500/30 bg-purple-500/[0.02] shadow-xs space-y-4 hover:border-purple-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">6-Commercial Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-600 text-white font-black">BEST VALUE ⭐</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-purple-600">₹{Math.round((parseFloat(ownerComm6Pack) || 0) / 6)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerComm6Pack}
+                          onChange={(e) => setOwnerComm6Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm6Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm6Pack === "0" || validityComm6Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm6Pack(validityComm6Pack === "0" || validityComm6Pack === "" ? "90" : validityComm6Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm6Pack !== "0" && validityComm6Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityComm6Pack !== "0" && validityComm6Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityComm6Pack}
+                              onChange={(e) => setValidityComm6Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 10 Pack Commercial */}
+                    <div className="p-5 rounded-2xl border-2 border-amber-500/30 bg-amber-500/[0.02] shadow-xs space-y-4 hover:border-amber-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">10-Commercial Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-600 text-white font-black">COMMERCIAL PRO 👑</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-amber-600">₹{Math.round((parseFloat(ownerComm10Pack) || 0) / 10)}/listing</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={ownerComm10Pack}
+                          onChange={(e) => setOwnerComm10Pack(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block">Validity Mode</label>
+                        <div className="grid grid-cols-2 gap-1 bg-surface-alt p-1 rounded-xl border border-border text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm10Pack("0")}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm10Pack === "0" || validityComm10Pack === "" ? "bg-emerald-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ♾️ Until Rented
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setValidityComm10Pack(validityComm10Pack === "0" || validityComm10Pack === "" ? "180" : validityComm10Pack)}
+                            className={`py-1.5 rounded-lg font-extrabold transition-all cursor-pointer ${
+                              validityComm10Pack !== "0" && validityComm10Pack !== "" ? "bg-orange-500 text-white shadow-xs" : "text-text-muted hover:text-ink"
+                            }`}
+                          >
+                            ⏱️ Custom Days
+                          </button>
+                        </div>
+                        {validityComm10Pack !== "0" && validityComm10Pack !== "" ? (
+                          <div className="pt-1">
+                            <input
+                              type="number"
+                              value={validityComm10Pack}
+                              onChange={(e) => setValidityComm10Pack(e.target.value)}
+                              placeholder="Days per listing"
+                              className="w-full h-9 px-3 rounded-xl border border-orange-500/30 bg-orange-500/5 font-black text-orange-600 text-[13px]"
+                            />
+                          </div>
+                        ) : (
+                          <div className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 pt-1">
+                            <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                            Never expires (until rented)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">1 Listing (₹)</label>
-                    <input type="number" value={ownerCommFee} onChange={(e) => setOwnerCommFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
+              )}
+
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 4: BUYER PASSES                                                       */}
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {pricingSubTab === "buyer" && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-extrabold text-[14px] text-ink flex items-center gap-2">
+                        <span>👤 Buyer Contact Unlock &amp; Subscription Passes</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 font-bold">End-User Plans</span>
+                      </h3>
+                      <p className="text-[12px] text-text-muted mt-0.5">
+                        Set single lookup charges and bulk multi-unlock packs available to buyers and tenants.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">3 Pack (₹)</label>
-                    <input type="number" value={ownerComm3Pack} onChange={(e) => setOwnerComm3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">6 Pack (₹)</label>
-                    <input type="number" value={ownerComm6Pack} onChange={(e) => setOwnerComm6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">10 Pack (₹)</label>
-                    <input type="number" value={ownerComm10Pack} onChange={(e) => setOwnerComm10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface font-bold text-ink" />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Single Unlock */}
+                    <div className="p-5 rounded-2xl border border-border bg-surface shadow-xs space-y-4 hover:border-blue-500/50 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">Single Unlock</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">1 Credit</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={buyerUnlockFee}
+                          onChange={(e) => setBuyerUnlockFee(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <p className="text-[11px] text-text-muted font-medium">1-time direct owner contact lookup with WhatsApp access &amp; GPS coordinates.</p>
+                    </div>
+
+                    {/* Starter Pass */}
+                    <div className="p-5 rounded-2xl border-2 border-blue-500/30 bg-blue-500/[0.02] shadow-xs space-y-4 hover:border-blue-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">Starter Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-black">3 CREDITS</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-blue-600">₹{Math.round((parseFloat(buyerPassStarter) || 0) / 3)}/lookup</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={buyerPassStarter}
+                          onChange={(e) => setBuyerPassStarter(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <p className="text-[11px] text-text-muted font-medium">3 Instant Contact Unlocks with 1-click gateway bypass speed.</p>
+                    </div>
+
+                    {/* Smart Pass */}
+                    <div className="p-5 rounded-2xl border-2 border-purple-500/30 bg-purple-500/[0.02] shadow-xs space-y-4 hover:border-purple-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">Smart Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-600 text-white font-black">6 CREDITS ⭐</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-purple-600">₹{Math.round((parseFloat(buyerPassSmart) || 0) / 6)}/lookup</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={buyerPassSmart}
+                          onChange={(e) => setBuyerPassSmart(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <p className="text-[11px] text-text-muted font-medium">6 Unlocks + <b>1 Free Legal Rental Lease Agreement</b> included.</p>
+                    </div>
+
+                    {/* Pro Pass */}
+                    <div className="p-5 rounded-2xl border-2 border-amber-500/30 bg-amber-500/[0.02] shadow-xs space-y-4 hover:border-amber-500 transition-all">
+                      <div className="flex items-center justify-between pb-3 border-b border-border">
+                        <span className="font-black text-[13px] text-ink">Pro Hunter Pass</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-600 text-white font-black">10 CREDITS 👑</span>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Price (₹)</label>
+                          <span className="text-[10px] font-extrabold text-amber-600">₹{Math.round((parseFloat(buyerPassPro) || 0) / 10)}/lookup</span>
+                        </div>
+                        <input
+                          type="number"
+                          value={buyerPassPro}
+                          onChange={(e) => setBuyerPassPro(e.target.value)}
+                          className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-black text-ink text-[15px]"
+                        />
+                      </div>
+                      <p className="text-[11px] text-text-muted font-medium">10 Unlocks + <b>3 Free Legal Rental Lease Agreements</b> with early access.</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 5: PG DURATION UPGRADES                                               */}
+              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {pricingSubTab === "pg_upgrades" && (
+                <div className="space-y-6 animate-fade-in">
+                  <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-extrabold text-[14px] text-ink flex items-center gap-2">
+                        <span>🛠️ Custom PG / Apartment Duration Extensions</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 font-bold">Renewal Slots</span>
+                      </h3>
+                      <p className="text-[12px] text-text-muted mt-0.5">
+                        Configure duration lengths and renewal / extension upgrade fees for PG &amp; Hostel owners.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Slot 1 */}
+                    <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                      <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                        <span>Slot 1 Duration</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Standard</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                        <input type="number" value={pgCustomDuration1Days} onChange={(e) => setPgCustomDuration1Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                        <input type="number" value={pgCustomDuration1Price} onChange={(e) => setPgCustomDuration1Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                    </div>
+
+                    {/* Slot 2 */}
+                    <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                      <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                        <span>Slot 2 Duration</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Extended</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                        <input type="number" value={pgCustomDuration2Days} onChange={(e) => setPgCustomDuration2Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                        <input type="number" value={pgCustomDuration2Price} onChange={(e) => setPgCustomDuration2Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                    </div>
+
+                    {/* Slot 3 */}
+                    <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                      <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                        <span>Slot 3 Duration</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Quarterly</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                        <input type="number" value={pgCustomDuration3Days} onChange={(e) => setPgCustomDuration3Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                        <input type="number" value={pgCustomDuration3Price} onChange={(e) => setPgCustomDuration3Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                    </div>
+
+                    {/* Slot 4 */}
+                    <div className="p-4 rounded-xl border border-border bg-surface shadow-xs space-y-3">
+                      <div className="font-extrabold text-[12px] text-ink pb-2 border-b border-border flex items-center justify-between">
+                        <span>Slot 4 Duration</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Half-Year</span>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Days</label>
+                        <input type="number" value={pgCustomDuration4Days} onChange={(e) => setPgCustomDuration4Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-1">Upgrade Fee (₹)</label>
+                        <input type="number" value={pgCustomDuration4Price} onChange={(e) => setPgCustomDuration4Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-border bg-surface-alt font-bold text-ink" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Payment Bypasses Card */}

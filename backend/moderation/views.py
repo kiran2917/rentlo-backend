@@ -41,9 +41,15 @@ class ModeratePropertyView(views.APIView):
                 prop.status = 'live'
                 from properties.models import PlatformSettings
                 ps = PlatformSettings.load()
-                if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple']:
-                    pg_validity = ps.validity_apt_pg_1pack_days or ps.validity_apt_pg_days or 60
-                    prop.expires_at = timezone.now() + timedelta(days=pg_validity)
+                if prop.property_category == 'pg' or prop.property_type in ['pg', 'pg_hostel', 'pg_single', 'pg_double', 'pg_triple', 'hostel']:
+                    val_days = ps.validity_apt_pg_1pack_days if (ps.validity_apt_pg_1pack_days is not None) else (ps.validity_apt_pg_days or 60)
+                elif prop.property_category == 'commercial' or prop.property_type in ['shop', 'office', 'warehouse', 'showroom', 'industrial', 'commercial_building']:
+                    val_days = ps.validity_commercial_1pack_days if (ps.validity_commercial_1pack_days is not None) else (ps.validity_commercial_days or 0)
+                else:
+                    val_days = ps.validity_residential_1pack_days if (ps.validity_residential_1pack_days is not None) else (ps.validity_residential_days or 0)
+
+                if val_days and int(val_days) > 0:
+                    prop.expires_at = timezone.now() + timedelta(days=int(val_days))
                 else:
                     prop.expires_at = None  # Active until rented!
                 prop.rejection_reason = None
