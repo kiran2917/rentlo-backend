@@ -81,8 +81,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
-        if 'ownership_document_url' in validated_data and validated_data['ownership_document_url']:
-            validated_data['owner_kyc_status'] = 'submitted'
+        if 'ownership_document_url' in validated_data:
+            if validated_data['ownership_document_url']:
+                validated_data['owner_kyc_status'] = 'submitted'
+            else:
+                validated_data['owner_kyc_status'] = 'pending'
+                validated_data['ownership_document_url'] = ''
             
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

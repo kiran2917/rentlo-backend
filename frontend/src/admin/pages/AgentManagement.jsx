@@ -34,7 +34,8 @@ export const AgentManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setOwnerKycs(Array.isArray(data) ? data : []);
+        const list = Array.isArray(data) ? data : (data?.results || []);
+        setOwnerKycs(list);
       }
     } catch (e) {
       console.error(e);
@@ -68,7 +69,7 @@ export const AgentManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        const safeData = Array.isArray(data) ? data : [];
+        const safeData = Array.isArray(data) ? data : (data?.results || []);
         setAgents(safeData.filter(u => u.roles?.includes("agent") || u.role === "agent"));
       }
     } catch (e) {
@@ -86,7 +87,8 @@ export const AgentManagement = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setAgentKycs(Array.isArray(data) ? data : []);
+        const list = Array.isArray(data) ? data : (data?.results || []);
+        setAgentKycs(list);
       }
     } catch (e) {
       console.error(e);

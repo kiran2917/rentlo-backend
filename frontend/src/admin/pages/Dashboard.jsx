@@ -53,7 +53,7 @@ export const Dashboard = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
+        const list = Array.isArray(data) ? data : (data?.results || []);
         setPendingOwnerKycs(list);
         setMetrics(prev => ({ ...prev, pendingOwnerVerifications: list.length }));
       }

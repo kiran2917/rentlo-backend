@@ -644,6 +644,7 @@ from accounts.permissions import IsAdmin
 class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserSerializer
+    pagination_class = None
     queryset = User.objects.all()
 
 
@@ -920,6 +921,7 @@ class ForgotPasswordResetView(APIView):
 class AdminAgentKYCListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = AgentKYCSerializer
+    pagination_class = None
     queryset = AgentKYC.objects.all().order_by('-updated_at')
 
 
@@ -1116,13 +1118,15 @@ class AdminUserToggleStatusView(APIView):
 class AdminOwnerKYCListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserSerializer
+    pagination_class = None
 
     def get_queryset(self):
         from django.db.models import Q
         status_filter = self.request.query_params.get('status')
         if status_filter == 'all':
             return User.objects.filter(
-                Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='')
+                Q(owner_kyc_status__in=['submitted', 'verified', 'rejected']) |
+                (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url=''))
             ).order_by('-date_joined')
         return User.objects.filter(
             Q(owner_kyc_status='submitted') | 

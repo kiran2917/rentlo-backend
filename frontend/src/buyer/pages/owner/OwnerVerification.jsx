@@ -7,10 +7,36 @@ export const OwnerVerification = () => {
   const { user, checkAuth } = useAuth();
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
+    }
+  };
+
+  const handleResetVerification = async () => {
+    if (!window.confirm("Are you sure you want to delete your current submission and upload a new document?")) return;
+    setCancelling(true);
+    try {
+      const patchRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/buyer/profile/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ ownership_document_url: "" }),
+      });
+
+      if (patchRes.ok) {
+        toast.success("Document verification reset. You can now upload a new document.");
+        setFile(null);
+        await checkAuth();
+      } else {
+        throw new Error("Failed to reset verification");
+      }
+    } catch (err) {
+      toast.error("Error resetting verification.");
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -87,9 +113,17 @@ export const OwnerVerification = () => {
               <span className="material-symbols-outlined text-[36px]">hourglass_empty</span>
             </div>
             <h3 className="text-[18px] font-extrabold mb-2" style={{ color: "var(--ink)" }}>Verification Under Review</h3>
-            <p className="text-[13px] text-text-muted max-w-md leading-relaxed">
+            <p className="text-[13px] text-text-muted max-w-md leading-relaxed mb-6">
               Your document has been submitted successfully. Our admin team will verify it shortly. You can check back here for status updates.
             </p>
+            <button
+              onClick={handleResetVerification}
+              disabled={cancelling}
+              className="px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 border border-red-500/30 rounded-xl text-[13px] font-extrabold transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[18px]">delete</span>
+              {cancelling ? "Deleting..." : "Delete Submission & Upload Again"}
+            </button>
           </div>
         </div>
       )}

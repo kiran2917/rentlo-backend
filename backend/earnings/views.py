@@ -22,6 +22,7 @@ class CommissionRuleDetailView(generics.RetrieveUpdateAPIView):
 class EarningEntryListView(generics.ListAPIView):
     permission_classes = [IsAdmin]
     serializer_class = EarningEntrySerializer
+    pagination_class = None
 
     def get_queryset(self):
         queryset = EarningEntry.objects.all().order_by('-created_at')
@@ -116,6 +117,7 @@ class AgentEarningsSummaryView(views.APIView):
 class AgentPayoutBatchListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AgentPayoutBatchSerializer
+    pagination_class = None
 
     def get_queryset(self):
         queryset = AgentPayoutBatch.objects.all().order_by('-created_at')

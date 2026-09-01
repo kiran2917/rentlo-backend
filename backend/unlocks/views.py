@@ -843,6 +843,7 @@ class AdminFeedbackSerializer(serializers.ModelSerializer):
 class AdminFeedbackListView(generics.ListAPIView):
     permission_classes = [IsAdminOrModerator]
     serializer_class = AdminFeedbackSerializer
+    pagination_class = None
 
     def get_queryset(self):
         return Feedback.objects.select_related('buyer', 'unlock__property__locality__city').order_by('-id')

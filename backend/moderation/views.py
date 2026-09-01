@@ -174,6 +174,7 @@ class ModeratePropertyView(views.APIView):
 class AgentFraudListView(generics.ListAPIView):
     permission_classes = [IsAdminOrModerator]
     serializer_class = UserSerializer
+    pagination_class = None
 
     def get_queryset(self):
         return User.objects.filter(fraud_flag_count__gt=0).order_by('-fraud_flag_count')
