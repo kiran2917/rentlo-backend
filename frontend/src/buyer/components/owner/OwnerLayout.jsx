@@ -368,7 +368,17 @@ export const OwnerLayout = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Explore Market Button */}
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-black uppercase tracking-wider transition-all shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
+              title="Browse properties on public marketplace"
+            >
+              <span className="material-symbols-outlined text-[17px] text-indigo-600">storefront</span>
+              <span className="hidden sm:inline">Explore Market</span>
+              <span className="sm:hidden">Market</span>
+            </Link>
 
             {/* Owner Profile Pill Dropdown */}
             <div className="relative">
