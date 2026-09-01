@@ -350,6 +350,27 @@ class PlatformSettings(models.Model):
     validity_commercial_6pack_days = models.IntegerField(default=0)
     validity_commercial_10pack_days = models.IntegerField(default=0)
 
+    # Configurable credit counts / listing quantities per pack
+    count_residential_1pack = models.IntegerField(default=1)
+    count_residential_3pack = models.IntegerField(default=3)
+    count_residential_6pack = models.IntegerField(default=6)
+    count_residential_10pack = models.IntegerField(default=10)
+
+    count_apt_pg_1pack = models.IntegerField(default=1)
+    count_apt_pg_3pack = models.IntegerField(default=3)
+    count_apt_pg_6pack = models.IntegerField(default=6)
+    count_apt_pg_10pack = models.IntegerField(default=10)
+
+    count_commercial_1pack = models.IntegerField(default=1)
+    count_commercial_3pack = models.IntegerField(default=3)
+    count_commercial_6pack = models.IntegerField(default=6)
+    count_commercial_10pack = models.IntegerField(default=10)
+
+    count_buyer_single = models.IntegerField(default=1)
+    count_buyer_starter = models.IntegerField(default=3)
+    count_buyer_smart = models.IntegerField(default=6)
+    count_buyer_pro = models.IntegerField(default=10)
+
     owner_onboarding_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     bypass_buyer_payment = models.BooleanField(default=False)
     bypass_owner_payment = models.BooleanField(default=False)

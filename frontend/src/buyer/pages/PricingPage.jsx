@@ -74,31 +74,30 @@ export const PricingPage = () => {
       id: "smart_79",
       name: t("pricing.plans.smart_79.name", "Smart Pass"),
       price: smartFee,
-      unlocks: 6,
-      agreements: 1,
+      unlocks: Number(settings?.count_buyer_smart) || 6,
       badge: t("pricing.plans.smart_79.badge", "BEST SELLER ⭐"),
-      validity: t("pricing.plans.smart_79.validity", "6 Credits Pack"),
+      validity: t("pricing.plans.smart_79.validity", `${Number(settings?.count_buyer_smart) || 6} Credits Pack`),
       description: t("pricing.plans.smart_79.description", "Best for active tenants comparing multiple properties"),
       features: [
-        `6 Direct Contact Unlocks${smartSavings > 0 ? ` (Save ₹${smartSavings})` : ""}`,
-        t("pricing.plans.smart_79.features.1", "1 Free Legal Rental Lease Agreement (Value ₹299)"),
-        t("pricing.plans.smart_79.features.2", "1-Click Instant Unlock Speed"),
-        t("pricing.plans.smart_79.features.3", "WhatsApp & Google Maps Pin Access")
+        `${Number(settings?.count_buyer_smart) || 6} Direct Contact Unlocks${smartSavings > 0 ? ` (Save ₹${smartSavings})` : ""}`,
+        t("pricing.plans.smart_79.features.1", "1-Click Instant Direct Owner Connection"),
+        t("pricing.plans.smart_79.features.2", "Direct Owner WhatsApp Chat Link"),
+        t("pricing.plans.smart_79.features.3", "Google Maps Exact Location & Pin Access")
       ]
     },
     {
       id: "pro_129",
       name: t("pricing.plans.pro_129.name", "Pro Hunter Pass"),
       price: proFee,
-      unlocks: 10,
-      agreements: 3,
+      unlocks: Number(settings?.count_buyer_pro) || 10,
       badge: t("pricing.plans.pro_129.badge", "VIP VALUE 👑"),
-      validity: t("pricing.plans.pro_129.validity", "10 Credits Pack"),
+      validity: t("pricing.plans.pro_129.validity", `${Number(settings?.count_buyer_pro) || 10} Credits Pack`),
       description: t("pricing.plans.pro_129.description", "VIP pass for families & urgent movers needing top choices"),
       features: [
-        `10 Direct Contact Unlocks${proSavings > 0 ? ` (Save ₹${proSavings})` : ""}`,
-        t("pricing.plans.pro_129.features.1", "3 Free Legal Rental Lease Agreements (Value ₹899)"),
-        t("pricing.plans.pro_129.features.2", "VIP Early Access Listing Alerts (2 Hours Early)")
+        `${Number(settings?.count_buyer_pro) || 10} Direct Contact Unlocks${proSavings > 0 ? ` (Save ₹${proSavings})` : ""}`,
+        t("pricing.plans.pro_129.features.1", "High-Priority Direct Verified Landlord Contacts"),
+        t("pricing.plans.pro_129.features.2", "VIP Early Access Listing Alerts (2 Hours Early)"),
+        t("pricing.plans.pro_129.features.3", "Full Map Directions & Contact History Saved")
       ]
     }
   ];

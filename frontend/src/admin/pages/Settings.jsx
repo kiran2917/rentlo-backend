@@ -219,17 +219,27 @@ export const Settings = () => {
   const [activeTab, setActiveTab] = useState("pricing");
 
   const [upiId, setUpiId] = useState("");
-  const [buyerUnlockFee, setBuyerUnlockFee] = useState("14");
-  const [buyerPassStarter, setBuyerPassStarter] = useState("39");
+  const [buyerUnlockFee, setBuyerUnlockFee] = useState("29");
+  const [buyerPassStarter, setBuyerPassStarter] = useState("49");
   const [buyerPassSmart, setBuyerPassSmart] = useState("79");
   const [buyerPassPro, setBuyerPassPro] = useState("129");
 
-  // Owner Pricing States
-  const [pricingSubTab, setPricingSubTab] = useState("residential");
+  // Buyer Pass Counts (Credits)
+  const [countBuyerSingle, setCountBuyerSingle] = useState("1");
+  const [countBuyerStarter, setCountBuyerStarter] = useState("3");
+  const [countBuyerSmart, setCountBuyerSmart] = useState("6");
+  const [countBuyerPro, setCountBuyerPro] = useState("10");
+
   const [ownerResFee, setOwnerResFee] = useState("99");
   const [ownerRes3Pack, setOwnerRes3Pack] = useState("259");
   const [ownerRes6Pack, setOwnerRes6Pack] = useState("499");
   const [ownerRes10Pack, setOwnerRes10Pack] = useState("859");
+
+  // Residential Counts
+  const [countRes1Pack, setCountRes1Pack] = useState("1");
+  const [countRes3Pack, setCountRes3Pack] = useState("3");
+  const [countRes6Pack, setCountRes6Pack] = useState("6");
+  const [countRes10Pack, setCountRes10Pack] = useState("10");
 
   // Validity Duration States (in Days) for Residential (0 = Until Rented)
   const [validityRes1Pack, setValidityRes1Pack] = useState("0");
@@ -242,6 +252,12 @@ export const Settings = () => {
   const [ownerAptPg6Pack, setOwnerAptPg6Pack] = useState("649");
   const [ownerAptPg10Pack, setOwnerAptPg10Pack] = useState("999");
 
+  // PG Counts
+  const [countAptPg1Pack, setCountAptPg1Pack] = useState("1");
+  const [countAptPg3Pack, setCountAptPg3Pack] = useState("3");
+  const [countAptPg6Pack, setCountAptPg6Pack] = useState("6");
+  const [countAptPg10Pack, setCountAptPg10Pack] = useState("10");
+
   // Validity Duration States (in Days) for PG / Apartment Plans (0 = Until Rented)
   const [validityAptPg1Pack, setValidityAptPg1Pack] = useState("60");
   const [validityAptPg3Pack, setValidityAptPg3Pack] = useState("60");
@@ -252,6 +268,12 @@ export const Settings = () => {
   const [ownerComm3Pack, setOwnerComm3Pack] = useState("449");
   const [ownerComm6Pack, setOwnerComm6Pack] = useState("799");
   const [ownerComm10Pack, setOwnerComm10Pack] = useState("1199");
+
+  // Commercial Counts
+  const [countComm1Pack, setCountComm1Pack] = useState("1");
+  const [countComm3Pack, setCountComm3Pack] = useState("3");
+  const [countComm6Pack, setCountComm6Pack] = useState("6");
+  const [countComm10Pack, setCountComm10Pack] = useState("10");
 
   // Validity Duration States (in Days) for Commercial Plans (0 = Until Rented)
   const [validityComm1Pack, setValidityComm1Pack] = useState("0");
@@ -475,6 +497,26 @@ export const Settings = () => {
         setPgCustomDuration3Price(data.pg_custom_duration_3_price != null ? data.pg_custom_duration_3_price.toString() : "89");
         setPgCustomDuration4Days(data.pg_custom_duration_4_days != null ? data.pg_custom_duration_4_days.toString() : "180");
         setPgCustomDuration4Price(data.pg_custom_duration_4_price != null ? data.pg_custom_duration_4_price.toString() : "149");
+        setCountRes1Pack(data.count_residential_1pack != null ? data.count_residential_1pack.toString() : "1");
+        setCountRes3Pack(data.count_residential_3pack != null ? data.count_residential_3pack.toString() : "3");
+        setCountRes6Pack(data.count_residential_6pack != null ? data.count_residential_6pack.toString() : "6");
+        setCountRes10Pack(data.count_residential_10pack != null ? data.count_residential_10pack.toString() : "10");
+
+        setCountAptPg1Pack(data.count_apt_pg_1pack != null ? data.count_apt_pg_1pack.toString() : "1");
+        setCountAptPg3Pack(data.count_apt_pg_3pack != null ? data.count_apt_pg_3pack.toString() : "3");
+        setCountAptPg6Pack(data.count_apt_pg_6pack != null ? data.count_apt_pg_6pack.toString() : "6");
+        setCountAptPg10Pack(data.count_apt_pg_10pack != null ? data.count_apt_pg_10pack.toString() : "10");
+
+        setCountComm1Pack(data.count_commercial_1pack != null ? data.count_commercial_1pack.toString() : "1");
+        setCountComm3Pack(data.count_commercial_3pack != null ? data.count_commercial_3pack.toString() : "3");
+        setCountComm6Pack(data.count_commercial_6pack != null ? data.count_commercial_6pack.toString() : "6");
+        setCountComm10Pack(data.count_commercial_10pack != null ? data.count_commercial_10pack.toString() : "10");
+
+        setCountBuyerSingle(data.count_buyer_single != null ? data.count_buyer_single.toString() : "1");
+        setCountBuyerStarter(data.count_buyer_starter != null ? data.count_buyer_starter.toString() : "3");
+        setCountBuyerSmart(data.count_buyer_smart != null ? data.count_buyer_smart.toString() : "6");
+        setCountBuyerPro(data.count_buyer_pro != null ? data.count_buyer_pro.toString() : "10");
+
         setValidityRes1Pack(data.validity_residential_1pack_days != null ? data.validity_residential_1pack_days.toString() : (data.validity_residential_days != null ? data.validity_residential_days.toString() : "0"));
         setValidityRes3Pack(data.validity_residential_3pack_days != null ? data.validity_residential_3pack_days.toString() : "0");
         setValidityRes6Pack(data.validity_residential_6pack_days != null ? data.validity_residential_6pack_days.toString() : "0");
@@ -621,6 +663,26 @@ export const Settings = () => {
           validity_commercial_3pack_days: parseInt(validityComm3Pack) || 0,
           validity_commercial_6pack_days: parseInt(validityComm6Pack) || 0,
           validity_commercial_10pack_days: parseInt(validityComm10Pack) || 0,
+
+          count_residential_1pack: parseInt(countRes1Pack) || 1,
+          count_residential_3pack: parseInt(countRes3Pack) || 3,
+          count_residential_6pack: parseInt(countRes6Pack) || 6,
+          count_residential_10pack: parseInt(countRes10Pack) || 10,
+
+          count_apt_pg_1pack: parseInt(countAptPg1Pack) || 1,
+          count_apt_pg_3pack: parseInt(countAptPg3Pack) || 3,
+          count_apt_pg_6pack: parseInt(countAptPg6Pack) || 6,
+          count_apt_pg_10pack: parseInt(countAptPg10Pack) || 10,
+
+          count_commercial_1pack: parseInt(countComm1Pack) || 1,
+          count_commercial_3pack: parseInt(countComm3Pack) || 3,
+          count_commercial_6pack: parseInt(countComm6Pack) || 6,
+          count_commercial_10pack: parseInt(countComm10Pack) || 10,
+
+          count_buyer_single: parseInt(countBuyerSingle) || 1,
+          count_buyer_starter: parseInt(countBuyerStarter) || 3,
+          count_buyer_smart: parseInt(countBuyerSmart) || 6,
+          count_buyer_pro: parseInt(countBuyerPro) || 10,
           bypass_buyer_payment: bypassBuyer,
           bypass_owner_payment: bypassOwner,
           buyer_theme: buyerTheme,
@@ -839,362 +901,152 @@ export const Settings = () => {
                 ))}
               </div>
 
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {/* SUB-TAB 1: RESIDENTIAL PRICING & VALIDITY                                     */}
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 1: RESIDENTIAL */}
               {pricingSubTab === "residential" && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="font-black text-[15px] text-slate-950 flex items-center gap-2">
                         <span>🏡 Residential Property Listings</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">1RK, 1BHK, 2BHK, 3BHK, Villa, House</span>
                       </h3>
                       <p className="text-[12px] text-slate-500 font-medium mt-1">
-                        Configure pricing and toggle between <b>Until Rented (Never Expires)</b> or <b>Custom Days</b> for each pack.
+                        Configure listing credit quantities, pricing, and timing validity for residential properties.
                       </p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* 1 Single Listing */}
+                    {/* Tier 1 Residential */}
                     <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">1 Single Listing</span>
+                        <span className="font-black text-[14px] text-slate-950">{countRes1Pack} Listing Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-black border border-slate-200">STANDARD</span>
                       </div>
-                      <div>
-                        <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">Price (INR)</label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerResFee}
-                            onChange={(e) => setOwnerResFee(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countRes1Pack} onChange={(e) => setCountRes1Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerResFee} onChange={(e) => setOwnerResFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes1Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes1Pack === "0" || validityRes1Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes1Pack(validityRes1Pack === "0" || validityRes1Pack === "" ? "30" : validityRes1Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes1Pack !== "0" && validityRes1Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityRes1Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes1Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityRes1Pack("30")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes1Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityRes1Pack !== "0" && validityRes1Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityRes1Pack}
-                                onChange={(e) => setValidityRes1Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityRes1Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityRes1Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityRes1Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityRes1Pack} onChange={(e) => setValidityRes1Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 3-Listing Pass */}
+                    {/* Tier 2 Residential */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between relative">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">3-Listing Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countRes3Pack}-Listing Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">POPULAR</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerRes3Pack) || 0) / 3)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countRes3Pack} onChange={(e) => setCountRes3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerRes3Pack}
-                            onChange={(e) => setOwnerRes3Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerRes3Pack} onChange={(e) => setOwnerRes3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerRes3Pack) || 0) / (parseInt(countRes3Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes3Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes3Pack === "0" || validityRes3Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes3Pack(validityRes3Pack === "0" || validityRes3Pack === "" ? "60" : validityRes3Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes3Pack !== "0" && validityRes3Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityRes3Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes3Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityRes3Pack("60")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes3Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityRes3Pack !== "0" && validityRes3Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityRes3Pack}
-                                onChange={(e) => setValidityRes3Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityRes3Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityRes3Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityRes3Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityRes3Pack} onChange={(e) => setValidityRes3Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 6-Listing Pass */}
+                    {/* Tier 3 Residential */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">6-Listing Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countRes6Pack}-Listing Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">BEST VALUE ⭐</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerRes6Pack) || 0) / 6)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countRes6Pack} onChange={(e) => setCountRes6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerRes6Pack}
-                            onChange={(e) => setOwnerRes6Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerRes6Pack} onChange={(e) => setOwnerRes6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerRes6Pack) || 0) / (parseInt(countRes6Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes6Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes6Pack === "0" || validityRes6Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes6Pack(validityRes6Pack === "0" || validityRes6Pack === "" ? "90" : validityRes6Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes6Pack !== "0" && validityRes6Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityRes6Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes6Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityRes6Pack("90")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes6Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityRes6Pack !== "0" && validityRes6Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityRes6Pack}
-                                onChange={(e) => setValidityRes6Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityRes6Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityRes6Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityRes6Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityRes6Pack} onChange={(e) => setValidityRes6Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 10-Listing Pass */}
+                    {/* Tier 4 Residential */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">10-Listing Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countRes10Pack}-Listing Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">PRO AGENT 👑</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerRes10Pack) || 0) / 10)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countRes10Pack} onChange={(e) => setCountRes10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerRes10Pack}
-                            onChange={(e) => setOwnerRes10Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerRes10Pack} onChange={(e) => setOwnerRes10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerRes10Pack) || 0) / (parseInt(countRes10Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes10Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes10Pack === "0" || validityRes10Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityRes10Pack(validityRes10Pack === "0" || validityRes10Pack === "" ? "180" : validityRes10Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityRes10Pack !== "0" && validityRes10Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityRes10Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes10Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityRes10Pack("180")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityRes10Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityRes10Pack !== "0" && validityRes10Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityRes10Pack}
-                                onChange={(e) => setValidityRes10Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityRes10Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityRes10Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityRes10Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityRes10Pack} onChange={(e) => setValidityRes10Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
@@ -1203,362 +1055,152 @@ export const Settings = () => {
                 </div>
               )}
 
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {/* SUB-TAB 2: PG & HOSTEL PRICING & VALIDITY                                     */}
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 2: PG & HOSTEL */}
               {pricingSubTab === "pg_hostel" && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="font-black text-[15px] text-slate-950 flex items-center gap-2">
                         <span>🛏️ PG, Hostel &amp; Co-Living Listings</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">Single/Double/Triple Beds, Co-Living</span>
                       </h3>
                       <p className="text-[12px] text-slate-500 font-medium mt-1">
-                        Configure pricing and timing validity (e.g. 60, 90, 180 days or Until Rented) for PG listings.
+                        Configure listing quantities, pricing, and timing validity for PG/Hostel rooms.
                       </p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* 1 Single PG */}
+                    {/* Tier 1 PG */}
                     <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">1 Single PG Listing</span>
+                        <span className="font-black text-[14px] text-slate-950">{countAptPg1Pack} PG Listing</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-black border border-slate-200">STANDARD</span>
                       </div>
-                      <div>
-                        <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">Price (INR)</label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerAptPgFee}
-                            onChange={(e) => setOwnerAptPgFee(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countAptPg1Pack} onChange={(e) => setCountAptPg1Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerAptPgFee} onChange={(e) => setOwnerAptPgFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg1Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg1Pack === "0" || validityAptPg1Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg1Pack(validityAptPg1Pack === "0" || validityAptPg1Pack === "" ? "60" : validityAptPg1Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg1Pack !== "0" && validityAptPg1Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityAptPg1Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg1Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityAptPg1Pack("60")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg1Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityAptPg1Pack !== "0" && validityAptPg1Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityAptPg1Pack}
-                                onChange={(e) => setValidityAptPg1Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityAptPg1Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityAptPg1Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityAptPg1Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityAptPg1Pack} onChange={(e) => setValidityAptPg1Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 3-PG Pass */}
+                    {/* Tier 2 PG */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">3-PG &amp; Hostel Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countAptPg3Pack}-PG Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">POPULAR</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerAptPg3Pack) || 0) / 3)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countAptPg3Pack} onChange={(e) => setCountAptPg3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerAptPg3Pack}
-                            onChange={(e) => setOwnerAptPg3Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerAptPg3Pack} onChange={(e) => setOwnerAptPg3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerAptPg3Pack) || 0) / (parseInt(countAptPg3Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg3Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg3Pack === "0" || validityAptPg3Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg3Pack(validityAptPg3Pack === "0" || validityAptPg3Pack === "" ? "60" : validityAptPg3Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg3Pack !== "0" && validityAptPg3Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityAptPg3Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg3Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityAptPg3Pack("60")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg3Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityAptPg3Pack !== "0" && validityAptPg3Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityAptPg3Pack}
-                                onChange={(e) => setValidityAptPg3Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityAptPg3Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityAptPg3Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityAptPg3Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityAptPg3Pack} onChange={(e) => setValidityAptPg3Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 6-PG Pass */}
+                    {/* Tier 3 PG */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">6-PG &amp; Hostel Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countAptPg6Pack}-PG Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">BEST VALUE ⭐</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerAptPg6Pack) || 0) / 6)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countAptPg6Pack} onChange={(e) => setCountAptPg6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerAptPg6Pack}
-                            onChange={(e) => setOwnerAptPg6Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerAptPg6Pack} onChange={(e) => setOwnerAptPg6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerAptPg6Pack) || 0) / (parseInt(countAptPg6Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg6Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg6Pack === "0" || validityAptPg6Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg6Pack(validityAptPg6Pack === "0" || validityAptPg6Pack === "" ? "90" : validityAptPg6Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg6Pack !== "0" && validityAptPg6Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityAptPg6Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg6Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityAptPg6Pack("90")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg6Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityAptPg6Pack !== "0" && validityAptPg6Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityAptPg6Pack}
-                                onChange={(e) => setValidityAptPg6Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityAptPg6Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityAptPg6Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityAptPg6Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityAptPg6Pack} onChange={(e) => setValidityAptPg6Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 10-PG Pass */}
+                    {/* Tier 4 PG */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">10-PG &amp; Hostel Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countAptPg10Pack}-PG Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">HOSTEL PRO 👑</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerAptPg10Pack) || 0) / 10)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countAptPg10Pack} onChange={(e) => setCountAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerAptPg10Pack}
-                            onChange={(e) => setOwnerAptPg10Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerAptPg10Pack} onChange={(e) => setOwnerAptPg10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerAptPg10Pack) || 0) / (parseInt(countAptPg10Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg10Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg10Pack === "0" || validityAptPg10Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityAptPg10Pack(validityAptPg10Pack === "0" || validityAptPg10Pack === "" ? "180" : validityAptPg10Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityAptPg10Pack !== "0" && validityAptPg10Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityAptPg10Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg10Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityAptPg10Pack("180")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityAptPg10Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityAptPg10Pack !== "0" && validityAptPg10Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityAptPg10Pack}
-                                onChange={(e) => setValidityAptPg10Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityAptPg10Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityAptPg10Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityAptPg10Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityAptPg10Pack} onChange={(e) => setValidityAptPg10Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
@@ -1567,362 +1209,152 @@ export const Settings = () => {
                 </div>
               )}
 
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {/* SUB-TAB 3: COMMERCIAL PRICING & VALIDITY                                      */}
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 3: COMMERCIAL */}
               {pricingSubTab === "commercial" && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="font-black text-[15px] text-slate-950 flex items-center gap-2">
                         <span>🏬 Commercial Space Listings</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">Shop, Office, Showroom, Warehouse, Plot</span>
                       </h3>
                       <p className="text-[12px] text-slate-500 font-medium mt-1">
-                        Configure pricing and toggle between <b>Until Rented (Never Expires)</b> or <b>Custom Days</b> for commercial spaces.
+                        Configure listing quantities, pricing, and timing validity for commercial spaces.
                       </p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* 1 Single Commercial */}
+                    {/* Tier 1 Commercial */}
                     <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">1 Single Commercial</span>
+                        <span className="font-black text-[14px] text-slate-950">{countComm1Pack} Commercial Listing</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-black border border-slate-200">STANDARD</span>
                       </div>
-                      <div>
-                        <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">Price (INR)</label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerCommFee}
-                            onChange={(e) => setOwnerCommFee(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countComm1Pack} onChange={(e) => setCountComm1Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerCommFee} onChange={(e) => setOwnerCommFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm1Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm1Pack === "0" || validityComm1Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm1Pack(validityComm1Pack === "0" || validityComm1Pack === "" ? "30" : validityComm1Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm1Pack !== "0" && validityComm1Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityComm1Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm1Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityComm1Pack("30")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm1Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityComm1Pack !== "0" && validityComm1Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityComm1Pack}
-                                onChange={(e) => setValidityComm1Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityComm1Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityComm1Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityComm1Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityComm1Pack} onChange={(e) => setValidityComm1Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 3-Commercial Pass */}
+                    {/* Tier 2 Commercial */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">3-Commercial Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countComm3Pack}-Commercial Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">POPULAR</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerComm3Pack) || 0) / 3)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countComm3Pack} onChange={(e) => setCountComm3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerComm3Pack}
-                            onChange={(e) => setOwnerComm3Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerComm3Pack} onChange={(e) => setOwnerComm3Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerComm3Pack) || 0) / (parseInt(countComm3Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm3Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm3Pack === "0" || validityComm3Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm3Pack(validityComm3Pack === "0" || validityComm3Pack === "" ? "60" : validityComm3Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm3Pack !== "0" && validityComm3Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityComm3Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm3Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityComm3Pack("60")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm3Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityComm3Pack !== "0" && validityComm3Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityComm3Pack}
-                                onChange={(e) => setValidityComm3Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityComm3Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityComm3Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityComm3Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityComm3Pack} onChange={(e) => setValidityComm3Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 6-Commercial Pass */}
+                    {/* Tier 3 Commercial */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">6-Commercial Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countComm6Pack}-Commercial Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">BEST VALUE ⭐</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerComm6Pack) || 0) / 6)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countComm6Pack} onChange={(e) => setCountComm6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerComm6Pack}
-                            onChange={(e) => setOwnerComm6Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerComm6Pack} onChange={(e) => setOwnerComm6Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerComm6Pack) || 0) / (parseInt(countComm6Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm6Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm6Pack === "0" || validityComm6Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm6Pack(validityComm6Pack === "0" || validityComm6Pack === "" ? "90" : validityComm6Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm6Pack !== "0" && validityComm6Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityComm6Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm6Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityComm6Pack("90")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm6Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityComm6Pack !== "0" && validityComm6Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityComm6Pack}
-                                onChange={(e) => setValidityComm6Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityComm6Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityComm6Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityComm6Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityComm6Pack} onChange={(e) => setValidityComm6Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 10-Commercial Pass */}
+                    {/* Tier 4 Commercial */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">10-Commercial Pass</span>
+                        <span className="font-black text-[14px] text-slate-950">{countComm10Pack}-Commercial Pass</span>
                         <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">COMMERCIAL PRO 👑</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(ownerComm10Pack) || 0) / 10)} / listing
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Listings (Qty)</label>
+                          <input type="number" min="1" value={countComm10Pack} onChange={(e) => setCountComm10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={ownerComm10Pack}
-                            onChange={(e) => setOwnerComm10Pack(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={ownerComm10Pack} onChange={(e) => setOwnerComm10Pack(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(ownerComm10Pack) || 0) / (parseInt(countComm10Pack) || 1))} / listing</span>
                       </div>
                       <div className="space-y-2 pt-1">
                         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Validity Mode</label>
                         <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm10Pack("0")}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm10Pack === "0" || validityComm10Pack === ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>♾️</span> Until Rented
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setValidityComm10Pack(validityComm10Pack === "0" || validityComm10Pack === "" ? "180" : validityComm10Pack)}
-                            className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                              validityComm10Pack !== "0" && validityComm10Pack !== ""
-                                ? "bg-slate-950 text-white shadow-sm"
-                                : "bg-transparent text-slate-600 hover:text-slate-950"
-                            }`}
-                          >
-                            <span>⏱️</span> Custom Days
-                          </button>
+                          <button type="button" onClick={() => setValidityComm10Pack("0")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm10Pack === "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>♾️ Until Rented</button>
+                          <button type="button" onClick={() => setValidityComm10Pack("180")} className={`py-2 px-2.5 rounded-lg text-[11px] font-black transition-all cursor-pointer ${validityComm10Pack !== "0" ? "bg-slate-950 text-white" : "bg-transparent text-slate-600"}`}>⏱️ Custom Days</button>
                         </div>
-                        {validityComm10Pack !== "0" && validityComm10Pack !== "" ? (
-                          <div className="space-y-1.5 pt-1">
-                            <div className="relative flex items-center">
-                              <input
-                                type="number"
-                                value={validityComm10Pack}
-                                onChange={(e) => setValidityComm10Pack(e.target.value)}
-                                placeholder="Enter days"
-                                className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                              />
-                              <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
-                            </div>
-                            <div className="flex gap-1.5 pt-0.5">
-                              {["30", "60", "90", "180"].map((d) => (
-                                <button
-                                  key={d}
-                                  type="button"
-                                  onClick={() => setValidityComm10Pack(d)}
-                                  className={`flex-1 py-1 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer border ${
-                                    validityComm10Pack === d
-                                      ? "bg-slate-900 text-white border-slate-900"
-                                      : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-                                  }`}
-                                >
-                                  {d}d
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-[11px] font-extrabold text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-xl flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[16px] text-slate-950">all_inclusive</span>
-                            Never expires (Until marked rented)
+                        {validityComm10Pack !== "0" && (
+                          <div className="relative flex items-center">
+                            <input type="number" value={validityComm10Pack} onChange={(e) => setValidityComm10Pack(e.target.value)} className="w-full h-10 px-3.5 pr-14 rounded-xl border border-slate-300 bg-white text-slate-950 font-black text-[14px] focus:border-slate-950 outline-none" />
+                            <span className="absolute right-3.5 text-slate-400 text-[11px] font-extrabold uppercase">days</span>
                           </div>
                         )}
                       </div>
@@ -1931,16 +1363,13 @@ export const Settings = () => {
                 </div>
               )}
 
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {/* SUB-TAB 4: BUYER PASSES                                                       */}
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
+              {/* SUB-TAB 4: BUYER PASSES */}
               {pricingSubTab === "buyer" && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="font-black text-[15px] text-slate-950 flex items-center gap-2">
                         <span>👤 Buyer Contact Unlock &amp; Subscription Passes</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">End-User Plans</span>
                       </h3>
                       <p className="text-[12px] text-slate-500 font-medium mt-1">
                         Set single lookup charges and bulk multi-unlock packs available to buyers and tenants.
@@ -1952,107 +1381,96 @@ export const Settings = () => {
                     {/* Single Unlock */}
                     <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">Single Unlock</span>
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-black border border-slate-200">1 CREDIT</span>
+                        <span className="font-black text-[14px] text-slate-950">{countBuyerSingle} Unlock Pass</span>
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-black border border-slate-200">STANDARD</span>
                       </div>
-                      <div>
-                        <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 block mb-1.5">Price (INR)</label>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={buyerUnlockFee}
-                            onChange={(e) => setBuyerUnlockFee(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Unlocks (Qty)</label>
+                          <input type="number" min="1" value={countBuyerSingle} onChange={(e) => setCountBuyerSingle(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={buyerUnlockFee} onChange={(e) => setBuyerUnlockFee(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
                       <p className="text-[11px] text-slate-500 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        1-time direct owner contact lookup with WhatsApp access &amp; GPS navigation.
+                        Direct owner contact lookup with instant WhatsApp chat access &amp; GPS coordinates.
                       </p>
                     </div>
 
                     {/* Starter Pass */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">Starter Pass</span>
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">3 CREDITS</span>
+                        <span className="font-black text-[14px] text-slate-950">{countBuyerStarter}-Unlock Starter</span>
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">STARTER</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(buyerPassStarter) || 0) / 3)} / lookup
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Unlocks (Qty)</label>
+                          <input type="number" min="1" value={countBuyerStarter} onChange={(e) => setCountBuyerStarter(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={buyerPassStarter}
-                            onChange={(e) => setBuyerPassStarter(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={buyerPassStarter} onChange={(e) => setBuyerPassStarter(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
+                      </div>
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(buyerPassStarter) || 0) / (parseInt(countBuyerStarter) || 1))} / lookup</span>
                       </div>
                       <p className="text-[11px] text-slate-500 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        3 Instant Contact Unlocks with 1-click gateway bypass speed.
+                        Instant owner contact unlocks with verified phone number and chat access.
                       </p>
                     </div>
 
                     {/* Smart Pass */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">Smart Pass</span>
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">6 CREDITS ⭐</span>
+                        <span className="font-black text-[14px] text-slate-950">{countBuyerSmart}-Unlock Smart</span>
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">POPULAR ⭐</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(buyerPassSmart) || 0) / 6)} / lookup
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Unlocks (Qty)</label>
+                          <input type="number" min="1" value={countBuyerSmart} onChange={(e) => setCountBuyerSmart(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={buyerPassSmart}
-                            onChange={(e) => setBuyerPassSmart(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={buyerPassSmart} onChange={(e) => setBuyerPassSmart(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-700 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        6 Unlocks + <b>1 Free Legal Rental Lease Agreement</b> included.
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(buyerPassSmart) || 0) / (parseInt(countBuyerSmart) || 1))} / lookup</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        Bulk unlocks for active tenants and buyers searching multiple areas.
                       </p>
                     </div>
 
                     {/* Pro Pass */}
                     <div className="p-5 rounded-3xl border border-slate-300 bg-white shadow-xs hover:border-slate-500 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <span className="font-black text-[14px] text-slate-950">Pro Hunter Pass</span>
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">10 CREDITS 👑</span>
+                        <span className="font-black text-[14px] text-slate-950">{countBuyerPro}-Unlock Pro</span>
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-slate-950 text-white font-black">PRO HUNTER 👑</span>
                       </div>
-                      <div>
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Price (INR)</label>
-                          <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
-                            ₹{Math.round((parseFloat(buyerPassPro) || 0) / 10)} / lookup
-                          </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Unlocks (Qty)</label>
+                          <input type="number" min="1" value={countBuyerPro} onChange={(e) => setCountBuyerPro(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
-                        <div className="relative flex items-center">
-                          <span className="absolute left-3.5 text-slate-400 font-extrabold text-[15px]">₹</span>
-                          <input
-                            type="number"
-                            value={buyerPassPro}
-                            onChange={(e) => setBuyerPassPro(e.target.value)}
-                            className="w-full h-11 pl-8 pr-4 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[16px] focus:bg-white focus:border-slate-950 focus:ring-1 focus:ring-slate-950 outline-none transition-all"
-                          />
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Price (₹)</label>
+                          <input type="number" value={buyerPassPro} onChange={(e) => setBuyerPassPro(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-slate-950 font-black text-[14px] focus:bg-white focus:border-slate-950 outline-none" />
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-700 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        10 Unlocks + <b>3 Free Legal Rental Lease Agreements</b> with early access.
+                      <div className="text-[11px] font-black text-slate-800 bg-slate-100 px-3 py-1.5 rounded-xl flex justify-between">
+                        <span className="text-slate-500">Unit Price:</span>
+                        <span>₹{Math.round((parseFloat(buyerPassPro) || 0) / (parseInt(countBuyerPro) || 1))} / lookup</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        Maximum lookup capacity with high-priority direct owner contact access.
                       </p>
                     </div>
                   </div>

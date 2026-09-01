@@ -53,32 +53,47 @@ export const OwnerListingPassModal = ({ isOpen, onClose, onSuccessPass }) => {
   const valDesc = (days) => (days > 0 ? `Live for ${days} Days each` : "Valid Until Rented (Never Expires)");
   const singleValDesc = (days) => (days > 0 ? `Live for ${days} Days` : "Valid Until Rented (Never Expires)");
 
+  const cRes1 = Number(settings?.count_residential_1pack) || 1;
+  const cRes3 = Number(settings?.count_residential_3pack) || 3;
+  const cRes6 = Number(settings?.count_residential_6pack) || 6;
+  const cRes10 = Number(settings?.count_residential_10pack) || 10;
+
+  const cPg1 = Number(settings?.count_apt_pg_1pack) || 1;
+  const cPg3 = Number(settings?.count_apt_pg_3pack) || 3;
+  const cPg6 = Number(settings?.count_apt_pg_6pack) || 6;
+  const cPg10 = Number(settings?.count_apt_pg_10pack) || 10;
+
+  const cComm1 = Number(settings?.count_commercial_1pack) || 1;
+  const cComm3 = Number(settings?.count_commercial_3pack) || 3;
+  const cComm6 = Number(settings?.count_commercial_6pack) || 6;
+  const cComm10 = Number(settings?.count_commercial_10pack) || 10;
+
   const CATEGORY_PACKS = {
     residential: {
       title: "🏡 Residential (1RK, 1BHK, 2BHK, 3BHK, House)",
       packs: [
-        { name: "Single Listing", count: 1, price: resFee, badge: null, desc: `1-time property listing · ${singleValDesc(res1Days)}` },
-        { name: "3-Listing Pass", count: 3, price: res3, badge: "POPULAR", desc: `₹${Math.round(res3/3)} / listing · ${valDesc(res3Days)}` },
-        { name: "6-Listing Pass", count: 6, price: res6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(res6/6)} / listing · ${valDesc(res6Days)}` },
-        { name: "10-Listing Pass", count: 10, price: res10, badge: "PRO AGENT 👑", desc: `₹${Math.round(res10/10)} / listing · ${valDesc(res10Days)}` },
+        { name: `${cRes1} Listing`, count: cRes1, price: resFee, badge: null, desc: `${cRes1}-time property listing · ${singleValDesc(res1Days)}` },
+        { name: `${cRes3}-Listing Pass`, count: cRes3, price: res3, badge: "POPULAR", desc: `₹${Math.round(res3/cRes3)} / listing · ${valDesc(res3Days)}` },
+        { name: `${cRes6}-Listing Pass`, count: cRes6, price: res6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(res6/cRes6)} / listing · ${valDesc(res6Days)}` },
+        { name: `${cRes10}-Listing Pass`, count: cRes10, price: res10, badge: "PRO AGENT 👑", desc: `₹${Math.round(res10/cRes10)} / listing · ${valDesc(res10Days)}` },
       ]
     },
     pg_hostel: {
       title: "🛏️ PG & Hostel & Multi-Bed Rooms",
       packs: [
-        { name: "Single Listing", count: 1, price: aptFee, badge: null, desc: `1-time PG/Hostel listing · ${singleValDesc(pg1Days)}` },
-        { name: "3-PG & Hostel Pass", count: 3, price: apt3, badge: "POPULAR", desc: `₹${Math.round(apt3/3)} / listing · ${valDesc(pg3Days)}` },
-        { name: "6-PG & Hostel Pass", count: 6, price: apt6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(apt6/6)} / listing · ${valDesc(pg6Days)}` },
-        { name: "10-PG & Hostel Pass", count: 10, price: apt10, badge: "PRO AGENT 👑", desc: `₹${Math.round(apt10/10)} / listing · ${valDesc(pg10Days)}` },
+        { name: `${cPg1} Listing`, count: cPg1, price: aptFee, badge: null, desc: `${cPg1}-time PG/Hostel listing · ${singleValDesc(pg1Days)}` },
+        { name: `${cPg3}-PG & Hostel Pass`, count: cPg3, price: apt3, badge: "POPULAR", desc: `₹${Math.round(apt3/cPg3)} / listing · ${valDesc(pg3Days)}` },
+        { name: `${cPg6}-PG & Hostel Pass`, count: cPg6, price: apt6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(apt6/cPg6)} / listing · ${valDesc(pg6Days)}` },
+        { name: `${cPg10}-PG & Hostel Pass`, count: cPg10, price: apt10, badge: "PRO AGENT 👑", desc: `₹${Math.round(apt10/cPg10)} / listing · ${valDesc(pg10Days)}` },
       ]
     },
     commercial: {
       title: "🏪 Commercial Shop, Office Space & Plot",
       packs: [
-        { name: "Single Commercial", count: 1, price: commFee, badge: null, desc: `1 Commercial Shop/Office · ${singleValDesc(comm1Days)}` },
-        { name: "3-Commercial Pass", count: 3, price: comm3, badge: "POPULAR", desc: `₹${Math.round(comm3/3)} / listing · ${valDesc(comm3Days)}` },
-        { name: "6-Commercial Pass", count: 6, price: comm6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(comm6/6)} / listing · ${valDesc(comm6Days)}` },
-        { name: "10-Commercial Pass", count: 10, price: comm10, badge: "PRO AGENT 👑", desc: `₹${Math.round(comm10/10)} / listing · ${valDesc(comm10Days)}` },
+        { name: `${cComm1} Commercial`, count: cComm1, price: commFee, badge: null, desc: `${cComm1} Commercial Space · ${singleValDesc(comm1Days)}` },
+        { name: `${cComm3}-Commercial Pass`, count: cComm3, price: comm3, badge: "POPULAR", desc: `₹${Math.round(comm3/cComm3)} / listing · ${valDesc(comm3Days)}` },
+        { name: `${cComm6}-Commercial Pass`, count: cComm6, price: comm6, badge: "BEST VALUE ⭐", desc: `₹${Math.round(comm6/cComm6)} / listing · ${valDesc(comm6Days)}` },
+        { name: `${cComm10}-Commercial Pass`, count: cComm10, price: comm10, badge: "PRO AGENT 👑", desc: `₹${Math.round(comm10/cComm10)} / listing · ${valDesc(comm10Days)}` },
       ]
     }
   };

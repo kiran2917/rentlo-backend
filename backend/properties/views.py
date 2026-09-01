@@ -461,35 +461,43 @@ class InitiateOwnerPassOrderView(views.APIView):
         elif plan_id == 'single':
             if category == 'residential':
                 price = float(ps.owner_residential_fee)
+                credits_count = int(getattr(ps, 'count_residential_1pack', 1) or 1)
             elif category == 'commercial':
                 price = float(ps.owner_commercial_fee)
+                credits_count = int(getattr(ps, 'count_commercial_1pack', 1) or 1)
             else: # apartment / pg
                 price = float(ps.owner_apt_pg_fee)
-            credits_count = 1
+                credits_count = int(getattr(ps, 'count_apt_pg_1pack', 1) or 1)
         elif plan_id == '6pack':
             if category == 'residential':
                 price = float(ps.owner_residential_6pack_price)
+                credits_count = int(getattr(ps, 'count_residential_6pack', 6) or 6)
             elif category == 'commercial':
                 price = float(ps.owner_commercial_6pack_price)
+                credits_count = int(getattr(ps, 'count_commercial_6pack', 6) or 6)
             else:
                 price = float(ps.owner_apt_pg_6pack_price)
-            credits_count = 6
+                credits_count = int(getattr(ps, 'count_apt_pg_6pack', 6) or 6)
         elif plan_id == '10pack':
             if category == 'residential':
                 price = float(ps.owner_residential_10pack_price)
+                credits_count = int(getattr(ps, 'count_residential_10pack', 10) or 10)
             elif category == 'commercial':
                 price = float(ps.owner_commercial_10pack_price)
+                credits_count = int(getattr(ps, 'count_commercial_10pack', 10) or 10)
             else:
                 price = float(ps.owner_apt_pg_10pack_price)
-            credits_count = 10
+                credits_count = int(getattr(ps, 'count_apt_pg_10pack', 10) or 10)
         else: # 3pack
             if category == 'residential':
                 price = float(ps.owner_residential_3pack_price)
+                credits_count = int(getattr(ps, 'count_residential_3pack', 3) or 3)
             elif category == 'commercial':
                 price = float(ps.owner_commercial_3pack_price)
+                credits_count = int(getattr(ps, 'count_commercial_3pack', 3) or 3)
             else:
                 price = float(ps.owner_apt_pg_3pack_price)
-            credits_count = 3
+                credits_count = int(getattr(ps, 'count_apt_pg_3pack', 3) or 3)
 
         if ps.bypass_owner_payment:
             from unlocks.models import OwnerListingPass
@@ -1281,6 +1289,27 @@ class PlatformSettingsView(views.APIView):
             'validity_commercial_6pack_days': settings.validity_commercial_6pack_days,
             'validity_commercial_10pack_days': settings.validity_commercial_10pack_days,
 
+            # Configurable pack credit counts
+            'count_residential_1pack': settings.count_residential_1pack,
+            'count_residential_3pack': settings.count_residential_3pack,
+            'count_residential_6pack': settings.count_residential_6pack,
+            'count_residential_10pack': settings.count_residential_10pack,
+
+            'count_apt_pg_1pack': settings.count_apt_pg_1pack,
+            'count_apt_pg_3pack': settings.count_apt_pg_3pack,
+            'count_apt_pg_6pack': settings.count_apt_pg_6pack,
+            'count_apt_pg_10pack': settings.count_apt_pg_10pack,
+
+            'count_commercial_1pack': settings.count_commercial_1pack,
+            'count_commercial_3pack': settings.count_commercial_3pack,
+            'count_commercial_6pack': settings.count_commercial_6pack,
+            'count_commercial_10pack': settings.count_commercial_10pack,
+
+            'count_buyer_single': settings.count_buyer_single,
+            'count_buyer_starter': settings.count_buyer_starter,
+            'count_buyer_smart': settings.count_buyer_smart,
+            'count_buyer_pro': settings.count_buyer_pro,
+
             # Custom PG/Apartment durations & pricing
             'pg_custom_duration_1_days': settings.pg_custom_duration_1_days,
             'pg_custom_duration_1_price': settings.pg_custom_duration_1_price,
@@ -1353,6 +1382,10 @@ class PlatformSettingsView(views.APIView):
             'validity_residential_days', 'validity_residential_1pack_days', 'validity_residential_3pack_days', 'validity_residential_6pack_days', 'validity_residential_10pack_days',
             'validity_apt_pg_days', 'validity_apt_pg_1pack_days', 'validity_apt_pg_3pack_days', 'validity_apt_pg_6pack_days', 'validity_apt_pg_10pack_days',
             'validity_commercial_days', 'validity_commercial_1pack_days', 'validity_commercial_3pack_days', 'validity_commercial_6pack_days', 'validity_commercial_10pack_days',
+            'count_residential_1pack', 'count_residential_3pack', 'count_residential_6pack', 'count_residential_10pack',
+            'count_apt_pg_1pack', 'count_apt_pg_3pack', 'count_apt_pg_6pack', 'count_apt_pg_10pack',
+            'count_commercial_1pack', 'count_commercial_3pack', 'count_commercial_6pack', 'count_commercial_10pack',
+            'count_buyer_single', 'count_buyer_starter', 'count_buyer_smart', 'count_buyer_pro',
             'pg_custom_duration_1_days', 'pg_custom_duration_1_price',
             'pg_custom_duration_2_days', 'pg_custom_duration_2_price',
             'pg_custom_duration_3_days', 'pg_custom_duration_3_price',
@@ -1463,6 +1496,43 @@ class PlatformSettingsView(views.APIView):
             settings.validity_commercial_6pack_days = int(request.data.get('validity_commercial_6pack_days', settings.validity_commercial_6pack_days))
         if 'validity_commercial_10pack_days' in request.data:
             settings.validity_commercial_10pack_days = int(request.data.get('validity_commercial_10pack_days', settings.validity_commercial_10pack_days))
+
+        # Configurable pack credit counts
+        if 'count_residential_1pack' in request.data:
+            settings.count_residential_1pack = int(request.data.get('count_residential_1pack', settings.count_residential_1pack))
+        if 'count_residential_3pack' in request.data:
+            settings.count_residential_3pack = int(request.data.get('count_residential_3pack', settings.count_residential_3pack))
+        if 'count_residential_6pack' in request.data:
+            settings.count_residential_6pack = int(request.data.get('count_residential_6pack', settings.count_residential_6pack))
+        if 'count_residential_10pack' in request.data:
+            settings.count_residential_10pack = int(request.data.get('count_residential_10pack', settings.count_residential_10pack))
+
+        if 'count_apt_pg_1pack' in request.data:
+            settings.count_apt_pg_1pack = int(request.data.get('count_apt_pg_1pack', settings.count_apt_pg_1pack))
+        if 'count_apt_pg_3pack' in request.data:
+            settings.count_apt_pg_3pack = int(request.data.get('count_apt_pg_3pack', settings.count_apt_pg_3pack))
+        if 'count_apt_pg_6pack' in request.data:
+            settings.count_apt_pg_6pack = int(request.data.get('count_apt_pg_6pack', settings.count_apt_pg_6pack))
+        if 'count_apt_pg_10pack' in request.data:
+            settings.count_apt_pg_10pack = int(request.data.get('count_apt_pg_10pack', settings.count_apt_pg_10pack))
+
+        if 'count_commercial_1pack' in request.data:
+            settings.count_commercial_1pack = int(request.data.get('count_commercial_1pack', settings.count_commercial_1pack))
+        if 'count_commercial_3pack' in request.data:
+            settings.count_commercial_3pack = int(request.data.get('count_commercial_3pack', settings.count_commercial_3pack))
+        if 'count_commercial_6pack' in request.data:
+            settings.count_commercial_6pack = int(request.data.get('count_commercial_6pack', settings.count_commercial_6pack))
+        if 'count_commercial_10pack' in request.data:
+            settings.count_commercial_10pack = int(request.data.get('count_commercial_10pack', settings.count_commercial_10pack))
+
+        if 'count_buyer_single' in request.data:
+            settings.count_buyer_single = int(request.data.get('count_buyer_single', settings.count_buyer_single))
+        if 'count_buyer_starter' in request.data:
+            settings.count_buyer_starter = int(request.data.get('count_buyer_starter', settings.count_buyer_starter))
+        if 'count_buyer_smart' in request.data:
+            settings.count_buyer_smart = int(request.data.get('count_buyer_smart', settings.count_buyer_smart))
+        if 'count_buyer_pro' in request.data:
+            settings.count_buyer_pro = int(request.data.get('count_buyer_pro', settings.count_buyer_pro))
 
         from decimal import Decimal
         if 'pg_custom_duration_1_days' in request.data:

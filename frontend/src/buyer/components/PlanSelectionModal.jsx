@@ -69,45 +69,46 @@ export const PlanSelectionModal = ({
   const smartSavings = (6 * singleFee) - smartFee;
   const proSavings = (10 * singleFee) - proFee;
 
+  const unlockCountSingle = Number(settings?.count_buyer_single) || 1;
+  const unlockCountStarter = Number(settings?.count_buyer_starter) || 3;
+  const unlockCountSmart = Number(settings?.count_buyer_smart) || 6;
+  const unlockCountPro = Number(settings?.count_buyer_pro) || 10;
+
   const PLANS = [
     {
-      id: "single_14",
+      id: "single",
       name: "Single Unlock",
       price: singleFee,
-      unlocks: 1,
-      agreements: 0,
+      unlocks: unlockCountSingle,
       badge: null,
-      description: "1-time single contact lookup",
+      description: "Direct owner contact phone + WhatsApp chat access",
       tag: "Basic"
     },
     {
       id: "starter_39",
       name: "Starter Pass",
       price: starterFee,
-      unlocks: 3,
-      agreements: 0,
-      badge: starterSavings > 0 ? `Save ₹${starterSavings}` : "POPULAR",
-      description: `3 Unlocks${starterSavings > 0 ? ` · Save ₹${starterSavings}` : ""}`,
+      unlocks: unlockCountStarter,
+      badge: "POPULAR",
+      description: `${unlockCountStarter} Instant Unlocks${starterSavings > 0 ? ` · Save ₹${starterSavings}` : ""}`,
       tag: "Popular"
     },
     {
       id: "smart_79",
       name: "Smart Pass",
       price: smartFee,
-      unlocks: 6,
-      agreements: 1,
-      badge: "BEST SELLER ⭐",
-      description: `6 Unlocks + 1 Free Agreement${smartSavings > 0 ? ` · Save ₹${smartSavings}` : ""}`,
+      unlocks: unlockCountSmart,
+      badge: "BEST VALUE ⭐",
+      description: `${unlockCountSmart} Instant Unlocks${smartSavings > 0 ? ` · Save ₹${smartSavings}` : ""}`,
       tag: "Best Value"
     },
     {
       id: "pro_129",
       name: "Pro Hunter Pass",
       price: proFee,
-      unlocks: 10,
-      agreements: 3,
-      badge: "VIP VALUE 👑",
-      description: `10 Unlocks + 3 Free Agreements${proSavings > 0 ? ` · Save ₹${proSavings}` : ""}`,
+      unlocks: unlockCountPro,
+      badge: "VIP HUNTER 👑",
+      description: `${unlockCountPro} Instant Unlocks${proSavings > 0 ? ` · Save ₹${proSavings}` : ""}`,
       tag: "VIP"
     }
   ];
@@ -1141,20 +1142,11 @@ export const PlanSelectionModal = ({
                     <div className="pt-3 border-t flex items-center justify-between text-xs" style={{ borderColor: "var(--border)" }}>
                       <span className="font-extrabold flex items-center gap-1" style={{ color: "var(--accent)" }}>
                         <span className="material-symbols-outlined text-base">lock_open</span>
-                        {plan.unlocks} {plan.unlocks === 1 ? "Unlock" : "Unlocks"}
+                        {plan.unlocks} {plan.unlocks === 1 ? "Contact Unlock" : "Contact Unlocks"}
                       </span>
-                      {plan.agreements > 0 && (
-                        <span
-                          className="font-bold text-xs px-2 py-0.5 rounded-md border"
-                          style={{
-                            backgroundColor: "color-mix(in srgb, var(--accent) 15%, transparent)",
-                            borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)",
-                            color: "var(--accent)",
-                          }}
-                        >
-                          +{plan.agreements} Free Agreement
-                        </span>
-                      )}
+                      <span className="font-bold text-[11px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        ⚡ Instant Access
+                      </span>
                     </div>
                   </div>
                 );
