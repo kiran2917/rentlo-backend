@@ -245,8 +245,8 @@ export const AgentManagement = () => {
           >
             <span className="material-symbols-outlined text-[18px]">assignment_ind</span>
             Owner Verifications ({ownerKycs.length})
-            {ownerKycs.length > 0 && (
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
+            {ownerKycs.filter(o => o.owner_kyc_status === 'submitted' || o.owner_kyc_status === 'pending').length > 0 && (
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
             )}
           </button>
         </div>
