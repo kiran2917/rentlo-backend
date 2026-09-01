@@ -217,6 +217,7 @@ export const Settings = () => {
 
   // Active Tab State ("pricing", "gateways", "estamp", "auth", "theme")
   const [activeTab, setActiveTab] = useState("pricing");
+  const [pricingSubTab, setPricingSubTab] = useState("residential");
 
   const [upiId, setUpiId] = useState("");
   const [buyerUnlockFee, setBuyerUnlockFee] = useState("29");
