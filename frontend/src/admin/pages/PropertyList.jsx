@@ -498,14 +498,41 @@ export const PropertyList = () => {
                             onClick={() => setExpandedRow(expandedRow === p.id ? null : p.id)}
                             className="transition-colors hover:opacity-90 hover:bg-slate-50 cursor-pointer"
                           >
-                            {/* 1. Property Details (Simplified) */}
+                            {/* 1. Property Details with Photo Thumbnail */}
                             <td className="py-4 px-6">
-                              <div className="font-extrabold text-[14px]" style={{ color: "var(--ink)" }}>
-                                #{p.id} — {p.display_title || `${p.bedrooms ? `${p.bedrooms} BHK ` : ""}${p.property_type ? p.property_type.toUpperCase() : "PROPERTY"}`}
-                              </div>
-                              <div className="text-[12px] font-medium flex items-center gap-1 mt-0.5" style={{ color: "var(--text-muted)" }}>
-                                <span className="material-symbols-outlined text-[14px]">location_on</span>
-                                {p.locality_details?.name || "Locality"}, {p.locality_details?.city_name || "City"}
+                              <div className="flex items-center gap-3.5">
+                                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-2xs">
+                                  {mediaUrl ? (
+                                    <img
+                                      src={mediaUrl}
+                                      alt={p.display_title || "Property"}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=300&q=80";
+                                      }}
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
+                                      <span className="material-symbols-outlined text-[20px] text-slate-400">apartment</span>
+                                      <span className="text-[7.5px] font-bold uppercase tracking-tight text-slate-400">No Photo</span>
+                                    </div>
+                                  )}
+                                  {p.media && p.media.length > 1 && (
+                                    <span className="absolute bottom-0.5 right-0.5 bg-black/75 text-white text-[8.5px] font-black px-1 rounded">
+                                      +{p.media.length}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="font-extrabold text-[13.5px] line-clamp-2 leading-tight" style={{ color: "var(--ink)" }}>
+                                    #{p.id} — {p.display_title || `${p.bedrooms ? `${p.bedrooms} BHK ` : ""}${p.property_type ? p.property_type.toUpperCase() : "PROPERTY"}`}
+                                  </div>
+                                  <div className="text-[12px] font-medium flex items-center gap-1 mt-1" style={{ color: "var(--text-muted)" }}>
+                                    <span className="material-symbols-outlined text-[14px]">location_on</span>
+                                    <span className="truncate">{p.locality_details?.name || "Locality"}, {p.locality_details?.city_name || "City"}</span>
+                                  </div>
+                                </div>
                               </div>
                             </td>
 
