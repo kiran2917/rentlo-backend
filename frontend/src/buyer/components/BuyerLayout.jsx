@@ -274,21 +274,20 @@ export const BuyerLayout = () => {
 
             <div className="w-px h-5" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
 
-            {/* Owner Portal Quick Pill (If Owner) */}
-            {user?.roles?.includes("owner") && (
-              <Link
-                to="/owner/dashboard"
-                className="h-10 px-4 rounded-xl text-xs font-extrabold flex items-center gap-2 border transition-all hover:opacity-90 shadow-sm"
-                style={{
-                  backgroundColor: "color-mix(in srgb, #FFFFFF 15%, transparent)",
-                  borderColor: "color-mix(in srgb, #FFFFFF 35%, transparent)",
-                  color: "#FFFFFF"
-                }}
-              >
-                <span className="material-symbols-outlined text-base">real_estate_agent</span>
-                {t("nav.ownerPortal", "Owner Portal")}
-              </Link>
-            )}
+            {/* Owner Portal Quick Pill */}
+            <Link
+              to="/owner/dashboard"
+              className="h-10 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 border transition-all hover:opacity-90 shadow-sm"
+              style={{
+                backgroundColor: "color-mix(in srgb, #FFFFFF 15%, transparent)",
+                borderColor: "color-mix(in srgb, #FFFFFF 35%, transparent)",
+                color: "#FFFFFF"
+              }}
+              title="Open Owner Dashboard"
+            >
+              <span className="material-symbols-outlined text-base">real_estate_agent</span>
+              {t("nav.ownerPortal", "Owner Portal")}
+            </Link>
 
             {/* Language Translator Dropdown */}
             <LanguageToggle />
@@ -334,6 +333,27 @@ export const BuyerLayout = () => {
                   </div>
 
                   <div className="py-1">
+                    {/* Owner Console Link */}
+                    <Link
+                      to="/owner/dashboard"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
+                      style={{ color: "var(--ink)" }}
+                    >
+                      <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>dashboard</span>
+                      {t("nav.ownerDashboard", "Owner Console")}
+                    </Link>
+
+                    {(user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.role === "admin" || user.role === "agent") && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
+                        style={{ color: "var(--ink)" }}
+                      >
+                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>admin_panel_settings</span>
+                        Admin Console
+                      </Link>
+                    )}
+
                     <Link
                       to="/my-unlocks"
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
@@ -351,27 +371,6 @@ export const BuyerLayout = () => {
                       <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>bookmark</span>
                       {t("nav.savedSearches", "Saved Searches")}
                     </Link>
-
-                    {(user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent")) && (
-                      <Link
-                        to="/admin"
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
-                        style={{ color: "var(--ink)" }}
-                      >
-                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>admin_panel_settings</span>
-                        Admin Console
-                      </Link>
-                    )}
-                    {user.roles?.includes("owner") && (
-                      <Link
-                        to="/owner/dashboard"
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
-                        style={{ color: "var(--ink)" }}
-                      >
-                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>dashboard</span>
-                        {t("nav.ownerDashboard", "Owner Dashboard")}
-                      </Link>
-                    )}
                   </div>
 
                   <div className="pt-1 border-t text-left" style={{ borderColor: "var(--border)" }}>
@@ -404,12 +403,10 @@ export const BuyerLayout = () => {
               <button
                 type="button"
                 onClick={() => {
-                  if (user.roles?.includes("owner")) {
-                    navigate("/owner/dashboard");
-                  } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent")) {
+                  if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.role === "admin" || user.role === "agent") {
                     navigate("/admin");
                   } else {
-                    navigate("/my-unlocks");
+                    navigate("/owner/dashboard");
                   }
                 }}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-xs font-black uppercase text-white transition-all active:scale-95"
@@ -664,18 +661,15 @@ export const BuyerLayout = () => {
           <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: location.pathname.startsWith("/my-unlocks") ? "800" : "600" }}>Unlocks</span>
         </Link>
 
-        {/* Tab 5: Owner / Agent Portal or Sign Out */}
+        {/* Tab 5: Owner / Agent Portal or Login */}
         <button
           type="button"
           onClick={() => {
             if (user) {
-              if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent")) {
+              if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.role === "admin" || user.role === "agent") {
                 navigate("/admin");
-              } else if (user.roles?.includes("owner")) {
-                navigate("/owner/dashboard");
               } else {
-                logout();
-                navigate("/");
+                navigate("/owner/dashboard");
               }
             } else {
               setShowAuthRoleModal(true);
@@ -694,19 +688,11 @@ export const BuyerLayout = () => {
                   <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: (location.pathname.startsWith("/owner") || location.pathname.startsWith("/admin")) ? "800" : "600" }}>Login</span>
                 </>
               );
-            } else if (user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.roles?.includes("owner")) {
+            } else {
               return (
                 <>
                   <span className="material-symbols-outlined text-[22px]" data-weight="fill">admin_panel_settings</span>
                   <span className="text-[11px] font-extrabold mt-1 tracking-tight" style={{ fontWeight: "800" }}>Console</span>
-                </>
-              );
-            } else {
-              // Pure buyer - sign out
-              return (
-                <>
-                  <span className="material-symbols-outlined text-[22px] text-red-400" data-weight="fill">logout</span>
-                  <span className="text-[11px] font-extrabold mt-1 tracking-tight text-red-400" style={{ fontWeight: "800" }}>Sign Out</span>
                 </>
               );
             }
