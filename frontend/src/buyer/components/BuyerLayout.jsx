@@ -272,23 +272,6 @@ export const BuyerLayout = () => {
               </Link>
             ))}
 
-            <div className="w-px h-5" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-
-            {/* Owner Portal Quick Pill */}
-            <Link
-              to="/owner/dashboard"
-              className="h-10 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 border transition-all hover:opacity-90 shadow-sm"
-              style={{
-                backgroundColor: "color-mix(in srgb, #FFFFFF 15%, transparent)",
-                borderColor: "color-mix(in srgb, #FFFFFF 35%, transparent)",
-                color: "#FFFFFF"
-              }}
-              title="Open Owner Dashboard"
-            >
-              <span className="material-symbols-outlined text-base">real_estate_agent</span>
-              {t("nav.ownerPortal", "Owner Portal")}
-            </Link>
-
             {/* Language Translator Dropdown */}
             <LanguageToggle />
 
@@ -333,15 +316,17 @@ export const BuyerLayout = () => {
                   </div>
 
                   <div className="py-1">
-                    {/* Owner Console Link */}
-                    <Link
-                      to="/owner/dashboard"
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
-                      style={{ color: "var(--ink)" }}
-                    >
-                      <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>dashboard</span>
-                      {t("nav.ownerDashboard", "Owner Console")}
-                    </Link>
+                    {/* Show Owner Portal Link ONLY when signed in as Owner */}
+                    {(user.roles?.includes("owner") || user.role === "owner") && (
+                      <Link
+                        to="/owner/dashboard"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5"
+                        style={{ color: "var(--ink)" }}
+                      >
+                        <span className="material-symbols-outlined text-lg" style={{ color: "var(--accent)" }}>dashboard</span>
+                        {t("nav.ownerDashboard", "Owner Portal")}
+                      </Link>
+                    )}
 
                     {(user.roles?.includes("admin") || user.roles?.includes("moderator") || user.roles?.includes("agent") || user.role === "admin" || user.role === "agent") && (
                       <Link
