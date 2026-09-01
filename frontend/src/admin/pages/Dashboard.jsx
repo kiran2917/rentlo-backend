@@ -18,11 +18,14 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [agentEarnings, setAgentEarnings] = useState(null);
   const [revenueChartData, setRevenueChartData] = useState([]);
+  const [pendingOwnerKycs, setPendingOwnerKycs] = useState([]);
+  const [reviewingKycId, setReviewingKycId] = useState(null);
 
   // Dashboard Metrics
   const [metrics, setMetrics] = useState({
     totalListings: 0,
     pendingApprovals: 0,
+    pendingOwnerVerifications: 0,
     totalEarnings: 0,
     totalUnlocks: 0,
     totalPgProperties: 0,
@@ -34,6 +37,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     fetchProperties();
+    fetchPendingOwnerKycs();
     if (user?.role === "admin" || user?.roles?.includes("admin")) {
       fetchAdminAnalytics();
     }
@@ -41,6 +45,42 @@ export const Dashboard = () => {
       fetchAgentEarnings();
     }
   }, [user]);
+
+  const fetchPendingOwnerKycs = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/`, {
+        credentials: "include",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : [];
+        setPendingOwnerKycs(list);
+        setMetrics(prev => ({ ...prev, pendingOwnerVerifications: list.length }));
+      }
+    } catch (e) {
+      console.error("Failed to fetch pending owner KYC:", e);
+    }
+  };
+
+  const handleReviewOwnerKyc = async (userId, action) => {
+    setReviewingKycId(userId);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/${userId}/review/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ action })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        fetchPendingOwnerKycs();
+      }
+    } catch (e) {
+      console.error("Error reviewing owner KYC:", e);
+    } finally {
+      setReviewingKycId(null);
+    }
+  };
 
   const fetchProperties = async () => {
     setLoading(true);
@@ -67,7 +107,7 @@ export const Dashboard = () => {
           ...prev,
           totalListings: propList.length,
           pendingApprovals: propList.filter(
-            (p) => p.status === "pending" || p.status === "pending_review"
+            (p) => ["pending", "pending_review", "pending_approval", "pending_verification"].includes(p.status) || p.verification_status === "pending_review"
           ).length,
           totalPgProperties: prev.totalPgProperties || pgProps.length,
           totalPgCapacity: prev.totalPgCapacity || cap,
@@ -187,21 +227,24 @@ export const Dashboard = () => {
         </div>
 
         {/* KPI 2: Pending Approvals */}
-        <div
-          className="rounded-3xl p-6 shadow-sm border relative overflow-hidden group transition-all duration-300 hover-lift hover:shadow-xl cursor-pointer"
+        <Link
+          to="/admin/moderation"
+          className="rounded-3xl p-6 shadow-sm border relative overflow-hidden group transition-all duration-300 hover-lift hover:shadow-xl cursor-pointer block"
           style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
         >
           <div className="flex justify-between items-start mb-6 relative z-10">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-amber-600 bg-amber-50 border border-amber-100 shadow-sm group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-[24px]">pending_actions</span>
             </div>
-            <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] font-extrabold uppercase tracking-wider">Review</span>
+            <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] font-extrabold uppercase tracking-wider">
+              {metrics.pendingOwnerVerifications > 0 ? `${metrics.pendingOwnerVerifications} KYC Pending` : "Review"}
+            </span>
           </div>
           <h3 className="text-[11px] font-extrabold mb-1.5 uppercase tracking-widest relative z-10" style={{ color: "var(--text-muted)" }}>Pending Approvals</h3>
           <p className="text-[32px] font-extrabold tracking-tight relative z-10 leading-none group-hover:text-amber-600 transition-colors" style={{ color: "var(--ink)" }}>
             {metrics.pendingApprovals}
           </p>
-        </div>
+        </Link>
 
         {/* KPI 3: Total Earnings / Agent Earnings */}
         <div
@@ -244,6 +287,118 @@ export const Dashboard = () => {
           </p>
         </div>
       </section>
+
+      {/* Pending Owner Identity Verifications Section */}
+      {pendingOwnerKycs.length > 0 && (
+        <section className="mb-8 animate-in fade-in duration-300">
+          <div
+            className="rounded-3xl p-6 shadow-sm border"
+            style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-6" style={{ borderColor: "var(--border)" }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 border border-amber-500/20 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[22px]">verified_user</span>
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-[16px] tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
+                    Owner Verification Requests
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-500 text-white animate-pulse">
+                      {pendingOwnerKycs.length} Action Required
+                    </span>
+                  </h3>
+                  <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
+                    Owners who uploaded identity proof or property ownership documents awaiting admin review
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to="/admin/agents"
+                className="text-[12px] font-extrabold text-indigo-600 hover:underline flex items-center gap-1 self-start sm:self-auto"
+              >
+                Open Verifications Hub
+                <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pendingOwnerKycs.map((owner) => (
+                <div
+                  key={owner.id}
+                  className="rounded-2xl p-5 border flex flex-col justify-between space-y-4"
+                  style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}
+                >
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between border-b pb-2.5" style={{ borderColor: "var(--border)" }}>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-slate-950 text-white font-black text-[13px] flex items-center justify-center">
+                          {owner.username?.charAt(0).toUpperCase() || "O"}
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-[13px]" style={{ color: "var(--ink)" }}>
+                            @{owner.username}
+                          </p>
+                          <p className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
+                            {owner.phone || "No phone"}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/15 text-amber-700 border border-amber-500/30">
+                        {owner.owner_kyc_status || "submitted"}
+                      </span>
+                    </div>
+
+                    <div className="text-[12px] space-y-1">
+                      {owner.email && (
+                        <p className="text-[11px] text-slate-500">
+                          Email: <strong className="text-slate-800">{owner.email}</strong>
+                        </p>
+                      )}
+                      <div className="pt-1">
+                        {owner.ownership_document_url ? (
+                          <a
+                            href={owner.ownership_document_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[11px] hover:bg-indigo-100 transition-colors"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">visibility</span>
+                            View Uploaded Proof
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-slate-400 italic">No document file attached</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "var(--border)" }}>
+                    <button
+                      type="button"
+                      disabled={reviewingKycId === owner.id}
+                      onClick={() => handleReviewOwnerKyc(owner.id, "reject")}
+                      className="flex-1 py-2 px-3 rounded-xl border text-[11.5px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 border-red-200 disabled:opacity-50"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">cancel</span>
+                      Reject
+                    </button>
+                    <button
+                      type="button"
+                      disabled={reviewingKycId === owner.id}
+                      onClick={() => handleReviewOwnerKyc(owner.id, "approve")}
+                      className="flex-1 py-2 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white font-extrabold text-[11.5px] uppercase cursor-pointer transition-all shadow-sm flex items-center justify-center gap-1 disabled:opacity-50"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">check_circle</span>
+                      Approve
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* PG Residents & Occupancy Insights Section */}
       <section className="mb-8">

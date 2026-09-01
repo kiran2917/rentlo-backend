@@ -131,7 +131,13 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             
         status_filter = self.request.query_params.get('status')
         if status_filter:
-            queryset = queryset.filter(status=status_filter)
+            if status_filter == 'pending_review':
+                queryset = queryset.filter(
+                    Q(status__in=['pending_review', 'pending', 'pending_approval', 'pending_verification']) |
+                    Q(verification_status='pending_review')
+                )
+            else:
+                queryset = queryset.filter(status=status_filter)
             
         search_query = self.request.query_params.get('search')
         if search_query:

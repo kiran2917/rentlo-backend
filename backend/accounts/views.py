@@ -1126,7 +1126,7 @@ class AdminOwnerKYCListView(generics.ListAPIView):
             ).order_by('-date_joined')
         return User.objects.filter(
             Q(owner_kyc_status='submitted') | 
-            (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='') & ~Q(owner_kyc_status__in=['verified', 'rejected']))
+            (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='') & ~Q(owner_kyc_status='verified'))
         ).order_by('-date_joined')
 
 
