@@ -3304,7 +3304,7 @@ export const OwnerNewListing = () => {
                     onClick={handleNext}
                     className="h-10 px-10 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-extrabold uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:-translate-y-0.5"
                   >
-                    Continue to Payment
+                    {platformSettings?.bypass_owner_payment ? "Continue to Publish" : "Continue to Payment"}
                     <span className="material-symbols-outlined text-[20px]">
                       arrow_forward
                     </span>
@@ -3315,7 +3315,43 @@ export const OwnerNewListing = () => {
 
             {step === 4 && (
               <div className="animate-in slide-in-from-right-4 duration-300">
-                {(() => {
+                {platformSettings?.bypass_owner_payment ? (
+                  <div className="p-8 sm:p-12 bg-white rounded-3xl border-2 border-emerald-300 shadow-xl max-w-xl mx-auto text-center space-y-6 animate-in zoom-in-95">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+                      <span className="material-symbols-outlined text-4xl">celebration</span>
+                    </div>
+                    <div>
+                      <span className="px-3.5 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider rounded-full shadow-xs">
+                        PROMOTIONAL PERIOD ACTIVE
+                      </span>
+                      <h2 className="text-2xl font-black text-slate-900 tracking-tight mt-3">
+                        Free Property Listing
+                      </h2>
+                      <p className="text-slate-500 text-sm mt-2 leading-relaxed max-w-md mx-auto">
+                        Payment bypass is currently active. You do not need to buy any pass or make payment to publish your property.
+                      </p>
+                    </div>
+
+                    <div className="pt-4 flex flex-col sm:flex-row gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setStep(3)}
+                        className="h-12 px-6 rounded-2xl border border-slate-200 bg-slate-50 text-slate-600 font-bold hover:bg-slate-100 transition-all text-xs"
+                      >
+                        Back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="flex-1 h-12 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs rounded-2xl shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-[1.01] disabled:opacity-50"
+                      >
+                        <span className="material-symbols-outlined text-lg">check_circle</span>
+                        {isSubmitting ? "Publishing Listing..." : "Publish Listing for Free (₹0)"}
+                      </button>
+                    </div>
+                  </div>
+                ) : (() => {
                   const categoryInfo = getCategoryPlans();
 
                   const housePrice = Number(platformSettings?.owner_residential_fee) || 99;

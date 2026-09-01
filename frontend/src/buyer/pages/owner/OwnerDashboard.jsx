@@ -324,6 +324,11 @@ export const OwnerDashboard = () => {
   };
   
   const handleRelistClick = (property) => {
+    if (platformSettings?.bypass_owner_payment) {
+      setRelistTarget(property);
+      return;
+    }
+
     const prop_cat = property.property_category;
     const prop_type = property.property_type;
     let target_cat = 'residential';
@@ -874,22 +879,29 @@ export const OwnerDashboard = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4 relative z-10">
-          <button
-            type="button"
-            onClick={() => setShowCreditsModal(true)}
-            className="px-4 py-4 bg-gradient-to-r bg-slate-100 border border-indigo-600/30 hover:border-indigo-600/60 text-black rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
-          >
-            <span className="material-symbols-outlined text-xl text-slate-800">stars</span>
-            {ownerCredits?.total_credits_remaining > 0 ? (
-              <>
-                {ownerCredits.total_credits_remaining} <Translate>Listing Credit</Translate>
-                {ownerCredits.total_credits_remaining === 1 ? "" : "s"}
-              </>
-            ) : (
-              <Translate>Buy Listing Pass</Translate>
-            )}
-          </button>
+        <div className="flex items-center gap-3 relative z-10">
+          {platformSettings?.bypass_owner_payment ? (
+            <div className="px-4 py-3 bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-2xl text-xs font-black shadow-xs flex items-center gap-2">
+              <span className="material-symbols-outlined text-emerald-600 text-lg">celebration</span>
+              <span>Free Listing Period Active (No Pass Needed)</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowCreditsModal(true)}
+              className="px-4 py-4 bg-gradient-to-r bg-slate-100 border border-indigo-600/30 hover:border-indigo-600/60 text-black rounded-2xl text-sm font-black shadow-sm transition-all flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
+            >
+              <span className="material-symbols-outlined text-xl text-slate-800">stars</span>
+              {ownerCredits?.total_credits_remaining > 0 ? (
+                <>
+                  {ownerCredits.total_credits_remaining} <Translate>Listing Credit</Translate>
+                  {ownerCredits.total_credits_remaining === 1 ? "" : "s"}
+                </>
+              ) : (
+                <Translate>Buy Listing Pass</Translate>
+              )}
+            </button>
+          )}
 
           <Link
             to="/owner/new-listing"
@@ -1453,7 +1465,7 @@ export const OwnerDashboard = () => {
       )}
 
       {/* Owner Passes & Credits Management Modal */}
-      {showCreditsModal && createPortal(
+      {showCreditsModal && !platformSettings?.bypass_owner_payment && createPortal(
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto pt-14 pb-20 sm:items-center sm:py-8" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
           <div className="rounded-3xl max-w-5xl w-full p-4 sm:p-8 shadow-2xl relative max-h-[85vh] sm:max-h-[90vh] overflow-y-auto scrollbar-none animate-in fade-in zoom-in-95 duration-200" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", border: "1px solid var(--border)" }}>
             {/* Header */}
@@ -2334,7 +2346,9 @@ export const OwnerDashboard = () => {
               </div>
               <h3 className="text-lg font-black text-slate-900">Relist Listing?</h3>
               <p className="text-sm font-medium text-slate-500 mt-2 max-w-xs mx-auto leading-relaxed">
-                Relisting this property will consume <strong className="text-slate-800 font-bold">1 listing credit</strong> from your active pass balance.
+                {platformSettings?.bypass_owner_payment
+                  ? "Free listing promotion is active! Relisting this property is 100% free."
+                  : <span>Relisting this property will consume <strong className="text-slate-800 font-bold">1 listing credit</strong> from your active pass balance.</span>}
               </p>
             </div>
 

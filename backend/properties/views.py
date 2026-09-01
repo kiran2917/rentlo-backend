@@ -288,6 +288,12 @@ class PropertyListCreateView(generics.ListCreateAPIView):
                     )
             except Exception as e:
                 raise PermissionDenied(f"Payment verification failed: {str(e)}")
+        elif settings_obj.bypass_owner_payment:
+            save_kwargs['registration_payment_method'] = 'free_promotional'
+            save_kwargs['registration_fee_paid'] = True
+            save_kwargs['onboarding_payment_status'] = 'paid'
+            save_kwargs['onboarding_payment_method'] = 'free_promotional'
+            save_kwargs['status'] = 'approved'
         elif self.request.user.is_authenticated:
             # Check property category being created
             prop_cat = serializer.validated_data.get('property_category') or 'residential'
@@ -400,11 +406,17 @@ class InitiateOwnerPassOrderView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        plan_id = request.data.get('plan_id', '3pack')
-        category = request.data.get('category', 'apartment')
-        
         from properties.models import PlatformSettings
         ps = PlatformSettings.load()
+
+        if ps.bypass_owner_payment:
+            return Response({
+                'bypassed': True,
+                'detail': 'Free promotional listing period is currently active. Passes are not required — you can post listings directly for free!'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        plan_id = request.data.get('plan_id', '3pack')
+        category = request.data.get('category', 'apartment')
 
         if plan_id == 'custom':
             price = float(request.data.get('amount', 0))
@@ -1319,18 +1331,16 @@ class PlatformSettingsView(views.APIView):
             'pg_custom_duration_3_price': settings.pg_custom_duration_3_price,
             'pg_custom_duration_4_days': settings.pg_custom_duration_4_days,
             'pg_custom_duration_4_price': settings.pg_custom_duration_4_price,
+            'bypass_buyer_payment': settings.bypass_buyer_payment,
+            'bypass_owner_payment': settings.bypass_owner_payment,
         }
 
-        # Admin-only fields: bypass flags must never be exposed publicly
-        # They reveal internal dev/test state to potential attackers
         is_admin = (
             request.user and
             request.user.is_authenticated and
             'admin' in getattr(request.user, 'roles', [])
         )
         if is_admin:
-            data['bypass_buyer_payment'] = settings.bypass_buyer_payment
-            data['bypass_owner_payment'] = settings.bypass_owner_payment
             data['otp_bypass_enabled'] = settings.otp_bypass_enabled
 
             # Razorpay credentials (admin-only; secrets masked)

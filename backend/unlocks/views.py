@@ -961,14 +961,10 @@ class InitiatePassPurchaseView(views.APIView):
         config = PASS_PRICING[pass_type]
 
         if ps.bypass_buyer_payment:
-            sub, is_stacked = activate_or_stack_buyer_pass(request.user, pass_type, config['price'])
             return Response({
                 'bypassed': True,
-                'is_stacked': is_stacked,
-                'detail': f"Pass {'stacked' if is_stacked else 'activated'} instantly! Total credits: {sub.credits_remaining}",
-                'pass_type': pass_type,
-                'credits_remaining': sub.credits_remaining
-            })
+                'detail': 'Free contact unlock promotional period is currently active. Passes are not required — you can view owner contacts directly for free!'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         if getattr(ps, 'buyer_payment_gateway', 'razorpay') == 'upi':
             sub = BuyerSubscription.objects.create(
