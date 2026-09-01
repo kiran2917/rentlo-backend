@@ -48,14 +48,16 @@ export const Dashboard = () => {
 
   const fetchPendingOwnerKycs = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/?status=pending`, {
         credentials: "include",
       });
       if (res.ok) {
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data?.results || []);
-        setPendingOwnerKycs(list);
-        setMetrics(prev => ({ ...prev, pendingOwnerVerifications: list.length }));
+        // Only show pending / submitted requests awaiting review
+        const pending = list.filter(o => o.owner_kyc_status === 'submitted' || o.owner_kyc_status === 'pending');
+        setPendingOwnerKycs(pending);
+        setMetrics(prev => ({ ...prev, pendingOwnerVerifications: pending.length }));
       }
     } catch (e) {
       console.error("Failed to fetch pending owner KYC:", e);
@@ -333,14 +335,14 @@ export const Dashboard = () => {
                     <div className="flex items-center justify-between border-b pb-2.5" style={{ borderColor: "var(--border)" }}>
                       <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-xl bg-slate-950 text-white font-black text-[13px] flex items-center justify-center">
-                          {owner.username?.charAt(0).toUpperCase() || "O"}
+                          {(owner.first_name || owner.username || "O").charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <p className="font-extrabold text-[13px]" style={{ color: "var(--ink)" }}>
-                            @{owner.username}
+                            {owner.first_name ? `${owner.first_name} ${owner.last_name || ""}`.trim() : (owner.username?.startsWith("owner_") ? "Property Owner" : `@${owner.username}`)}
                           </p>
                           <p className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
-                            {owner.phone || "No phone"}
+                            {owner.username?.startsWith("owner_") ? "" : `@${owner.username} • `}{owner.phone || "No phone"}
                           </p>
                         </div>
                       </div>

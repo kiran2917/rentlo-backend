@@ -160,7 +160,15 @@ class PropertySerializer(serializers.ModelSerializer):
         }
 
     def get_is_verified(self, obj):
-        return obj.status == 'live' and bool(obj.consent_proof_url)
+        if obj.verification_status == 'verified':
+            return True
+        if obj.owner and getattr(obj.owner, 'owner_kyc_status', '') == 'verified':
+            return True
+        if obj.agent:
+            kyc = getattr(obj.agent, 'kyc', None)
+            if kyc and getattr(kyc, 'status', '') == 'verified':
+                return True
+        return False
 
     def get_trust_score(self, obj):
         from unlocks.models import Feedback
