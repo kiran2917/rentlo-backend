@@ -819,8 +819,7 @@ export const Settings = () => {
                   { id: "residential", label: "🏡 Residential", badge: "House / Flat" },
                   { id: "pg_hostel", label: "🛏️ PG & Hostel", badge: "Co-Living" },
                   { id: "commercial", label: "🏬 Commercial", badge: "Shop / Office" },
-                  { id: "buyer", label: "👤 Buyer Passes", badge: "Unlocks" },
-                  { id: "pg_upgrades", label: "🛠️ PG Duration Extensions", badge: "Upgrades" }
+                  { id: "buyer", label: "👤 Buyer Passes", badge: "Unlocks" }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -2055,91 +2054,6 @@ export const Settings = () => {
                       <p className="text-[11px] text-slate-700 font-bold bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                         10 Unlocks + <b>3 Free Legal Rental Lease Agreements</b> with early access.
                       </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {/* SUB-TAB 5: PG DURATION UPGRADES                                               */}
-              {/* ───────────────────────────────────────────────────────────────────────────── */}
-              {pricingSubTab === "pg_upgrades" && (
-                <div className="space-y-6 animate-fade-in">
-                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <h3 className="font-black text-[15px] text-slate-950 flex items-center gap-2">
-                        <span>🛠️ Custom PG / Apartment Duration Extensions</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">Renewal Slots</span>
-                      </h3>
-                      <p className="text-[12px] text-slate-500 font-medium mt-1">
-                        Configure duration lengths and renewal / extension upgrade fees for PG &amp; Hostel owners.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Slot 1 */}
-                    <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 transition-all space-y-3">
-                      <div className="font-black text-[13px] text-slate-950 pb-2 border-b border-slate-100 flex items-center justify-between">
-                        <span>Slot 1 Duration</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Standard</span>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Days</label>
-                        <input type="number" value={pgCustomDuration1Days} onChange={(e) => setPgCustomDuration1Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Upgrade Fee (₹)</label>
-                        <input type="number" value={pgCustomDuration1Price} onChange={(e) => setPgCustomDuration1Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                    </div>
-
-                    {/* Slot 2 */}
-                    <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 transition-all space-y-3">
-                      <div className="font-black text-[13px] text-slate-950 pb-2 border-b border-slate-100 flex items-center justify-between">
-                        <span>Slot 2 Duration</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Extended</span>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Days</label>
-                        <input type="number" value={pgCustomDuration2Days} onChange={(e) => setPgCustomDuration2Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Upgrade Fee (₹)</label>
-                        <input type="number" value={pgCustomDuration2Price} onChange={(e) => setPgCustomDuration2Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                    </div>
-
-                    {/* Slot 3 */}
-                    <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 transition-all space-y-3">
-                      <div className="font-black text-[13px] text-slate-950 pb-2 border-b border-slate-100 flex items-center justify-between">
-                        <span>Slot 3 Duration</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Quarterly</span>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Days</label>
-                        <input type="number" value={pgCustomDuration3Days} onChange={(e) => setPgCustomDuration3Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Upgrade Fee (₹)</label>
-                        <input type="number" value={pgCustomDuration3Price} onChange={(e) => setPgCustomDuration3Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                    </div>
-
-                    {/* Slot 4 */}
-                    <div className="p-5 rounded-3xl border border-slate-200 bg-white shadow-xs hover:border-slate-400 transition-all space-y-3">
-                      <div className="font-black text-[13px] text-slate-950 pb-2 border-b border-slate-100 flex items-center justify-between">
-                        <span>Slot 4 Duration</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">Half-Year</span>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Days</label>
-                        <input type="number" value={pgCustomDuration4Days} onChange={(e) => setPgCustomDuration4Days(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">Upgrade Fee (₹)</label>
-                        <input type="number" value={pgCustomDuration4Price} onChange={(e) => setPgCustomDuration4Price(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-slate-50/60 font-black text-slate-950" />
-                      </div>
                     </div>
                   </div>
                 </div>
