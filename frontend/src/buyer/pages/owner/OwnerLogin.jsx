@@ -109,7 +109,7 @@ export const OwnerLogin = () => {
         }
         toast.success("Welcome back to Owner Portal!");
         await checkAuth();
-        navigate("/owner/dashboard", { replace: true });
+        window.location.href = "/owner/dashboard";
       } else {
         toast.error(data.detail || "Invalid owner mobile number or password.");
       }

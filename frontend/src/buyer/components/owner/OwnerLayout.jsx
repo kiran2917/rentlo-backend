@@ -140,8 +140,8 @@ export const OwnerLayout = () => {
     );
   }
 
-  if (!user || (!user.roles?.includes("owner") && !user.roles?.includes("agent") && user.role !== "owner" && user.role !== "agent")) {
-    return <Navigate to="/" replace />;
+  if (!user) {
+    return <Navigate to="/owner/login" replace />;
   }
 
   const isAgent = user.roles?.includes("agent") || user.role === "agent";
