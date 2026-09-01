@@ -59,7 +59,7 @@ export const OwnerVisits = () => {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ slot_date: form.slot_date, slot_time: form.slot_time, max_bookings: form.max_bookings }),
+          body: JSON.stringify({ slot_date: form.slot_date, slot_time: form.slot_time, max_bookings: Number(form.max_bookings) || 1 }),
         }
       );
       if (r.ok) {
@@ -210,9 +210,12 @@ export const OwnerVisits = () => {
                 <input
                   type="number"
                   min="1"
-                  max="10"
+                  max="100"
                   value={form.max_bookings}
-                  onChange={(e) => setForm({ ...form, max_bookings: parseInt(e.target.value) || 1 })}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setForm({ ...form, max_bookings: val === "" ? "" : Number(val) });
+                  }}
                   className="w-full h-11 px-3 rounded-xl border text-[13px] font-bold outline-none shadow-sm"
                   style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
                 />

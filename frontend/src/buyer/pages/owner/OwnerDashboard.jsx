@@ -2127,8 +2127,10 @@ export const OwnerDashboard = () => {
                               min="1"
                               value={item.rooms}
                               onChange={(e) => {
-                                const rooms = Math.max(1, parseInt(e.target.value) || 1);
-                                const tot = rooms * (item.beds_per_room || type.defaultBeds);
+                                const val = e.target.value;
+                                const rooms = val === "" ? "" : Number(val);
+                                const numericRooms = typeof rooms === "number" ? Math.max(1, rooms) : 1;
+                                const tot = numericRooms * (item.beds_per_room || type.defaultBeds);
                                 setBedForm((prev) => ({
                                   ...prev,
                                   room_inventory: {
@@ -2136,7 +2138,7 @@ export const OwnerDashboard = () => {
                                     [type.key]: {
                                       ...item,
                                       rooms,
-                                      available_beds: Math.min(item.available_beds, tot),
+                                      available_beds: typeof item.available_beds === "number" ? Math.min(item.available_beds, tot) : item.available_beds,
                                     },
                                   },
                                 }));
@@ -2153,15 +2155,15 @@ export const OwnerDashboard = () => {
                             <input
                               type="number"
                               min="0"
-                              max={item.rooms * (item.beds_per_room || type.defaultBeds)}
+                              max={typeof item.rooms === "number" ? item.rooms * (item.beds_per_room || type.defaultBeds) : undefined}
                               value={item.available_beds}
                               onChange={(e) => {
-                                const avail = Math.max(0, parseInt(e.target.value) || 0);
+                                const val = e.target.value;
                                 setBedForm((prev) => ({
                                   ...prev,
                                   room_inventory: {
                                     ...prev.room_inventory,
-                                    [type.key]: { ...item, available_beds: avail },
+                                    [type.key]: { ...item, available_beds: val === "" ? "" : Number(val) },
                                   },
                                 }));
                               }}
@@ -2179,12 +2181,12 @@ export const OwnerDashboard = () => {
                               min="0"
                               value={item.rent}
                               onChange={(e) => {
-                                const rent = Math.max(0, parseInt(e.target.value) || 0);
+                                const val = e.target.value;
                                 setBedForm((prev) => ({
                                   ...prev,
                                   room_inventory: {
                                     ...prev.room_inventory,
-                                    [type.key]: { ...item, rent },
+                                    [type.key]: { ...item, rent: val === "" ? "" : Number(val) },
                                   },
                                 }));
                               }}
