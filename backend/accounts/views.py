@@ -1123,15 +1123,20 @@ class AdminOwnerKYCListView(generics.ListAPIView):
     def get_queryset(self):
         from django.db.models import Q
         status_filter = self.request.query_params.get('status')
-        if status_filter == 'all':
+        if status_filter == 'pending':
+            return User.objects.filter(
+                Q(owner_kyc_status='submitted') | 
+                (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='') & ~Q(owner_kyc_status='verified'))
+            ).order_by('-date_joined')
+        elif status_filter == 'verified':
+            return User.objects.filter(owner_kyc_status='verified').order_by('-date_joined')
+        elif status_filter == 'rejected':
+            return User.objects.filter(owner_kyc_status='rejected').order_by('-date_joined')
+        else:
             return User.objects.filter(
                 Q(owner_kyc_status__in=['submitted', 'verified', 'rejected']) |
                 (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url=''))
             ).order_by('-date_joined')
-        return User.objects.filter(
-            Q(owner_kyc_status='submitted') | 
-            (Q(ownership_document_url__isnull=False) & ~Q(ownership_document_url='') & ~Q(owner_kyc_status='verified'))
-        ).order_by('-date_joined')
 
 
 class AdminOwnerKYCReviewView(APIView):

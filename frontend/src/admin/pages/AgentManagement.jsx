@@ -8,6 +8,8 @@ export const AgentManagement = () => {
   const [agents, setAgents] = useState([]);
   const [agentKycs, setAgentKycs] = useState([]);
   const [ownerKycs, setOwnerKycs] = useState([]);
+  const [ownerFilter, setOwnerFilter] = useState("all"); // "all" | "submitted" | "verified" | "rejected"
+  const [selectedOwnerDoc, setSelectedOwnerDoc] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedKyc, setSelectedKyc] = useState(null);
@@ -29,7 +31,7 @@ export const AgentManagement = () => {
 
   const fetchOwnerKycs = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/owner-kyc/?status=all`, {
         credentials: "include"
       });
       if (res.ok) {
@@ -487,41 +489,87 @@ export const AgentManagement = () => {
         {/* TAB 3: OWNER IDENTITY VERIFICATIONS */}
         {activeTab === "owner_kyc" && (
           <div className="space-y-6">
-            {ownerKycs.length === 0 ? (
+            {/* Sub-Filters */}
+            <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+              {[
+                { id: "all", label: "All Owners", count: ownerKycs.length, icon: "groups" },
+                { id: "submitted", label: "Pending Verification", count: ownerKycs.filter(o => o.owner_kyc_status === 'submitted' || (!o.owner_kyc_status && o.ownership_document_url)).length, icon: "hourglass_empty", color: "text-amber-500" },
+                { id: "verified", label: "Approved & Verified", count: ownerKycs.filter(o => o.owner_kyc_status === 'verified').length, icon: "verified", color: "text-emerald-500" },
+                { id: "rejected", label: "Rejected", count: ownerKycs.filter(o => o.owner_kyc_status === 'rejected').length, icon: "cancel", color: "text-red-500" },
+              ].map((filter) => {
+                const isActive = ownerFilter === filter.id;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => setOwnerFilter(filter.id)}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer"
+                    style={{
+                      backgroundColor: isActive ? "var(--surface)" : "transparent",
+                      color: isActive ? "var(--ink)" : "var(--text-muted)",
+                      boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                      border: isActive ? "1px solid var(--border)" : "1px solid transparent"
+                    }}
+                  >
+                    <span className={`material-symbols-outlined text-[16px] ${filter.color || ""}`}>{filter.icon}</span>
+                    {filter.label}
+                    <span className={`px-1.5 py-0.5 text-[10px] rounded-full font-black ${isActive ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>
+                      {filter.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* List */}
+            {ownerKycs.filter(o => {
+              if (ownerFilter === "all") return true;
+              if (ownerFilter === "submitted") return o.owner_kyc_status === "submitted" || (!o.owner_kyc_status && o.ownership_document_url);
+              return o.owner_kyc_status === ownerFilter;
+            }).length === 0 ? (
               <div className="rounded-3xl p-12 text-center border shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 border" style={{ backgroundColor: "var(--surface-alt)", color: "var(--accent)", borderColor: "var(--border)" }}>
                   <span className="material-symbols-outlined text-[32px]">assignment_ind</span>
                 </div>
-                <h3 className="text-[18px] font-extrabold mb-1" style={{ color: "var(--ink)" }}>No Pending Owner Verifications</h3>
+                <h3 className="text-[18px] font-extrabold mb-1" style={{ color: "var(--ink)" }}>No Records Found</h3>
                 <p className="text-[13px] max-w-md mx-auto" style={{ color: "var(--text-muted)" }}>
-                  There are no pending owner identity or ownership document verifications to review.
+                  There are no owner verifications matching the selected filter.
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {ownerKycs.map((owner) => (
+                {ownerKycs.filter(o => {
+                  if (ownerFilter === "all") return true;
+                  if (ownerFilter === "submitted") return o.owner_kyc_status === "submitted" || (!o.owner_kyc_status && o.ownership_document_url);
+                  return o.owner_kyc_status === ownerFilter;
+                }).map((owner) => (
                   <div
                     key={owner.id}
-                    className="rounded-3xl p-6 border shadow-sm flex flex-col justify-between space-y-4"
+                    className="rounded-3xl p-6 border shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-all"
                     style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "var(--border)" }}>
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white font-extrabold flex items-center justify-center border shadow-sm shrink-0">
-                            <span>{owner.username.charAt(0).toUpperCase()}</span>
+                            <span>{owner.username ? owner.username.charAt(0).toUpperCase() : "O"}</span>
                           </div>
                           <div>
                             <h3 className="font-extrabold text-[15px]" style={{ color: "var(--ink)" }}>
-                              @{owner.username}
+                              {owner.first_name ? `${owner.first_name} ${owner.last_name || ""}` : `@${owner.username}`}
                             </h3>
                             <p className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
-                              Phone: {owner.phone || "N/A"}
+                              @{owner.username} • {owner.phone || "No Phone"}
                             </p>
                           </div>
                         </div>
-                        <span className="px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase bg-amber-500/10 text-amber-500 border border-amber-500/30 animate-pulse">
-                          {owner.owner_kyc_status}
+                        <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-black uppercase border ${
+                          owner.owner_kyc_status === 'verified'
+                            ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
+                            : owner.owner_kyc_status === 'rejected'
+                            ? 'bg-red-500/10 text-red-600 border-red-500/30'
+                            : 'bg-amber-500/10 text-amber-500 border-amber-500/30 animate-pulse'
+                        }`}>
+                          {owner.owner_kyc_status === 'verified' ? '🟢 Verified' : owner.owner_kyc_status === 'rejected' ? '🔴 Rejected' : '🟡 Pending'}
                         </span>
                       </div>
 
@@ -532,45 +580,161 @@ export const AgentManagement = () => {
                           <span className="font-extrabold" style={{ color: "var(--ink)" }}>{owner.email || "N/A"}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10.5px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Doc URL:</span>
+                          <span className="text-[10.5px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Phone:</span>
+                          <span className="font-extrabold" style={{ color: "var(--ink)" }}>{owner.phone || "N/A"}</span>
+                        </div>
+                        <div className="flex items-center justify-between pt-1 border-t" style={{ borderColor: "var(--border)" }}>
+                          <span className="text-[10.5px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Document:</span>
                           {owner.ownership_document_url ? (
-                            <a
-                              href={owner.ownership_document_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="font-extrabold text-indigo-600 hover:underline flex items-center gap-1"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">open_in_new</span>
-                              View Uploaded File
-                            </a>
+                            <span className="text-emerald-600 font-extrabold flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[15px]">description</span>
+                              Document Uploaded
+                            </span>
                           ) : (
-                            <span className="text-slate-400">Not Uploaded</span>
+                            <span className="text-slate-400 font-medium">No Document</span>
                           )}
                         </div>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-2 pt-2 border-t" style={{ borderColor: "var(--border)" }}>
-                      <button
-                        onClick={() => handleReviewOwnerKyc(owner.id, 'reject')}
-                        className="flex-1 py-2 px-3 rounded-xl border text-[12px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">cancel</span>
-                        Reject
-                      </button>
-                      <button
-                        onClick={() => handleReviewOwnerKyc(owner.id, 'approve')}
-                        className="flex-1 py-2 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white font-extrabold text-[12px] uppercase transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                        Approve
-                      </button>
+                    <div className="space-y-2 pt-2 border-t" style={{ borderColor: "var(--border)" }}>
+                      {owner.ownership_document_url && (
+                        <button
+                          onClick={() => setSelectedOwnerDoc(owner)}
+                          className="w-full py-2 px-3 rounded-xl border text-[12px] font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm hover:bg-indigo-50 hover:text-indigo-600"
+                          style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+                        >
+                          <span className="material-symbols-outlined text-[16px] text-indigo-600">visibility</span>
+                          Inspect &amp; Review Document
+                        </button>
+                      )}
+
+                      <div className="flex items-center gap-2">
+                        {owner.owner_kyc_status !== 'rejected' && (
+                          <button
+                            onClick={() => handleReviewOwnerKyc(owner.id, 'reject')}
+                            className="flex-1 py-2 px-3 rounded-xl border text-[12px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">cancel</span>
+                            {owner.owner_kyc_status === 'verified' ? 'Revoke' : 'Reject'}
+                          </button>
+                        )}
+                        {owner.owner_kyc_status !== 'verified' && (
+                          <button
+                            onClick={() => handleReviewOwnerKyc(owner.id, 'approve')}
+                            className="flex-1 py-2 px-3 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white font-extrabold text-[12px] uppercase transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                            Approve
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* INSPECT OWNER DOCUMENT MODAL */}
+        {selectedOwnerDoc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
+            <div className="rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative border flex flex-col justify-between" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+              <button
+                onClick={() => setSelectedOwnerDoc(null)}
+                className="absolute top-4 right-4 w-9 h-9 rounded-full border flex items-center justify-center hover:opacity-80 transition-all cursor-pointer"
+                style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white font-extrabold flex items-center justify-center border shadow-sm shrink-0">
+                    <span>{selectedOwnerDoc.username ? selectedOwnerDoc.username.charAt(0).toUpperCase() : "O"}</span>
+                  </div>
+                  <div>
+                    <h2 className="text-[18px] font-extrabold" style={{ color: "var(--ink)" }}>
+                      Owner Verification: {selectedOwnerDoc.first_name ? `${selectedOwnerDoc.first_name} ${selectedOwnerDoc.last_name || ""}` : `@${selectedOwnerDoc.username}`}
+                    </h2>
+                    <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
+                      @{selectedOwnerDoc.username} • Phone: {selectedOwnerDoc.phone || "N/A"} • Email: {selectedOwnerDoc.email || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status Indicator */}
+                <div className="mb-4 flex items-center justify-between p-3 rounded-2xl border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Current Status:</span>
+                  <span className={`px-2.5 py-1 rounded-full text-[11px] font-black uppercase border ${
+                    selectedOwnerDoc.owner_kyc_status === 'verified'
+                      ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
+                      : selectedOwnerDoc.owner_kyc_status === 'rejected'
+                      ? 'bg-red-500/10 text-red-600 border-red-500/30'
+                      : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                  }`}>
+                    {selectedOwnerDoc.owner_kyc_status}
+                  </span>
+                </div>
+
+                {/* Document Display Box */}
+                <div className="mb-6 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Uploaded Ownership / Identity Document</p>
+                    <a
+                      href={selectedOwnerDoc.ownership_document_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[12px] font-extrabold text-indigo-600 hover:underline inline-flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                      Open in New Tab
+                    </a>
+                  </div>
+                  <div className="min-h-[250px] max-h-[420px] rounded-2xl border overflow-hidden flex items-center justify-center p-2" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                    {selectedOwnerDoc.ownership_document_url?.toLowerCase().endsWith('.pdf') ? (
+                      <iframe
+                        src={selectedOwnerDoc.ownership_document_url}
+                        className="w-full h-96 rounded-xl"
+                        title="Owner Document PDF"
+                      />
+                    ) : (
+                      <img
+                        src={selectedOwnerDoc.ownership_document_url}
+                        alt="Owner Document"
+                        className="max-h-96 w-auto object-contain rounded-xl shadow-sm"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border)" }}>
+                <button
+                  onClick={() => {
+                    handleReviewOwnerKyc(selectedOwnerDoc.id, 'reject');
+                    setSelectedOwnerDoc(null);
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/30 font-extrabold text-[12px] uppercase cursor-pointer hover:bg-red-500/20 flex items-center gap-1.5"
+                >
+                  <span className="material-symbols-outlined text-[16px]">cancel</span>
+                  Reject Verification
+                </button>
+                <button
+                  onClick={() => {
+                    handleReviewOwnerKyc(selectedOwnerDoc.id, 'approve');
+                    setSelectedOwnerDoc(null);
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white font-extrabold text-[12px] uppercase shadow-md cursor-pointer flex items-center gap-1.5"
+                >
+                  <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                  Approve &amp; Verify Owner
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
