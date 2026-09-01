@@ -1479,9 +1479,9 @@ export const Settings = () => {
               )}
             </div>
 
-            {/* Payment Bypasses Card */}
+            {/* Development & Testing Platform Bypass Rules */}
             <div
-              className="rounded-3xl p-8 border shadow-sm transition-all duration-300"
+              className="rounded-3xl p-6 sm:p-8 border shadow-sm transition-all duration-300"
               style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
             >
               <h2
@@ -1491,19 +1491,40 @@ export const Settings = () => {
                 <span className="material-symbols-outlined text-purple-500 text-[22px]">
                   admin_panel_settings
                 </span>
-                Development & Testing Payment Bypass Rules
+                Development &amp; Testing Platform Bypass Rules
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="flex items-start justify-between p-5 rounded-2xl border bg-amber-500/10 border-amber-500/30">
+                  <div>
+                    <h3 className="font-extrabold text-[14px] text-amber-700 flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[18px]">bolt</span>
+                      OTP Bypass Mode (Use 123456)
+                    </h3>
+                    <p className="text-[11.5px] text-amber-800/80 mt-1">
+                      Bypass SMS OTP verification across all roles. Allows using <strong>123456</strong> for instant login &amp; signup.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOtpBypassEnabled(!otpBypassEnabled)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
+                      otpBypassEnabled ? 'bg-amber-600' : 'bg-slate-500/50'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${otpBypassEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
+                </div>
+
                 <div className="flex items-start justify-between p-5 rounded-2xl border bg-surface-alt border-border">
                   <div>
                     <h3 className="font-bold text-[14px] text-ink">Bypass Buyer Payments</h3>
-                    <p className="text-[12px] text-text-muted mt-1">Allow buyers to unlock contact details for free without payment.</p>
+                    <p className="text-[12px] text-text-muted mt-1">Allow buyers to unlock contact details without payment.</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setBypassBuyer(!bypassBuyer)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
                       bypassBuyer ? 'bg-black' : 'bg-slate-500/50'
                     }`}
                   >
@@ -1519,7 +1540,7 @@ export const Settings = () => {
                   <button
                     type="button"
                     onClick={() => setBypassOwner(!bypassOwner)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
                       bypassOwner ? 'bg-black' : 'bg-slate-500/50'
                     }`}
                   >
@@ -1740,76 +1761,7 @@ export const Settings = () => {
               </div>
             </div>
 
-            {/* Payment Bypasses */}
-            <div
-              className="rounded-3xl p-8 border shadow-sm transition-all duration-300"
-              style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
-            >
-              <h2
-                className="text-[16px] font-extrabold tracking-tight flex items-center gap-2 mb-6 border-b pb-4"
-                style={{ color: "var(--ink)", borderColor: "var(--border)" }}
-              >
-                <span className="material-symbols-outlined text-purple-500 text-[22px]">
-                  admin_panel_settings
-                </span>
-                Development & Testing Payment Bypass Rules
-              </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex items-start justify-between p-5 rounded-2xl border bg-amber-500/10 border-amber-500/30">
-                  <div>
-                    <h3 className="font-extrabold text-[14px] text-amber-700 flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-[18px]">bolt</span>
-                      OTP Bypass Mode (Use 123456)
-                    </h3>
-                    <p className="text-[11.5px] text-amber-800/80 mt-1">
-                      Bypass SMS OTP verification across all roles. Allows using <strong>123456</strong> for instant login &amp; signup.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setOtpBypassEnabled(!otpBypassEnabled)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
-                      otpBypassEnabled ? 'bg-amber-600' : 'bg-slate-500/50'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${otpBypassEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
-                </div>
-
-                <div className="flex items-start justify-between p-5 rounded-2xl border bg-surface-alt border-border">
-                  <div>
-                    <h3 className="font-bold text-[14px] text-ink">Bypass Buyer Payments</h3>
-                    <p className="text-[12px] text-text-muted mt-1">Allow buyers to unlock contact details without payment.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setBypassBuyer(!bypassBuyer)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
-                      bypassBuyer ? 'bg-black' : 'bg-slate-500/50'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${bypassBuyer ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
-                </div>
-
-                <div className="flex items-start justify-between p-5 rounded-2xl border bg-surface-alt border-border">
-                  <div>
-                    <h3 className="font-bold text-[14px] text-ink">Bypass Owner Listing Fees</h3>
-                    <p className="text-[12px] text-text-muted mt-1">Allow owners to post listings for free without buying packages.</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setBypassOwner(!bypassOwner)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors cursor-pointer ${
-                      bypassOwner ? 'bg-black' : 'bg-slate-500/50'
-                    }`}
-                  >
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${bypassOwner ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
-                </div>
-              </div>
-            </div>
 
             {/* Change Password Card */}
             <div
