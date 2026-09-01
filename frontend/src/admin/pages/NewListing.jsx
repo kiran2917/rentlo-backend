@@ -1735,10 +1735,84 @@ export const NewListing = () => {
                     </span>{" "}
                     Exact Location
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Dedicated State & District / City Selectors */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-black uppercase tracking-wider" style={{ color: "var(--ink)" }}>
+                        Select State <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={selectedStateKey}
+                          onChange={(e) => {
+                            const stateKey = e.target.value;
+                            setSelectedStateKey(stateKey);
+                            const stateData = STATE_CITY_DATA[stateKey];
+                            if (stateData) {
+                              const firstCity = stateData.cities[0];
+                              const newCityId = firstCity ? firstCity.id : "all";
+                              setSelectedCityId(newCityId);
+                              setMapCenter(firstCity ? firstCity.center : stateData.center);
+                              setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
+                            }
+                          }}
+                          className="w-full h-11 pl-3.5 pr-10 rounded-xl border font-bold text-xs sm:text-sm outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 appearance-none cursor-pointer shadow-xs"
+                          style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
+                        >
+                          {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
+                            <option key={key} value={key}>
+                              🏛️ {data.name}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[20px] pointer-events-none" style={{ color: "var(--text-muted)" }}>
+                          expand_more
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-black uppercase tracking-wider" style={{ color: "var(--ink)" }}>
+                        Select District / City <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={selectedCityId}
+                          onChange={(e) => {
+                            const cityId = e.target.value;
+                            setSelectedCityId(cityId);
+                            const stateData = STATE_CITY_DATA[selectedStateKey];
+                            if (stateData) {
+                              if (cityId === "all") {
+                                setMapCenter(stateData.center);
+                                setMapZoom(stateData.zoom);
+                              } else {
+                                const matchCity = stateData.cities.find((c) => c.id === cityId);
+                                if (matchCity) {
+                                  setMapCenter(matchCity.center);
+                                  setMapZoom(matchCity.zoom);
+                                }
+                              }
+                            }
+                          }}
+                          className="w-full h-11 pl-3.5 pr-10 rounded-xl border font-bold text-xs sm:text-sm outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 appearance-none cursor-pointer shadow-xs"
+                          style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
+                        >
+                          <option value="all">📍 All Cities in {STATE_CITY_DATA[selectedStateKey]?.name || "State"}</option>
+                          {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
+                            <option key={city.id} value={city.id}>
+                              📍 {city.name}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[20px] pointer-events-none" style={{ color: "var(--text-muted)" }}>
+                          expand_more
+                        </span>
+                      </div>
+                    </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-[9px] font-bold mb-1 uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                      <label className="block text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                         Exact Address *
                       </label>
                       <textarea
@@ -1746,7 +1820,7 @@ export const NewListing = () => {
                         rows="2"
                         value={formData.exact_address}
                         onChange={(e) => setFormData({ ...formData, exact_address: e.target.value })}
-                        className="w-full rounded-xl border p-4 text-[11px] font-semibold transition-all outline-none resize-none"
+                        className="w-full rounded-xl border p-4 text-[11px] font-semibold transition-all outline-none resize-none shadow-xs"
                         style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                         placeholder="Pin point the property on the map below to auto-fill this, or type manually"
                       ></textarea>
@@ -1755,7 +1829,7 @@ export const NewListing = () => {
                     <div className="md:col-span-2 space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="block text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                          Map Location *
+                          Map Location (Drop Pin) *
                         </label>
                         <div className="flex items-center gap-2">
                           <button
@@ -1773,81 +1847,7 @@ export const NewListing = () => {
                           )}
                         </div>
                       </div>
-                      <div className="h-[350px] rounded-2xl overflow-hidden border-2 border-slate-200 shadow-inner relative group z-0 isolate">
-                        {/* FLOATING LOCATION ZOOM SELECTOR TOOLBAR */}
-                        <div className="absolute top-3 left-14 right-3 z-10 bg-white/95 backdrop-blur-md border border-slate-200/90 p-2 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-2 transition-all">
-                          <div className="flex items-center gap-1.5 px-2 text-slate-800 text-[11px] font-black uppercase tracking-wider shrink-0">
-                            <span className="material-symbols-outlined text-[16px] text-indigo-600">travel_explore</span>
-                            <span className="hidden sm:inline">Zoom Map To:</span>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-2 flex-1 justify-end">
-                            {/* State Selector */}
-                            <div className="relative flex-1 min-w-[130px] max-w-[200px]">
-                              <select
-                                value={selectedStateKey}
-                                onChange={(e) => {
-                                  const stateKey = e.target.value;
-                                  setSelectedStateKey(stateKey);
-                                  const stateData = STATE_CITY_DATA[stateKey];
-                                  if (stateData) {
-                                    const firstCity = stateData.cities[0];
-                                    const newCityId = firstCity ? firstCity.id : "all";
-                                    setSelectedCityId(newCityId);
-                                    setMapCenter(firstCity ? firstCity.center : stateData.center);
-                                    setMapZoom(firstCity ? firstCity.zoom : stateData.zoom);
-                                  }
-                                }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-indigo-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
-                              >
-                                {Object.entries(STATE_CITY_DATA).map(([key, data]) => (
-                                  <option key={key} value={key}>
-                                    🏛️ {data.name}
-                                  </option>
-                                ))}
-                              </select>
-                              <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">
-                                expand_more
-                              </span>
-                            </div>
-
-                            {/* District / City Selector */}
-                            <div className="relative flex-1 min-w-[130px] max-w-[200px]">
-                              <select
-                                value={selectedCityId}
-                                onChange={(e) => {
-                                  const cityId = e.target.value;
-                                  setSelectedCityId(cityId);
-                                  const stateData = STATE_CITY_DATA[selectedStateKey];
-                                  if (stateData) {
-                                    if (cityId === "all") {
-                                      setMapCenter(stateData.center);
-                                      setMapZoom(stateData.zoom);
-                                    } else {
-                                      const matchCity = stateData.cities.find((c) => c.id === cityId);
-                                      if (matchCity) {
-                                        setMapCenter(matchCity.center);
-                                        setMapZoom(matchCity.zoom);
-                                      }
-                                    }
-                                  }
-                                }}
-                                className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-300/80 text-slate-800 rounded-xl text-[11px] font-extrabold py-1.5 pl-3 pr-7 outline-none focus:border-indigo-600 focus:bg-white cursor-pointer shadow-xs transition-all appearance-none"
-                              >
-                                <option value="all">📍 All Cities</option>
-                                {STATE_CITY_DATA[selectedStateKey]?.cities.map((city) => (
-                                  <option key={city.id} value={city.id}>
-                                    📍 {city.name}
-                                  </option>
-                                ))}
-                              </select>
-                              <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-slate-400 pointer-events-none">
-                                expand_more
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
+                      <div className="h-[350px] rounded-2xl overflow-hidden border-2 shadow-inner relative" style={{ borderColor: "var(--border)" }}>
                         <MapContainer
                           center={position ? [position.lat, position.lng] : mapCenter}
                           zoom={mapZoom}
@@ -1862,15 +1862,12 @@ export const NewListing = () => {
                           />
                         </MapContainer>
                       </div>
+                      <p className="text-[11px] font-semibold flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
+                        <span className="material-symbols-outlined text-[15px] text-indigo-600">info</span>
+                        Click anywhere on the map to drop a pin. You can drag the pin to adjust your exact property location.
+                      </p>
                     </div>
                   </div>
-                  <p className="text-[9px] mt-3 font-medium flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-                    <span className="material-symbols-outlined text-[11px]">
-                      info
-                    </span>{" "}
-                    Click anywhere on the map to drop a pin. You can drag the
-                    pin to adjust.
-                  </p>
                 </div>
 
                 <div className="rounded-2xl p-4 sm:p-8 border shadow-inner mt-6" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
