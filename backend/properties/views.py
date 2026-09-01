@@ -260,9 +260,9 @@ class PropertyListCreateView(generics.ListCreateAPIView):
                 save_kwargs['registration_razorpay_signature'] = registration_razorpay_signature
                 save_kwargs['status'] = 'approved' # Auto approve!
 
-                # Issue multi-listing credits if a 3pack or 6pack pass was purchased
+                # Issue multi-listing credits if a 3pack, 6pack, or 10pack pass was purchased
                 plan_str = str(requested_plan).lower()
-                total_plan_credits = 6 if ('6pack' in plan_str or '6' in plan_str) else (3 if ('3pack' in plan_str or '3' in plan_str) else 1)
+                total_plan_credits = 10 if ('10pack' in plan_str or '10' in plan_str) else (6 if ('6pack' in plan_str or '6' in plan_str) else (3 if ('3pack' in plan_str or '3' in plan_str) else 1))
                 remaining_to_issue = total_plan_credits - 1
 
                 prop_cat = serializer.validated_data.get('property_category') or 'residential'
