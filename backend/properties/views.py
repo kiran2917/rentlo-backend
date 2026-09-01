@@ -979,16 +979,18 @@ class PublicPropertyDetailView(generics.RetrieveAPIView):
 
 class MyPropertiesView(generics.ListAPIView):
     serializer_class = PropertySerializer
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
-        roles = user.roles if hasattr(user, 'roles') else [user.role]
-        if 'owner' in roles:
-            from django.db.models import Count
-            return Property.objects.filter(owner=user).annotate(
-                unlock_count=Count('unlocks', filter=Q(unlocks__status='paid'))
-            ).order_by('-created_at')
-        return Property.objects.none()
+        if not user or not user.is_authenticated:
+            return Property.objects.none()
+        from django.db.models import Count, Q
+        return Property.objects.filter(
+            Q(owner=user) | Q(agent=user)
+        ).annotate(
+            unlock_count=Count('unlocks', filter=Q(unlocks__status='paid'))
+        ).order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

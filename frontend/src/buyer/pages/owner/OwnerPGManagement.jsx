@@ -209,40 +209,49 @@ export const OwnerPGManagement = () => {
       </div>
 
       {/* Property Selector & Occupancy Bar */}
-      <div className="p-6 rounded-3xl border bg-white shadow-xs border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="p-5 sm:p-6 rounded-3xl border bg-white shadow-xs border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex-1 w-full md:w-auto">
-          <label className="block text-xs font-black uppercase tracking-wider text-slate-400 mb-1.5">Select PG / Co-Living Building</label>
-          <select
-            value={selectedPropertyId}
-            onChange={(e) => setSelectedPropertyId(e.target.value)}
-            className="w-full md:max-w-lg h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm text-slate-800 outline-none focus:border-indigo-500 transition-all shadow-xs"
-          >
-            {properties.map((p) => (
-              <option key={p.id} value={p.id}>{formatPGLabel(p)}</option>
-            ))}
-          </select>
-          {currentProperty && (
-            <p className="text-[11.5px] font-semibold text-slate-500 mt-2 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-indigo-600">location_on</span>
-              <span>{currentProperty.exact_address || currentProperty.display_address || currentProperty.display_title || "PG Building Location"}</span>
-            </p>
-          )}
+          <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Select PG / Co-Living Building</label>
+          <div className="relative w-full md:max-w-lg">
+            <select
+              value={selectedPropertyId}
+              onChange={(e) => setSelectedPropertyId(e.target.value)}
+              className="w-full h-12 pl-4 pr-10 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer"
+            >
+              {properties.length === 0 ? (
+                <option value="" disabled>No PG / Hostel properties listed yet</option>
+              ) : (
+                properties.map((p) => (
+                  <option key={p.id} value={p.id}>{formatPGLabel(p)}</option>
+                ))
+              )}
+            </select>
+            <span className="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-[20px]">
+              expand_more
+            </span>
+          </div>
         </div>
+        {currentProperty && (
+          <p className="text-[11.5px] font-semibold text-slate-500 mt-2 flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[16px] text-indigo-600">location_on</span>
+            <span>{currentProperty.exact_address || currentProperty.display_address || currentProperty.display_title || "PG Building Location"}</span>
+          </p>
+        )}
+      </div>
 
-        {/* Real-Time KPI Stats */}
-        <div className="grid grid-cols-3 gap-4 w-full md:w-auto">
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-center min-w-[100px]">
-            <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Capacity</p>
-            <p className="text-xl font-black text-slate-900 mt-0.5">{totalCapacity} Beds</p>
-          </div>
-          <div className="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-100 text-center min-w-[100px]">
-            <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Occupied</p>
-            <p className="text-xl font-black text-indigo-700 mt-0.5">{occupiedBeds} Persons</p>
-          </div>
-          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-100 text-center min-w-[100px]">
-            <p className="text-[10px] font-black uppercase tracking-wider text-emerald-500">Free Beds</p>
-            <p className="text-xl font-black text-emerald-700 mt-0.5">{availableBeds} Beds</p>
-          </div>
+      {/* Real-Time KPI Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-xs text-center">
+          <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Capacity</p>
+          <p className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">{totalCapacity} Beds</p>
+        </div>
+        <div className="p-4 sm:p-5 rounded-3xl bg-indigo-50/50 border border-indigo-100 shadow-xs text-center">
+          <p className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Occupied</p>
+          <p className="text-xl sm:text-2xl font-black text-indigo-700 mt-0.5">{occupiedBeds} Persons</p>
+        </div>
+        <div className="p-4 sm:p-5 rounded-3xl bg-emerald-50/50 border border-emerald-100 shadow-xs text-center">
+          <p className="text-[10px] font-black uppercase tracking-wider text-emerald-500">Free Beds</p>
+          <p className="text-xl sm:text-2xl font-black text-emerald-700 mt-0.5">{availableBeds} Beds</p>
         </div>
       </div>
 
@@ -385,99 +394,99 @@ export const OwnerPGManagement = () => {
 
       {/* Digital Check-In Modal */}
       {showCheckInModal && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-xl bg-white rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-xl bg-white rounded-3xl p-5 sm:p-7 md:p-8 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setShowCheckInModal(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute top-4 sm:top-5 right-4 sm:right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[18px]">close</span>
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="flex items-center gap-3 mb-5 sm:mb-6 pb-4 border-b border-slate-100 pr-10">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-[24px]">person_add</span>
               </div>
               <div>
-                <h3 className="text-xl font-black text-slate-900">Resident Digital Check-In</h3>
-                <p className="text-xs text-slate-400 font-semibold">Allocate bed, assign rent & record deposit</p>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900">Resident Digital Check-In</h3>
+                <p className="text-[11px] sm:text-xs text-slate-400 font-semibold">Allocate bed, assign rent & record deposit</p>
               </div>
             </div>
 
             <form onSubmit={handleCheckIn} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Resident Full Name *</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Resident Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Priya Nair"
                     value={formData.resident_name}
                     onChange={(e) => setFormData({ ...formData, resident_name: e.target.value })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Phone Number *</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     placeholder="e.g. 9845012345"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Room Number *</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Room Number *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 204"
                     value={formData.room_number}
                     onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Bed Number *</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Bed Number *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Bed A, Single"
                     value={formData.bed_number}
                     onChange={(e) => setFormData({ ...formData, bed_number: e.target.value })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Monthly Rent (₹) *</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Monthly Rent (₹) *</label>
                   <input
                     type="number"
                     required
                     value={formData.monthly_rent}
                     onChange={(e) => setFormData({ ...formData, monthly_rent: Number(e.target.value) })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-wider text-slate-500 mb-1.5">Security Deposit (₹)</label>
+                  <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Security Deposit (₹)</label>
                   <input
                     type="number"
                     value={formData.security_deposit}
                     onChange={(e) => setFormData({ ...formData, security_deposit: Number(e.target.value) })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 outline-none focus:border-indigo-500"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-white font-bold text-xs sm:text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
                   <p className="font-extrabold text-xs text-slate-800">Monthly Mess / Meals</p>
                   <p className="text-[11px] text-slate-400">Include 3-times food service</p>
@@ -490,18 +499,18 @@ export const OwnerPGManagement = () => {
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex gap-3">
+              <div className="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row gap-2.5">
                 <button
                   type="button"
                   onClick={() => setShowCheckInModal(false)}
-                  className="flex-1 h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs uppercase cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs uppercase cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:opacity-90 transition-all cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
                 >
                   {submitting ? "Checking In..." : "Complete Check-In"}
                 </button>

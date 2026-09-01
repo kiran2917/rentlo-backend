@@ -18,7 +18,6 @@ import { OwnerVerification } from "./buyer/pages/owner/OwnerVerification";
 import { OwnerNewListing } from "./buyer/pages/owner/OwnerNewListing";
 import { OwnerChat } from "./buyer/pages/owner/OwnerChat";
 import { OwnerVisits } from "./buyer/pages/owner/OwnerVisits";
-import { OwnerTenantKYC } from "./buyer/pages/owner/OwnerTenantKYC";
 import { OwnerPGManagement } from "./buyer/pages/owner/OwnerPGManagement";
 import { OwnerMaintenance } from "./buyer/pages/owner/OwnerMaintenance";
 import { BuyerChat } from "./buyer/pages/BuyerChat";
@@ -132,7 +131,6 @@ function App() {
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
             <Route path="/owner/leads" element={<OwnerLeads />} />
             <Route path="/owner/verification" element={<OwnerVerification />} />
-            <Route path="/owner/tenant-verification" element={<OwnerTenantKYC />} />
             <Route path="/owner/pg-residents" element={<OwnerPGManagement />} />
             <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
             <Route path="/owner/new-listing" element={<OwnerNewListing />} />

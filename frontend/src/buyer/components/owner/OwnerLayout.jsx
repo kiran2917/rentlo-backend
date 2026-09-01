@@ -149,7 +149,6 @@ export const OwnerLayout = () => {
   const navItems = [
     { to: "/owner/dashboard", label: t("owner.myProperties", "My Properties"), icon: "home_work" },
     { to: "/owner/leads", label: t("owner.leads", "Leads"), icon: "contacts" },
-    { to: "/owner/tenant-verification", label: t("owner.tenantKyc", "Tenant KYC & Verification"), icon: "verified_user" },
     { to: "/owner/pg-residents", label: t("owner.pgResidents", "PG & Hostel Roster"), icon: "bed" },
     { to: "/owner/maintenance", label: t("owner.maintenance", "Maintenance & Repairs"), icon: "handyman" },
     { to: "/owner/visits", label: t("owner.visitSlots", "Visit Slots"), icon: "calendar_month" },
