@@ -3,6 +3,7 @@ import { useAuth } from "../../shared/context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdminLayout } from "../components/AdminLayout";
+import { ConfirmModal } from "../../shared/components/ConfirmModal";
 
 export const FraudFlags = () => {
   const { user } = useAuth();
@@ -61,8 +62,13 @@ export const FraudFlags = () => {
     }
   };
 
-  const suspendAgent = async (id) => {
-    if (!window.confirm("Are you sure you want to suspend this agent?")) return;
+  const suspendAgent = (id) => {
+    setAgentToSuspend(id);
+  };
+
+  const confirmSuspendAgent = async () => {
+    if (!agentToSuspend) return;
+    const id = agentToSuspend;
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/moderation/agents/${id}/suspend/`,
@@ -73,14 +79,15 @@ export const FraudFlags = () => {
         },
       );
       if (res.ok) {
-        toast.success("Agent suspended successfully.");
+        toast.success("Agent suspended successfully");
         fetchFraudList();
       } else {
-        const errData = await res.json().catch(() => ({}));
-        toast.error(errData.detail || "Failed to suspend agent");
+        toast.error("Failed to suspend agent");
       }
-    } catch (e) {
-      toast.error("Failed to suspend agent");
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setAgentToSuspend(null);
     }
   };
 
@@ -408,6 +415,17 @@ export const FraudFlags = () => {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={!!agentToSuspend}
+        title="Suspend Agent?"
+        message="Are you sure you want to suspend this agent? They will no longer be able to manage listings or perform verification duties."
+        confirmText="Suspend Agent"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmSuspendAgent}
+        onCancel={() => setAgentToSuspend(null)}
+      />
     </AdminLayout>
   );
 };

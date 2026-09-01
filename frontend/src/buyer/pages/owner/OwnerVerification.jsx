@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../../shared/context/AuthContext";
+import { ConfirmModal } from "../../../shared/components/ConfirmModal";
 
 export const OwnerVerification = () => {
   const { user, checkAuth } = useAuth();
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -15,8 +17,12 @@ export const OwnerVerification = () => {
     }
   };
 
-  const handleResetVerification = async () => {
-    if (!window.confirm("Are you sure you want to delete your current submission and upload a new document?")) return;
+  const handleResetVerification = () => {
+    setShowResetModal(true);
+  };
+
+  const confirmResetVerification = async () => {
+    setShowResetModal(false);
     setCancelling(true);
     try {
       const patchRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/buyer/profile/`, {
@@ -196,6 +202,17 @@ export const OwnerVerification = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showResetModal}
+        title="Reset Document Verification?"
+        message="Are you sure you want to delete your current submission and upload a new document? This will remove your previous document."
+        confirmText="Reset & Upload New"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmResetVerification}
+        onCancel={() => setShowResetModal(false)}
+      />
     </div>
   );
 };

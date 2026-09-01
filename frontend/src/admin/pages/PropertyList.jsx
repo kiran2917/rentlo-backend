@@ -4,6 +4,7 @@ import { AdminLayout } from "../components/AdminLayout";
 import { useAuth } from "../../shared/context/AuthContext";
 import { toast } from "react-toastify";
 import { PropertyLifecycleModal } from "../components/PropertyLifecycleModal";
+import { ConfirmModal } from "../../shared/components/ConfirmModal";
 
 export const PropertyList = () => {
   const navigate = useNavigate();
@@ -54,8 +55,15 @@ export const PropertyList = () => {
     }
   };
 
-  const handleDeletePhoto = async (mediaId) => {
-    if (!window.confirm("Are you sure you want to remove this photo?")) return;
+  const [photoToDelete, setPhotoToDelete] = useState(null);
+
+  const handleDeletePhoto = (mediaId) => {
+    setPhotoToDelete(mediaId);
+  };
+
+  const confirmDeletePhoto = async () => {
+    if (!photoToDelete) return;
+    const mediaId = photoToDelete;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/media/${mediaId}/`, {
         method: "DELETE",
@@ -80,11 +88,12 @@ export const PropertyList = () => {
           return p;
         }));
       } else {
-        const errData = await res.json().catch(() => ({}));
-        toast.error(errData.detail || "Failed to remove photo.");
+        toast.error("Failed to remove photo.");
       }
     } catch (err) {
       toast.error("Network error removing photo.");
+    } finally {
+      setPhotoToDelete(null);
     }
   };
 
@@ -1030,6 +1039,17 @@ export const PropertyList = () => {
         isOpen={!!selectedPropertyForLifecycle}
         propertyId={selectedPropertyForLifecycle}
         onClose={() => setSelectedPropertyForLifecycle(null)}
+      />
+
+      <ConfirmModal
+        isOpen={!!photoToDelete}
+        title="Remove Photo?"
+        message="Are you sure you want to remove this photo from the property listing? This action cannot be undone."
+        confirmText="Remove Photo"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDeletePhoto}
+        onCancel={() => setPhotoToDelete(null)}
       />
     </AdminLayout>
   );

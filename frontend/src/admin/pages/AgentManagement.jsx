@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AdminLayout } from "../components/AdminLayout";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ConfirmModal } from "../../shared/components/ConfirmModal";
 
 export const AgentManagement = () => {
   const [activeTab, setActiveTab] = useState("agents"); // "agents" | "kyc" | "owner_kyc"
@@ -97,10 +98,15 @@ export const AgentManagement = () => {
     }
   };
 
-  const handleToggleAgentStatus = async (agentId, currentActive) => {
-    const actionText = currentActive ? "deactivate (remove)" : "reactivate";
-    if (!window.confirm(`Are you sure you want to ${actionText} this Field Agent?`)) return;
+  const [agentToToggle, setAgentToToggle] = useState(null);
 
+  const handleToggleAgentStatus = (agentId, currentActive) => {
+    setAgentToToggle({ id: agentId, currentActive });
+  };
+
+  const confirmToggleAgent = async () => {
+    if (!agentToToggle) return;
+    const { id: agentId } = agentToToggle;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/accounts/admin/crm/${agentId}/toggle-status/`, {
         method: "POST",
@@ -116,6 +122,8 @@ export const AgentManagement = () => {
       }
     } catch (e) {
       toast.error("Network error updating status.");
+    } finally {
+      setAgentToToggle(null);
     }
   };
 
@@ -914,6 +922,17 @@ export const AgentManagement = () => {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={!!agentToToggle}
+        title={agentToToggle?.currentActive ? "Deactivate Field Agent?" : "Reactivate Field Agent?"}
+        message={`Are you sure you want to ${agentToToggle?.currentActive ? "deactivate" : "reactivate"} this Field Agent?`}
+        confirmText={agentToToggle?.currentActive ? "Deactivate" : "Reactivate"}
+        cancelText="Cancel"
+        type={agentToToggle?.currentActive ? "danger" : "warning"}
+        onConfirm={confirmToggleAgent}
+        onCancel={() => setAgentToToggle(null)}
+      />
     </AdminLayout>
   );
 };

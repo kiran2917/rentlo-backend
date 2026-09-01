@@ -4,6 +4,7 @@ import { AdminLayout } from "../components/AdminLayout";
 import { useAuth } from "../../shared/context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ConfirmModal } from "../../shared/components/ConfirmModal";
 const THEME_OPTIONS = [
   // Minimal Style
   {
@@ -428,8 +429,14 @@ export const Settings = () => {
     }
   };
 
-  const handleClearAuditLogs = async () => {
-    if (!window.confirm("Are you sure you want to clear all audit log history?")) return;
+  const [showClearAuditModal, setShowClearAuditModal] = useState(false);
+
+  const handleClearAuditLogs = () => {
+    setShowClearAuditModal(true);
+  };
+
+  const confirmClearAuditLogs = async () => {
+    setShowClearAuditModal(false);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/audit-logs/`, {
         method: "DELETE",
@@ -2671,6 +2678,17 @@ export const Settings = () => {
         )}
 
       </div>
+
+      <ConfirmModal
+        isOpen={showClearAuditModal}
+        title="Clear Audit Log History?"
+        message="Are you sure you want to clear all platform setting audit log records? This action cannot be reversed."
+        confirmText="Clear Audit Logs"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmClearAuditLogs}
+        onCancel={() => setShowClearAuditModal(false)}
+      />
     </AdminLayout>
   );
 };

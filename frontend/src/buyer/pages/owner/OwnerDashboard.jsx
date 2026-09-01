@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { loadRazorpayScript } from "../../../shared/utils/razorpayLoader";
 import { PropertyImageSlideshow } from "../../../shared/components/PropertyImageSlideshow";
 import { Translate } from "../../../shared/components/Translate";
+import { ConfirmModal } from "../../../shared/components/ConfirmModal";
 
 export const OwnerDashboard = () => {
   const { user } = useAuth();
@@ -113,8 +114,15 @@ export const OwnerDashboard = () => {
     setActiveEditTab("pricing");
   };
 
-  const handleMediaDelete = async (mediaId) => {
-    if (!window.confirm("Are you sure you want to delete this photo? This will instantly trigger admin review for safety.")) return;
+  const [photoToDelete, setPhotoToDelete] = useState(null);
+
+  const handleMediaDelete = (mediaId) => {
+    setPhotoToDelete(mediaId);
+  };
+
+  const confirmDeleteMedia = async () => {
+    if (!photoToDelete) return;
+    const mediaId = photoToDelete;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/properties/media/${mediaId}/`, {
         method: "DELETE",
@@ -132,6 +140,8 @@ export const OwnerDashboard = () => {
     } catch (err) {
       console.error(err);
       toast.error("Network error deleting photo.");
+    } finally {
+      setPhotoToDelete(null);
     }
   };
 
@@ -3104,6 +3114,17 @@ export const OwnerDashboard = () => {
           </div>
         </div>
       , document.body)}
+
+      <ConfirmModal
+        isOpen={!!photoToDelete}
+        title="Delete Photo?"
+        message="Are you sure you want to delete this photo? This will instantly trigger admin review for safety."
+        confirmText="Delete Photo"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDeleteMedia}
+        onCancel={() => setPhotoToDelete(null)}
+      />
     </div>
   );
 };

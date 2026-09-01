@@ -13,6 +13,7 @@ import { loadRazorpayScript } from "../../shared/utils/razorpayLoader";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { STATE_CITY_DATA, MapFlyToHandler } from "../../shared/constants/locationData";
+import { ConfirmModal } from "../../shared/components/ConfirmModal";
 
 // Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -573,20 +574,26 @@ export const NewListing = () => {
     localStorage.setItem("admin_onboarding_step", step.toString());
   }, [step]);
 
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+
   const handleDiscard = () => {
-    if (window.confirm("Are you sure you want to discard your draft? This will clear all entered data.")) {
-      localStorage.removeItem("admin_onboarding_form_data");
-      localStorage.removeItem("admin_onboarding_step");
-      localStorage.removeItem("admin_onboarding_position");
-      localStorage.removeItem("admin_onboarding_signature_data");
-      localStorage.removeItem("admin_onboarding_uploaded_media");
-      setSignatureData(null);
-      setUploadedMediaList([]);
-      setFormData({ ...defaultAdminFormData, target_upi_id: localStorage.getItem("defaultUpiId") || "rentlo@ybl" });
-      setStep(1);
-      setFiles([]);
-      setPosition(null);
-    }
+    setShowDiscardModal(true);
+  };
+
+  const confirmDiscard = () => {
+    localStorage.removeItem("admin_onboarding_form_data");
+    localStorage.removeItem("admin_onboarding_step");
+    localStorage.removeItem("admin_onboarding_position");
+    localStorage.removeItem("admin_onboarding_signature_data");
+    localStorage.removeItem("admin_onboarding_uploaded_media");
+    setSignatureData(null);
+    setUploadedMediaList([]);
+    setFormData({ ...defaultAdminFormData, target_upi_id: localStorage.getItem("defaultUpiId") || "rentlo@ybl" });
+    setStep(1);
+    setFiles([]);
+    setPosition(null);
+    setShowDiscardModal(false);
+    toast.info("Draft discarded.");
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -2952,6 +2959,17 @@ export const NewListing = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showDiscardModal}
+        title="Discard Draft?"
+        message="Are you sure you want to discard your draft? This will clear all entered property details, pin location, and photos."
+        confirmText="Discard Draft"
+        cancelText="Keep Editing"
+        type="danger"
+        onConfirm={confirmDiscard}
+        onCancel={() => setShowDiscardModal(false)}
+      />
     </AdminLayout>
   );
 };

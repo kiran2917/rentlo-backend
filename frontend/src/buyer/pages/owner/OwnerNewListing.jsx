@@ -26,6 +26,7 @@ import { get, set, del, keys } from "idb-keyval";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { STATE_CITY_DATA, MapFlyToHandler } from "../../../shared/constants/locationData";
+import { ConfirmModal } from "../../../shared/components/ConfirmModal";
 
 // Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -935,20 +936,26 @@ export const OwnerNewListing = () => {
     localStorage.setItem("owner_onboarding_step", step.toString());
   }, [step]);
 
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+
   const handleDiscard = () => {
-    if (window.confirm("Are you sure you want to discard your draft? This will clear all entered data.")) {
-      localStorage.removeItem("owner_onboarding_form_data");
-      localStorage.removeItem("owner_onboarding_step");
-      localStorage.removeItem("owner_onboarding_position");
-      localStorage.removeItem("owner_onboarding_signature_data");
-      localStorage.removeItem("owner_onboarding_uploaded_media");
-      setSignatureData(null);
-      setUploadedMediaList([]);
-      setFormData({ ...defaultOwnerFormData, owner_name: (user.first_name || user.last_name) ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : "", owner_phone: user.phone || "" });
-      setStep(1);
-      setFiles([]);
-      setPosition(null);
-    }
+    setShowDiscardModal(true);
+  };
+
+  const confirmDiscard = () => {
+    localStorage.removeItem("owner_onboarding_form_data");
+    localStorage.removeItem("owner_onboarding_step");
+    localStorage.removeItem("owner_onboarding_position");
+    localStorage.removeItem("owner_onboarding_signature_data");
+    localStorage.removeItem("owner_onboarding_uploaded_media");
+    setSignatureData(null);
+    setUploadedMediaList([]);
+    setFormData({ ...defaultOwnerFormData, owner_name: (user.first_name || user.last_name) ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : "", owner_phone: user.phone || "" });
+    setStep(1);
+    setFiles([]);
+    setPosition(null);
+    setShowDiscardModal(false);
+    toast.info("Draft discarded.");
   };
 
 
@@ -3919,6 +3926,17 @@ export const OwnerNewListing = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={showDiscardModal}
+        title="Discard Draft?"
+        message="Are you sure you want to discard your draft? This will clear all entered property details, pin location, and photos."
+        confirmText="Discard Draft"
+        cancelText="Keep Editing"
+        type="danger"
+        onConfirm={confirmDiscard}
+        onCancel={() => setShowDiscardModal(false)}
+      />
     </div>
   );
 };
