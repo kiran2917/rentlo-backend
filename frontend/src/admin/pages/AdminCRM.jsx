@@ -89,7 +89,7 @@ export const AdminCRM = () => {
   };
 
   const totalBuyers = users.filter(u => u.roles?.includes("buyer") || u.role === "buyer").length;
-  const totalOwners = users.filter(u => u.roles?.includes("owner") || u.role === "owner").length;
+  const totalOwners = users.filter(u => u.roles?.includes("owner") || u.role === "owner" || (u.owner_stats?.total_properties_listed > 0)).length;
   const totalUnlocks = users.reduce((acc, u) => acc + (u.buyer_stats?.total_unlocks_count || 0), 0);
   const totalListings = users.reduce((acc, u) => acc + (u.owner_stats?.total_properties_listed || 0), 0);
 
@@ -321,7 +321,7 @@ export const AdminCRM = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {users.map((u) => {
               const isBuyer = u.roles?.includes("buyer") || u.role === "buyer";
-              const isOwner = u.roles?.includes("owner") || u.role === "owner";
+              const isOwner = u.roles?.includes("owner") || u.role === "owner" || (u.owner_stats?.total_properties_listed > 0);
               const activePass = u.buyer_stats?.active_pass;
 
               return (

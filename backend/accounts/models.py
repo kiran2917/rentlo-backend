@@ -28,6 +28,10 @@ class User(AbstractUser):
     def role(self):
         if self.is_superuser or self.is_staff or 'admin' in (self.roles or []):
             return 'admin'
+        if 'owner' in (self.roles or []) or (hasattr(self, 'owned_properties') and self.owned_properties.exists()):
+            return 'owner'
+        if 'agent' in (self.roles or []):
+            return 'agent'
         return self.roles[0] if self.roles else 'buyer'
 
 

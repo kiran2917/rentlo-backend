@@ -978,7 +978,38 @@ class AdminCRMListView(APIView):
             users = users.filter(is_active=False)
 
         if role and role != 'all':
-            users = users.filter(roles__icontains=role)
+            if role == 'owner':
+                users = users.filter(
+                    Q(roles__contains=['owner']) |
+                    Q(roles__contains='owner') |
+                    Q(roles__icontains='owner') |
+                    Q(owned_properties__isnull=False)
+                ).distinct()
+            elif role == 'buyer':
+                users = users.filter(
+                    Q(roles__contains=['buyer']) |
+                    Q(roles__contains='buyer') |
+                    Q(roles__icontains='buyer')
+                ).distinct()
+            elif role == 'agent':
+                users = users.filter(
+                    Q(roles__contains=['agent']) |
+                    Q(roles__contains='agent') |
+                    Q(roles__icontains='agent')
+                ).distinct()
+            elif role in ['sub_admin', 'subadmin']:
+                users = users.filter(
+                    Q(roles__contains=['sub_admin']) |
+                    Q(roles__contains=['subadmin']) |
+                    Q(roles__icontains='sub_admin') |
+                    Q(roles__icontains='subadmin')
+                ).distinct()
+            else:
+                users = users.filter(
+                    Q(roles__contains=[role]) |
+                    Q(roles__contains=role) |
+                    Q(roles__icontains=role)
+                ).distinct()
 
         if search:
             users = users.filter(
@@ -989,7 +1020,7 @@ class AdminCRMListView(APIView):
                 Q(last_name__icontains=search)
             )
 
-        if pass_filter:
+        if pass_filter and pass_filter != 'all':
             if pass_filter == 'has_active_pass':
                 active_user_ids = BuyerSubscription.objects.filter(status='active', credits_remaining__gt=0).values_list('buyer_id', flat=True)
                 users = users.filter(id__in=active_user_ids)
@@ -1000,12 +1031,12 @@ class AdminCRMListView(APIView):
                 user_ids = BuyerSubscription.objects.filter(pass_type=pass_filter).values_list('buyer_id', flat=True)
                 users = users.filter(id__in=user_ids)
 
-        if listing_filter:
+        if listing_filter and listing_filter != 'all':
             if listing_filter == 'has_active':
-                owner_ids = Property.objects.filter(status='active').values_list('owner_id', flat=True)
+                owner_ids = Property.objects.filter(status__in=['live', 'active']).values_list('owner_id', flat=True)
                 users = users.filter(id__in=owner_ids)
             elif listing_filter == 'has_pending':
-                owner_ids = Property.objects.filter(status='pending').values_list('owner_id', flat=True)
+                owner_ids = Property.objects.filter(status__in=['pending_review', 'pending']).values_list('owner_id', flat=True)
                 users = users.filter(id__in=owner_ids)
             elif listing_filter == 'no_listings':
                 owner_ids = Property.objects.values_list('owner_id', flat=True)
@@ -1042,8 +1073,8 @@ class AdminCRMListView(APIView):
 
             # Gather Owner Stats
             owner_props = Property.objects.filter(owner=u)
-            active_props = owner_props.filter(status='active').count()
-            pending_props = owner_props.filter(status='pending').count()
+            active_props = owner_props.filter(status__in=['live', 'active']).count()
+            pending_props = owner_props.filter(status__in=['pending_review', 'pending']).count()
             
             # Total leads received on owner's properties
             leads_received = Unlock.objects.filter(property__owner=u, status='paid').count()
@@ -1057,6 +1088,14 @@ class AdminCRMListView(APIView):
                 'created_at': p.created_at
             } for p in owner_props[:5]]
 
+            u_roles = list(u.roles) if isinstance(u.roles, list) else ([u.roles] if u.roles else ['buyer'])
+            if owner_props.exists() and 'owner' not in u_roles:
+                u_roles.append('owner')
+
+            primary_role = u.role
+            if owner_props.exists():
+                primary_role = 'owner'
+
             crm_data.append({
                 'id': u.id,
                 'username': u.username,
@@ -1064,8 +1103,8 @@ class AdminCRMListView(APIView):
                 'last_name': u.last_name,
                 'email': u.email,
                 'phone': u.phone,
-                'role': u.roles[0] if isinstance(u.roles, list) and len(u.roles) > 0 else (str(u.roles) if u.roles else 'user'),
-                'roles': u.roles if isinstance(u.roles, list) else [str(u.roles)],
+                'role': primary_role,
+                'roles': u_roles,
                 'is_active': u.is_active,
                 'date_joined': u.date_joined,
 

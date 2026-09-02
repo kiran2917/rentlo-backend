@@ -66,6 +66,8 @@ class UserSerializer(serializers.ModelSerializer):
         r = list(obj.roles) if obj.roles else []
         if (obj.is_superuser or obj.is_staff) and 'admin' not in r:
             r.append('admin')
+        if hasattr(obj, 'owned_properties') and obj.owned_properties.exists() and 'owner' not in r:
+            r.append('owner')
         return r
 
     def get_kyc_status(self, obj):

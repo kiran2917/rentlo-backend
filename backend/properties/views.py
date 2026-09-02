@@ -177,14 +177,21 @@ class PropertyListCreateView(generics.ListCreateAPIView):
                     print(f"--- SMS SENT TO {owner_phone} ---")
                     print(f"Your temporary Rentlo password is: {password}. Please login and reset it.")
                 else:
-                    if 'owner' not in owner.roles:
-                        owner.roles.append('owner')
-                        owner.save()
+                    roles_list = list(owner.roles or [])
+                    if 'owner' not in roles_list:
+                        roles_list.append('owner')
+                        owner.roles = roles_list
+                        owner.save(update_fields=['roles'])
             else:
                 raise PermissionDenied("Staff members must specify the owner's phone number to create a property listing.")
         else:
             owner = user
             added_by = 'self'
+            roles_list = list(user.roles or [])
+            if 'owner' not in roles_list:
+                roles_list.append('owner')
+                user.roles = roles_list
+                user.save(update_fields=['roles'])
 
         agent = user if 'agent' in roles else None
         
