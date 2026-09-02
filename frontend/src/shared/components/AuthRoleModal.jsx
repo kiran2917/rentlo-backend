@@ -171,6 +171,29 @@ export const AuthRoleModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
+        {/* Staff & Admin Console Shortcut */}
+        <div className="mt-4 pt-3.5 border-t flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
+          <span className="text-xs font-semibold opacity-70" style={{ color: "var(--ink)" }}>
+            Rentlo Administrator or Field Agent?
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              navigate("/admin/login");
+            }}
+            className="text-xs font-black px-3 py-1.5 rounded-xl border hover:opacity-100 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-98"
+            style={{
+              backgroundColor: "var(--surface-alt)",
+              borderColor: "var(--border)",
+              color: "var(--ink)",
+            }}
+          >
+            <span className="material-symbols-outlined text-sm">shield_person</span>
+            Admin Login →
+          </button>
+        </div>
+
         {/* DPDP Compliance & Privacy Policy Footer */}
         <div className="mt-6 pt-4 border-t text-center" style={{ borderColor: "var(--border)" }}>
           <p className="text-[11.5px] font-medium opacity-70" style={{ color: "var(--ink)" }}>

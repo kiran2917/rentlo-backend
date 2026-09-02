@@ -23,32 +23,28 @@ export const NotAuthorized = () => {
             block
           </span>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">
-          Access Denied
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
+          Admin Sign-In Required
         </h1>
-        <p className="text-[13px] text-slate-500 font-medium mb-8">
-          You do not have the necessary permissions to view this page. This area
-          is restricted to administrators and moderators.
+        <p className="text-[13px] text-slate-600 font-medium mb-6 leading-relaxed">
+          You are currently signed in as a <span className="font-bold text-slate-900 uppercase">Tenant / Buyer</span> ({user?.phone || user?.username || "Guest"}).
           <br />
-          <br />
-          Current Role:{" "}
-          <span className="font-bold text-slate-900 uppercase tracking-wide">
-            {user?.role || "Unknown"}
-          </span>
+          This area is strictly restricted to platform administrators, moderators, and verification agents.
         </p>
 
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           <button
-            onClick={() => navigate(-1)}
-            className="w-full h-10 px-4 bg-slate-900 hover:bg-black text-white text-[13px] font-medium rounded-lg transition-colors shadow-sm"
+            onClick={() => logout("/admin/login")}
+            className="w-full h-11 px-4 bg-slate-950 hover:bg-black text-white text-[13px] font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
           >
-            Go Back
+            <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
+            Sign in with Admin / Staff Account
           </button>
           <button
-            onClick={handleLogout}
-            className="w-full h-10 px-4 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-[13px] font-medium rounded-lg transition-colors shadow-sm"
+            onClick={() => navigate("/")}
+            className="w-full h-10 px-4 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[13px] font-semibold rounded-xl transition-colors cursor-pointer"
           >
-            Sign out and switch account
+            Return to Marketplace
           </button>
         </div>
       </div>

@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [userId]);
 
-  const logout = async () => {
+  const logout = async (redirectPath = "/") => {
     try {
       // 1. Disconnect device push notifications for this user
       await unsubscribeUserFromPush();
@@ -89,8 +89,9 @@ export const AuthProvider = ({ children }) => {
     // Clear any stored session data
     try { localStorage.clear(); } catch (_) {}
     try { sessionStorage.clear(); } catch (_) {}
-    // Hard redirect to home — do NOT reload() as that re-runs checkAuth with stale cookies
-    window.location.href = "/";
+    if (redirectPath) {
+      window.location.href = redirectPath;
+    }
   };
 
   const authValue = React.useMemo(
