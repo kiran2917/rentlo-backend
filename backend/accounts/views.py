@@ -1229,6 +1229,53 @@ class AdminTestSMSView(APIView):
                 'detail': f'Failed to send SMS via {provider.upper()}. Please verify your API Key / Auth Token / Sender ID and ensure account balance/DLT approval.'
             }, status=status.HTTP_400_BAD_REQUEST)
 
+class AdminSyncOwnerAccountView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
 
+    def post(self, request):
+        phone = request.data.get('phone')
+        password = request.data.get('password')
+        name = request.data.get('name', 'Property Owner')
 
+        if not phone:
+            return Response({'detail': 'Phone number is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        clean = re.sub(r'\D', '', str(phone))
+        if len(clean) >= 10:
+            clean = clean[-10:]
+        else:
+            return Response({'detail': 'Invalid 10-digit mobile number.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(Q(phone=clean) | Q(phone__endswith=clean)).first()
+        if not user:
+            pwd = password or 'rentlo@123'
+            user = User.objects.create_user(
+                username=f"owner_{clean}",
+                phone=clean,
+                password=pwd,
+                roles=['owner'],
+                first_name=name,
+                is_phone_verified=True
+            )
+            created = True
+        else:
+            roles = list(user.roles or [])
+            if 'owner' not in roles:
+                roles.append('owner')
+                user.roles = roles
+            if password:
+                user.set_password(password)
+            user.is_phone_verified = True
+            user.is_active = True
+            user.save()
+            created = False
+
+        from properties.models import Property
+        linked_count = Property.objects.filter(Q(owner_phone=clean) | Q(owner_phone__endswith=clean)).update(owner=user)
+
+        return Response({
+            'detail': f"Owner account {'created' if created else 'updated'} successfully for +91 {clean}.",
+            'phone': clean,
+            'username': user.username,
+            'linked_properties': linked_count
+        })

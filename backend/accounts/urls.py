@@ -5,7 +5,7 @@ from .views import (
     SubAdminListView, SubAdminCreateView, SubAdminUpdatePermissionsView, SubAdminDeleteView,
     AgentKYCView, ChangePasswordView, ForgotPasswordRequestOTPView, ForgotPasswordResetView,
     AdminAgentKYCListView, AdminAgentKYCReviewView, AdminCRMListView, AdminUserToggleStatusView, CheckPhoneView,
-    AdminOwnerKYCListView, AdminOwnerKYCReviewView, AdminTestSMSView
+    AdminOwnerKYCListView, AdminOwnerKYCReviewView, AdminTestSMSView, AdminSyncOwnerAccountView
 )
 
 urlpatterns = [
@@ -29,6 +29,7 @@ urlpatterns = [
     # Admin CRM & User Management
     path('admin/crm/', AdminCRMListView.as_view(), name='admin-crm-list'),
     path('admin/crm/<int:pk>/toggle-status/', AdminUserToggleStatusView.as_view(), name='admin-crm-toggle-status'),
+    path('admin/sync-owner-account/', AdminSyncOwnerAccountView.as_view(), name='admin-sync-owner-account'),
 
     # Agent KYC & Bank Payout Details
     path('agent/kyc/', AgentKYCView.as_view(), name='agent-kyc'),

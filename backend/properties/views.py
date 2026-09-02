@@ -1,4 +1,6 @@
 import random
+import re
+import logging
 import razorpay
 import hmac
 import hashlib
@@ -155,33 +157,48 @@ class PropertyListCreateView(generics.ListCreateAPIView):
         owner_name = self.request.data.get('owner_name')
         owner_password = self.request.data.get('owner_password')
         
-        is_staff = any(r in ['agent', 'admin', 'sub_admin', 'subadmin'] for r in roles)
+        is_staff = (
+            getattr(user, 'is_superuser', False) or 
+            getattr(user, 'is_staff', False) or 
+            getattr(user, 'role', '') in ['admin', 'agent', 'sub_admin', 'subadmin'] or
+            any(r in ['agent', 'admin', 'sub_admin', 'subadmin'] for r in roles)
+        )
+
+        clean_owner_phone = re.sub(r'\D', '', str(owner_phone or ''))
+        if len(clean_owner_phone) >= 10:
+            clean_owner_phone = clean_owner_phone[-10:]
+
         if is_staff:
             added_by = f"{'agent' if 'agent' in roles else 'admin'}:{user.id}"
-            if owner_phone:
+            if clean_owner_phone:
                 from accounts.models import User
-                import uuid
-                owner = User.objects.filter(phone=owner_phone).first()
+                owner = User.objects.filter(
+                    Q(phone=clean_owner_phone) | Q(phone__endswith=clean_owner_phone)
+                ).first()
                 if not owner:
-                    username = f"owner_{uuid.uuid4().hex[:10]}"
-                    password = owner_password or uuid.uuid4().hex[:8]
+                    username = f"owner_{clean_owner_phone}"
+                    password = owner_password or "rentlo@123"
                     owner = User.objects.create_user(
                         username=username, 
                         password=password, 
-                        phone=owner_phone,
+                        phone=clean_owner_phone,
                         roles=['owner'],
-                        force_password_change=True,
-                        first_name=owner_name or ''
+                        force_password_change=False,
+                        first_name=owner_name or '',
+                        is_phone_verified=True
                     )
-                    # Simulated SMS delivery of temporary password
-                    print(f"--- SMS SENT TO {owner_phone} ---")
-                    print(f"Your temporary Rentlo password is: {password}. Please login and reset it.")
                 else:
                     roles_list = list(owner.roles or [])
                     if 'owner' not in roles_list:
                         roles_list.append('owner')
                         owner.roles = roles_list
-                        owner.save(update_fields=['roles'])
+                    if owner_password:
+                        owner.set_password(owner_password)
+                    if owner_name and not owner.first_name:
+                        owner.first_name = owner_name
+                    owner.is_phone_verified = True
+                    owner.is_active = True
+                    owner.save()
             else:
                 raise PermissionDenied("Staff members must specify the owner's phone number to create a property listing.")
         else:
@@ -191,7 +208,13 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             if 'owner' not in roles_list:
                 roles_list.append('owner')
                 user.roles = roles_list
-                user.save(update_fields=['roles'])
+            if owner_password:
+                user.set_password(owner_password)
+            if owner_name and not user.first_name:
+                user.first_name = owner_name
+            if clean_owner_phone and not user.phone:
+                user.phone = clean_owner_phone
+            user.save()
 
         agent = user if 'agent' in roles else None
         
@@ -201,6 +224,10 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             'owner': owner,
             'added_by': added_by
         }
+        if clean_owner_phone:
+            save_kwargs['owner_phone'] = clean_owner_phone
+        if owner_name:
+            save_kwargs['owner_name'] = owner_name
         
         # Calculate and save onboarding fee based on platform settings and property type
         settings_obj = PlatformSettings.load()
