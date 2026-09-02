@@ -228,8 +228,94 @@ class PropertySerializer(serializers.ModelSerializer):
         type_label = obj.get_property_type_display() if hasattr(obj, 'get_property_type_display') else 'Property'
         return f"{bhk_prefix}{type_label} {location_str}".strip()
 
-    def get_title(self, obj):
-        return self.get_display_title(obj)
+    def to_internal_value(self, data):
+        data = data.copy() if hasattr(data, 'copy') else dict(data)
+
+        # 1. Normalize furnishing_status
+        if 'furnishing_status' in data and data['furnishing_status']:
+            f = str(data['furnishing_status']).lower()
+            if f in ['semi_furnished', 'semi-furnished', 'semi', 'warm']:
+                data['furnishing_status'] = 'semi'
+            elif f in ['fully_furnished', 'fully-furnished', 'fully']:
+                data['furnishing_status'] = 'fully'
+            elif f in ['unfurnished', 'bare', 'bare_shell']:
+                data['furnishing_status'] = 'unfurnished'
+
+        # 2. Normalize preferred_tenants
+        if 'preferred_tenants' in data and data['preferred_tenants']:
+            pt = str(data['preferred_tenants']).lower()
+            if pt in ['anyone', 'any', 'all']:
+                data['preferred_tenants'] = 'any'
+            elif pt in ['girls_only', 'only_girls', 'girls']:
+                data['preferred_tenants'] = 'only_girls'
+            elif pt in ['boys_only', 'only_boys', 'boys']:
+                data['preferred_tenants'] = 'only_boys'
+            elif pt in ['family']:
+                data['preferred_tenants'] = 'family'
+            elif pt in ['bachelors']:
+                data['preferred_tenants'] = 'bachelors'
+            elif pt in ['company']:
+                data['preferred_tenants'] = 'company'
+
+        # 3. Normalize food_preference
+        if 'food_preference' in data and data['food_preference']:
+            fp = str(data['food_preference']).lower()
+            if fp in ['no_preference', 'any', 'all']:
+                data['food_preference'] = 'any'
+            elif fp in ['veg_only', 'veg']:
+                data['food_preference'] = 'veg_only'
+            elif fp in ['non_veg_allowed', 'non_veg', 'nonveg']:
+                data['food_preference'] = 'non_veg_allowed'
+
+        # 4. Normalize power_backup
+        if 'power_backup' in data and data['power_backup']:
+            pb = str(data['power_backup']).lower()
+            if 'full' in pb:
+                data['power_backup'] = 'full'
+            elif 'partial' in pb:
+                data['power_backup'] = 'partial'
+            else:
+                data['power_backup'] = 'none'
+
+        # 5. Normalize water_supply
+        if 'water_supply' in data and data['water_supply']:
+            ws = str(data['water_supply']).lower()
+            if 'both' in ws or '24' in ws:
+                data['water_supply'] = '24x7'
+            elif 'corp' in ws:
+                data['water_supply'] = 'corporation'
+            elif 'bore' in ws:
+                data['water_supply'] = 'borewell'
+
+        # 6. Normalize property_age (Integer or None)
+        if 'property_age' in data:
+            pa = str(data['property_age']).lower() if data['property_age'] is not None else ""
+            if pa in ['under construction', '0']:
+                data['property_age'] = 0
+            elif 'new' in pa or '0-1' in pa:
+                data['property_age'] = 1
+            elif '1-5' in pa:
+                data['property_age'] = 3
+            elif '5-10' in pa:
+                data['property_age'] = 7
+            elif '10+' in pa:
+                data['property_age'] = 12
+            elif pa.isdigit():
+                data['property_age'] = int(pa)
+            elif not pa or pa in ['none', 'null', 'select age', 'select direction']:
+                data['property_age'] = None
+
+        # 7. Normalize empty strings for integer fields to None
+        int_fields = [
+            'bedrooms', 'bathrooms', 'balconies', 'carpet_area', 'super_built_up_area',
+            'floor_number', 'total_floors', 'covered_parking_spots', 'open_parking_spots',
+            'lock_in_period_months', 'lease_term_months', 'total_beds', 'available_beds'
+        ]
+        for fld in int_fields:
+            if fld in data and (data[fld] == '' or data[fld] is None):
+                data[fld] = None
+
+        return super().to_internal_value(data)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

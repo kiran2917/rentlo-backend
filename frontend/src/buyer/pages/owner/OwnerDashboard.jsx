@@ -79,6 +79,18 @@ export const OwnerDashboard = () => {
 
   const handleEditClick = (prop) => {
     setEditingProp(prop);
+
+    // Normalize property_age for display in dropdown if numeric
+    let ageDisplay = prop.property_age ? String(prop.property_age) : "";
+    if (prop.property_age !== null && prop.property_age !== undefined) {
+      const ageNum = Number(prop.property_age);
+      if (ageNum === 0) ageDisplay = "Under Construction";
+      else if (ageNum <= 1) ageDisplay = "New (0-1 Years)";
+      else if (ageNum <= 5) ageDisplay = "1-5 Years";
+      else if (ageNum <= 10) ageDisplay = "5-10 Years";
+      else ageDisplay = "10+ Years";
+    }
+
     setEditForm({
       price: prop.price || "",
       security_deposit: prop.security_deposit || "",
@@ -93,22 +105,39 @@ export const OwnerDashboard = () => {
       balconies: prop.balconies || "",
       carpet_area: prop.carpet_area || "",
       super_built_up_area: prop.super_built_up_area || "",
-      floor_number: prop.floor_number || "",
-      total_floors: prop.total_floors || "",
+      floor_number: prop.floor_number ?? "",
+      total_floors: prop.total_floors ?? "",
       facing_direction: prop.facing_direction || "",
-      property_age: prop.property_age || "",
+      property_age: ageDisplay,
       furnishing_status: prop.furnishing_status || "unfurnished",
-      preferred_tenants: prop.preferred_tenants || "anyone",
-      food_preference: prop.food_preference || "no_preference",
+      preferred_tenants: prop.preferred_tenants || "any",
+      food_preference: prop.food_preference || "any",
       pet_policy: prop.pet_policy || "allowed",
       gated_security: prop.gated_security || false,
-      power_backup: prop.power_backup || "None",
-      water_supply: prop.water_supply || "Both",
+      power_backup: (prop.power_backup || "none").toLowerCase(),
+      water_supply: (prop.water_supply || "24x7").toLowerCase(),
       covered_parking_spots: prop.covered_parking_spots || "",
       open_parking_spots: prop.open_parking_spots || "",
       pg_gender: prop.pg_gender || "coed",
       amenities: prop.amenities || [],
-      media: prop.media || []
+      media: prop.media || [],
+
+      // Commercial fields:
+      commercial_building_type: prop.commercial_building_type || "independent",
+      commercial_washrooms: prop.commercial_washrooms || "private",
+      commercial_pantry: prop.commercial_pantry || "none",
+      commercial_central_ac: prop.commercial_central_ac || false,
+      retail_frontage_feet: prop.retail_frontage_feet || "",
+      warehouse_ceiling_height_feet: prop.warehouse_ceiling_height_feet || "",
+      warehouse_floor_load_capacity: prop.warehouse_floor_load_capacity || "",
+      heavy_vehicle_access: prop.heavy_vehicle_access || false,
+
+      // PG fields:
+      pg_sharing_type: prop.pg_sharing_type || "single",
+      pg_attached_washroom: prop.pg_attached_washroom || false,
+      pg_food_provided: prop.pg_food_provided || [],
+      total_beds: prop.total_beds || "",
+      available_beds: prop.available_beds || "",
     });
     setNewUploadedMedia([]);
     setActiveEditTab("pricing");
@@ -195,6 +224,28 @@ export const OwnerDashboard = () => {
     
     const priceChanged = Number(editForm.price) !== Number(editingProp.price);
     const photosAdded = newUploadedMedia.length > 0;
+
+    const isCommercial = editingProp?.property_category === "commercial" || 
+      ["shop", "retail", "office", "warehouse", "godown", "showroom", "industrial", "commercial", "coworking"].includes(editingProp?.property_type);
+
+    const isPg = editingProp?.property_category === "pg" || 
+      ["pg", "pg_hostel", "pg_single", "pg_double", "pg_triple"].includes(editingProp?.property_type) ||
+      editingProp?.property_type?.toLowerCase().includes("pg") ||
+      editingProp?.property_type?.toLowerCase().includes("hostel");
+
+    // Helper for property_age parsing to integer
+    const parseAge = (val) => {
+      if (!val) return null;
+      if (!isNaN(val)) return Number(val);
+      const s = String(val).toLowerCase();
+      if (s.includes("under")) return 0;
+      if (s.includes("0-1") || s.includes("new")) return 1;
+      if (s.includes("1-5")) return 3;
+      if (s.includes("5-10")) return 7;
+      if (s.includes("10+")) return 12;
+      const match = s.match(/\d+/);
+      return match ? parseInt(match[0], 10) : null;
+    };
     
     const payload = {
       price: editForm.price,
@@ -205,30 +256,61 @@ export const OwnerDashboard = () => {
       lock_in_period_months: editForm.lock_in_period_months ? Number(editForm.lock_in_period_months) : null,
       lease_term_months: editForm.lease_term_months ? Number(editForm.lease_term_months) : null,
       description: editForm.description,
-      bedrooms: editForm.bedrooms ? Number(editForm.bedrooms) : null,
-      bathrooms: editForm.bathrooms ? Number(editForm.bathrooms) : null,
-      balconies: editForm.balconies ? Number(editForm.balconies) : null,
       carpet_area: editForm.carpet_area ? Number(editForm.carpet_area) : null,
       super_built_up_area: editForm.super_built_up_area ? Number(editForm.super_built_up_area) : null,
-      floor_number: editForm.floor_number ? Number(editForm.floor_number) : null,
-      total_floors: editForm.total_floors ? Number(editForm.total_floors) : null,
+      floor_number: editForm.floor_number !== "" && editForm.floor_number !== null ? Number(editForm.floor_number) : null,
+      total_floors: editForm.total_floors !== "" && editForm.total_floors !== null ? Number(editForm.total_floors) : null,
       facing_direction: editForm.facing_direction || null,
-      property_age: editForm.property_age || null,
+      property_age: parseAge(editForm.property_age),
       furnishing_status: editForm.furnishing_status,
-      preferred_tenants: editForm.preferred_tenants,
-      food_preference: editForm.food_preference,
-      pet_policy: editForm.pet_policy,
+      power_backup: editForm.power_backup ? editForm.power_backup.toLowerCase() : "none",
+      water_supply: editForm.water_supply ? editForm.water_supply.toLowerCase() : "24x7",
+      covered_parking_spots: editForm.covered_parking_spots ? Number(editForm.covered_parking_spots) : 0,
+      open_parking_spots: editForm.open_parking_spots ? Number(editForm.open_parking_spots) : 0,
       gated_security: editForm.gated_security,
-      power_backup: editForm.power_backup,
-      water_supply: editForm.water_supply,
-      covered_parking_spots: editForm.covered_parking_spots ? Number(editForm.covered_parking_spots) : null,
-      open_parking_spots: editForm.open_parking_spots ? Number(editForm.open_parking_spots) : null,
-      pg_gender: editForm.pg_gender,
-      amenities: editForm.amenities,
+      amenities: editForm.amenities || [],
     };
+
+    if (isCommercial) {
+      payload.commercial_building_type = editForm.commercial_building_type || null;
+      payload.commercial_washrooms = editForm.commercial_washrooms || null;
+      payload.commercial_pantry = editForm.commercial_pantry || null;
+      payload.commercial_central_ac = !!editForm.commercial_central_ac;
+      payload.retail_frontage_feet = editForm.retail_frontage_feet ? Number(editForm.retail_frontage_feet) : null;
+      payload.warehouse_ceiling_height_feet = editForm.warehouse_ceiling_height_feet ? Number(editForm.warehouse_ceiling_height_feet) : null;
+      payload.warehouse_floor_load_capacity = editForm.warehouse_floor_load_capacity || null;
+      payload.heavy_vehicle_access = !!editForm.heavy_vehicle_access;
+      // Clear non-commercial fields
+      payload.bedrooms = null;
+      payload.bathrooms = null;
+      payload.balconies = null;
+      payload.preferred_tenants = 'any';
+      payload.food_preference = 'any';
+    } else if (isPg) {
+      payload.pg_sharing_type = editForm.pg_sharing_type || null;
+      payload.pg_attached_washroom = !!editForm.pg_attached_washroom;
+      payload.pg_food_provided = editForm.pg_food_provided || [];
+      payload.total_beds = editForm.total_beds ? Number(editForm.total_beds) : null;
+      payload.available_beds = editForm.available_beds ? Number(editForm.available_beds) : null;
+      payload.pg_gender = editForm.pg_gender || "coed";
+      payload.bedrooms = null;
+      payload.balconies = null;
+    } else {
+      // Residential
+      payload.bedrooms = editForm.bedrooms ? Number(editForm.bedrooms) : null;
+      payload.bathrooms = editForm.bathrooms ? Number(editForm.bathrooms) : null;
+      payload.balconies = editForm.balconies ? Number(editForm.balconies) : null;
+      payload.preferred_tenants = editForm.preferred_tenants || 'any';
+      payload.food_preference = editForm.food_preference || 'any';
+      payload.pet_policy = editForm.pet_policy || 'allowed';
+    }
     
     if (photosAdded) {
       payload.uploaded_media = newUploadedMedia;
+    }
+
+    if (editingProp.status === "rejected") {
+      payload.status = "pending_review";
     }
     
     try {
@@ -240,7 +322,9 @@ export const OwnerDashboard = () => {
       });
       
       if (res.ok) {
-        if (priceChanged || photosAdded) {
+        if (editingProp.status === "rejected") {
+          toast.success("🚀 Listing details updated and resubmitted for review!");
+        } else if (priceChanged || photosAdded) {
           toast.success("🎉 Edits saved! Because you changed rent/photos, listing is set to 'Pending Review' for admin approval.");
         } else {
           toast.success("✅ Edits saved and live instantly!");
@@ -249,7 +333,15 @@ export const OwnerDashboard = () => {
         fetchProperties();
       } else {
         const errData = await res.json().catch(() => ({}));
-        toast.error(errData.detail || "Failed to save edits.");
+        let errorMsg = errData.detail;
+        if (!errorMsg && typeof errData === 'object') {
+          const firstKey = Object.keys(errData)[0];
+          if (firstKey) {
+            const val = errData[firstKey];
+            errorMsg = `${firstKey}: ${Array.isArray(val) ? val.join(", ") : val}`;
+          }
+        }
+        toast.error(errorMsg || "Failed to save edits.");
       }
     } catch (err) {
       console.error(err);
@@ -309,11 +401,12 @@ export const OwnerDashboard = () => {
           under_negotiation: "⏸️ Property put Under Negotiation. New unlocks paused.",
           rented: "🏠 Property marked as Rented!",
           live: "✅ Property is now Live & open for new buyers!",
+          pending_review: "🚀 Listing resubmitted for review! Our moderation team will verify it shortly.",
         };
         toast.success(messages[newStatus] || `Status updated to ${newStatus}`);
         setProperties((prev) =>
           prev.map((p) =>
-            p.id === propertyId ? { ...p, status: newStatus } : p
+            p.id === propertyId ? { ...p, status: newStatus, rejection_reason: newStatus === "pending_review" ? null : p.rejection_reason } : p
           )
         );
       } else {
@@ -851,9 +944,6 @@ export const OwnerDashboard = () => {
 
   // Filtered properties
   const filteredProperties = safeProperties.filter((prop) => {
-    if (selectedStatusFilter === "all" && prop.status === "rejected") {
-      return false;
-    }
     if (selectedStatusFilter !== "all" && prop.status !== selectedStatusFilter) {
       return false;
     }
@@ -871,6 +961,24 @@ export const OwnerDashboard = () => {
     }
     return true;
   });
+
+  const isEditingCommercial = editingProp?.property_category === "commercial" || 
+    ["shop", "retail", "office", "warehouse", "godown", "showroom", "industrial", "commercial", "coworking"].includes(editingProp?.property_type);
+
+  const isEditingPg = editingProp?.property_category === "pg" || 
+    ["pg", "pg_hostel", "pg_single", "pg_double", "pg_triple"].includes(editingProp?.property_type) ||
+    editingProp?.property_type?.toLowerCase().includes("pg") ||
+    editingProp?.property_type?.toLowerCase().includes("hostel");
+
+  const isEditingResidential = !isEditingCommercial && !isEditingPg;
+
+  const isEditingWarehouse = isEditingCommercial && (
+    ["warehouse", "industrial"].includes(editingProp?.property_type) ||
+    editingProp?.property_type?.toLowerCase().includes("warehouse") ||
+    editingProp?.property_type?.toLowerCase().includes("godown")
+  );
+
+  const isEditingRetail = isEditingCommercial && ["retail", "shop", "showroom"].includes(editingProp?.property_type);
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -1441,6 +1549,17 @@ export const OwnerDashboard = () => {
                         >
                           <span className="material-symbols-outlined text-base">autorenew</span>
                           Renew &amp; Go Live Again
+                        </button>
+                      )}
+
+                      {/* Rejected → Resubmit for Review */}
+                      {prop.status === "rejected" && (
+                        <button
+                          onClick={() => handleStatusUpdate(prop.id, "pending_review")}
+                          className="w-full px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-indigo-600/20"
+                        >
+                          <span className="material-symbols-outlined text-base">publish</span>
+                          Resubmit for Review
                         </button>
                       )}
 
@@ -2585,8 +2704,13 @@ export const OwnerDashboard = () => {
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-indigo-600 text-2xl">edit_square</span>
                 <div>
-                  <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">Edit Listing Details</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Property ID #{editingProp.id} • Updates to Rent or Photos require Admin Approval.</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">Edit Listing Details</h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800">
+                      {editingProp.property_type?.replace(/_/g, " ") || editingProp.property_category}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Property ID #{editingProp.id} • {editingProp.property_category?.toUpperCase()} • Updates to Rent or Photos require Admin Approval.</p>
                 </div>
               </div>
               <button
@@ -2723,48 +2847,190 @@ export const OwnerDashboard = () => {
               {/* TAB 2: SPACE & SPECIFICATIONS */}
               {activeEditTab === "specs" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Bedrooms</label>
-                      <select
-                        value={editForm.bedrooms}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, bedrooms: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="">N/A</option>
-                        {[1, 2, 3, 4, 5].map(n => (
-                          <option key={n} value={n}>{n} BHK</option>
-                        ))}
-                      </select>
+                  {/* 1. RESIDENTIAL SPECIFIC */}
+                  {isEditingResidential && (
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Bedrooms</label>
+                        <select
+                          value={editForm.bedrooms}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, bedrooms: e.target.value }))}
+                          className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        >
+                          <option value="">Select BHK</option>
+                          {[1, 2, 3, 4, 5].map(n => (
+                            <option key={n} value={n}>{n} BHK</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Bathrooms</label>
+                        <select
+                          value={editForm.bathrooms}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, bathrooms: e.target.value }))}
+                          className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        >
+                          <option value="">Select Bathrooms</option>
+                          {[1, 2, 3, 4, 5].map(n => (
+                            <option key={n} value={n}>{n}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Balconies</label>
+                        <select
+                          value={editForm.balconies}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, balconies: e.target.value }))}
+                          className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        >
+                          <option value="">Select Balconies</option>
+                          {[0, 1, 2, 3, 4].map(n => (
+                            <option key={n} value={n}>{n}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Bathrooms</label>
-                      <select
-                        value={editForm.bathrooms}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, bathrooms: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="">N/A</option>
-                        {[1, 2, 3, 4, 5].map(n => (
-                          <option key={n} value={n}>{n}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Balconies</label>
-                      <select
-                        value={editForm.balconies}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, balconies: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="">N/A</option>
-                        {[0, 1, 2, 3, 4].map(n => (
-                          <option key={n} value={n}>{n}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                  )}
 
+                  {/* 2. COMMERCIAL SPECIFIC */}
+                  {isEditingCommercial && (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Washroom Facility</label>
+                          <select
+                            value={editForm.commercial_washrooms || "private"}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, commercial_washrooms: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="private">Private Washroom</option>
+                            <option value="shared">Shared / Common Washroom</option>
+                            <option value="none">No Washroom</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Building Type</label>
+                          <select
+                            value={editForm.commercial_building_type || "independent"}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, commercial_building_type: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="independent">Independent Commercial Building</option>
+                            <option value="business_park">Business / Tech Park</option>
+                            <option value="complex">Commercial Complex / Mall</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Warehouse / Godown / Industrial Specific Specs */}
+                      {isEditingWarehouse && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+                          <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Ceiling Height (Feet)</label>
+                            <input
+                              type="number"
+                              value={editForm.warehouse_ceiling_height_feet || ""}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, warehouse_ceiling_height_feet: e.target.value }))}
+                              placeholder="e.g. 24"
+                              className="w-full px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Floor Load Capacity</label>
+                            <input
+                              type="text"
+                              value={editForm.warehouse_floor_load_capacity || ""}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, warehouse_floor_load_capacity: e.target.value }))}
+                              placeholder="e.g. 5 Ton / sq.mt"
+                              className="w-full px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                            />
+                          </div>
+                          <div className="col-span-full flex items-center gap-2 pt-1">
+                            <input
+                              type="checkbox"
+                              id="heavy_vehicle_access"
+                              checked={editForm.heavy_vehicle_access || false}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, heavy_vehicle_access: e.target.checked }))}
+                              className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+                            />
+                            <label htmlFor="heavy_vehicle_access" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                              Heavy Vehicle / 40ft Container Truck Access &amp; Turning Radius
+                            </label>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Retail Shop Specific Specs */}
+                      {isEditingRetail && (
+                        <div className="space-y-1 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Shop Frontage (Feet)</label>
+                          <input
+                            type="number"
+                            value={editForm.retail_frontage_feet || ""}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, retail_frontage_feet: e.target.value }))}
+                            placeholder="e.g. 20"
+                            className="w-full px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* 3. PG SPECIFIC */}
+                  {isEditingPg && (
+                    <>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Sharing Type</label>
+                          <select
+                            value={editForm.pg_sharing_type || "single"}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, pg_sharing_type: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="single">Single Private Room</option>
+                            <option value="double">Double Sharing</option>
+                            <option value="triple">Triple Sharing</option>
+                            <option value="four_plus">4+ Bed Sharing</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Total Beds</label>
+                          <input
+                            type="number"
+                            value={editForm.total_beds || ""}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, total_beds: e.target.value }))}
+                            placeholder="e.g. 30"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Available Beds</label>
+                          <input
+                            type="number"
+                            value={editForm.available_beds || ""}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, available_beds: e.target.value }))}
+                            placeholder="e.g. 5"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+                        <input
+                          type="checkbox"
+                          id="pg_attached_washroom"
+                          checked={editForm.pg_attached_washroom || false}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, pg_attached_washroom: e.target.checked }))}
+                          className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+                        />
+                        <label htmlFor="pg_attached_washroom" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                          Attached Private Washroom in Room
+                        </label>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Area Fields */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Carpet Area (sqft)</label>
@@ -2773,6 +3039,7 @@ export const OwnerDashboard = () => {
                         value={editForm.carpet_area}
                         onChange={(e) => setEditForm(prev => ({ ...prev, carpet_area: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        placeholder="e.g. 1000"
                       />
                     </div>
                     <div className="space-y-1">
@@ -2782,10 +3049,12 @@ export const OwnerDashboard = () => {
                         value={editForm.super_built_up_area}
                         onChange={(e) => setEditForm(prev => ({ ...prev, super_built_up_area: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        placeholder="e.g. 1250"
                       />
                     </div>
                   </div>
 
+                  {/* Floor Fields */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Floor Number</label>
@@ -2816,6 +3085,7 @@ export const OwnerDashboard = () => {
                     </div>
                   </div>
 
+                  {/* Facing & Property Age */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Facing Direction</label>
@@ -2852,61 +3122,171 @@ export const OwnerDashboard = () => {
               {/* TAB 3: AMENITIES & RULES */}
               {activeEditTab === "amenities" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Furnishing Status</label>
-                      <select
-                        value={editForm.furnishing_status}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, furnishing_status: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="unfurnished">Unfurnished</option>
-                        <option value="semi_furnished">Semi-Furnished</option>
-                        <option value="fully_furnished">Fully Furnished</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Preferred Tenants</label>
-                      <select
-                        value={editForm.preferred_tenants}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, preferred_tenants: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="anyone">Anyone</option>
-                        <option value="family">Family Only</option>
-                        <option value="bachelors">Bachelors Only</option>
-                        <option value="girls_only">Girls Only</option>
-                        <option value="boys_only">Boys Only</option>
-                      </select>
-                    </div>
-                  </div>
+                  {/* 1. RESIDENTIAL AMENITIES & RULES */}
+                  {isEditingResidential && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Furnishing Status</label>
+                          <select
+                            value={editForm.furnishing_status}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, furnishing_status: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="unfurnished">Unfurnished</option>
+                            <option value="semi">Semi-Furnished</option>
+                            <option value="fully">Fully Furnished</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Preferred Tenants</label>
+                          <select
+                            value={editForm.preferred_tenants}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, preferred_tenants: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="any">Anyone</option>
+                            <option value="family">Family Only</option>
+                            <option value="bachelors">Bachelors Only</option>
+                            <option value="only_girls">Girls Only</option>
+                            <option value="only_boys">Boys Only</option>
+                            <option value="company">Company Lease</option>
+                          </select>
+                        </div>
+                      </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Food Preference</label>
-                      <select
-                        value={editForm.food_preference}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, food_preference: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="no_preference">No Preference</option>
-                        <option value="veg_only">Veg Only</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Pet Policy</label>
-                      <select
-                        value={editForm.pet_policy}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, pet_policy: e.target.value }))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                      >
-                        <option value="allowed">Allowed</option>
-                        <option value="not_allowed">Not Allowed</option>
-                      </select>
-                    </div>
-                  </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Food Preference</label>
+                          <select
+                            value={editForm.food_preference}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, food_preference: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="any">No Preference</option>
+                            <option value="veg_only">Veg Only</option>
+                            <option value="non_veg_allowed">Non-Veg Allowed</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Pet Policy</label>
+                          <select
+                            value={editForm.pet_policy}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, pet_policy: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="allowed">Allowed</option>
+                            <option value="not_allowed">Not Allowed</option>
+                          </select>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* 2. COMMERCIAL AMENITIES & RULES */}
+                  {isEditingCommercial && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Commercial Furnishing</label>
+                          <select
+                            value={editForm.furnishing_status}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, furnishing_status: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="unfurnished">Bare Shell</option>
+                            <option value="semi">Warm Shell</option>
+                            <option value="fully">Fully Furnished Office / Space</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Pantry Type</label>
+                          <select
+                            value={editForm.commercial_pantry || "none"}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, commercial_pantry: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="none">No Pantry</option>
+                            <option value="dry">Dry Pantry</option>
+                            <option value="wet">Wet Pantry</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+                        <input
+                          type="checkbox"
+                          id="commercial_central_ac"
+                          checked={editForm.commercial_central_ac || false}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, commercial_central_ac: e.target.checked }))}
+                          className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+                        />
+                        <label htmlFor="commercial_central_ac" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+                          Central Air Conditioning / HVAC Installed
+                        </label>
+                      </div>
+                    </>
+                  )}
+
+                  {/* 3. PG AMENITIES & RULES */}
+                  {isEditingPg && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">PG Gender Preference</label>
+                          <select
+                            value={editForm.pg_gender || "coed"}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, pg_gender: e.target.value }))}
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          >
+                            <option value="boys">Boys / Men Only</option>
+                            <option value="girls">Girls / Women Only</option>
+                            <option value="coed">Co-Ed / Unisex</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Notice Period (Months)</label>
+                          <input
+                            type="number"
+                            value={editForm.lock_in_period_months || ""}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, lock_in_period_months: e.target.value }))}
+                            placeholder="e.g. 1"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+                        <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Food / Meals Provided</label>
+                        <div className="flex flex-wrap gap-4">
+                          {["Breakfast", "Lunch", "Dinner"].map((meal) => {
+                            const isChecked = (editForm.pg_food_provided || []).includes(meal);
+                            return (
+                              <label key={meal} className="flex items-center gap-2 text-xs font-bold cursor-pointer text-slate-700 dark:text-slate-300">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {
+                                    setEditForm(prev => ({
+                                      ...prev,
+                                      pg_food_provided: isChecked
+                                        ? (prev.pg_food_provided || []).filter(m => m !== meal)
+                                        : [...(prev.pg_food_provided || []), meal]
+                                    }));
+                                  }}
+                                  className="w-4 h-4 accent-indigo-600 rounded"
+                                />
+                                {meal}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Utilities (Power Backup & Water Supply) */}
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Power Backup</label>
                       <select
@@ -2914,9 +3294,9 @@ export const OwnerDashboard = () => {
                         onChange={(e) => setEditForm(prev => ({ ...prev, power_backup: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                       >
-                        <option value="None">None</option>
-                        <option value="Partial">Partial</option>
-                        <option value="Full">Full</option>
+                        <option value="none">None</option>
+                        <option value="partial">Partial</option>
+                        <option value="full">Full (100% Backup)</option>
                       </select>
                     </div>
                     <div className="space-y-1">
@@ -2926,28 +3306,14 @@ export const OwnerDashboard = () => {
                         onChange={(e) => setEditForm(prev => ({ ...prev, water_supply: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                       >
-                        <option value="Corporation">Corporation</option>
-                        <option value="Borewell">Borewell</option>
-                        <option value="Both">Both</option>
+                        <option value="corporation">Corporation Water</option>
+                        <option value="borewell">Borewell Water</option>
+                        <option value="24x7">Both (24x7 Supply)</option>
                       </select>
                     </div>
-                    {editingProp?.property_category === "pg" && (
-                      <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">PG Gender</label>
-                        <select
-                          value={editForm.pg_gender}
-                          onChange={(e) => setEditForm(prev => ({ ...prev, pg_gender: e.target.value }))}
-                          className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                        >
-                          <option value="boys">Boys Only</option>
-                          <option value="girls">Girls Only</option>
-                          <option value="coed">Co-Ed</option>
-                          <option value="other">Other</option>
-                        </select>
-                      </div>
-                    )}
                   </div>
 
+                  {/* Parking */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Covered Parking Spots</label>
@@ -2956,6 +3322,7 @@ export const OwnerDashboard = () => {
                         value={editForm.covered_parking_spots}
                         onChange={(e) => setEditForm(prev => ({ ...prev, covered_parking_spots: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        placeholder="0"
                       />
                     </div>
                     <div className="space-y-1">
@@ -2965,10 +3332,12 @@ export const OwnerDashboard = () => {
                         value={editForm.open_parking_spots}
                         onChange={(e) => setEditForm(prev => ({ ...prev, open_parking_spots: e.target.value }))}
                         className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                        placeholder="0"
                       />
                     </div>
                   </div>
 
+                  {/* Security Checkbox */}
                   <div className="flex gap-6 py-2 border-b dark:border-slate-800">
                     <div className="flex items-center gap-3">
                       <input
@@ -2978,18 +3347,35 @@ export const OwnerDashboard = () => {
                         onChange={(e) => setEditForm(prev => ({ ...prev, gated_security: e.target.checked }))}
                         className="w-5 h-5 accent-indigo-600 cursor-pointer"
                       />
-                      <label htmlFor="gated_security" className="text-xs font-bold text-slate-600 dark:text-slate-400 cursor-pointer">Gated Security (24/7 Guards)</label>
+                      <label htmlFor="gated_security" className="text-xs font-bold text-slate-600 dark:text-slate-400 cursor-pointer">
+                        {isEditingCommercial ? "24/7 Security Guards & Cabin" : "Gated Security (24/7 Guards)"}
+                      </label>
                     </div>
                   </div>
 
-                  {/* Amenities List */}
+                  {/* Category-Tailored Amenities List */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">Property Amenities</label>
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block">
+                      {isEditingCommercial ? "Commercial Amenities" : isEditingPg ? "PG & Hostel Amenities" : "Property Amenities"}
+                    </label>
                     <div className="flex flex-wrap gap-2">
-                      {[
-                        "Gym", "Swimming Pool", "Clubhouse", "Power Backup", "Security", 
-                        "Lifts", "Gas Pipeline", "WiFi", "Air Conditioning"
-                      ].map((amenity) => {
+                      {(isEditingCommercial
+                        ? [
+                            "24/7 Security", "CCTV Surveillance", "Power Backup", "Lifts / Elevators",
+                            "Freight / Goods Elevator", "Loading Dock", "Fire Fighting System",
+                            "High-Speed WiFi", "Central Air Conditioning", "Visitor Parking", "Cafeteria / Pantry"
+                          ]
+                        : isEditingPg
+                        ? [
+                            "High-Speed WiFi", "Daily Housekeeping", "Washing Machine", "RO Drinking Water",
+                            "Refrigerator", "CCTV Security", "Power Backup", "Geyser / Hot Water",
+                            "Study Desk & Chair", "Cupboard / Wardrobe", "Air Conditioning", "Lift"
+                          ]
+                        : [
+                            "Gym", "Swimming Pool", "Clubhouse", "Power Backup", "Security",
+                            "Lifts", "Gas Pipeline", "WiFi", "Air Conditioning", "Children's Play Area", "Visitor Parking"
+                          ]
+                      ).map((amenity) => {
                         const isSelected = (editForm.amenities || []).includes(amenity);
                         return (
                           <button
@@ -3010,7 +3396,7 @@ export const OwnerDashboard = () => {
                               borderColor: isSelected ? "var(--ink, #000000)" : "rgba(0,0,0,0.12)"
                             }}
                           >
-                            {amenity}
+                            {isSelected ? "✓ " : "+ "}{amenity}
                           </button>
                         );
                       })}
@@ -3104,8 +3490,10 @@ export const OwnerDashboard = () => {
                     </>
                   ) : (
                     <>
-                      <span className="material-symbols-outlined text-base">save</span>
-                      Save Changes
+                      <span className="material-symbols-outlined text-base">
+                        {editingProp.status === "rejected" ? "publish" : "save"}
+                      </span>
+                      {editingProp.status === "rejected" ? "Save & Resubmit for Review" : "Save Changes"}
                     </>
                   )}
                 </button>

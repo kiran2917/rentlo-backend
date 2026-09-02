@@ -1972,6 +1972,9 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
             else:
                 instance.under_negotiation_since = None
 
+            if new_status == 'pending_review':
+                instance.rejection_reason = None
+
             # Reset expires_at dynamically from settings when going live
             if new_status == 'live':
                 from properties.models import PlatformSettings
@@ -1990,7 +1993,7 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                 else:
                     instance.expires_at = None  # Active until rented!
 
-            instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at'])
+            instance.save(update_fields=['status', 'under_negotiation_since', 'expires_at', 'rejection_reason'])
             
             if old_status != new_status:
                 from properties.models import PropertyAuditLog
