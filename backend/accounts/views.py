@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.conf import settings
+from django.db.models import Q, Sum
 from .models import User
 from .serializers import UserSerializer, RegisterSerializer
 import logging
@@ -636,7 +637,7 @@ from .serializers import AgentSerializer
 class AgentProfileView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = AgentSerializer
-    queryset = User.objects.filter(roles__contains='agent')
+    queryset = User.objects.filter(Q(roles__contains=['agent']) | Q(roles__contains='agent') | Q(roles__icontains='agent'))
     lookup_field = 'id'
 
 from accounts.permissions import IsAdmin

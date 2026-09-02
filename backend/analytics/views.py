@@ -21,7 +21,7 @@ class AnalyticsSummaryView(views.APIView):
 
         property_filter = Q()
         unlock_filter = Q()
-        agent_filter = Q(roles__icontains='agent')
+        agent_filter = Q(roles__contains=['agent']) | Q(roles__contains='agent') | Q(roles__icontains='agent')
 
         if city_id:
             property_filter &= Q(locality__city_id=city_id)
