@@ -13,8 +13,21 @@ export const OwnerLayout = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
+  const [hasPgProperties, setHasPgProperties] = useState(false);
   
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!user) return;
+    fetch(`${import.meta.env.VITE_API_URL}/properties/my-properties/`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.results || [];
+        const hasPg = list.some((p) => p.property_category === "pg" || (p.property_type && p.property_type.toLowerCase().includes("pg")) || (p.property_type && p.property_type.toLowerCase().includes("hostel")));
+        setHasPgProperties(hasPg);
+      })
+      .catch(() => {});
+  }, [user]);
 
   useEffect(() => {
     const applyDashTheme = (themeName) => {
@@ -133,20 +146,6 @@ export const OwnerLayout = () => {
   if (!user) {
     return <Navigate to="/owner/login" replace />;
   }
-
-  const [hasPgProperties, setHasPgProperties] = useState(false);
-
-  useEffect(() => {
-    if (!user) return;
-    fetch(`${import.meta.env.VITE_API_URL}/properties/my-properties/`, { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
-        const list = Array.isArray(data) ? data : data.results || [];
-        const hasPg = list.some((p) => p.property_category === "pg" || (p.property_type && p.property_type.toLowerCase().includes("pg")) || (p.property_type && p.property_type.toLowerCase().includes("hostel")));
-        setHasPgProperties(hasPg);
-      })
-      .catch(() => {});
-  }, [user]);
 
   const isAgent = user.roles?.includes("agent") || user.role === "agent";
 
