@@ -637,7 +637,7 @@ from .serializers import AgentSerializer
 class AgentProfileView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = AgentSerializer
-    queryset = User.objects.filter(Q(roles__contains=['agent']) | Q(roles__contains='agent') | Q(roles__icontains='agent'))
+    queryset = User.objects.filter(Q(roles__contains=['agent']) | Q(roles__contains='agent'))
     lookup_field = 'id'
 
 from accounts.permissions import IsAdmin
@@ -983,33 +983,27 @@ class AdminCRMListView(APIView):
                 users = users.filter(
                     Q(roles__contains=['owner']) |
                     Q(roles__contains='owner') |
-                    Q(roles__icontains='owner') |
                     Q(owned_properties__isnull=False)
                 ).distinct()
             elif role == 'buyer':
                 users = users.filter(
                     Q(roles__contains=['buyer']) |
-                    Q(roles__contains='buyer') |
-                    Q(roles__icontains='buyer')
+                    Q(roles__contains='buyer')
                 ).distinct()
             elif role == 'agent':
                 users = users.filter(
                     Q(roles__contains=['agent']) |
-                    Q(roles__contains='agent') |
-                    Q(roles__icontains='agent')
+                    Q(roles__contains='agent')
                 ).distinct()
             elif role in ['sub_admin', 'subadmin']:
                 users = users.filter(
                     Q(roles__contains=['sub_admin']) |
-                    Q(roles__contains=['subadmin']) |
-                    Q(roles__icontains='sub_admin') |
-                    Q(roles__icontains='subadmin')
+                    Q(roles__contains=['subadmin'])
                 ).distinct()
             else:
                 users = users.filter(
                     Q(roles__contains=[role]) |
-                    Q(roles__contains=role) |
-                    Q(roles__icontains=role)
+                    Q(roles__contains=role)
                 ).distinct()
 
         if search:
