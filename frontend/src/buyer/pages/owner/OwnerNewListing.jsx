@@ -1665,8 +1665,23 @@ export const OwnerNewListing = () => {
       // Create listing
       const pgSummary = formData.property_category === 'pg' ? calculatePgSummary(formData.pg_room_inventory) : null;
 
+      // Auto-generate description if missing or blank
+      let propertyDescription = (cleanData.description || "").trim();
+      if (!propertyDescription) {
+        const cat = cleanData.property_category || 'residential';
+        const pType = cleanData.property_type || 'Property';
+        const bhk = cleanData.bedrooms ? `${cleanData.bedrooms} BHK ` : '';
+        const loc = cleanData.locality || cleanData.city_id || 'prime location';
+        if (cat === 'pg') {
+          propertyDescription = `Spacious and comfortable PG / Hostel accommodation located in ${loc}. Clean rooms, high-speed Wi-Fi, and well-maintained facilities.`;
+        } else {
+          propertyDescription = `Well-maintained ${bhk}${pType} available for rent in ${loc}. Features excellent ventilation, modern amenities, and prime connectivity.`;
+        }
+      }
+
       const payload = {
         ...cleanData,
+        description: propertyDescription,
         total_beds: pgSummary ? pgSummary.totalBeds : cleanData.total_beds,
         available_beds: pgSummary ? pgSummary.availableBeds : cleanData.available_beds,
         price: (pgSummary && pgSummary.minRent > 0) ? pgSummary.minRent : cleanData.price,
@@ -3739,12 +3754,24 @@ export const OwnerNewListing = () => {
                             </div>
                             <button
                               type="button"
-                              onClick={() => handleRazorpayPayment(currentAmount, selectedPlan)}
+                              onClick={() => {
+                                if (razorpayDetails?.payment_id) {
+                                  handleSubmit();
+                                } else {
+                                  handleRazorpayPayment(currentAmount, selectedPlan);
+                                }
+                              }}
                               disabled={isSubmitting}
                               className="w-full h-12 bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer hover:-translate-y-0.5"
                             >
-                              <span className="material-symbols-outlined text-[20px]">lock</span>
-                              {isSubmitting ? "Processing..." : `Pay ₹${currentAmount} & Publish Listing`}
+                              <span className="material-symbols-outlined text-[20px]">
+                                {razorpayDetails?.payment_id ? "verified" : "lock"}
+                              </span>
+                              {isSubmitting
+                                ? "Processing..."
+                                : razorpayDetails?.payment_id
+                                ? "Complete & Publish Listing (Payment Verified)"
+                                : `Pay ₹${currentAmount} & Publish Listing`}
                             </button>
                           </div>
                         ) : (

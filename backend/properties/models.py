@@ -92,7 +92,7 @@ class Property(models.Model):
     price = models.DecimalField(max_digits=14, decimal_places=2, validators=[MinValueValidator(0)])
     property_category = models.CharField(max_length=20, choices=PROPERTY_CATEGORY_CHOICES, default='residential')
     property_type = models.CharField(max_length=20, choices=PROPERTY_TYPES)
-    description = models.TextField()
+    description = models.TextField(blank=True, default='')
     
     # Property Deep-Dive Details
     bedrooms = models.IntegerField(null=True, blank=True)

@@ -92,6 +92,7 @@ class PropertySerializer(serializers.ModelSerializer):
     voice_note_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     virtual_tour_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     ownership_document = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(required=False, allow_blank=True, default='')
     # owner_name and owner_phone are defined at the top
     
     display_title = serializers.SerializerMethodField()
@@ -337,6 +338,20 @@ class PropertySerializer(serializers.ModelSerializer):
 
     def get_display_address(self, obj):
         return obj.exact_address if self.get_is_unlocked(obj) else "Hidden (Unlock required to view building & exact address)"
+
+    def validate(self, attrs):
+        desc = attrs.get('description')
+        if not desc or not str(desc).strip():
+            p_cat = attrs.get('property_category') or 'residential'
+            p_type = attrs.get('property_type') or 'property'
+            beds = attrs.get('bedrooms')
+            bhk = f"{beds} BHK " if beds else ""
+            loc = attrs.get('locality_name_input') or (attrs.get('locality').name if attrs.get('locality') else 'prime location')
+            if p_cat == 'pg':
+                attrs['description'] = f"Well-maintained PG / Hostel accommodation located in {loc}. Excellent amenities and convenient access."
+            else:
+                attrs['description'] = f"Spacious {bhk}{p_type} available for rent in {loc}. Clean, well-maintained, and ready for occupancy."
+        return super().validate(attrs)
 
     def create(self, validated_data):
         uploaded_media = validated_data.pop('uploaded_media', [])
