@@ -18,6 +18,12 @@ export const ProtectedRoute = ({ allowedRoles }) => {
   }
 
   const userRoles = user.roles || [user.role];
+  const isSuperOrStaff = Boolean(user.is_superuser || user.is_staff || user.role === "admin" || userRoles.includes("admin"));
+
+  if (isSuperOrStaff && (allowedRoles.includes("admin") || allowedRoles.includes("moderator") || allowedRoles.includes("agent"))) {
+    return <Outlet />;
+  }
+
   if (!userRoles.some(r => allowedRoles.includes(r))) {
     return <Navigate to="/admin/unauthorized" replace />;
   }

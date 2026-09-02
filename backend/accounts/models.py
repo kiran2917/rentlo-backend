@@ -26,6 +26,8 @@ class User(AbstractUser):
 
     @property
     def role(self):
+        if self.is_superuser or self.is_staff or 'admin' in (self.roles or []):
+            return 'admin'
         return self.roles[0] if self.roles else 'buyer'
 
 

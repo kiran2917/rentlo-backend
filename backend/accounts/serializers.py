@@ -56,10 +56,17 @@ class UserSerializer(serializers.ModelSerializer):
     kyc_upi_id = serializers.SerializerMethodField()
     kyc_selfie_url = serializers.SerializerMethodField()
     fraud_flags = serializers.IntegerField(source='fraud_flag_count', read_only=True)
+    roles = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'role', 'roles', 'phone', 'first_name', 'last_name', 'assigned_cities', 'is_phone_verified', 'force_password_change', 'sub_admin_permissions', 'kyc_status', 'kyc_upi_id', 'kyc_selfie_url', 'fraud_flag_count', 'fraud_flags', 'is_active', 'ownership_document_url', 'owner_kyc_status')
+        fields = ('id', 'username', 'email', 'password', 'role', 'roles', 'is_staff', 'is_superuser', 'phone', 'first_name', 'last_name', 'assigned_cities', 'is_phone_verified', 'force_password_change', 'sub_admin_permissions', 'kyc_status', 'kyc_upi_id', 'kyc_selfie_url', 'fraud_flag_count', 'fraud_flags', 'is_active', 'ownership_document_url', 'owner_kyc_status')
+
+    def get_roles(self, obj):
+        r = list(obj.roles) if obj.roles else []
+        if (obj.is_superuser or obj.is_staff) and 'admin' not in r:
+            r.append('admin')
+        return r
 
     def get_kyc_status(self, obj):
         try:

@@ -18,7 +18,19 @@ if not User.objects.filter(username=username).exists():
     )
     user.roles = ['admin']
     user.is_phone_verified = True
+    user.is_staff = True
+    user.is_superuser = True
     user.save()
     print(f"Superuser '{username}' created successfully.")
 else:
-    print(f"Superuser '{username}' already exists.")
+    user = User.objects.get(username=username)
+    user.is_staff = True
+    user.is_superuser = True
+    user.is_active = True
+    roles = list(user.roles or [])
+    if 'admin' not in roles:
+        roles.append('admin')
+    user.roles = roles
+    user.set_password(password)
+    user.save()
+    print(f"User '{username}' successfully updated with admin role, superuser privileges, and password reset.")

@@ -6,9 +6,13 @@ export const NotAuthorized = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/admin/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {}
+    localStorage.removeItem("rentlo_access_token");
+    localStorage.removeItem("rentlo_refresh_token");
+    window.location.href = "/admin/login";
   };
 
   return (
