@@ -104,6 +104,9 @@ export const OwnerLogin = () => {
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -176,7 +179,11 @@ export const OwnerLogin = () => {
                 password: signUpPassword,
               }),
             });
+            const regData = await regRes.json();
             if (regRes.ok) {
+              if (regData.access) {
+                localStorage.setItem("rentlo_access_token", regData.access);
+              }
               toast.success("Owner account created successfully! Welcome to Rentlo.");
               await checkAuth();
               window.location.href = "/owner/dashboard";
@@ -361,6 +368,9 @@ export const OwnerLogin = () => {
             });
             const regData = await regRes.json();
             if (regRes.ok) {
+              if (regData.access) {
+                localStorage.setItem("rentlo_access_token", regData.access);
+              }
               toast.success("Owner account created successfully! Welcome to Rentlo.");
               await checkAuth();
               window.location.href = "/owner/dashboard";
@@ -370,6 +380,9 @@ export const OwnerLogin = () => {
             }
           }
         } else {
+          if (data.access) {
+            localStorage.setItem("rentlo_access_token", data.access);
+          }
           toast.success("Welcome back to Owner Portal!");
           await checkAuth();
           window.location.href = "/owner/dashboard";
@@ -415,6 +428,9 @@ export const OwnerLogin = () => {
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
