@@ -107,6 +107,9 @@ export const OwnerLogin = () => {
         if (data.access) {
           localStorage.setItem("rentlo_access_token", data.access);
         }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -183,6 +186,9 @@ export const OwnerLogin = () => {
             if (regRes.ok) {
               if (regData.access) {
                 localStorage.setItem("rentlo_access_token", regData.access);
+              }
+              if (regData.refresh) {
+                localStorage.setItem("rentlo_refresh_token", regData.refresh);
               }
               toast.success("Owner account created successfully! Welcome to Rentlo.");
               await checkAuth();
@@ -371,6 +377,9 @@ export const OwnerLogin = () => {
               if (regData.access) {
                 localStorage.setItem("rentlo_access_token", regData.access);
               }
+              if (regData.refresh) {
+                localStorage.setItem("rentlo_refresh_token", regData.refresh);
+              }
               toast.success("Owner account created successfully! Welcome to Rentlo.");
               await checkAuth();
               window.location.href = "/owner/dashboard";
@@ -382,6 +391,9 @@ export const OwnerLogin = () => {
         } else {
           if (data.access) {
             localStorage.setItem("rentlo_access_token", data.access);
+          }
+          if (data.refresh) {
+            localStorage.setItem("rentlo_refresh_token", data.refresh);
           }
           toast.success("Welcome back to Owner Portal!");
           await checkAuth();
@@ -430,6 +442,9 @@ export const OwnerLogin = () => {
       if (res.ok) {
         if (data.access) {
           localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
         }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();

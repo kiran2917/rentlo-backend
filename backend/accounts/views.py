@@ -100,7 +100,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             response.set_cookie(
                 'access_token',
                 access_token,
-                max_age=3600 * 24, # 1 day
+                max_age=3600 * 24 * 7, # 7 days
                 path='/',
                 httponly=True,
                 samesite='None' if not settings.DEBUG else 'Lax',
@@ -109,7 +109,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             response.set_cookie(
                 'refresh_token',
                 refresh_token,
-                max_age=3600 * 24 * 20, # 20 days
+                max_age=3600 * 24 * 90, # 90 days
                 path='/',
                 httponly=True,
                 samesite='None' if not settings.DEBUG else 'Lax',
@@ -249,17 +249,13 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
 class CurrentUserView(views.APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if not request.user or not request.user.is_authenticated:
-            return Response(None, status=status.HTTP_200_OK)
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
-        if not request.user or not request.user.is_authenticated:
-            return Response({'detail': 'Authentication credentials were not provided.'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -535,7 +531,7 @@ class BuyerVerifyOTPView(APIView):
         response.set_cookie(
             'access_token',
             access_token,
-            max_age=3600 * 24,
+            max_age=3600 * 24 * 7,
             path='/',
             httponly=True,
             samesite='None' if not settings.DEBUG else 'Lax',
@@ -544,7 +540,7 @@ class BuyerVerifyOTPView(APIView):
         response.set_cookie(
             'refresh_token',
             refresh_token,
-            max_age=3600 * 24 * 20,
+            max_age=3600 * 24 * 90,
             path='/',
             httponly=True,
             samesite='None' if not settings.DEBUG else 'Lax',
@@ -628,8 +624,8 @@ class CompleteRegistrationView(APIView):
                 'force_password_change': user.force_password_change
             }
         })
-        response.set_cookie('access_token', access_token, max_age=3600 * 24, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
-        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 20, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
+        response.set_cookie('access_token', access_token, max_age=3600 * 24 * 7, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
+        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 90, path='/', httponly=True, samesite='None' if not settings.DEBUG else 'Lax', secure=not settings.DEBUG)
         return response
 
 from .serializers import AgentSerializer

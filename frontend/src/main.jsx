@@ -25,7 +25,42 @@ window.fetch = async (input, init = {}) => {
       };
     }
   }
-  return originalFetch(input, init);
+
+  let response = await originalFetch(input, init);
+
+  // If request failed with 401 Unauthorized, attempt silent token refresh and retry!
+  const urlStr = typeof input === "string" ? input : (input?.url || "");
+  if (response.status === 401 && !urlStr.includes("/auth/refresh/") && !urlStr.includes("/auth/login/")) {
+    const refreshToken = localStorage.getItem("rentlo_refresh_token");
+    if (refreshToken) {
+      try {
+        const refreshRes = await originalFetch(`${import.meta.env.VITE_API_URL}/auth/refresh/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+        if (refreshRes.ok) {
+          const refreshData = await refreshRes.json();
+          if (refreshData.access) {
+            localStorage.setItem("rentlo_access_token", refreshData.access);
+            if (refreshData.refresh) {
+              localStorage.setItem("rentlo_refresh_token", refreshData.refresh);
+            }
+            // Retry the original failed request with the new access token
+            const retryHeaders = {
+              ...init.headers,
+              Authorization: `Bearer ${refreshData.access}`,
+            };
+            return originalFetch(input, { ...init, headers: retryHeaders });
+          }
+        }
+      } catch (e) {
+        // Refresh failed, continue with original 401 response
+      }
+    }
+  }
+
+  return response;
 };
 class GlobalErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
