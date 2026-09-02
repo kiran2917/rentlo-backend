@@ -104,6 +104,12 @@ export const BuyerLogin = () => {
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -190,7 +196,7 @@ export const BuyerLogin = () => {
         setActiveTab("login");
         setAuthMode("otp");
         setOtpStep(2);
-        setIsNewUser(true);
+        setIsNewUser(false);
         setDemoCode(data.demo_code || "");
         setResendCooldown(30);
         toast.success(data.detail || "Verification OTP sent to your mobile number.");
@@ -363,15 +369,30 @@ export const BuyerLogin = () => {
             });
             const regData = await regRes.json();
             if (regRes.ok) {
+              if (regData.access) {
+                localStorage.setItem("rentlo_access_token", regData.access);
+              }
+              if (regData.refresh) {
+                localStorage.setItem("rentlo_refresh_token", regData.refresh);
+              }
               toast.success("Account created successfully! Welcome to Rentlo.");
               await checkAuth();
               window.location.href = "/";
               return;
             } else {
               toast.error(regData.detail || "Registration completion failed.");
+              setOtpStep(3);
             }
+          } else {
+            setOtpStep(3);
           }
         } else {
+          if (data.access) {
+            localStorage.setItem("rentlo_access_token", data.access);
+          }
+          if (data.refresh) {
+            localStorage.setItem("rentlo_refresh_token", data.refresh);
+          }
           toast.success("Welcome back to Rentlo!");
           await checkAuth();
           window.location.href = "/";
@@ -401,6 +422,7 @@ export const BuyerLogin = () => {
       return;
     }
 
+    const cleanPhone = (phone || signUpPhone || "").replace(/\D/g, "");
     setLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/complete-registration/`, {
@@ -411,10 +433,18 @@ export const BuyerLogin = () => {
           registration_token: registrationToken,
           first_name: fullName.trim(),
           password: newRegPassword,
+          phone: cleanPhone,
+          role: "buyer",
         }),
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.access) {
+          localStorage.setItem("rentlo_access_token", data.access);
+        }
+        if (data.refresh) {
+          localStorage.setItem("rentlo_refresh_token", data.refresh);
+        }
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
@@ -868,57 +898,101 @@ export const BuyerLogin = () => {
                         </p>
                       </div>
                     </form>
-                  ) : !isNewUser ? (
+                  ) : otpStep === 2 ? (
                     <form onSubmit={handleVerifyOtp} className="space-y-5">
+                      {/* OTP Security Header Card */}
+                      <div className="p-4 rounded-2xl border text-center relative overflow-hidden" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                        <div className="w-12 h-12 mx-auto mb-2.5 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 flex items-center justify-center shadow-sm">
+                          <span className="material-symbols-outlined text-[26px]">mark_email_read</span>
+                        </div>
+                        <h3 className="text-[15px] font-black tracking-tight mb-1" style={{ color: "var(--ink)" }}>
+                          Verify Mobile Number
+                        </h3>
+                        <p className="text-[12px] font-medium" style={{ color: "var(--text-muted)" }}>
+                          We sent a 6-digit code to{" "}
+                          <span className="font-extrabold text-black dark:text-white">+91 {phone || signUpPhone}</span>
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (activeTab === "signup") {
+                              setActiveTab("signup");
+                            } else {
+                              setOtpStep(1);
+                            }
+                          }}
+                          className="mt-1 inline-flex items-center gap-1 text-[11px] font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">edit</span>
+                          Edit Phone Number
+                        </button>
+                      </div>
+
                       {demoCode && (
-                        <div className="p-3 rounded-2xl text-center text-[12px] font-bold border" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)", color: "var(--ink)" }}>
-                          🔑 Demo OTP Code: <span className="font-mono text-[14px] underline">{demoCode}</span>
+                        <div
+                          onClick={() => setOtpCode(demoCode)}
+                          className="p-3.5 rounded-2xl text-center text-[12px] font-extrabold border cursor-pointer transition-all hover:scale-[1.01] hover:border-emerald-500/50 bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-2"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">vpn_key</span>
+                          <span>Demo Code: <strong className="font-mono text-[15px] underline tracking-widest">{demoCode}</strong></span>
+                          <span className="text-[10px] uppercase tracking-wider bg-emerald-500/20 px-2 py-0.5 rounded-full">Tap to Autofill</span>
                         </div>
                       )}
 
                       <div>
-                        <label className="block text-[11px] font-extrabold uppercase tracking-widest mb-2" style={{ color: "var(--text-muted)" }}>
-                          Enter Verification Code
-                        </label>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-[11px] font-extrabold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
+                            Enter 6-Digit OTP
+                          </label>
+                          {resendCooldown > 0 ? (
+                            <span className="text-[11px] font-bold text-amber-500 flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[14px]">schedule</span>
+                              Resend in {resendCooldown}s
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={handleRequestOtp}
+                              className="text-[11px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                            >
+                              Resend OTP
+                            </button>
+                          )}
+                        </div>
+
                         <input
                           type="text"
                           maxLength={6}
+                          autoFocus
                           value={otpCode}
                           onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                          placeholder="123456"
+                          placeholder="••••••"
                           required
-                          className="w-full h-12 text-center text-[18px] font-black tracking-[0.5em] rounded-2xl border outline-none transition-all"
+                          className="w-full h-14 text-center text-[22px] font-black tracking-[0.5em] rounded-2xl border outline-none transition-all font-mono focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 shadow-inner"
                           style={{
-                            backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)", backdropFilter: "blur(12px)",
+                            backgroundColor: "var(--bg)",
                             borderColor: "var(--border)",
                             color: "var(--ink)",
                           }}
                         />
-                        <p className="mt-2 text-[12px] text-center font-medium" style={{ color: "var(--text-muted)" }}>
-                          Sent to +91 {phone} •{" "}
-                          <button
-                            type="button"
-                            onClick={() => setOtpStep(1)}
-                            className="font-extrabold hover:underline cursor-pointer"
-                            style={{ color: "#000000" }}
-                          >
-                            Change Number
-                          </button>
-                        </p>
                       </div>
 
                       <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full h-12 rounded-2xl text-[14px] font-extrabold flex items-center justify-center gap-2 cursor-pointer shadow-lg transition-all hover:opacity-90"
+                        disabled={loading || otpCode.length < 4}
+                        className="w-full h-12 rounded-2xl text-[14px] font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/10 transition-all hover:opacity-90 disabled:opacity-50 hover:-translate-y-0.5"
                         style={{
-                          backgroundColor: "#000000", color: "#ffffff",
+                          backgroundColor: "#000000",
+                          color: "#ffffff",
                         }}
                       >
                         {loading ? (
                           <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
                         ) : (
-                          <span>Verify OTP &amp; Continue</span>
+                          <>
+                            <span>Verify OTP &amp; Complete Sign Up</span>
+                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                          </>
                         )}
                       </button>
                     </form>
