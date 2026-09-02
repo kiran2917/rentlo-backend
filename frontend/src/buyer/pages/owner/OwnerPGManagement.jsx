@@ -238,8 +238,11 @@ export const OwnerPGManagement = () => {
         </div>
       )}
 
-      {/* Property Selector & Occupancy Bar */}
-      <div className="p-5 sm:p-6 rounded-3xl border bg-white shadow-xs border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      {/* Controls & Tables only when owner has at least 1 PG property */}
+      {properties.length > 0 && (
+        <>
+          {/* Property Selector & Occupancy Bar */}
+          <div className="p-5 sm:p-6 rounded-3xl border bg-white shadow-xs border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex-1 w-full md:w-auto">
           <label className="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Select PG / Co-Living Building</label>
           <div className="relative w-full md:max-w-lg">
@@ -421,6 +424,8 @@ export const OwnerPGManagement = () => {
           </div>
         )}
       </div>
+      </>
+      )}
 
       {/* Digital Check-In Modal */}
       {showCheckInModal && (

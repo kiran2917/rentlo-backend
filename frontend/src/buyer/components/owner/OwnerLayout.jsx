@@ -134,12 +134,26 @@ export const OwnerLayout = () => {
     return <Navigate to="/owner/login" replace />;
   }
 
+  const [hasPgProperties, setHasPgProperties] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch(`${import.meta.env.VITE_API_URL}/properties/my-properties/`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.results || [];
+        const hasPg = list.some((p) => p.property_category === "pg" || (p.property_type && p.property_type.toLowerCase().includes("pg")) || (p.property_type && p.property_type.toLowerCase().includes("hostel")));
+        setHasPgProperties(hasPg);
+      })
+      .catch(() => {});
+  }, [user]);
+
   const isAgent = user.roles?.includes("agent") || user.role === "agent";
 
   const navItems = [
     { to: "/owner/dashboard", label: t("owner.myProperties", "My Properties"), icon: "home_work" },
     { to: "/owner/leads", label: t("owner.leads", "Leads"), icon: "contacts" },
-    { to: "/owner/pg-residents", label: t("owner.pgResidents", "PG & Hostel Roster"), icon: "bed" },
+    ...(hasPgProperties ? [{ to: "/owner/pg-residents", label: t("owner.pgResidents", "PG & Hostel Roster"), icon: "bed" }] : []),
     { to: "/owner/maintenance", label: t("owner.maintenance", "Maintenance & Repairs"), icon: "handyman" },
     { to: "/owner/visits", label: t("owner.visitSlots", "Visit Slots"), icon: "calendar_month" },
     { to: "/owner/chat", label: t("owner.messages", "Messages"), icon: "forum" },
