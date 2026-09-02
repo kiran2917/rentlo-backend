@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../shared/context/AuthContext";
+import { usePlatformSettings } from "../../../shared/context/PlatformSettingsContext";
 import { useTranslation } from "react-i18next";
 
 export const OwnerLayout = () => {
   const { user, loading, logout } = useAuth();
+  const { platformSettings } = usePlatformSettings();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
-  const [platformSettings, setPlatformSettings] = useState(null);
   
   const { t } = useTranslation();
 
   useEffect(() => {
-    const fetchSettings = () => {
-      fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
-        .then((res) => res.json())
-        .then((data) => setPlatformSettings(data))
-        .catch((err) => console.error("Error fetching settings", err));
-    };
-
-    fetchSettings();
-
     const applyDashTheme = (themeName) => {
       const formatted = `theme-${themeName.replace(/_/g, '-')}`;
       document.body.className = formatted;
@@ -40,10 +32,8 @@ export const OwnerLayout = () => {
     handleThemeChange();
 
     window.addEventListener("themeChange", handleThemeChange);
-    window.addEventListener("settingsChange", fetchSettings);
     return () => {
       window.removeEventListener("themeChange", handleThemeChange);
-      window.removeEventListener("settingsChange", fetchSettings);
     };
   }, []);
 
@@ -166,7 +156,13 @@ export const OwnerLayout = () => {
       <div className="px-4 mb-3 pb-3 border-b flex-shrink-0" style={{ borderColor: "var(--border)" }}>
         <Link to="/" className="flex items-center gap-3">
           {platformSettings?.company_logo_url ? (
-            <img src={platformSettings.company_logo_url} alt="Company Logo" className="h-8 max-w-[120px] object-contain" />
+            <img 
+              src={platformSettings.company_logo_url} 
+              alt="Company Logo" 
+              className="h-8 max-w-[120px] object-contain flex-shrink-0"
+              loading="eager"
+              decoding="sync"
+            />
           ) : (
             <div className="w-8 h-8 rounded-xl text-white flex items-center justify-center flex-shrink-0 shadow-sm" style={{ backgroundColor: "#000000" }}>
               <span className="material-symbols-outlined text-base">real_estate_agent</span>

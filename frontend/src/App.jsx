@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./shared/context/AuthContext";
+import { PlatformSettingsProvider } from "./shared/context/PlatformSettingsContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -98,87 +99,89 @@ function App() {
 
   return (
     <AuthProvider>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={2500} 
-        limit={1} 
-        newestOnTop={true} 
-        hideProgressBar={false}
-        theme="light" 
-      />
-      <BrowserRouter>
-        <NotificationPromptModal />
-        <KeyboardDismissHandler />
-        <Routes>
-          {/* BUYER / OWNER AUTHENTICATION ROUTES */}
-          <Route path="/login" element={<BuyerLogin />} />
-          <Route path="/buyer/login" element={<BuyerLogin />} />
-          <Route path="/owner/login" element={<OwnerLogin />} />
+      <PlatformSettingsProvider>
+        <ToastContainer 
+          position="top-right" 
+          autoClose={2500} 
+          limit={1} 
+          newestOnTop={true} 
+          hideProgressBar={false}
+          theme="light" 
+        />
+        <BrowserRouter>
+          <NotificationPromptModal />
+          <KeyboardDismissHandler />
+          <Routes>
+            {/* BUYER / OWNER AUTHENTICATION ROUTES */}
+            <Route path="/login" element={<BuyerLogin />} />
+            <Route path="/buyer/login" element={<BuyerLogin />} />
+            <Route path="/owner/login" element={<OwnerLogin />} />
 
-          {/* BUYER / OWNER ROUTES */}
-          <Route element={<BuyerLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/property/:id" element={<PropertyDetail />} />
-            <Route path="/my-unlocks" element={<MyUnlocks />} />
-            <Route path="/saved-searches" element={<MySavedSearches />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/property/:id/lease" element={<LeaseAgreement />} />
-            <Route path="/rent-in-:cityName" element={<CitySeoLanding />} />
-            <Route path="/chat/:propertyId" element={<BuyerChat />} />
-          </Route>
-          
-          <Route element={<OwnerLayout />}>
-            <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-            <Route path="/owner/leads" element={<OwnerLeads />} />
-            <Route path="/owner/verification" element={<OwnerVerification />} />
-            <Route path="/owner/pg-residents" element={<OwnerPGManagement />} />
-            <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
-            <Route path="/owner/new-listing" element={<OwnerNewListing />} />
-            <Route path="/owner/chat" element={<OwnerChat />} />
-            <Route path="/owner/visits" element={<OwnerVisits />} />
-          </Route>
+            {/* BUYER / OWNER ROUTES */}
+            <Route element={<BuyerLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/property/:id" element={<PropertyDetail />} />
+              <Route path="/my-unlocks" element={<MyUnlocks />} />
+              <Route path="/saved-searches" element={<MySavedSearches />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/property/:id/lease" element={<LeaseAgreement />} />
+              <Route path="/rent-in-:cityName" element={<CitySeoLanding />} />
+              <Route path="/chat/:propertyId" element={<BuyerChat />} />
+            </Route>
+            
+            <Route element={<OwnerLayout />}>
+              <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+              <Route path="/owner/leads" element={<OwnerLeads />} />
+              <Route path="/owner/verification" element={<OwnerVerification />} />
+              <Route path="/owner/pg-residents" element={<OwnerPGManagement />} />
+              <Route path="/owner/maintenance" element={<OwnerMaintenance />} />
+              <Route path="/owner/new-listing" element={<OwnerNewListing />} />
+              <Route path="/owner/chat" element={<OwnerChat />} />
+              <Route path="/owner/visits" element={<OwnerVisits />} />
+            </Route>
 
-          {/* ADMIN PORTAL ROUTES */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/unauthorized" element={<AdminNotAuthorized />} />
+            {/* ADMIN PORTAL ROUTES */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/unauthorized" element={<AdminNotAuthorized />} />
 
-          <Route
-            element={
-              <ProtectedRoute allowedRoles={["admin", "moderator", "agent"]} />
-            }
-          >
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/properties" element={<PropertyList />} />
-          </Route>
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={["admin", "moderator", "agent"]} />
+              }
+            >
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/properties" element={<PropertyList />} />
+            </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={["admin", "agent"]} />}>
-            <Route path="/admin/listings/new" element={<AdminNewListing />} />
-            <Route path="/admin/settings" element={<AdminSettings />} />
-          </Route>
+            <Route element={<ProtectedRoute allowedRoles={["admin", "agent"]} />}>
+              <Route path="/admin/listings/new" element={<AdminNewListing />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+            </Route>
 
-          <Route
-            element={<ProtectedRoute allowedRoles={["admin", "moderator"]} />}
-          >
-            <Route path="/admin/moderation" element={<ModerationQueue />} />
-            <Route path="/admin/fraud-flags" element={<FraudFlags />} />
-            <Route path="/admin/users" element={<AdminCRM />} />
-            <Route path="/admin/payments" element={<UTRVerifications />} />
-          </Route>
+            <Route
+              element={<ProtectedRoute allowedRoles={["admin", "moderator"]} />}
+            >
+              <Route path="/admin/moderation" element={<ModerationQueue />} />
+              <Route path="/admin/fraud-flags" element={<FraudFlags />} />
+              <Route path="/admin/users" element={<AdminCRM />} />
+              <Route path="/admin/payments" element={<UTRVerifications />} />
+            </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
-            <Route path="/admin/earnings" element={<AdminEarnings />} />
-            <Route path="/admin/payouts" element={<AgentPayouts />} />
-            <Route path="/admin/team" element={<SubAdminManagement />} />
-            <Route path="/admin/agents" element={<AgentManagement />} />
-            <Route path="/admin/commission-rules" element={<CommissionRules />} />
-            <Route path="/admin/locations" element={<AdminLocations />} />
-          </Route>
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/admin/analytics" element={<AdminAnalytics />} />
+              <Route path="/admin/earnings" element={<AdminEarnings />} />
+              <Route path="/admin/payouts" element={<AgentPayouts />} />
+              <Route path="/admin/team" element={<SubAdminManagement />} />
+              <Route path="/admin/agents" element={<AgentManagement />} />
+              <Route path="/admin/commission-rules" element={<CommissionRules />} />
+              <Route path="/admin/locations" element={<AdminLocations />} />
+            </Route>
 
-          {/* Catch-all — show 404 page */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            {/* CATCH-ALL 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </PlatformSettingsProvider>
     </AuthProvider>
   );
 }

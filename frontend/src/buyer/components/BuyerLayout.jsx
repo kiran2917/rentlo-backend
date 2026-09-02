@@ -5,6 +5,7 @@ import { OtpModal } from "./OtpModal";
 import { AuthRoleModal } from "../../shared/components/AuthRoleModal";
 import { PrivacyPolicyModal } from "../../shared/components/PrivacyPolicyModal";
 import { LanguageToggle } from "./LanguageToggle";
+import { usePlatformSettings } from "../../shared/context/PlatformSettingsContext";
 import { useTranslation } from "react-i18next";
 
 export const BuyerLayout = () => {
@@ -16,6 +17,7 @@ export const BuyerLayout = () => {
   const isPropertyDetailRoute = location.pathname.startsWith("/property/") && location.pathname !== "/property/lease";
   const navigate = useNavigate();
   const { user, logout, checkAuth } = useAuth();
+  const { platformSettings } = usePlatformSettings();
   
   const [showOtp, setShowOtp] = useState(false);
   const [intendedRole, setIntendedRole] = useState(null);
@@ -23,26 +25,9 @@ export const BuyerLayout = () => {
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [bannerType, setBannerType] = useState(""); // 'request' | 'blocked' | 'ios'
   
-  const [platformSettings, setPlatformSettings] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [logoError, setLogoError] = useState(false);
-
-  const fetchPlatformSettings = () => {
-    fetch(`${import.meta.env.VITE_API_URL}/properties/platform-settings/`)
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if(data) {
-          setPlatformSettings(data);
-          setLogoError(false);
-        }
-      })
-      .catch(err => console.error("Failed to fetch platform settings", err));
-  };
-
-  useEffect(() => {
-    fetchPlatformSettings();
-    window.addEventListener("settingsChange", fetchPlatformSettings);
-    return () => window.removeEventListener("settingsChange", fetchPlatformSettings);
-  }, []);
 
   const { t } = useTranslation();
 
