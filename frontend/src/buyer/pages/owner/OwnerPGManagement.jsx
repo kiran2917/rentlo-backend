@@ -45,14 +45,14 @@ export const OwnerPGManagement = () => {
       if (res.ok) {
         const data = await res.json();
         const list = Array.isArray(data) ? data : data.results || [];
-        const pgList = list.filter((p) => p.property_category === "pg" || p.property_type?.includes("pg"));
-        setProperties(pgList.length > 0 ? pgList : list);
+        const pgList = list.filter((p) => p.property_category === "pg" || (p.property_type && p.property_type.toLowerCase().includes("pg")) || (p.property_type && p.property_type.toLowerCase().includes("hostel")));
+        setProperties(pgList);
         if (pgList.length > 0) {
           setSelectedPropertyId(pgList[0].id);
           setFormData((prev) => ({ ...prev, property: pgList[0].id }));
-        } else if (list.length > 0) {
-          setSelectedPropertyId(list[0].id);
-          setFormData((prev) => ({ ...prev, property: list[0].id }));
+        } else {
+          setSelectedPropertyId("");
+          setFormData((prev) => ({ ...prev, property: "" }));
         }
       }
     } catch (e) {
@@ -174,11 +174,10 @@ export const OwnerPGManagement = () => {
   };
 
   const activeResidents = residents.filter((r) => r.status === "active");
-  const noticeResidents = residents.filter((r) => r.status === "notice_period");
-  const currentProperty = properties.find((p) => p.id === Number(selectedPropertyId)) || properties[0];
+  const currentProperty = properties.find((p) => String(p.id) === String(selectedPropertyId)) || (properties.length > 0 ? properties[0] : null);
 
-  const totalCapacity = currentProperty?.total_beds || 30;
-  const occupiedBeds = activeResidents.length + noticeResidents.length;
+  const totalCapacity = currentProperty ? (Number(currentProperty.total_beds) || Number(currentProperty.pg_rules?.total_beds) || 0) : 0;
+  const occupiedBeds = currentProperty ? (activeResidents.length + noticeResidents.length) : 0;
   const availableBeds = Math.max(0, totalCapacity - occupiedBeds);
   const occupancyRate = totalCapacity > 0 ? Math.round((occupiedBeds / totalCapacity) * 100) : 0;
 
@@ -199,14 +198,45 @@ export const OwnerPGManagement = () => {
             </p>
           </div>
           <button
-            onClick={() => setShowCheckInModal(true)}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+            onClick={() => {
+              if (properties.length === 0) {
+                toast.info("Please list a PG or Hostel building first to check in residents.");
+                return;
+              }
+              setShowCheckInModal(true);
+            }}
+            disabled={properties.length === 0}
+            className={`px-6 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all flex items-center gap-2 ${
+              properties.length === 0
+                ? "bg-slate-700/60 text-slate-400 opacity-60 cursor-not-allowed"
+                : "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-lg shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 cursor-pointer"
+            }`}
           >
             <span className="material-symbols-outlined text-[20px]">person_add</span>
             <span>Digital Check-In</span>
           </button>
         </div>
       </div>
+
+      {/* Empty State Banner when no PG property exists */}
+      {!loading && properties.length === 0 && (
+        <div className="p-8 sm:p-10 rounded-3xl border border-dashed border-indigo-200 bg-indigo-50/40 text-center flex flex-col items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 shadow-sm">
+            <span className="material-symbols-outlined text-3xl">hotel</span>
+          </div>
+          <h3 className="text-lg font-black text-slate-800">No PG / Co-Living Building Listed</h3>
+          <p className="text-xs sm:text-sm font-medium text-slate-500 max-w-md mt-1.5 mb-6 leading-relaxed">
+            You currently have no PG, Hostel, or Co-Living buildings listed under this account. Post a PG listing to manage resident rosters, room bed allocations, and mess fees.
+          </p>
+          <a
+            href="/owner/new-listing"
+            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2 hover:scale-[1.02]"
+          >
+            <span className="material-symbols-outlined text-[18px]">add_home_work</span>
+            <span>Post a PG / Hostel Listing</span>
+          </a>
+        </div>
+      )}
 
       {/* Property Selector & Occupancy Bar */}
       <div className="p-5 sm:p-6 rounded-3xl border bg-white shadow-xs border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
