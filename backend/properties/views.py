@@ -1013,9 +1013,11 @@ class MyPropertiesView(generics.ListAPIView):
         if not user or not user.is_authenticated:
             return Property.objects.none()
         from django.db.models import Count, Q
-        return Property.objects.filter(
-            Q(owner=user) | Q(agent=user)
-        ).annotate(
+        filters = Q(owner=user) | Q(agent=user)
+        if user.phone:
+            clean_phone = str(user.phone)[-10:]
+            filters |= Q(owner_phone=clean_phone) | Q(owner_phone__endswith=clean_phone)
+        return Property.objects.filter(filters).annotate(
             unlock_count=Count('unlocks', filter=Q(unlocks__status='paid'))
         ).order_by('-created_at')
 
@@ -1036,7 +1038,11 @@ class OwnerLeadsView(views.APIView):
             return Response([])
         
         from unlocks.models import Unlock
-        unlocks = Unlock.objects.filter(property__owner=user).order_by('-created_at')
+        phone_filters = Q(property__owner=user)
+        if user.phone:
+            clean_phone = str(user.phone)[-10:]
+            phone_filters |= Q(property__owner_phone=clean_phone) | Q(property__owner_phone__endswith=clean_phone)
+        unlocks = Unlock.objects.filter(phone_filters).order_by('-created_at')
         
         data = []
         for u in unlocks:
