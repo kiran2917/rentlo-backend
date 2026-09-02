@@ -633,8 +633,12 @@ from .serializers import AgentSerializer
 class AgentProfileView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = AgentSerializer
-    queryset = User.objects.filter(Q(roles__contains=['agent']) | Q(roles__contains='agent'))
     lookup_field = 'id'
+
+    def get_queryset(self):
+        from django.db.models.functions import Cast
+        from django.db.models import TextField
+        return User.objects.annotate(roles_str=Cast('roles', TextField())).filter(roles_str__icontains='agent')
 
 from accounts.permissions import IsAdmin
 
@@ -958,7 +962,8 @@ class AdminCRMListView(APIView):
     def get(self, request):
         from unlocks.models import Unlock, BuyerSubscription
         from properties.models import Property
-        from django.db.models import Q, Sum
+        from django.db.models import Q, Sum, TextField
+        from django.db.models.functions import Cast
 
         search = request.query_params.get('search', '').strip()
         role = request.query_params.get('role', '').strip()
@@ -967,7 +972,7 @@ class AdminCRMListView(APIView):
         listing_filter = request.query_params.get('listing_filter', '').strip()
         sort_by = request.query_params.get('sort_by', 'newest').strip()
 
-        users = User.objects.all()
+        users = User.objects.annotate(roles_str=Cast('roles', TextField()))
 
         if account_status == 'active':
             users = users.filter(is_active=True)
@@ -977,30 +982,20 @@ class AdminCRMListView(APIView):
         if role and role != 'all':
             if role == 'owner':
                 users = users.filter(
-                    Q(roles__contains=['owner']) |
-                    Q(roles__contains='owner') |
+                    Q(roles_str__icontains='owner') |
                     Q(owned_properties__isnull=False)
                 ).distinct()
             elif role == 'buyer':
-                users = users.filter(
-                    Q(roles__contains=['buyer']) |
-                    Q(roles__contains='buyer')
-                ).distinct()
+                users = users.filter(roles_str__icontains='buyer').distinct()
             elif role == 'agent':
-                users = users.filter(
-                    Q(roles__contains=['agent']) |
-                    Q(roles__contains='agent')
-                ).distinct()
+                users = users.filter(roles_str__icontains='agent').distinct()
             elif role in ['sub_admin', 'subadmin']:
                 users = users.filter(
-                    Q(roles__contains=['sub_admin']) |
-                    Q(roles__contains=['subadmin'])
+                    Q(roles_str__icontains='sub_admin') |
+                    Q(roles_str__icontains='subadmin')
                 ).distinct()
             else:
-                users = users.filter(
-                    Q(roles__contains=[role]) |
-                    Q(roles__contains=role)
-                ).distinct()
+                users = users.filter(roles_str__icontains=role).distinct()
 
         if search:
             users = users.filter(
@@ -1043,10 +1038,12 @@ class AdminCRMListView(APIView):
         crm_data = []
         for u in users:
             def get_prop_title(p):
-                loc_str = p.locality.name if p.locality else ''
-                city_str = p.locality.city.name if (p.locality and p.locality.city) else ''
+                if not p:
+                    return 'Property'
+                loc_str = getattr(p.locality, 'name', '') if getattr(p, 'locality', None) else ''
+                city_str = getattr(p.locality.city, 'name', '') if (getattr(p, 'locality', None) and getattr(p.locality, 'city', None)) else ''
                 loc_full = f"{loc_str}, {city_str}".strip(', ')
-                p_type = p.get_property_type_display() if hasattr(p, 'get_property_type_display') else p.property_type
+                p_type = p.get_property_type_display() if hasattr(p, 'get_property_type_display') else getattr(p, 'property_type', 'Property')
                 return f"{p_type} in {loc_full}" if loc_full else p_type
 
             # Gather Buyer Stats
@@ -1056,9 +1053,9 @@ class AdminCRMListView(APIView):
 
             unlocked_list = [{
                 'id': un.id,
-                'property_id': un.property.id,
-                'property_title': get_prop_title(un.property),
-                'amount': float(un.amount),
+                'property_id': un.property.id if getattr(un, 'property', None) else None,
+                'property_title': get_prop_title(getattr(un, 'property', None)),
+                'amount': float(un.amount) if un.amount else 0.0,
                 'unlocked_at': un.unlocked_at
             } for un in buyer_unlocks[:5]]
 
@@ -1074,8 +1071,8 @@ class AdminCRMListView(APIView):
                 'id': p.id,
                 'title': get_prop_title(p),
                 'status': p.status,
-                'city': p.locality.city.name if (p.locality and p.locality.city) else '',
-                'listing_type': p.property_type,
+                'city': p.locality.city.name if (getattr(p, 'locality', None) and getattr(p.locality, 'city', None)) else '',
+                'listing_type': getattr(p, 'property_type', 'residential'),
                 'created_at': p.created_at
             } for p in owner_props[:5]]
 

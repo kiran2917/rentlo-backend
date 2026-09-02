@@ -4,8 +4,8 @@ from accounts.permissions import IsAdmin
 from properties.models import Property
 from unlocks.models import Unlock
 from accounts.models import User
-from django.db.models import Count, Sum, Q, F, Avg, ExpressionWrapper, fields
-from django.db.models.functions import TruncDate
+from django.db.models import Count, Sum, Q, F, Avg, ExpressionWrapper, fields, TextField
+from django.db.models.functions import TruncDate, Cast
 from django.utils import timezone
 from datetime import timedelta
 
@@ -21,7 +21,7 @@ class AnalyticsSummaryView(views.APIView):
 
         property_filter = Q()
         unlock_filter = Q()
-        agent_filter = Q(roles__contains=['agent']) | Q(roles__contains='agent')
+        agent_filter = Q(roles_str__icontains='agent')
 
         if city_id:
             property_filter &= Q(locality__city_id=city_id)
@@ -131,7 +131,7 @@ class AnalyticsSummaryView(views.APIView):
         if city_id:
             agent_prop_filter &= Q(agent_properties__locality__city_id=city_id)
 
-        agents_ranked = User.objects.filter(agent_filter).distinct().annotate(
+        agents_ranked = User.objects.annotate(roles_str=Cast('roles', TextField())).filter(agent_filter).distinct().annotate(
             submitted_count=Count('agent_properties', filter=agent_prop_filter),
             approved_count=Count('agent_properties', filter=Q(agent_properties__status__in=['live', 'sold', 'rented']) & agent_prop_filter)
         ).order_by('-submitted_count')
