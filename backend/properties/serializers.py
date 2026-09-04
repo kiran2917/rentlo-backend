@@ -228,6 +228,9 @@ class PropertySerializer(serializers.ModelSerializer):
         type_label = obj.get_property_type_display() if hasattr(obj, 'get_property_type_display') else 'Property'
         return f"{bhk_prefix}{type_label} {location_str}".strip()
 
+    def get_title(self, obj):
+        return self.get_display_title(obj)
+
     def to_internal_value(self, data):
         data = data.copy() if hasattr(data, 'copy') else dict(data)
 
