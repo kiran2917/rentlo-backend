@@ -21,7 +21,8 @@ class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
-        return request.user and request.user.is_authenticated and 'admin' in request.user.roles
+        from accounts.permissions import _user_has_role
+        return _user_has_role(request.user, 'admin')
 
 class CityListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
@@ -1269,6 +1270,9 @@ class PlatformSettingsView(views.APIView):
 
     def get(self, request):
         settings = PlatformSettings.load()
+        from accounts.permissions import _user_has_role
+        is_admin = _user_has_role(request.user, 'admin')
+
         data = {
             'default_upi_id': settings.default_upi_id,
             'company_name': settings.company_name,
@@ -1319,8 +1323,8 @@ class PlatformSettingsView(views.APIView):
             'enable_e_stamp_agreements': settings.enable_e_stamp_agreements,
             'e_stamp_price': settings.e_stamp_price,
             'e_stamp_provider': settings.e_stamp_provider,
-            'e_stamp_api_key': settings.e_stamp_api_key if (request.user and request.user.is_authenticated and 'admin' in getattr(request.user, 'roles', [])) else '',
-            'e_stamp_api_secret': settings.e_stamp_api_secret if (request.user and request.user.is_authenticated and 'admin' in getattr(request.user, 'roles', [])) else '',
+            'e_stamp_api_key': settings.e_stamp_api_key if is_admin else '',
+            'e_stamp_api_secret': settings.e_stamp_api_secret if is_admin else '',
 
             # Owner Listing Verification
             'owner_listing_verification_method': settings.owner_listing_verification_method,
@@ -1378,11 +1382,6 @@ class PlatformSettingsView(views.APIView):
             'bypass_owner_payment': settings.bypass_owner_payment,
         }
 
-        is_admin = (
-            request.user and
-            request.user.is_authenticated and
-            'admin' in getattr(request.user, 'roles', [])
-        )
         if is_admin:
             data['otp_bypass_enabled'] = settings.otp_bypass_enabled
 

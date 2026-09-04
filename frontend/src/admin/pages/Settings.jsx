@@ -1920,7 +1920,7 @@ export const Settings = () => {
                     <input
                       type="text"
                       value={rzpKeyId}
-                      onChange={(e) => { setRzpKeyId(e.target.value); setRzpKeySecretSet(false); }}
+                      onChange={(e) => setRzpKeyId(e.target.value)}
                       placeholder="rzp_test_... or rzp_live_..."
                       className={inputCls} style={inputStyle}
                     />
@@ -1936,7 +1936,7 @@ export const Settings = () => {
                       <input
                         type={showRzpSecret ? "text" : "password"}
                         value={rzpKeySecret}
-                        onChange={(e) => { setRzpKeySecret(e.target.value); setRzpKeySecretSet(false); }}
+                        onChange={(e) => setRzpKeySecret(e.target.value)}
                         onFocus={() => { if (rzpKeySecret.includes("•")) setRzpKeySecret(""); }}
                         placeholder="Paste new secret here"
                         className={inputCls + " pr-12"} style={inputStyle}
