@@ -366,6 +366,17 @@ class VerifyUnlockView(views.APIView):
                         message=f"🔥 New Lead: A buyer has unlocked contact details for your property {prop.property_type.replace('_', ' ').capitalize()} in {prop.locality.name if prop.locality else ''}!",
                         property=prop
                     )
+
+                # Trigger Automated Meta WhatsApp Lead Alert (Free Tier)
+                try:
+                    from notifications.whatsapp_service import send_whatsapp_lead_alert
+                    owner_phone = prop.owner_phone or (lead_recipient.phone if lead_recipient else '')
+                    buyer_phone = getattr(request.user, 'phone', '')
+                    buyer_name = request.user.get_full_name() or request.user.username or "Prospective Tenant"
+                    if owner_phone:
+                        send_whatsapp_lead_alert(owner_phone, prop, buyer_name, buyer_phone)
+                except Exception as ex:
+                    logger.warning(f"Non-critical WhatsApp dispatch failed: {ex}")
                 # NOTE: Property stays 'live' — owner manually triggers Under Negotiation
                 # when they are actually in talks with this buyer.
 
@@ -507,6 +518,17 @@ class RazorpayWebhookView(views.APIView):
                                 message=f"🔥 New Lead: A buyer has unlocked contact details for your property {prop.property_type.replace('_', ' ').capitalize()} in {prop.locality.name if prop.locality else ''}!",
                                 property=prop
                             )
+
+                        # Trigger Automated Meta WhatsApp Lead Alert (Free Tier)
+                        try:
+                            from notifications.whatsapp_service import send_whatsapp_lead_alert
+                            owner_phone = prop.owner_phone or (lead_recipient.phone if lead_recipient else '')
+                            buyer_phone = getattr(unlock.buyer, 'phone', '') if unlock.buyer else ''
+                            buyer_name = unlock.buyer.get_full_name() or unlock.buyer.username if unlock.buyer else "Prospective Tenant"
+                            if owner_phone:
+                                send_whatsapp_lead_alert(owner_phone, prop, buyer_name, buyer_phone)
+                        except Exception as ex:
+                            logger.warning(f"Non-critical WhatsApp dispatch failed: {ex}")
 
                         # Auto-create earnings
                         prop = unlock.property
