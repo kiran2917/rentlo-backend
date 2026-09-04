@@ -1380,6 +1380,8 @@ class PlatformSettingsView(views.APIView):
             'pg_custom_duration_4_price': settings.pg_custom_duration_4_price,
             'bypass_buyer_payment': settings.bypass_buyer_payment,
             'bypass_owner_payment': settings.bypass_owner_payment,
+            'enable_watermark': settings.enable_watermark,
+            'watermark_text': settings.watermark_text,
         }
 
         if is_admin:
@@ -1441,7 +1443,8 @@ class PlatformSettingsView(views.APIView):
             'pg_custom_duration_1_days', 'pg_custom_duration_1_price',
             'pg_custom_duration_2_days', 'pg_custom_duration_2_price',
             'pg_custom_duration_3_days', 'pg_custom_duration_3_price',
-            'pg_custom_duration_4_days', 'pg_custom_duration_4_price'
+            'pg_custom_duration_4_days', 'pg_custom_duration_4_price',
+            'enable_watermark', 'watermark_text'
         ]
         
         # 1. Audit Log Tracking: Compare old vs new BEFORE mutating (strict normalization)
@@ -1631,6 +1634,13 @@ class PlatformSettingsView(views.APIView):
         enable_estamp = request.data.get('enable_e_stamp_agreements')
         if enable_estamp is not None:
             settings.enable_e_stamp_agreements = (str(enable_estamp).lower() in ['true', '1', 'yes'])
+
+        enable_wm = request.data.get('enable_watermark')
+        if enable_wm is not None:
+            settings.enable_watermark = (str(enable_wm).lower() in ['true', '1', 'yes'])
+
+        if 'watermark_text' in request.data:
+            settings.watermark_text = str(request.data.get('watermark_text', '')).strip()
 
         def set_bool(key):
             val = request.data.get(key)

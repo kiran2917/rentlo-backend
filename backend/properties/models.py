@@ -510,6 +510,18 @@ class PlatformSettings(models.Model):
     sms_from_number = models.CharField(max_length=20, blank=True, default='',
         help_text="Twilio: From phone number (e.g. +1XXXXXXXXXX)")
 
+    # ─── Property Photo Watermark (100% Free VPS Pillow) ──────────────────────
+    enable_watermark = models.BooleanField(
+        default=True,
+        help_text="Automatically overlay watermark on uploaded property photos"
+    )
+    watermark_text = models.CharField(
+        max_length=100,
+        blank=True,
+        default="Verified on Rentlo.in",
+        help_text="Custom watermark text stamped on property photos"
+    )
+
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

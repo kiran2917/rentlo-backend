@@ -6,10 +6,112 @@ from rest_framework import views, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 import logging
-from properties.models import Property
+from properties.models import Property, PlatformSettings
 from .models import PropertyMedia
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+import io
 
 logger = logging.getLogger('error')
+
+def apply_watermark(img, text="Verified on Rentlo.in"):
+    """
+    Overlays a subtle, semi-transparent verified badge watermark onto the image.
+    Uses Pillow RGBA alpha blending. 100% free VPS CPU processing.
+    """
+    if not text or not str(text).strip():
+        return img
+
+    clean_text = str(text).strip()
+    orig_mode = img.mode
+
+    # Convert to RGBA for alpha composite
+    if orig_mode != 'RGBA':
+        base = img.convert('RGBA')
+    else:
+        base = img.copy()
+
+    w, h = base.size
+    overlay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    # Dynamic font size based on image resolution (approx 2.8% of min dimension, clamped between 13px and 44px)
+    font_size = max(13, min(44, int(min(w, h) * 0.028)))
+
+    font = None
+    common_fonts = [
+        'arial.ttf', 'Arial.ttf', 'DejaVuSans.ttf', 'DejaVuSans-Bold.ttf',
+        'calibri.ttf', 'segoeui.ttf', 'LiberationSans-Regular.ttf',
+        'Helvetica.ttf', 'FreeSans.ttf'
+    ]
+    for font_name in common_fonts:
+        try:
+            font = ImageFont.truetype(font_name, font_size)
+            break
+        except Exception:
+            continue
+
+    if font is None:
+        try:
+            font = ImageFont.load_default(size=font_size)
+        except Exception:
+            font = ImageFont.load_default()
+
+    # Calculate text bounding box
+    try:
+        bbox = draw.textbbox((0, 0), clean_text, font=font)
+        text_w = bbox[2] - bbox[0]
+        text_h = bbox[3] - bbox[1]
+        offset_y = bbox[1]
+    except Exception:
+        text_w = len(clean_text) * int(font_size * 0.58)
+        text_h = int(font_size * 1.1)
+        offset_y = 0
+
+    pad_x = int(font_size * 0.7)
+    pad_y = int(font_size * 0.45)
+    margin = int(font_size * 0.85)
+
+    badge_w = text_w + (pad_x * 2)
+    badge_h = text_h + (pad_y * 2)
+
+    x1 = w - badge_w - margin
+    y1 = h - badge_h - margin
+    x2 = x1 + badge_w
+    y2 = y1 + badge_h
+
+    # Only draw if image is large enough to contain badge comfortably
+    if x1 >= 0 and y1 >= 0 and badge_w < w and badge_h < h:
+        radius = int(badge_h / 2)
+        # Draw dark slate rounded badge with 65% opacity and subtle white outline
+        try:
+            draw.rounded_rectangle(
+                [x1, y1, x2, y2],
+                radius=radius,
+                fill=(15, 23, 42, 165),
+                outline=(255, 255, 255, 80),
+                width=1
+            )
+        except Exception:
+            draw.rectangle(
+                [x1, y1, x2, y2],
+                fill=(15, 23, 42, 165),
+                outline=(255, 255, 255, 80)
+            )
+
+        # Draw clean white watermark text inside badge
+        draw.text(
+            (x1 + pad_x, y1 + pad_y - offset_y),
+            clean_text,
+            fill=(255, 255, 255, 235),
+            font=font
+        )
+
+        watermarked = Image.alpha_composite(base, overlay)
+        if orig_mode != 'RGBA':
+            watermarked = watermarked.convert('RGB')
+        return watermarked
+
+    return img
 
 def is_r2_configured():
     return bool(
@@ -138,8 +240,6 @@ class PresignedURLView(views.APIView):
             return Response({'detail': 'Failed to generate presigned upload URL. Please try again.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 from rest_framework.parsers import MultiPartParser, FormParser
-from PIL import Image
-import io
 
 class UploadMediaView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -176,7 +276,6 @@ class UploadMediaView(views.APIView):
             img = Image.open(file_obj)
             
             # Auto-orient based on EXIF if present
-            from PIL import ImageOps
             img = ImageOps.exif_transpose(img)
 
             # Define sizes
@@ -193,6 +292,17 @@ class UploadMediaView(views.APIView):
             original_name = getattr(file_obj, 'name', '').lower()
             prefix = 'sig_' if 'sig' in original_name else ''
             base_uuid = f"{prefix}{uuid.uuid4()}"
+
+            # Auto-Watermark: 100% Free on VPS with Pillow (dynamic text configured by Admin)
+            # Skip for signature canvas captures or docs
+            if not prefix:
+                try:
+                    ps = PlatformSettings.load()
+                    if ps.enable_watermark:
+                        wm_text = ps.watermark_text or "Verified on Rentlo.in"
+                        img = apply_watermark(img, text=wm_text)
+                except Exception as wm_err:
+                    logger.warning(f"Watermark processing skipped: {wm_err}")
             
             use_r2 = is_r2_configured()
             use_cloudinary = not use_r2 and is_cloudinary_configured()

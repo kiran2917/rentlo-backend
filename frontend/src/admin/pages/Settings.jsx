@@ -302,6 +302,10 @@ export const Settings = () => {
   const [companyLogoUrl, setCompanyLogoUrl] = useState("");
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
+  // Auto-Watermarking (100% Free VPS Pillow)
+  const [enableWatermark, setEnableWatermark] = useState(true);
+  const [watermarkText, setWatermarkText] = useState("Verified on Rentlo.in");
+
   const [buyerTheme, setBuyerTheme] = useState(() => localStorage.getItem("rentlo_buyer_theme") || "emerald_minimal");
   const [dashboardTheme, setDashboardTheme] = useState(() => localStorage.getItem("rentlo_dashboard_theme") || "emerald_minimal");
   const [buyerGateway, setBuyerGateway] = useState("razorpay");
@@ -473,6 +477,8 @@ export const Settings = () => {
         setUpiId(data.default_upi_id || "");
         setCompanyName(data.company_name || "Rentlo Technologies Private Limited");
         setCompanyLogoUrl(data.company_logo_url || "");
+        setEnableWatermark(data.enable_watermark ?? true);
+        setWatermarkText(data.watermark_text || "Verified on Rentlo.in");
         
         setBuyerUnlockFee(data.buyer_unlock_fee != null ? data.buyer_unlock_fee : "14");
         setBuyerPassStarter(data.buyer_pass_starter_price != null ? data.buyer_pass_starter_price : "39");
@@ -623,6 +629,8 @@ export const Settings = () => {
           default_upi_id: upiId,
           company_name: companyName,
           company_logo_url: companyLogoUrl,
+          enable_watermark: enableWatermark,
+          watermark_text: watermarkText,
           buyer_unlock_fee: parseFloat(buyerUnlockFee) || 14,
           buyer_pass_starter_price: parseFloat(buyerPassStarter) || 39,
           buyer_pass_smart_price: parseFloat(buyerPassSmart) || 79,
@@ -2580,6 +2588,112 @@ export const Settings = () => {
                           Save Branding
                         </button>
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1. AUTO-WATERMARKING ON PROPERTY PHOTOS */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-emerald-600 text-[20px]">verified_user</span>
+                      <h3 className="text-[15px] font-extrabold text-ink">Property Photo Watermark &amp; Anti-Theft Protection</h3>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      100% Free VPS Processing (Pillow)
+                    </span>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-surface-alt/40 border border-border/60 space-y-6">
+                    {/* Toggle Switch Card */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
+                      <div className="space-y-1">
+                        <span className="text-[13px] font-bold text-slate-800 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-[18px] text-emerald-600">branding_watermark</span>
+                          Automatic Photo Watermarking
+                        </span>
+                        <p className="text-[12px] text-slate-500 font-medium">
+                          Automatically stamps a subtle, semi-transparent watermark badge onto all owner/agent uploaded listing photos.
+                        </p>
+                      </div>
+
+                      <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={enableWatermark}
+                          onChange={(e) => setEnableWatermark(e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                      </label>
+                    </div>
+
+                    {/* Custom Watermark Text Input */}
+                    {enableWatermark && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        <div className="space-y-2">
+                          <label className="text-[13px] font-bold text-slate-700 block">
+                            Custom Watermark Text (Dynamic)
+                          </label>
+                          <input
+                            type="text"
+                            value={watermarkText}
+                            onChange={(e) => setWatermarkText(e.target.value)}
+                            placeholder="e.g. Verified on Rentlo.in"
+                            maxLength={100}
+                            className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 text-[14px] bg-white font-bold transition-all shadow-sm"
+                          />
+                          <p className="text-[11px] text-slate-500">
+                            Whatever text you type here will automatically be stamped on newly uploaded property photos in real-time.
+                          </p>
+                        </div>
+
+                        {/* Live Watermark Preview Mock */}
+                        <div className="p-4 rounded-xl border border-dashed border-slate-300 bg-slate-900/95 text-white space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                              <span className="material-symbols-outlined text-[14px]">preview</span>
+                              Live Photo Watermark Preview
+                            </span>
+                            <span className="text-[10px] text-slate-400 bg-white/10 px-2 py-0.5 rounded font-mono">
+                              Bottom-Right Stamp
+                            </span>
+                          </div>
+
+                          <div className="relative h-44 rounded-lg overflow-hidden bg-gradient-to-tr from-slate-800 via-slate-700 to-slate-800 flex items-center justify-center border border-white/10">
+                            {/* Background sample room graphic */}
+                            <div className="absolute inset-0 opacity-40 flex items-center justify-center">
+                              <span className="material-symbols-outlined text-[72px] text-slate-400">apartment</span>
+                            </div>
+                            <span className="relative z-10 text-[12px] font-medium text-slate-300 bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
+                              Sample Listing Photo
+                            </span>
+
+                            {/* Stamped Watermark Badge in Bottom Right */}
+                            <div className="absolute bottom-3 right-3 z-20">
+                              <div className="px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-white/30 backdrop-blur-md flex items-center gap-1.5 shadow-lg">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span className="text-[12px] font-black text-white tracking-wide">
+                                  {watermarkText.trim() || "Verified on Rentlo.in"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Save Button for Watermark */}
+                    <div className="flex items-center justify-end pt-2 border-t border-border/40">
+                      <button
+                        type="button"
+                        onClick={handleSave}
+                        className="h-11 px-6 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white text-[13px] font-extrabold uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">save</span>
+                        Save Watermark Settings
+                      </button>
                     </div>
                   </div>
                 </div>
