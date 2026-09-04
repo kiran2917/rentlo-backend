@@ -1838,6 +1838,10 @@ export const OwnerDashboard = () => {
                     {/* Residential */}
                     {(() => {
                       const housePrice = Number(platformSettings?.owner_residential_fee) || 99;
+                      const resValDays = platformSettings?.validity_residential_1pack_days != null
+                        ? Number(platformSettings.validity_residential_1pack_days)
+                        : (platformSettings?.validity_residential_days != null ? Number(platformSettings.validity_residential_days) : 0);
+                      const resValText = resValDays > 0 ? `${resValDays}d Validity` : "Unlimited Validity";
                       return (
                         <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
                           <div>
@@ -1845,7 +1849,7 @@ export const OwnerDashboard = () => {
                               <span className="material-symbols-outlined text-indigo-600 text-[18px]">home</span>
                               Residential House / Villa
                             </h6>
-                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{housePrice} per property (Unlimited Validity)</span>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{housePrice} per property ({resValText})</span>
                           </div>
                           <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
                             <button
@@ -1871,6 +1875,10 @@ export const OwnerDashboard = () => {
                     {/* Apartment & PG */}
                     {(() => {
                       const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
+                      const pgValDays = platformSettings?.validity_apt_pg_1pack_days != null
+                        ? Number(platformSettings.validity_apt_pg_1pack_days)
+                        : (platformSettings?.validity_apt_pg_days != null ? Number(platformSettings.validity_apt_pg_days) : 60);
+                      const pgValText = pgValDays > 0 ? `${pgValDays}d Validity & Room Tracker` : "Unlimited Validity & Room Tracker";
                       return (
                         <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
                           <div>
@@ -1878,7 +1886,7 @@ export const OwnerDashboard = () => {
                               <span className="material-symbols-outlined text-indigo-600 text-[18px]">apartment</span>
                               Apartment / PG & Hostel
                             </h6>
-                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{pgPrice} per property ({platformSettings?.validity_apt_pg_days || 60}d Validity & Room Tracker)</span>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{pgPrice} per property ({pgValText})</span>
                           </div>
                           <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
                             <button
@@ -1904,6 +1912,10 @@ export const OwnerDashboard = () => {
                     {/* Commercial */}
                     {(() => {
                       const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
+                      const commValDays = platformSettings?.validity_commercial_1pack_days != null
+                        ? Number(platformSettings.validity_commercial_1pack_days)
+                        : (platformSettings?.validity_commercial_days != null ? Number(platformSettings.validity_commercial_days) : 0);
+                      const commValText = commValDays > 0 ? `${commValDays}d Validity` : "Unlimited Validity";
                       return (
                         <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
                           <div>
@@ -1911,7 +1923,7 @@ export const OwnerDashboard = () => {
                               <span className="material-symbols-outlined text-indigo-600 text-[18px]">storefront</span>
                               Commercial Shop / Office
                             </h6>
-                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{commercialPrice} per property (Unlimited Validity)</span>
+                            <span className="text-[10px] text-slate-500 font-semibold mt-1 block">₹{commercialPrice} per property ({commValText})</span>
                           </div>
                           <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
                             <button

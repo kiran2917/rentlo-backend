@@ -276,115 +276,147 @@ export const OwnerNewListing = () => {
 
     const isPg = formData.property_category === "pg" || formData.property_type === "pg_hostel";
 
+    const formatValDesc = (days) => {
+      const d = Number(days);
+      return d > 0 ? `Live for ${d} days` : "Live until rented (Unlimited)";
+    };
+
     if (isCommercial) {
-      const commDays = platformSettings?.validity_commercial_days || 30;
+      const comm1Days = platformSettings?.validity_commercial_1pack_days != null
+        ? Number(platformSettings.validity_commercial_1pack_days)
+        : (platformSettings?.validity_commercial_days != null ? Number(platformSettings.validity_commercial_days) : 0);
+      const comm3Days = Number(platformSettings?.validity_commercial_3pack_days ?? 0);
+      const comm6Days = Number(platformSettings?.validity_commercial_6pack_days ?? 0);
+
+      const c1 = Number(platformSettings?.count_commercial_1pack) || 1;
+      const c3 = Number(platformSettings?.count_commercial_3pack) || 3;
+      const c6 = Number(platformSettings?.count_commercial_6pack) || 6;
+
       return {
         categoryName: "Commercial Property",
         categoryTag: "COMMERCIAL",
-        validityDays: commDays,
+        validityDays: comm1Days,
         plans: [
           {
             id: "single",
             name: "Single Commercial Listing",
             price: Number(platformSettings?.owner_commercial_fee) || 199,
-            count: 1,
+            count: c1,
             tag: "Standard",
             popular: false,
-            description: `Live for ${commDays} days · Standard visibility for 1 commercial property.`
+            description: `${formatValDesc(comm1Days)} · Standard visibility for ${c1} commercial property.`
           },
           {
             id: "3pack",
             name: "Commercial 3-Pack Pass",
             price: Number(platformSettings?.owner_commercial_3pack_price) || 449,
-            count: 3,
+            count: c3,
             tag: "Featured",
             popular: true,
-            description: `Live for ${commDays} days · Priority search placement & WhatsApp alerts to 500+ buyers.`
+            description: `${formatValDesc(comm3Days)} · Priority search placement & WhatsApp alerts to 500+ buyers.`
           },
           {
             id: "6pack",
             name: "Commercial 6-Pack VIP Pass",
             price: Number(platformSettings?.owner_commercial_6pack_price) || 799,
-            count: 6,
+            count: c6,
             tag: "VIP Deal",
             popular: false,
-            description: `Live for ${commDays} days · Dedicated concierge agent & homepage hero banner spotlight.`
+            description: `${formatValDesc(comm6Days)} · Dedicated concierge agent & homepage hero banner spotlight.`
           }
         ]
       };
     } else if (isPg) {
-      const pgDays = platformSettings?.validity_apt_pg_days || 60;
+      const pg1Days = platformSettings?.validity_apt_pg_1pack_days != null
+        ? Number(platformSettings.validity_apt_pg_1pack_days)
+        : (platformSettings?.validity_apt_pg_days != null ? Number(platformSettings.validity_apt_pg_days) : 60);
+      const pg3Days = Number(platformSettings?.validity_apt_pg_3pack_days ?? 60);
+      const pg6Days = Number(platformSettings?.validity_apt_pg_6pack_days ?? 90);
+
+      const c1 = Number(platformSettings?.count_apt_pg_1pack) || 1;
+      const c3 = Number(platformSettings?.count_apt_pg_3pack) || 3;
+      const c6 = Number(platformSettings?.count_apt_pg_6pack) || 6;
+
       return {
         categoryName: "PG & Hostel",
         categoryTag: "PG / HOSTEL",
-        validityDays: pgDays,
+        validityDays: pg1Days,
         plans: [
           {
             id: "single",
             name: "Single PG & Hostel Listing",
             price: Number(platformSettings?.owner_apt_pg_fee) || 149,
-            count: 1,
+            count: c1,
             tag: "Standard",
             popular: false,
-            description: `Live for ${pgDays} days · Standard listing visibility for 1 PG or Hostel.`
+            description: `${formatValDesc(pg1Days)} · Standard listing visibility for ${c1} PG or Hostel.`
           },
           {
             id: "3pack",
             name: "PG & Hostel 3-Pack Pass",
             price: Number(platformSettings?.owner_apt_pg_3pack_price) || 349,
-            count: 3,
+            count: c3,
             tag: "Featured",
             popular: true,
-            description: `Live for ${pgDays} days · Top search ranking & WhatsApp buyer broadcasts.`
+            description: `${formatValDesc(pg3Days)} · Top search ranking & WhatsApp buyer broadcasts.`
           },
           {
             id: "6pack",
             name: "PG & Hostel 6-Pack VIP Pass",
             price: Number(platformSettings?.owner_apt_pg_6pack_price) || 649,
-            count: 6,
+            count: c6,
             tag: "VIP Deal",
             popular: false,
-            description: `Live for ${pgDays} days · Dedicated concierge agent & free verification.`
+            description: `${formatValDesc(pg6Days)} · Dedicated concierge agent & free verification.`
           }
         ]
       };
     } else {
-      const resDays = platformSettings?.validity_residential_days || 30;
+      const res1Days = platformSettings?.validity_residential_1pack_days != null
+        ? Number(platformSettings.validity_residential_1pack_days)
+        : (platformSettings?.validity_residential_days != null ? Number(platformSettings.validity_residential_days) : 0);
+      const res3Days = Number(platformSettings?.validity_residential_3pack_days ?? 0);
+      const res6Days = Number(platformSettings?.validity_residential_6pack_days ?? 0);
+
+      const c1 = Number(platformSettings?.count_residential_1pack) || 1;
+      const c3 = Number(platformSettings?.count_residential_3pack) || 3;
+      const c6 = Number(platformSettings?.count_residential_6pack) || 6;
+
       return {
         categoryName: "Residential House / Villa",
         categoryTag: "RESIDENTIAL",
-        validityDays: resDays,
+        validityDays: res1Days,
         plans: [
           {
             id: "single",
             name: "Single House/Villa Listing",
             price: Number(platformSettings?.owner_residential_fee) || 99,
-            count: 1,
+            count: c1,
             tag: "Standard",
             popular: false,
-            description: `Live for ${resDays} days · Standard visibility for 1 independent house, villa or plot.`
+            description: `${formatValDesc(res1Days)} · Standard visibility for ${c1} independent house, villa or plot.`
           },
           {
             id: "3pack",
             name: "Residential 3-Pack Pass",
             price: Number(platformSettings?.owner_residential_3pack_price) || 259,
-            count: 3,
+            count: c3,
             tag: "Featured",
             popular: true,
-            description: `Live for ${resDays} days · Top search placement & instant tenant alerts.`
+            description: `${formatValDesc(res3Days)} · Top search placement & WhatsApp buyer broadcast.`
           },
           {
             id: "6pack",
-            name: "Residential 6-Pack VIP Pass",
+            name: "Residential 6-Pack Pass",
             price: Number(platformSettings?.owner_residential_6pack_price) || 499,
-            count: 6,
+            count: c6,
             tag: "VIP Deal",
             popular: false,
-            description: `Live for ${resDays} days · Concierge support & homepage banner spotlight.`
+            description: `${formatValDesc(res6Days)} · Dedicated concierge agent & free verification.`
           }
         ]
       };
-    };
+    }
   };
 
   // OTP State
@@ -3382,6 +3414,21 @@ export const OwnerNewListing = () => {
                   const pgPrice = Number(platformSettings?.owner_apt_pg_fee) || 149;
                   const commercialPrice = Number(platformSettings?.owner_commercial_fee) || 199;
 
+                  const resValDays = platformSettings?.validity_residential_1pack_days != null
+                    ? Number(platformSettings.validity_residential_1pack_days)
+                    : (platformSettings?.validity_residential_days != null ? Number(platformSettings.validity_residential_days) : 0);
+                  const resValText = resValDays > 0 ? `${resValDays}d Validity` : "Unlimited Validity";
+
+                  const pgValDays = platformSettings?.validity_apt_pg_1pack_days != null
+                    ? Number(platformSettings.validity_apt_pg_1pack_days)
+                    : (platformSettings?.validity_apt_pg_days != null ? Number(platformSettings.validity_apt_pg_days) : 60);
+                  const pgValText = pgValDays > 0 ? `${pgValDays}d Validity & Room Tracker` : "Unlimited Validity & Room Tracker";
+
+                  const commValDays = platformSettings?.validity_commercial_1pack_days != null
+                    ? Number(platformSettings.validity_commercial_1pack_days)
+                    : (platformSettings?.validity_commercial_days != null ? Number(platformSettings.validity_commercial_days) : 0);
+                  const commValText = commValDays > 0 ? `${commValDays}d Validity` : "Unlimited Validity";
+
                   const customSubtotal =
                     customHouseCount * housePrice +
                     customPgCount * pgPrice +
@@ -3585,7 +3632,7 @@ export const OwnerNewListing = () => {
                                   <span className="material-symbols-outlined text-indigo-600 text-[20px]">home</span>
                                   Residential House / Villa
                                 </h4>
-                                <p className="text-[11px] text-slate-500 font-medium">₹{housePrice} per property ({platformSettings?.validity_residential_days || 30}d Validity)</p>
+                                <p className="text-[11px] text-slate-500 font-medium">₹{housePrice} per property ({resValText})</p>
                               </div>
                               <div className="flex items-center gap-3">
                                 <button
@@ -3616,7 +3663,7 @@ export const OwnerNewListing = () => {
                                     <span className="material-symbols-outlined text-indigo-600 text-[20px]">apartment</span>
                                     Apartment / PG & Hostel
                                   </h4>
-                                  <p className="text-[11px] text-slate-500 font-medium">₹{pgPrice} per property ({platformSettings?.validity_apt_pg_days || 60}d Validity & Room Tracker)</p>
+                                  <p className="text-[11px] text-slate-500 font-medium">₹{pgPrice} per property ({pgValText})</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                   <button
@@ -3647,7 +3694,7 @@ export const OwnerNewListing = () => {
                                   <span className="material-symbols-outlined text-indigo-600 text-[20px]">storefront</span>
                                   Commercial Shop / Office
                                 </h4>
-                                <p className="text-[11px] text-slate-500 font-medium">₹{commercialPrice} per property ({platformSettings?.validity_commercial_days || 30}d Validity)</p>
+                                <p className="text-[11px] text-slate-500 font-medium">₹{commercialPrice} per property ({commValText})</p>
                               </div>
                               <div className="flex items-center gap-3">
                                 <button

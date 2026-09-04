@@ -897,36 +897,37 @@ def activate_or_stack_buyer_pass(buyer_user, pass_type, amount_paid=None, order_
 
     config = PASS_PRICING.get(pass_type, PASS_PRICING['starter_39'])
 
-    active_sub = BuyerSubscription.objects.filter(
-        buyer=buyer_user,
-        status='active',
-        credits_remaining__gt=0
-    ).order_by('-created_at').first()
-
-    if active_sub:
-        # Credit Stacking Engine: Stack credits indefinitely without time expiration
-        active_sub.credits_remaining += config['credits']
-        active_sub.agreement_credits_remaining += config['agreements']
-        active_sub.pass_type = pass_type
-        if order_id:
-            active_sub.order_id = order_id
-        if gateway_txn_id:
-            active_sub.gateway_txn_id = gateway_txn_id
-        active_sub.save()
-        return active_sub, True
-    else:
-        sub = BuyerSubscription.objects.create(
+    with transaction.atomic():
+        active_sub = BuyerSubscription.objects.select_for_update().filter(
             buyer=buyer_user,
-            pass_type=pass_type,
-            amount_paid=amount_paid or config['price'],
-            credits_remaining=config['credits'],
-            agreement_credits_remaining=config['agreements'],
-            order_id=order_id,
-            gateway_txn_id=gateway_txn_id,
             status='active',
-            expires_at=None
-        )
-        return sub, False
+            credits_remaining__gt=0
+        ).order_by('-created_at').first()
+
+        if active_sub:
+            # Credit Stacking Engine: Stack credits indefinitely without time expiration
+            active_sub.credits_remaining += config['credits']
+            active_sub.agreement_credits_remaining += config['agreements']
+            active_sub.pass_type = pass_type
+            if order_id:
+                active_sub.order_id = order_id
+            if gateway_txn_id:
+                active_sub.gateway_txn_id = gateway_txn_id
+            active_sub.save(update_fields=['credits_remaining', 'agreement_credits_remaining', 'pass_type', 'order_id', 'gateway_txn_id'])
+            return active_sub, True
+        else:
+            sub = BuyerSubscription.objects.create(
+                buyer=buyer_user,
+                pass_type=pass_type,
+                amount_paid=amount_paid or config['price'],
+                credits_remaining=config['credits'],
+                agreement_credits_remaining=config['agreements'],
+                order_id=order_id,
+                gateway_txn_id=gateway_txn_id,
+                status='active',
+                expires_at=None
+            )
+            return sub, False
 
 
 class InitiatePassPurchaseView(views.APIView):

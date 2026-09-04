@@ -10,6 +10,7 @@ from rest_framework import generics, status, views
 from rest_framework.permissions import BasePermission, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.conf import settings
+from django.db import transaction
 from accounts.permissions import IsAdminOrModerator, IsAgent, IsAdmin
 from .models import Property, ConsentOTP, City, Locality, PlatformSettingsAuditLog
 from .serializers import PropertySerializer, RequestOTPSerializer, VerifyOTPSerializer, CitySerializer, LocalitySerializer
@@ -344,25 +345,26 @@ class PropertyListCreateView(generics.ListCreateAPIView):
             if user_phone:
                 pass_filter |= Q(owner__phone=user_phone)
 
-            active_pass = OwnerListingPass.objects.filter(
-                pass_filter,
-                status='active',
-                credits_remaining__gt=0
-            ).filter(
-                Q(category='all') | Q(category__iexact=target_cat)
-            ).order_by('created_at').first()
+            with transaction.atomic():
+                active_pass = OwnerListingPass.objects.select_for_update().filter(
+                    pass_filter,
+                    status='active',
+                    credits_remaining__gt=0
+                ).filter(
+                    Q(category='all') | Q(category__iexact=target_cat)
+                ).order_by('created_at').first()
 
-            if active_pass:
-                active_pass.credits_remaining -= 1
-                if active_pass.credits_remaining <= 0:
-                    active_pass.status = 'depleted'
-                active_pass.save()
+                if active_pass:
+                    active_pass.credits_remaining -= 1
+                    if active_pass.credits_remaining <= 0:
+                        active_pass.status = 'depleted'
+                    active_pass.save(update_fields=['credits_remaining', 'status'])
 
-                save_kwargs['registration_payment_method'] = 'owner_credit'
-                save_kwargs['registration_fee_paid'] = True
-                save_kwargs['onboarding_payment_status'] = 'paid'
-                save_kwargs['onboarding_payment_method'] = 'owner_credit'
-                save_kwargs['status'] = 'approved'
+                    save_kwargs['registration_payment_method'] = 'owner_credit'
+                    save_kwargs['registration_fee_paid'] = True
+                    save_kwargs['onboarding_payment_status'] = 'paid'
+                    save_kwargs['onboarding_payment_method'] = 'owner_credit'
+                    save_kwargs['status'] = 'approved'
             
         serializer.save(**save_kwargs)
 
@@ -1969,26 +1971,27 @@ class PropertyDetailUpdateView(generics.RetrieveUpdateDestroyAPIView):
                     if user_phone:
                         pass_filter |= Q(owner__phone=user_phone)
 
-                    active_pass = OwnerListingPass.objects.filter(
-                        pass_filter,
-                        status='active',
-                        credits_remaining__gt=0
-                    ).filter(
-                        Q(category='all') | Q(category__iexact=target_cat)
-                    ).order_by('created_at').first()
+                    with transaction.atomic():
+                        active_pass = OwnerListingPass.objects.select_for_update().filter(
+                            pass_filter,
+                            status='active',
+                            credits_remaining__gt=0
+                        ).filter(
+                            Q(category='all') | Q(category__iexact=target_cat)
+                        ).order_by('created_at').first()
 
-                    if not active_pass:
-                        return Response({
-                            'detail': f'No active listing credits found for {target_cat.capitalize()}. Please purchase listing credits to relist.',
-                            'requires_payment': True,
-                            'category': target_cat
-                        }, status=status.HTTP_402_PAYMENT_REQUIRED)
+                        if not active_pass:
+                            return Response({
+                                'detail': f'No active listing credits found for {target_cat.capitalize()}. Please purchase listing credits to relist.',
+                                'requires_payment': True,
+                                'category': target_cat
+                            }, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-                    # Consume 1 credit
-                    active_pass.credits_remaining -= 1
-                    if active_pass.credits_remaining <= 0:
-                        active_pass.status = 'depleted'
-                    active_pass.save()
+                        # Consume 1 credit
+                        active_pass.credits_remaining -= 1
+                        if active_pass.credits_remaining <= 0:
+                            active_pass.status = 'depleted'
+                        active_pass.save(update_fields=['credits_remaining', 'status'])
 
             old_status = instance.status
             instance.status = new_status
