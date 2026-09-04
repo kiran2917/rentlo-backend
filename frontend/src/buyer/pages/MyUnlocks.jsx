@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getWhatsAppShareLink, getGoogleMapsLink } from "../../shared/qrCodeUtils";
 import { Translate } from "../../shared/components/Translate";
 
@@ -10,6 +11,14 @@ export const MyUnlocks = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Dispute / Feedback Modal State
+  const [disputeItem, setDisputeItem] = useState(null);
+  const [feedbackAccurate, setFeedbackAccurate] = useState(false);
+  const [feedbackReason, setFeedbackReason] = useState("already_rented");
+  const [feedbackNote, setFeedbackNote] = useState("");
+  const [submittingDispute, setSubmittingDispute] = useState(false);
+  const [disputeSuccessMsg, setDisputeSuccessMsg] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +64,39 @@ export const MyUnlocks = () => {
     const type = (prop.property_type || "").toLowerCase();
     return title.includes(q) || locality.includes(q) || city.includes(q) || owner.includes(q) || type.includes(q);
   });
+
+  const handleSubmitDispute = async () => {
+    if (!disputeItem) return;
+    const unlockId = disputeItem.id || disputeItem.unlock_id || disputeItem.property?.id || disputeItem.property_id;
+    setSubmittingDispute(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/unlocks/${unlockId}/feedback/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          is_accurate: feedbackAccurate,
+          reason: !feedbackAccurate ? feedbackReason : "",
+          note: feedbackNote
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setDisputeSuccessMsg(data.detail || "Dispute submitted successfully!");
+        toast.success(data.detail || "Report submitted!");
+        setTimeout(() => {
+          setDisputeItem(null);
+          setDisputeSuccessMsg("");
+        }, 2000);
+      } else {
+        toast.error(data.detail || "Failed to submit dispute.");
+      }
+    } catch {
+      toast.error("Network error submitting dispute.");
+    } finally {
+      setSubmittingDispute(false);
+    }
+  };
 
   return (
     <div
@@ -483,6 +525,24 @@ export const MyUnlocks = () => {
                           </a>
                         </div>
 
+                        {/* Dispute / Report Contact Issue */}
+                        <div className="mt-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDisputeItem(item);
+                              setFeedbackAccurate(false);
+                              setFeedbackReason("already_rented");
+                              setFeedbackNote("");
+                              setDisputeSuccessMsg("");
+                            }}
+                            className="w-full h-8 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 cursor-pointer shadow-2xs"
+                          >
+                            <span className="material-symbols-outlined text-[15px]">report_problem</span>
+                            Report Issue / Request Refund (2h SLA)
+                          </button>
+                        </div>
+
                         {/* Lease Agreement & Details Footer */}
                         <div className="mt-auto pt-3 border-t flex items-center gap-2" style={{ borderColor: "var(--border)" }}>
                           <Link
@@ -516,6 +576,167 @@ export const MyUnlocks = () => {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Dispute / Feedback Modal */}
+        {disputeItem && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{
+              backgroundColor: "rgba(11,12,14,0.8)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            <div
+              className="w-full max-w-sm rounded-card p-8"
+              style={{
+                backgroundColor: "var(--surface)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <h3
+                className="font-display font-bold text-[20px] mb-1.5 text-center tracking-tight"
+                style={{ color: "var(--ink)" }}
+              >
+                {feedbackAccurate === false ? "Report Listing Dispute" : "Contact Verification"}
+              </h3>
+              <p
+                className="text-[12px] text-center mb-5 font-medium"
+                style={{ color: "var(--text-muted)" }}
+              >
+                {feedbackAccurate === false
+                  ? "Select the issue below. Admin will review under our 2-hour SLA for credit refund."
+                  : "Did you reach the direct owner successfully?"}
+              </p>
+
+              {!disputeSuccessMsg ? (
+                <>
+                  <div className="flex gap-3 mb-4">
+                    {[
+                      { val: true, icon: "thumb_up", label: "Yes, Owner Active" },
+                      { val: false, icon: "report_problem", label: "No, Issue Found" },
+                    ].map((opt) => (
+                      <button
+                        key={String(opt.val)}
+                        onClick={() => setFeedbackAccurate(opt.val)}
+                        className="flex-1 h-11 rounded-xl flex items-center justify-center gap-2 text-[12px] font-bold transition-all duration-200 cursor-pointer shadow-xs"
+                        style={{
+                          backgroundColor:
+                            feedbackAccurate === opt.val
+                              ? opt.val
+                                ? "var(--success)"
+                                : "#ef4444"
+                              : "rgba(0,0,0,0.04)",
+                          color:
+                            feedbackAccurate === opt.val
+                              ? "white"
+                              : "var(--text-muted)",
+                          border: feedbackAccurate === opt.val ? "none" : "1px solid var(--border)",
+                        }}
+                      >
+                        <span className="material-symbols-outlined text-[17px]">
+                          {opt.icon}
+                        </span>{" "}
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* If issue reported: Show Dispute Reason Dropdown / Buttons */}
+                  {feedbackAccurate === false && (
+                    <div className="space-y-3 mb-4 animate-in fade-in duration-200">
+                      <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block">
+                        Dispute Reason (SLA Protected)
+                      </label>
+                      <div className="grid grid-cols-1 gap-2">
+                        {[
+                          { id: "already_rented", label: "🏡 Already Rented Out by Owner" },
+                          { id: "wrong_number", label: "📵 Wrong / Inactive / Switched-Off Phone" },
+                          { id: "broker_demanding_commission", label: "💼 Broker Demanding Brokerage (Policy Violation)" },
+                          { id: "fake_photos_or_price", label: "⚠️ Fake Photos / Rent Price Mismatch" },
+                          { id: "other", label: "📝 Other Issue" },
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setFeedbackReason(item.id)}
+                            className={`w-full text-left px-3.5 py-2.5 rounded-xl text-[12px] font-bold border transition-all flex items-center justify-between cursor-pointer ${
+                              feedbackReason === item.id
+                                ? "bg-rose-50 border-rose-400 text-rose-800 shadow-xs"
+                                : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                            }`}
+                          >
+                            <span>{item.label}</span>
+                            {feedbackReason === item.id && (
+                              <span className="material-symbols-outlined text-rose-600 text-[18px]">
+                                check_circle
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <textarea
+                    value={feedbackNote}
+                    onChange={(e) => setFeedbackNote(e.target.value)}
+                    placeholder={
+                      feedbackAccurate === false
+                        ? "Describe the issue (e.g. called owner, they said rented on Sunday)..."
+                        : "Optional comments about this property..."
+                    }
+                    className="w-full rounded-xl p-3 text-[12px] mb-4 resize-none outline-none transition-all duration-200 font-medium"
+                    rows={2}
+                    style={{
+                      backgroundColor: "var(--surface-alt)",
+                      color: "var(--ink)",
+                      border: "1px solid var(--border)",
+                    }}
+                  />
+
+                  <button
+                    onClick={handleSubmitDispute}
+                    disabled={submittingDispute || feedbackAccurate === null}
+                    className="w-full h-11 rounded-xl text-[13px] font-extrabold disabled:opacity-50 cursor-pointer transition-all shadow-sm flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor: "var(--accent)",
+                      color: "#ffffff",
+                    }}
+                  >
+                    {submittingDispute ? (
+                      <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[16px]">send</span>
+                    )}
+                    {submittingDispute ? "Submitting…" : feedbackAccurate === false ? "Submit Dispute for Refund" : "Submit Confirmation"}
+                  </button>
+                  <button
+                    onClick={() => setDisputeItem(null)}
+                    className="w-full mt-2 h-9 text-[12px] font-bold cursor-pointer"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <div className="text-center py-6 animate-in zoom-in-95 duration-300">
+                  <span
+                    className="material-symbols-outlined text-[48px] mb-2"
+                    style={{ color: "var(--success)" }}
+                  >
+                    verified
+                  </span>
+                  <p
+                    className="font-bold text-[14px]"
+                    style={{ color: "var(--ink)" }}
+                  >
+                    {disputeSuccessMsg}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

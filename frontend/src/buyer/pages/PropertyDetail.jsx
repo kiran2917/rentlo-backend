@@ -248,11 +248,12 @@ export const PropertyDetail = () => {
   };
 
   const handleSubmitFeedback = async () => {
-    if (!feedbackUnlockId || feedbackAccurate === null) return;
+    const targetId = feedbackUnlockId || property?.unlock_id || property?.id || id;
+    if (!targetId || feedbackAccurate === null) return;
     setFeedbackLoading(true);
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/unlocks/${feedbackUnlockId}/feedback/`,
+        `${import.meta.env.VITE_API_URL}/unlocks/${targetId}/feedback/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1381,6 +1382,25 @@ export const PropertyDetail = () => {
                   >
                     <span className="material-symbols-outlined text-[18px]">share</span>
                     Share Listing
+                  </button>
+                </div>
+
+                {/* Report Issue & Dispute Resolution SLA Button */}
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedbackAccurate(false);
+                      setFeedbackReason("already_rented");
+                      setFeedbackSubmitted(false);
+                      setFeedbackResultMsg("");
+                      setFeedbackUnlockId(property.unlock_id || property.id);
+                      setShowFeedbackModal(true);
+                    }}
+                    className="w-full h-11 rounded-xl text-[12px] font-bold flex items-center justify-center gap-1.5 transition-all text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 cursor-pointer shadow-xs"
+                  >
+                    <span className="material-symbols-outlined text-[17px]">report_problem</span>
+                    Report Issue / Request Refund (2h SLA)
                   </button>
                 </div>
 

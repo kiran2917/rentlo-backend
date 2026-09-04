@@ -592,41 +592,44 @@ class SubmitFeedbackView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
-        try:
-            unlock = Unlock.objects.get(id=id, buyer=request.user, status='paid')
-        except Unlock.DoesNotExist:
-            return Response({'detail': 'Unlock not found or not paid'}, status=status.HTTP_404_NOT_FOUND)
+        unlock = Unlock.objects.filter(id=id, buyer=request.user, status='paid').first()
+        if not unlock:
+            unlock = Unlock.objects.filter(property_id=id, buyer=request.user, status='paid').order_by('-id').first()
+        if not unlock:
+            unlock = Unlock.objects.filter(Q(id=id) | Q(property_id=id), buyer=request.user).order_by('-id').first()
+
+        if not unlock:
+            return Response({'detail': 'Unlock not found or not active.'}, status=status.HTTP_404_NOT_FOUND)
 
         is_accurate = request.data.get('is_accurate')
         if is_accurate is None:
-            return Response({'detail': 'is_accurate field is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'is_accurate field is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         is_accurate_bool = bool(is_accurate)
         reason = request.data.get('reason', 'other') if not is_accurate_bool else ''
         note = request.data.get('note', '')
         dispute_status = 'pending' if not is_accurate_bool else 'none'
 
-        try:
-            fb = Feedback.objects.create(
-                unlock=unlock,
-                buyer=request.user,
-                is_accurate=is_accurate_bool,
-                reason=reason,
-                dispute_status=dispute_status,
-                note=note
-            )
-            if not is_accurate_bool:
-                msg = "Dispute submitted successfully! Our Admin team will review under our 2-hour SLA to restore your unlock credit."
-            else:
-                msg = "Thank you! Your feedback helps keep Rentlo 100% verified."
-
-            return Response({
-                'detail': msg,
+        fb, created = Feedback.objects.update_or_create(
+            unlock=unlock,
+            defaults={
+                'buyer': request.user,
                 'is_accurate': is_accurate_bool,
-                'dispute_status': dispute_status
-            })
-        except IntegrityError:
-            return Response({'detail': 'Feedback or dispute has already been submitted for this unlock'}, status=status.HTTP_400_BAD_REQUEST)
+                'reason': reason,
+                'dispute_status': dispute_status,
+                'note': note
+            }
+        )
+        if not is_accurate_bool:
+            msg = "Dispute reported successfully! Admin team will review under our 2-hour SLA to restore your unlock credit."
+        else:
+            msg = "Thank you! Your confirmation helps keep Rentlo 100% verified."
+
+        return Response({
+            'detail': msg,
+            'is_accurate': is_accurate_bool,
+            'dispute_status': dispute_status
+        })
 
 from accounts.permissions import IsAdminOrModerator
 from rest_framework import serializers

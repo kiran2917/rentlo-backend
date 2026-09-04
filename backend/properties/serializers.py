@@ -81,6 +81,7 @@ class PropertySerializer(serializers.ModelSerializer):
     last_confirmed_at = serializers.DateTimeField(source='updated_at', read_only=True)
     trust_score = serializers.SerializerMethodField()
     feedback_count = serializers.SerializerMethodField()
+    unlock_id = serializers.SerializerMethodField()
     unlock_fee = serializers.SerializerMethodField()
     onboarding_fee = serializers.SerializerMethodField()
     creator_info = serializers.SerializerMethodField()
@@ -105,7 +106,7 @@ class PropertySerializer(serializers.ModelSerializer):
             'display_title', 'title', 'owner_name_display', 'owner_phone_display', 'owner_has_whatsapp', 'display_lat', 'display_lng', 'display_address',
             'price', 'property_category', 'property_type', 'description', 'status', 'consent_proof_url', 'voice_note_url',
             'rejection_reason', 'created_at', 'updated_at', 'expires_at', 'media', 'uploaded_media',
-            'is_unlocked', 'locality', 'locality_details', 'is_verified', 'last_confirmed_at',
+            'is_unlocked', 'unlock_id', 'locality', 'locality_details', 'is_verified', 'last_confirmed_at',
             'trust_score', 'feedback_count', 'duplicate_of', 'unlock_fee', 'onboarding_fee', 
             'onboarding_payment_method', 'onboarding_payment_status', 'registration_fee_paid', 'registration_payment_method',
             'bedrooms', 'bathrooms', 'balconies', 'carpet_area', 'furnishing_status',
@@ -377,6 +378,14 @@ class PropertySerializer(serializers.ModelSerializer):
         # Otherwise, check if user has purchased/unlocked this property
         from unlocks.models import Unlock
         return Unlock.objects.filter(buyer=user, property=obj, status='paid').exists()
+
+    def get_unlock_id(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user or not request.user.is_authenticated:
+            return None
+        from unlocks.models import Unlock
+        unlock = Unlock.objects.filter(buyer=request.user, property=obj, status='paid').order_by('-id').first()
+        return unlock.id if unlock else None
 
     def _get_jittered_coordinates(self, obj):
         # Deterministic jitter based on property ID
