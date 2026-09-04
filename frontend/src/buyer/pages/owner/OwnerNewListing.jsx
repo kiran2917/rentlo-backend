@@ -1839,7 +1839,7 @@ export const OwnerNewListing = () => {
         )}
 
         {/* Header */}
-        <div className="mb-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="mb-6 sm:mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4 group">
             <div className="w-14 h-10 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-500/20 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all duration-500">
               <span className="material-symbols-outlined text-[32px] group-hover:-translate-y-1 transition-transform duration-500">
@@ -1867,7 +1867,7 @@ export const OwnerNewListing = () => {
         </div>
 
         {/* Progress Indicator */}
-        <div className="mb-12 relative w-full px-2">
+        <div className="mb-6 sm:mb-10 relative w-full px-2">
           {/* Mobile: compact step numbers */}
           <div className="absolute top-5 left-[8%] right-[8%] h-[2px] bg-slate-200 -z-10 rounded-full"></div>
           <div className="flex justify-between w-full">
@@ -1922,10 +1922,10 @@ export const OwnerNewListing = () => {
           </div>
         </div>
 
-        <div className="rounded-3xl border shadow-sm p-8 md:p-12 relative overflow-hidden" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
+        <div className="rounded-2xl sm:rounded-3xl border shadow-sm p-3.5 sm:p-6 md:p-10 relative overflow-hidden" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="relative z-10">
             {step === 1 && (
-              <div className="space-y-12 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="space-y-6 sm:space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="mb-1 border-b pb-6" style={{ borderColor: "var(--border)" }}>
                   <h2 className="text-[20px] font-extrabold tracking-tight flex items-center gap-2" style={{ color: "var(--ink)" }}>
                     <span className="material-symbols-outlined text-[24px]" style={{ color: "var(--accent)" }}>
@@ -1939,7 +1939,7 @@ export const OwnerNewListing = () => {
                   </p>
                 </div>
 
-                <div className="rounded-2xl p-8 border shadow-inner" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                <div className="rounded-2xl p-3.5 sm:p-6 border shadow-inner" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                   <h3 className="text-[9px] font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: "var(--text-muted)" }}>
                     <span className="material-symbols-outlined text-[16px]">
                       info
@@ -2195,7 +2195,7 @@ export const OwnerNewListing = () => {
 
 
                 <fieldset disabled={isStaff && !(platformSettings?.owner_listing_verification_method === 'selfie' ? !!selfiePhoto : otpVerified)} className="contents">
-                <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 shadow-inner mt-6">
+                <div className="bg-slate-50 rounded-2xl p-3.5 sm:p-6 border border-slate-100 shadow-inner mt-6">
                   <h3 className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
                     <span className="material-symbols-outlined text-[16px]">
                       pin_drop
@@ -2343,7 +2343,7 @@ export const OwnerNewListing = () => {
                   </p>
                 </div>
 
-                <div className="rounded-2xl p-8 border shadow-inner mt-6" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
+                <div className="rounded-2xl p-3.5 sm:p-6 border shadow-inner mt-6" style={{ backgroundColor: "var(--surface-alt)", borderColor: "var(--border)" }}>
                   <h3 className="text-[9px] font-extrabold uppercase tracking-widest mb-6 flex items-center gap-2" style={{ color: "var(--text-muted)" }}>
                     <span className="material-symbols-outlined text-[16px]">
                       map
@@ -3003,7 +3003,7 @@ export const OwnerNewListing = () => {
                   </p>
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 shadow-inner">
+                <div className="bg-slate-50 rounded-2xl p-3.5 sm:p-6 border border-slate-100 shadow-inner">
                   <div className="flex justify-between items-center mb-1">
                     <h3 className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                       <span className="material-symbols-outlined text-[16px]">
@@ -3014,7 +3014,7 @@ export const OwnerNewListing = () => {
                   </div>
                   <div
                     {...getRootProps()}
-                    className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 ${
+                    className={`border-2 border-dashed rounded-2xl p-4 sm:p-8 md:p-10 flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 ${
                       isDragActive
                         ? "border-indigo-500 bg-slate-50 scale-[1.02]"
                         : "border-slate-300 bg-white hover:border-indigo-400 shadow-sm"
@@ -3142,7 +3142,7 @@ export const OwnerNewListing = () => {
                   </button>
                 </div>
 
-                <section className="bg-slate-50 rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-inner">
+                <section className="bg-slate-50 rounded-2xl p-3.5 sm:p-6 md:p-8 border border-slate-200 shadow-inner">
                   {consentMethod === "signature" ? (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
@@ -3609,7 +3609,7 @@ export const OwnerNewListing = () => {
                           </div>
                         </>
                       ) : (
-                        <div className="max-w-2xl mx-auto mb-10 bg-white border-2 border-slate-200 p-8 rounded-3xl shadow-xl">
+                        <div className="max-w-2xl mx-auto mb-10 bg-white border-2 border-slate-200 p-4 sm:p-8 rounded-3xl shadow-xl">
                           <div className="text-center mb-6">
                             <h2 className="text-[22px] font-black text-slate-900">
                               Custom Build-Your-Own Owner Plan
@@ -3749,7 +3749,7 @@ export const OwnerNewListing = () => {
 
                       {/* Payment Section / Active Credits Section */}
                       {ownerCredits?.total_credits_remaining > 0 ? (
-                        <div className="max-w-xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 border-2 border-indigo-600/50 shadow-2xl rounded-3xl p-8 mt-10 text-center text-white relative overflow-hidden">
+                        <div className="max-w-xl mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 border-2 border-indigo-600/50 shadow-2xl rounded-3xl p-4 sm:p-8 mt-10 text-center text-white relative overflow-hidden">
                           <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black/20 border border-indigo-600/40 flex items-center justify-center text-slate-200">
                             <span className="material-symbols-outlined text-[32px]">stars</span>
                           </div>
@@ -3786,7 +3786,7 @@ export const OwnerNewListing = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="max-w-xl mx-auto bg-white border-2 border-slate-200 shadow-2xl rounded-3xl p-8 mt-10 text-center">
+                        <div className="max-w-xl mx-auto bg-white border-2 border-slate-200 shadow-2xl rounded-3xl p-4 sm:p-8 mt-10 text-center">
                           <h3 className="text-[18px] font-black text-slate-900 mb-1">
                             Complete Payment & Publish Listing
                           </h3>

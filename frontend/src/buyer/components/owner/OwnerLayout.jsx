@@ -446,7 +446,7 @@ export const OwnerLayout = () => {
           </div>
         </header>
 
-        <div className={`flex-1 overflow-auto ${isChatRoute ? "p-0" : "p-4 md:p-8 pb-24 md:pb-8"}`}>
+        <div className={`flex-1 overflow-auto ${isChatRoute ? "p-0" : "px-2 py-3 sm:p-6 md:p-8 pb-24 md:pb-8"}`}>
           <Outlet />
         </div>
 
