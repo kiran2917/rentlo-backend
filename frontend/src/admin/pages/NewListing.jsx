@@ -213,6 +213,45 @@ export const NewListing = () => {
   const [showSelfieCamera, setShowSelfieCamera] = useState(false);
   const [faceDetected, setFaceDetected] = useState(false);
   const [faceMisaligned, setFaceMisaligned] = useState(false);
+  const [highlightedField, setHighlightedField] = useState(null);
+
+  const focusAndHighlightField = (fieldName, targetStep, message) => {
+    if (message) toast.warn(message);
+    if (targetStep && step !== targetStep) {
+      setStep(targetStep);
+      localStorage.setItem("admin_onboarding_step", targetStep.toString());
+    }
+    setHighlightedField(fieldName);
+
+    setTimeout(() => {
+      let el = document.querySelector(`[name="${fieldName}"], [data-field="${fieldName}"], #${fieldName}, [data-fieldname="${fieldName}"]`);
+      if (!el && fieldName === 'map_location') {
+        el = document.querySelector('#map-container, .leaflet-container, [data-field="map"]');
+      }
+      if (!el && fieldName === 'property_type') {
+        el = document.querySelector('select[name="property_type"], [data-field="property_type"]');
+      }
+      if (!el && fieldName === 'property_category') {
+        el = document.querySelector('[data-field="property_category"]');
+      }
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof el.focus === 'function') {
+          el.focus({ preventScroll: true });
+        }
+      }
+    }, 150);
+
+    setTimeout(() => {
+      setHighlightedField(null);
+    }, 4500);
+  };
+
+  const getFieldHighlightClass = (fieldName) => {
+    return highlightedField === fieldName
+      ? "ring-4 ring-rose-500/80 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40 transition-all duration-300 animate-pulse shadow-lg shadow-rose-500/25"
+      : "";
+  };
 
   const loadOfflineDrafts = async () => {
     try {
@@ -1022,66 +1061,98 @@ export const NewListing = () => {
     }
   };
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (!formData.owner_phone?.trim()) {
-        toast.warn("Please enter Owner Phone Number.");
-        return;
+  const validateFormFields = (targetStep = null) => {
+    // Step 1 Validation
+    if (targetStep === null || targetStep === 1) {
+      if (!formData.owner_phone || formData.owner_phone.replace(/[^0-9]/g, "").length < 10) {
+        focusAndHighlightField("owner_phone", 1, "Please enter a valid 10-digit Owner Phone Number.");
+        return false;
       }
       const verifyMode = platformSettings?.owner_listing_verification_method || "otp";
       const isVerified = verifyMode === "otp" ? otpVerified : !!selfiePhoto;
       if (!isVerified) {
-        toast.warn(verifyMode === "otp" ? "Please verify owner phone number via OTP first." : "Please capture the owner live selfie first.");
-        return;
+        focusAndHighlightField(
+          verifyMode === "otp" ? "owner_phone" : "owner_selfie",
+          1,
+          verifyMode === "otp"
+            ? "Please verify owner phone number via OTP first."
+            : "Please capture the owner live selfie first."
+        );
+        return false;
       }
       if (!formData.owner_name?.trim()) {
-        toast.warn("Please enter Owner Name.");
-        return;
+        focusAndHighlightField("owner_name", 1, "Please enter Owner Full Name.");
+        return false;
+      }
+      if (!formData.property_category) {
+        focusAndHighlightField("property_category", 1, "Please select Property Category.");
+        return false;
       }
       if (!formData.property_type) {
-        toast.warn("Please select Property Type.");
-        return;
+        focusAndHighlightField("property_type", 1, "Please select Property Type.");
+        return false;
       }
       if (!formData.city_id && !formData.city_name_input) {
-        toast.warn("Please pin the exact location on the map to set the City.");
-        return;
+        focusAndHighlightField("city_name_input", 1, "Please pin the exact location on the map to set the City.");
+        return false;
       }
       if (!formData.locality && !formData.locality_name_input) {
-        toast.warn("Please pin the exact location on the map to set the Locality.");
-        return;
+        focusAndHighlightField("locality_name_input", 1, "Please pin the exact location on the map to set the Locality.");
+        return false;
       }
-      if (formData.property_category !== "pg" && !formData.price) {
-        toast.warn("Please enter Rent Price.");
-        return;
+      if (formData.property_category !== "pg" && (!formData.price || isNaN(formData.price) || Number(formData.price) <= 0)) {
+        focusAndHighlightField("price", 1, "Please enter a valid Rent Price (₹).");
+        return false;
       }
       if (!position) {
-        toast.warn("Please pin the exact property location on the map.");
-        return;
+        focusAndHighlightField("map_location", 1, "Please pin the exact property location on the map.");
+        return false;
       }
     }
-    if (step === 2) {
+
+    // Step 2 Validation
+    if (targetStep === null || targetStep === 2) {
       if (formData.property_category === "residential") {
+        if (!formData.carpet_area || Number(formData.carpet_area) <= 0) {
+          focusAndHighlightField("carpet_area", 2, "Please enter Carpet Area (sq.ft).");
+          return false;
+        }
         if (formData.property_type !== "studio" && !formData.bedrooms) {
-          toast.warn("Please enter Bedrooms / BHK count.");
-          return;
+          focusAndHighlightField("bedrooms", 2, "Please select Bedrooms / BHK count.");
+          return false;
         }
         if (!formData.bathrooms) {
-          toast.warn("Please enter Bathrooms count.");
-          return;
+          focusAndHighlightField("bathrooms", 2, "Please select Bathrooms count.");
+          return false;
         }
       } else if (formData.property_category === "pg") {
-        if (!formData.available_beds) {
-          toast.warn("Please enter Available Beds count.");
-          return;
+        if (!formData.available_beds || Number(formData.available_beds) <= 0) {
+          focusAndHighlightField("available_beds", 2, "Please enter Available Beds count.");
+          return false;
         }
       } else if (formData.property_category === "commercial") {
-        if (!formData.carpet_area) {
-          toast.warn("Please enter Carpet Area (sq.ft).");
-          return;
+        if (!formData.carpet_area || Number(formData.carpet_area) <= 0) {
+          focusAndHighlightField("carpet_area", 2, "Please enter Carpet Area (sq.ft).");
+          return false;
         }
       }
     }
-    setStep((prev) => prev + 1);
+
+    return true;
+  };
+
+  const handleNext = () => {
+    if (step === 1) {
+      if (!validateFormFields(1)) return;
+    }
+    if (step === 2) {
+      if (!validateFormFields(2)) return;
+    }
+    setStep((prev) => {
+      const nextStep = prev + 1;
+      localStorage.setItem("admin_onboarding_step", nextStep.toString());
+      return nextStep;
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1132,12 +1203,7 @@ export const NewListing = () => {
 
 
   const handleRazorpayPayment = async () => {
-    const validationErrors = [];
-    if (!formData.property_type) validationErrors.push("Property type is required");
-    if (!formData.price || isNaN(formData.price) || Number(formData.price) <= 0) validationErrors.push("Valid monthly price is required");
-
-    if (validationErrors.length > 0) {
-      toast.error(validationErrors.join(" • "));
+    if (!validateFormFields()) {
       return;
     }
 
@@ -1199,6 +1265,9 @@ export const NewListing = () => {
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
+    if (!validateFormFields()) {
+      return;
+    }
     if (!formData.onboarding_payment_method) {
       toast.error("Please select a payment method.");
       return;
@@ -1515,7 +1584,7 @@ export const NewListing = () => {
                         value={formData.owner_phone}
                         onChange={handleInputChange}
                         placeholder="Enter 10-digit owner phone"
-                        className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm"
+                        className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm ${getFieldHighlightClass("owner_phone")}`}
                         style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                         required
                       />
@@ -1526,7 +1595,7 @@ export const NewListing = () => {
                         const isVerified = verifyMode === "otp" ? otpVerified : !!selfiePhoto;
 
                         return (
-                          <div className="mt-3.5 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div data-field="owner_selfie" className="mt-3.5 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs animate-in fade-in slide-in-from-top-2 duration-200">
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <span className="text-[9px] font-black uppercase tracking-wider text-slate-500">
                                 {verifyMode === "otp" ? "Phone Verification Required" : "Owner Selfie Required"}
@@ -1610,7 +1679,7 @@ export const NewListing = () => {
                           name="owner_name"
                           value={formData.owner_name}
                           onChange={handleInputChange}
-                          className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm"
+                          className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm ${getFieldHighlightClass("owner_name")}`}
                           style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                           required
                         />
@@ -1649,7 +1718,7 @@ export const NewListing = () => {
                         <span className="material-symbols-outlined text-[11px]">category</span>
                         Property Category <span className="text-red-500 ml-0.5">*</span>
                       </label>
-                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                      <div data-field="property_category" className={`grid grid-cols-3 gap-2 sm:gap-3 p-1 rounded-2xl ${getFieldHighlightClass("property_category")}`}>
                         {[
                           { id: "residential", label: "Residential", icon: "home", defaultType: "apartment" },
                           { id: "pg", label: "PG / Co-Living", icon: "bed", defaultType: "pg_hostel" },
@@ -1682,9 +1751,10 @@ export const NewListing = () => {
                         </label>
                         <select
                           name="property_type"
+                          data-field="property_type"
                           value={formData.property_type}
                           onChange={handleInputChange}
-                          className="w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer"
+                          className={`w-full h-9 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[10px] font-bold text-slate-900 transition-all shadow-sm hover:border-slate-300 cursor-pointer ${getFieldHighlightClass("property_type")}`}
                         >
                           {formData.property_category === 'residential' && (
                             <>
@@ -1723,11 +1793,12 @@ export const NewListing = () => {
                       </label>
                       <input
                         name="price"
+                        data-field="price"
                         type="number"
                         value={formData.price}
                         onChange={handleInputChange}
                         placeholder="e.g. 25000"
-                        className="w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm"
+                        className={`w-full h-10 px-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-[12px] font-semibold text-slate-900 transition-all shadow-sm ${getFieldHighlightClass("price")}`}
                       />
                     </div>
                   </div>
@@ -1778,7 +1849,7 @@ export const NewListing = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5" data-field="city_name_input">
                       <label className="block text-xs font-black uppercase tracking-wider" style={{ color: "var(--ink)" }}>
                         Select District / City <span className="text-red-500">*</span>
                       </label>
@@ -1802,7 +1873,7 @@ export const NewListing = () => {
                               }
                             }
                           }}
-                          className="w-full h-11 pl-3.5 pr-10 rounded-xl border font-bold text-xs sm:text-sm outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 appearance-none cursor-pointer shadow-xs"
+                          className={`w-full h-11 pl-3.5 pr-10 rounded-xl border font-bold text-xs sm:text-sm outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 appearance-none cursor-pointer shadow-xs ${getFieldHighlightClass("city_name_input")}`}
                           style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                         >
                           <option value="all">📍 All Cities in {STATE_CITY_DATA[selectedStateKey]?.name || "State"}</option>
@@ -1818,7 +1889,7 @@ export const NewListing = () => {
                       </div>
                     </div>
 
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-2" data-field="locality_name_input">
                       <label className="block text-[9px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                         Exact Address *
                       </label>
@@ -1827,7 +1898,7 @@ export const NewListing = () => {
                         rows="2"
                         value={formData.exact_address}
                         onChange={(e) => setFormData({ ...formData, exact_address: e.target.value })}
-                        className="w-full rounded-xl border p-4 text-[11px] font-semibold transition-all outline-none resize-none shadow-xs"
+                        className={`w-full rounded-xl border p-4 text-[11px] font-semibold transition-all outline-none resize-none shadow-xs ${getFieldHighlightClass("locality_name_input")}`}
                         style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                         placeholder="Pin point the property on the map below to auto-fill this, or type manually"
                       ></textarea>
@@ -1854,7 +1925,7 @@ export const NewListing = () => {
                           )}
                         </div>
                       </div>
-                      <div className="h-[350px] rounded-2xl overflow-hidden border-2 shadow-inner relative" style={{ borderColor: "var(--border)" }}>
+                      <div id="map-container" data-field="map_location" className={`h-[350px] rounded-2xl overflow-hidden border-2 shadow-inner relative ${getFieldHighlightClass("map_location")}`} style={{ borderColor: "var(--border)" }}>
                         <MapContainer
                           center={position ? [position.lat, position.lng] : mapCenter}
                           zoom={mapZoom}
@@ -1972,11 +2043,12 @@ export const NewListing = () => {
                           </label>
                           <input
                             name="carpet_area"
+                            data-field="carpet_area"
                             type="number"
                             value={formData.carpet_area}
                             onChange={handleInputChange}
                             placeholder="e.g. 1100"
-                            className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm"
+                            className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm ${getFieldHighlightClass("carpet_area")}`}
                             style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                             required
                           />
@@ -1999,9 +2071,10 @@ export const NewListing = () => {
                           <label className="text-[9px] font-bold uppercase tracking-widest block mb-1" style={{ color: "var(--text-muted)" }}>Bedrooms / BHK <span className="text-red-500">*</span></label>
                           <select
                             name="bedrooms"
+                            data-field="bedrooms"
                             value={formData.bedrooms}
                             onChange={handleInputChange}
-                            className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold cursor-pointer transition-all shadow-sm"
+                            className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold cursor-pointer transition-all shadow-sm ${getFieldHighlightClass("bedrooms")}`}
                             style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                             required
                           >
@@ -2016,7 +2089,7 @@ export const NewListing = () => {
                         </div>
                         <div>
                           <label className="text-[9px] font-bold uppercase tracking-widest block mb-1" style={{ color: "var(--text-muted)" }}>Bathrooms <span className="text-red-500">*</span></label>
-                          <input name="bathrooms" type="number" value={formData.bathrooms} onChange={handleInputChange} placeholder="e.g. 2" className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm" style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }} required />
+                          <input name="bathrooms" data-field="bathrooms" type="number" value={formData.bathrooms} onChange={handleInputChange} placeholder="e.g. 2" className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm ${getFieldHighlightClass("bathrooms")}`} style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }} required />
                         </div>
                         <div>
                           <label className="text-[9px] font-bold uppercase tracking-widest block mb-1" style={{ color: "var(--text-muted)" }}>Balconies</label>
@@ -2142,7 +2215,7 @@ export const NewListing = () => {
                         </div>
 
                         {/* Multi-Room & Bed Inventory Configurator Card */}
-                        <div className="p-5 rounded-2xl border bg-indigo-500/5 border-indigo-500/20 space-y-4 shadow-sm">
+                        <div data-field="available_beds" className={`p-5 rounded-2xl border bg-indigo-500/5 border-indigo-500/20 space-y-4 shadow-sm ${getFieldHighlightClass("available_beds")}`}>
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-500/20 pb-3">
                             <div>
                               <h4 className="text-[12px] font-black text-slate-900 flex items-center gap-2">
@@ -2276,11 +2349,12 @@ export const NewListing = () => {
                           </label>
                           <input
                             name="carpet_area"
+                            data-field="carpet_area"
                             type="number"
                             value={formData.carpet_area}
                             onChange={handleInputChange}
                             placeholder="e.g. 2500"
-                            className="w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm"
+                            className={`w-full h-9 px-3 rounded-xl border outline-none text-[11px] font-bold transition-all shadow-sm ${getFieldHighlightClass("carpet_area")}`}
                             style={{ backgroundColor: "var(--surface)", color: "var(--ink)", borderColor: "var(--border)" }}
                             required
                           />
