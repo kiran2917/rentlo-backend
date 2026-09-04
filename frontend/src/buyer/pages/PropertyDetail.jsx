@@ -65,9 +65,11 @@ export const PropertyDetail = () => {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackUnlockId, setFeedbackUnlockId] = useState(null);
   const [feedbackAccurate, setFeedbackAccurate] = useState(null);
+  const [feedbackReason, setFeedbackReason] = useState("already_rented");
   const [feedbackNote, setFeedbackNote] = useState("");
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [feedbackResultMsg, setFeedbackResultMsg] = useState("");
   const [unlockSuccess, setUnlockSuccess] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [show3DTour, setShow3DTour] = useState(false);
@@ -256,16 +258,22 @@ export const PropertyDetail = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             is_accurate: feedbackAccurate,
+            reason: !feedbackAccurate ? feedbackReason : "",
             note: feedbackNote,
           }),
           credentials: "include",
         },
       );
+      const data = await res.json();
       if (res.ok) {
+        setFeedbackResultMsg(data.detail || "Feedback submitted successfully!");
         setFeedbackSubmitted(true);
-        setTimeout(() => setShowFeedbackModal(false), 2000);
+        setTimeout(() => setShowFeedbackModal(false), 2500);
+      } else {
+        toast.error(data.detail || "Failed to submit feedback.");
       }
     } catch {
+      toast.error("Network error submitting feedback.");
     } finally {
       setFeedbackLoading(false);
     }
@@ -2079,95 +2087,145 @@ export const PropertyDetail = () => {
             }}
           >
             <h3
-              className="font-display font-semibold text-[22px] mb-2 text-center"
+              className="font-display font-bold text-[20px] mb-1.5 text-center tracking-tight"
               style={{ color: "var(--ink)" }}
             >
-              Was this accurate?
+              {feedbackAccurate === false ? "Report Listing Dispute" : "Contact Details Verification"}
             </h3>
             <p
-              className="text-[13px] text-center mb-6"
+              className="text-[12px] text-center mb-5 font-medium"
               style={{ color: "var(--text-muted)" }}
             >
-              Help us improve the quality of listings.
+              {feedbackAccurate === false
+                ? "Select the issue below. Admin will review within our 2-hour SLA for credit refund."
+                : "Did you reach the direct owner successfully?"}
             </p>
             {!feedbackSubmitted ? (
               <>
                 <div className="flex gap-3 mb-4">
                   {[
-                    { val: true, icon: "thumb_up", label: "Yes" },
-                    { val: false, icon: "thumb_down", label: "No" },
+                    { val: true, icon: "thumb_up", label: "Yes, Owner Active" },
+                    { val: false, icon: "report_problem", label: "No, Issue Found" },
                   ].map((opt) => (
                     <button
                       key={String(opt.val)}
                       onClick={() => setFeedbackAccurate(opt.val)}
-                      className="flex-1 h-12 rounded-xl flex items-center justify-center gap-2 text-[13px] font-semibold transition-all duration-200"
+                      className="flex-1 h-11 rounded-xl flex items-center justify-center gap-2 text-[12px] font-bold transition-all duration-200 cursor-pointer shadow-xs"
                       style={{
                         backgroundColor:
                           feedbackAccurate === opt.val
                             ? opt.val
                               ? "var(--success)"
-                              : "var(--danger)"
-                            : "rgba(255,255,255,0.05)",
+                              : "#ef4444"
+                            : "rgba(0,0,0,0.04)",
                         color:
                           feedbackAccurate === opt.val
                             ? "white"
                             : "var(--text-muted)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        border: feedbackAccurate === opt.val ? "none" : "1px solid var(--border)",
                       }}
                     >
-                      <span className="material-symbols-outlined text-[18px]">
+                      <span className="material-symbols-outlined text-[17px]">
                         {opt.icon}
                       </span>{" "}
                       {opt.label}
                     </button>
                   ))}
                 </div>
+
+                {/* If issue reported: Show Dispute Reason Dropdown / Buttons */}
+                {feedbackAccurate === false && (
+                  <div className="space-y-3 mb-4 animate-in fade-in duration-200">
+                    <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 block">
+                      Dispute Reason (SLA Protected)
+                    </label>
+                    <div className="grid grid-cols-1 gap-2">
+                      {[
+                        { id: "already_rented", label: "🏡 Already Rented Out by Owner" },
+                        { id: "wrong_number", label: "📵 Wrong / Inactive / Switched-Off Phone" },
+                        { id: "broker_demanding_commission", label: "💼 Broker Demanding Brokerage (Policy Violation)" },
+                        { id: "fake_photos_or_price", label: "⚠️ Fake Photos / Rent Price Mismatch" },
+                        { id: "other", label: "📝 Other Issue" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setFeedbackReason(item.id)}
+                          className={`w-full text-left px-3.5 py-2.5 rounded-xl text-[12px] font-bold border transition-all flex items-center justify-between cursor-pointer ${
+                            feedbackReason === item.id
+                              ? "bg-rose-50 border-rose-400 text-rose-800 shadow-xs"
+                              : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          {feedbackReason === item.id && (
+                            <span className="material-symbols-outlined text-rose-600 text-[16px]">check_circle</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-800 text-[11px] font-medium flex items-start gap-2">
+                      <span className="material-symbols-outlined text-amber-600 text-[16px] shrink-0 mt-0.5">verified_user</span>
+                      <span>
+                        <strong>100% Refund Guarantee:</strong> Upon Admin review, <strong>+1 unlock credit</strong> will be automatically credited back to your pass.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <textarea
                   value={feedbackNote}
                   onChange={(e) => setFeedbackNote(e.target.value)}
-                  placeholder="Optional: Tell us more…"
-                  className="w-full rounded-xl p-3 text-[13px] mb-4 resize-none outline-none transition-all duration-200"
-                  rows={3}
+                  placeholder={
+                    feedbackAccurate === false
+                      ? "Describe the issue (e.g. called owner, they said rented on Sunday)..."
+                      : "Optional comments about this property..."
+                  }
+                  className="w-full rounded-xl p-3 text-[12px] mb-4 resize-none outline-none transition-all duration-200 font-medium"
+                  rows={2}
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.04)",
+                    backgroundColor: "var(--surface-alt)",
                     color: "var(--ink)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: "1px solid var(--border)",
                   }}
                 />
 
                 <button
                   onClick={handleSubmitFeedback}
                   disabled={feedbackLoading || feedbackAccurate === null}
-                  className="w-full h-12 rounded-xl text-[13px] font-semibold disabled:opacity-50"
+                  className="w-full h-11 rounded-xl text-[13px] font-extrabold disabled:opacity-50 cursor-pointer transition-all shadow-sm flex items-center justify-center gap-2"
                   style={{
                     backgroundColor: "var(--accent)",
-                    color: "var(--surface)",
+                    color: "#ffffff",
                   }}
                 >
-                  {feedbackLoading ? "Submitting…" : "Submit Feedback"}
+                  {feedbackLoading ? (
+                    <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
+                  ) : (
+                    <span className="material-symbols-outlined text-[16px]">send</span>
+                  )}
+                  {feedbackLoading ? "Submitting…" : feedbackAccurate === false ? "Submit Dispute for Refund" : "Submit Feedback"}
                 </button>
                 <button
                   onClick={() => setShowFeedbackModal(false)}
-                  className="w-full mt-3 h-10 text-[12px] font-medium"
+                  className="w-full mt-2 h-9 text-[12px] font-bold cursor-pointer"
                   style={{ color: "var(--text-muted)" }}
                 >
                   Skip
                 </button>
               </>
             ) : (
-              <div className="text-center py-6">
+              <div className="text-center py-6 animate-in zoom-in-95 duration-300">
                 <span
-                  className="material-symbols-outlined text-[48px] mb-3 block"
-                  style={{ color: "var(--success)" }}
+                  className="material-symbols-outlined text-[48px] mb-3 block text-emerald-600"
                 >
                   check_circle
                 </span>
-                <p
-                  className="text-[15px] font-semibold"
-                  style={{ color: "var(--ink)" }}
-                >
-                  Thank you!
+                <p className="text-[15px] font-bold text-slate-800 mb-1">
+                  {feedbackAccurate === false ? "Dispute Submitted Under SLA" : "Feedback Received"}
                 </p>
+                <p className="text-[12px] text-slate-500 font-medium px-2">{feedbackResultMsg}</p>
               </div>
             )}
           </div>

@@ -601,18 +601,32 @@ class SubmitFeedbackView(views.APIView):
         if is_accurate is None:
             return Response({'detail': 'is_accurate field is required'}, status=status.HTTP_400_BAD_REQUEST)
 
+        is_accurate_bool = bool(is_accurate)
+        reason = request.data.get('reason', 'other') if not is_accurate_bool else ''
         note = request.data.get('note', '')
+        dispute_status = 'pending' if not is_accurate_bool else 'none'
 
         try:
-            Feedback.objects.create(
+            fb = Feedback.objects.create(
                 unlock=unlock,
                 buyer=request.user,
-                is_accurate=bool(is_accurate),
+                is_accurate=is_accurate_bool,
+                reason=reason,
+                dispute_status=dispute_status,
                 note=note
             )
-            return Response({'detail': 'Feedback submitted successfully'})
+            if not is_accurate_bool:
+                msg = "Dispute submitted successfully! Our Admin team will review under our 2-hour SLA to restore your unlock credit."
+            else:
+                msg = "Thank you! Your feedback helps keep Rentlo 100% verified."
+
+            return Response({
+                'detail': msg,
+                'is_accurate': is_accurate_bool,
+                'dispute_status': dispute_status
+            })
         except IntegrityError:
-            return Response({'detail': 'Feedback already submitted for this unlock'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Feedback or dispute has already been submitted for this unlock'}, status=status.HTTP_400_BAD_REQUEST)
 
 from accounts.permissions import IsAdminOrModerator
 from rest_framework import serializers
@@ -807,13 +821,32 @@ class AdminUnlockActionView(views.APIView):
 class AdminFeedbackSerializer(serializers.ModelSerializer):
     buyer_name = serializers.SerializerMethodField()
     buyer_phone = serializers.CharField(source='buyer.phone', read_only=True)
+    buyer_is_active = serializers.BooleanField(source='buyer.is_active', read_only=True)
     property_id = serializers.IntegerField(source='unlock.property.id', read_only=True)
     property_title = serializers.SerializerMethodField()
+    owner_name = serializers.SerializerMethodField()
     owner_phone = serializers.CharField(source='unlock.property.owner_phone', read_only=True)
+    property_is_available = serializers.BooleanField(source='unlock.property.is_available', read_only=True)
+    reason_display = serializers.CharField(source='get_reason_display', read_only=True)
+    dispute_status_display = serializers.CharField(source='get_dispute_status_display', read_only=True)
+    resolved_by_name = serializers.SerializerMethodField()
+
+    # Anti-Fraud Intelligence
+    buyer_total_unlocks = serializers.SerializerMethodField()
+    buyer_total_disputes = serializers.SerializerMethodField()
+    buyer_trust_score = serializers.SerializerMethodField()
+    property_total_disputes = serializers.SerializerMethodField()
 
     class Meta:
         model = Feedback
-        fields = ['id', 'buyer_name', 'buyer_phone', 'property_id', 'property_title', 'owner_phone', 'is_accurate', 'note', 'created_at']
+        fields = [
+            'id', 'buyer_name', 'buyer_phone', 'buyer_is_active',
+            'property_id', 'property_title', 'owner_name', 'owner_phone', 'property_is_available',
+            'is_accurate', 'reason', 'reason_display', 'note',
+            'dispute_status', 'dispute_status_display', 'admin_notes',
+            'resolved_by_name', 'resolved_at', 'refund_granted', 'created_at',
+            'buyer_total_unlocks', 'buyer_total_disputes', 'buyer_trust_score', 'property_total_disputes'
+        ]
 
     def get_buyer_name(self, obj):
         if not obj.buyer:
@@ -828,6 +861,13 @@ class AdminFeedbackSerializer(serializers.ModelSerializer):
             return "Verified Buyer"
         return username
 
+    def get_owner_name(self, obj):
+        if not obj.unlock or not obj.unlock.property or not obj.unlock.property.owner:
+            return "Property Owner"
+        owner = obj.unlock.property.owner
+        name = owner.get_full_name().strip()
+        return name or owner.username or "Property Owner"
+
     def get_property_title(self, obj):
         if not obj.unlock or not obj.unlock.property:
             return "Property Listing"
@@ -839,6 +879,34 @@ class AdminFeedbackSerializer(serializers.ModelSerializer):
         location = f" in {locality_name}" if locality_name else f" in {city_name}" if city_name else ""
         return f"{bhk}{type_title}{location}"
 
+    def get_resolved_by_name(self, obj):
+        if obj.resolved_by:
+            return obj.resolved_by.get_full_name() or obj.resolved_by.username
+        return ""
+
+    def get_buyer_total_unlocks(self, obj):
+        if not obj.buyer_id:
+            return 0
+        return Unlock.objects.filter(buyer_id=obj.buyer_id, status='paid').count()
+
+    def get_buyer_total_disputes(self, obj):
+        if not obj.buyer_id:
+            return 0
+        return Feedback.objects.filter(buyer_id=obj.buyer_id, is_accurate=False).count()
+
+    def get_buyer_trust_score(self, obj):
+        total = self.get_buyer_total_unlocks(obj)
+        if total == 0:
+            return 100
+        disputes = self.get_buyer_total_disputes(obj)
+        score = max(0, int(100 - ((disputes / total) * 100)))
+        return score
+
+    def get_property_total_disputes(self, obj):
+        if not obj.unlock or not obj.unlock.property_id:
+            return 0
+        return Feedback.objects.filter(unlock__property_id=obj.unlock.property_id, is_accurate=False).count()
+
 
 class AdminFeedbackListView(generics.ListAPIView):
     permission_classes = [IsAdminOrModerator]
@@ -846,7 +914,97 @@ class AdminFeedbackListView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        return Feedback.objects.select_related('buyer', 'unlock__property__locality__city').order_by('-id')
+        return Feedback.objects.select_related(
+            'buyer', 'resolved_by', 'unlock__property__locality__city', 'unlock__property__owner'
+        ).order_by('-id')
+
+
+class AdminResolveDisputeView(views.APIView):
+    permission_classes = [IsAdminOrModerator]
+
+    def post(self, request, id):
+        try:
+            feedback = Feedback.objects.select_related('buyer', 'unlock__property').get(id=id)
+        except Feedback.DoesNotExist:
+            return Response({'detail': 'Dispute feedback record not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        action = request.data.get('action') # 'approve' | 'reject' | 'ban_buyer' | 'suspend_owner'
+        notes = request.data.get('notes', '').strip()
+
+        if action == 'approve':
+            if feedback.refund_granted:
+                return Response({'detail': 'Refund credit has already been issued for this dispute.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            with transaction.atomic():
+                # 1. Restore +1 credit to buyer's active pass or latest pass
+                sub = BuyerSubscription.objects.filter(
+                    buyer=feedback.buyer
+                ).order_by('-created_at').first()
+
+                if sub:
+                    sub.credits_remaining = F('credits_remaining') + 1
+                    sub.status = 'active'
+                    sub.save()
+                else:
+                    BuyerSubscription.objects.create(
+                        buyer=feedback.buyer,
+                        pass_type='single_14',
+                        amount_paid=0,
+                        credits_remaining=1,
+                        status='active',
+                        payment_method='bypass'
+                    )
+
+                feedback.dispute_status = 'approved'
+                feedback.refund_granted = True
+                feedback.resolved_by = request.user
+                feedback.resolved_at = timezone.now()
+                if notes:
+                    feedback.admin_notes = notes
+                feedback.save()
+
+            return Response({
+                'detail': f'Dispute approved! +1 unlock credit was successfully restored to {feedback.buyer.username}.',
+                'dispute_status': 'approved',
+                'refund_granted': True
+            })
+
+        elif action == 'reject':
+            feedback.dispute_status = 'rejected'
+            feedback.refund_granted = False
+            feedback.resolved_by = request.user
+            feedback.resolved_at = timezone.now()
+            if notes:
+                feedback.admin_notes = notes
+            feedback.save()
+
+            return Response({
+                'detail': 'Dispute marked as Rejected / Fake claim. No refund was issued.',
+                'dispute_status': 'rejected',
+                'refund_granted': False
+            })
+
+        elif action == 'ban_buyer':
+            buyer = feedback.buyer
+            buyer.is_active = False
+            buyer.save()
+            feedback.dispute_status = 'rejected'
+            feedback.admin_notes = f"[BANNED FOR REFUND FRAUD] {notes}".strip()
+            feedback.resolved_by = request.user
+            feedback.resolved_at = timezone.now()
+            feedback.save()
+            return Response({'detail': f'Buyer "{buyer.username}" has been permanently banned for refund fraud.'})
+
+        elif action == 'suspend_owner':
+            prop = feedback.unlock.property
+            prop.is_available = False
+            prop.status = 'rejected'
+            prop.save()
+            return Response({'detail': f'Property #{prop.id} deactivated and removed from public search.'})
+
+        return Response({
+            'detail': 'Invalid action specified. Supported actions: approve, reject, ban_buyer, suspend_owner'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 from .models import BuyerSubscription

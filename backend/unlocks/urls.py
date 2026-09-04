@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     InitiateUnlockView, PropertyFullDetailsView, MyUnlocksView, SubmitFeedbackView, 
     VerifyUnlockView, AdminUnlockListView, AdminUnlockActionView, AdminFeedbackListView,
+    AdminResolveDisputeView,
     MySubscriptionView, InitiatePassPurchaseView, VerifyPassPurchaseView, ExtendPassValidityView,
     AdminCreateManualTransactionView, InitiateRefundView, GenerateReceiptView,
     OwnerListingPassReceiptView
@@ -12,6 +13,7 @@ urlpatterns = [
     path('unlocks/admin/<str:id>/action/', AdminUnlockActionView.as_view(), name='admin-unlock-action'),
     path('unlocks/admin/manual-transaction/', AdminCreateManualTransactionView.as_view(), name='admin-manual-transaction'),
     path('unlocks/admin/feedbacks/', AdminFeedbackListView.as_view(), name='admin-feedback-list'),
+    path('unlocks/admin/feedbacks/<int:id>/resolve/', AdminResolveDisputeView.as_view(), name='admin-resolve-dispute'),
 
     path('properties/<int:id>/unlock/initiate/', InitiateUnlockView.as_view(), name='initiate-unlock'),
     path('properties/<int:id>/unlock/verify/', VerifyUnlockView.as_view(), name='verify-unlock'),

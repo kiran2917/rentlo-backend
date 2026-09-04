@@ -47,17 +47,40 @@ class Unlock(models.Model):
         return f"{self.buyer.username} unlocked {self.property.id} ({self.status})"
 
 class Feedback(models.Model):
+    DISPUTE_REASONS = [
+        ('already_rented', 'Already Rented Out'),
+        ('wrong_number', 'Wrong / Inactive Phone Number'),
+        ('broker_demanding_commission', 'Broker Demanding Commission'),
+        ('fake_photos_or_price', 'Fake Photos or Price Mismatch'),
+        ('other', 'Other Issue'),
+    ]
+
+    DISPUTE_STATUS_CHOICES = [
+        ('none', 'No Dispute (Accurate)'),
+        ('pending', 'Pending Admin Review'),
+        ('approved', 'Approved & Refunded'),
+        ('rejected', 'Rejected / Fake Claim'),
+    ]
+
     unlock = models.ForeignKey(Unlock, on_delete=models.CASCADE, related_name='feedbacks')
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_feedbacks')
     is_accurate = models.BooleanField()
+    reason = models.CharField(max_length=50, choices=DISPUTE_REASONS, blank=True, default='')
     note = models.TextField(blank=True, null=True)
+    
+    dispute_status = models.CharField(max_length=20, choices=DISPUTE_STATUS_CHOICES, default='none')
+    admin_notes = models.TextField(blank=True, default='')
+    resolved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_disputes')
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    refund_granted = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('unlock',)
 
     def __str__(self):
-        return f"Feedback for unlock {self.unlock.id} by {self.buyer.username} - Accurate: {self.is_accurate}"
+        return f"Feedback for unlock {self.unlock.id} by {self.buyer.username} - Status: {self.dispute_status}"
 
 class BuyerSubscription(models.Model):
     PASS_TYPES = [
