@@ -28,7 +28,27 @@ def send_whatsapp_lead_alert(recipient_phone: str, property_obj, buyer_name: str
         logger.warning(f"Invalid phone number format for WhatsApp alert: {recipient_phone}")
         return False
 
-    # Check PlatformSettings first, then fallback to environment variables
+    # ── 1. Check for 100% Free Unlimited Self-Hosted VPS WhatsApp Gateway ──
+    vps_gateway_url = getattr(settings, 'VPS_WHATSAPP_GATEWAY_URL', 'http://127.0.0.1:3000/send-message')
+    prop_title = getattr(property_obj, 'display_title', '') or getattr(property_obj, 'title', '') or property_obj.property_type
+    locality_name = property_obj.locality.name if property_obj.locality else "your area"
+    lead_contact = f"{buyer_name} ({buyer_phone})" if buyer_phone else buyer_name
+    msg_text = f"🎉 *Rentlo New Lead Alert!*\nA tenant just unlocked your listing: *{prop_title}* in *{locality_name}*.\n\n👤 *Tenant Contact:* {lead_contact}\n👉 Log in to your Owner Dashboard on Rentlo to manage visits."
+
+    try:
+        vps_res = requests.post(
+            vps_gateway_url,
+            json={"phone": clean_phone, "message": msg_text},
+            timeout=3
+        )
+        if vps_res.status_code in [200, 201]:
+            logger.info(f"Self-Hosted VPS WhatsApp: Delivered alert to {clean_phone}")
+            return True
+    except Exception:
+        # If local VPS microservice is not active, fallback to Meta Cloud API or log
+        pass
+
+    # ── 2. Fallback to Meta Cloud API (1,000 Free msgs/month) ──
     phone_number_id = ""
     access_token = ""
     template_name = "rentlo_lead_alert"
@@ -43,12 +63,7 @@ def send_whatsapp_lead_alert(recipient_phone: str, property_obj, buyer_name: str
         access_token = getattr(settings, 'WHATSAPP_ACCESS_TOKEN', '')
 
     if not phone_number_id or not access_token:
-        logger.info("WhatsApp Cloud API credentials not configured. Skipping WhatsApp message dispatch.")
         return False
-
-    prop_title = getattr(property_obj, 'display_title', '') or getattr(property_obj, 'title', '') or property_obj.property_type
-    locality_name = property_obj.locality.name if property_obj.locality else "your area"
-    lead_contact = f"{buyer_name} ({buyer_phone})" if buyer_phone else buyer_name
 
     url = f"https://graph.facebook.com/v20.0/{phone_number_id}/messages"
     headers = {
