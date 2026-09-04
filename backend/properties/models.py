@@ -243,6 +243,9 @@ class Property(models.Model):
             models.Index(fields=['status']),
             models.Index(fields=['agent']),
             models.Index(fields=['created_at']),
+            models.Index(fields=['status', 'property_category', 'locality']),
+            models.Index(fields=['owner', 'status']),
+            models.Index(fields=['status', 'expires_at']),
         ]
 
     def __str__(self):

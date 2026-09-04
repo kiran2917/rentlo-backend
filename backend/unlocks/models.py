@@ -37,6 +37,12 @@ class Unlock(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     unlocked_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['buyer', 'property', 'status']),
+            models.Index(fields=['status', 'created_at']),
+        ]
+
     def __str__(self):
         return f"{self.buyer.username} unlocked {self.property.id} ({self.status})"
 
@@ -91,6 +97,13 @@ class BuyerSubscription(models.Model):
     expires_at = models.DateTimeField(null=True, blank=True)
     extension_used = models.BooleanField(default=False)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['buyer', 'status']),
+            models.Index(fields=['gateway_txn_id']),
+            models.Index(fields=['order_id']),
+        ]
+
     def __str__(self):
         return f"{self.buyer.username} - {self.pass_type} ({self.credits_remaining} credits)"
 
@@ -131,6 +144,13 @@ class OwnerListingPass(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['owner', 'status']),
+            models.Index(fields=['gateway_txn_id']),
+            models.Index(fields=['order_id']),
+        ]
 
     def __str__(self):
         return f"{self.owner.username} Owner Pass: {self.credits_remaining}/{self.credits_total} credits ({self.status})"
