@@ -12,7 +12,7 @@ from .views import (
     InitiateOwnerPassOrderView, VerifyOwnerPassOrderView,
     SettingsVersionView, EstimatePriceView, CalculateListingFeeView,
     PlatformSettingsAuditLogListView, PGOccupancyUpdateView, PropertyMediaDeleteView, PropertyLifecycleView,
-    TriggerMigrationView, IPLookupView
+    TriggerMigrationView, IPLookupView, PropertySocialShareView
 )
 from .reconfirm_view import PropertyReconfirmView
 from .tenant_kyc import TenantKYCListCreateView, TenantKYCDetailView
@@ -50,6 +50,8 @@ urlpatterns = [
     path('<int:pk>/reconfirm/', PropertyReconfirmView.as_view(), name='property-reconfirm'),
     path('public/', PublicPropertyListView.as_view(), name='public-property-list'),
     path('public/<int:pk>/', PublicPropertyDetailView.as_view(), name='public-property-detail'),
+    path('public/<int:pk>/share/', PropertySocialShareView.as_view(), name='property-social-share'),
+    path('<int:pk>/share/', PropertySocialShareView.as_view(), name='property-social-share-short'),
     path('public/<int:pk>/similar/', SimilarPropertiesView.as_view(), name='similar-properties'),
     path('otp/request/', RequestOTPView.as_view(), name='otp-request'),
     path('otp/verify/', VerifyOTPView.as_view(), name='otp-verify'),

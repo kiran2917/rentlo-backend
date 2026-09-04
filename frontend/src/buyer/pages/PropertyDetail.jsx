@@ -793,6 +793,33 @@ export const PropertyDetail = () => {
                   {property.bathrooms} Bath
                 </span>
               )}
+
+              {/* WhatsApp / Social Share Action Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  const title = property.display_title || property.title || "Verified Property";
+                  const price = parseFloat(property.price || 0).toLocaleString("en-IN");
+                  const loc = property.locality_details ? `${property.locality_details.name}, ${property.locality_details.city_name}` : "Hubli-Dharwad";
+                  const shareUrl = `${window.location.origin}/property/${property.id}`;
+                  const text = `🏠 Check out this verified property on Rentlo (Zero Brokerage):\n*${title}*\n📍 ${loc}\n💰 ₹${price}/month\n\n👉 View details & photos: ${shareUrl}`;
+
+                  if (navigator.share) {
+                    navigator.share({
+                      title: title,
+                      text: text,
+                      url: shareUrl,
+                    }).catch(() => {});
+                  } else {
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+                  }
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[12px] font-black uppercase tracking-wider bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 shadow-xs transition-all cursor-pointer active:scale-95 ml-auto"
+                title="Share this listing on WhatsApp"
+              >
+                <span className="material-symbols-outlined text-[18px] text-emerald-600">share</span>
+                <span>Share on WhatsApp</span>
+              </button>
               {property.property_category === 'pg' && (
                 <div className="flex flex-col gap-2 w-full mt-1">
                   {property.pg_gender && (

@@ -2577,3 +2577,92 @@ class IPLookupView(views.APIView):
             'maps_url': f"https://www.ipinfo.io/{ip}"
         })
 
+
+from django.http import HttpResponse
+
+class PropertySocialShareView(views.APIView):
+    """
+    Renders server-side HTML with rich OpenGraph / Twitter Card meta tags
+    specifically designed for WhatsApp, Telegram, Twitter, and Facebook crawlers.
+    Instant client-side redirect sends human users to the React frontend detail page.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        try:
+            prop = Property.objects.select_related('locality', 'locality__city').prefetch_related('media').get(pk=pk)
+        except Property.DoesNotExist:
+            return HttpResponse("<html><head><title>Property Not Found - Rentlo</title></head><body>Property not found.</body></html>", status=404)
+
+        # Build dynamic title and metadata
+        locality_name = prop.locality.name if prop.locality else "Prime Location"
+        city_name = prop.locality.city.name if (prop.locality and prop.locality.city) else "Karnataka"
+        bhk_str = f"{prop.bedrooms} BHK " if prop.bedrooms else ""
+        type_str = prop.get_property_type_display() if hasattr(prop, 'get_property_type_display') else prop.property_type
+        
+        if prop.property_category == 'pg':
+            og_title = f"Verified PG / Co-Living in {locality_name}, {city_name} | ₹{int(prop.price):,}/mo — Rentlo"
+        else:
+            og_title = f"{bhk_str}{type_str} for Rent in {locality_name}, {city_name} | ₹{int(prop.price):,}/mo — Rentlo"
+
+        og_desc = f"Direct Owner Listing (Zero Brokerage). Rent: ₹{int(prop.price):,}/month. Security Deposit: ₹{int(prop.security_deposit or 0):,}. Available in {locality_name}. View photos, amenities & contact owner directly on Rentlo."
+        
+        # Primary image URL
+        first_media = prop.media.first()
+        if first_media and first_media.image_url:
+            og_image = first_media.image_url
+            if not og_image.startswith('http'):
+                og_image = request.build_absolute_uri(og_image)
+        else:
+            og_image = "https://rentlo.creanexatechnologies.tech/og-cover.jpg"
+
+        # Target frontend URL for redirection
+        frontend_base = getattr(settings, 'FRONTEND_URL', 'https://rentlo-frontend-delta.vercel.app')
+        target_url = f"{frontend_base}/property/{prop.id}"
+
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{og_title}</title>
+    
+    <!-- Open Graph / WhatsApp / Facebook / Telegram -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rentlo — Zero Brokerage Real Estate">
+    <meta property="og:title" content="{og_title}">
+    <meta property="og:description" content="{og_desc}">
+    <meta property="og:image" content="{og_image}">
+    <meta property="og:image:secure_url" content="{og_image}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="{target_url}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{og_title}">
+    <meta name="twitter:description" content="{og_desc}">
+    <meta name="twitter:image" content="{og_image}">
+
+    <!-- Fast Auto-Redirect for human users clicking WhatsApp links -->
+    <meta http-equiv="refresh" content="0; url={target_url}">
+    <script>
+        window.location.replace("{target_url}");
+    </script>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; color: #334155; text-align: center; }}
+        .card {{ background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 400px; }}
+        a {{ color: #4f46e5; text-decoration: none; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="margin-top:0; font-size: 18px;">Redirecting to Property...</h2>
+        <p style="font-size: 14px; color: #64748b;">{og_title}</p>
+        <p><a href="{target_url}">Click here if not redirected automatically</a></p>
+    </div>
+</body>
+</html>"""
+        return HttpResponse(html, content_type="text/html; charset=utf-8")
+
+
