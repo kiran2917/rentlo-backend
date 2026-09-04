@@ -2105,7 +2105,7 @@ export const OwnerNewListing = () => {
                         <span className="material-symbols-outlined text-[11px]">category</span>
                         Property Category <span className="text-red-500 ml-0.5">*</span>
                       </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         {[
                           { id: "residential", label: "Residential", icon: "home", defaultType: "apartment" },
                           { id: "pg", label: "PG / Co-Living", icon: "bed", defaultType: "pg_hostel" },
@@ -2118,10 +2118,10 @@ export const OwnerNewListing = () => {
                               property_category: cat.id,
                               property_type: cat.defaultType
                             })}
-                            className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-indigo-500 bg-slate-50 text-indigo-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
+                            className={`flex flex-col items-center justify-center py-2.5 px-1 sm:p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.property_category === cat.id ? 'border-indigo-500 bg-slate-50 text-indigo-600 shadow-sm font-bold' : 'border-slate-100 hover:border-slate-300 text-slate-600'}`}
                           >
-                            <span className="material-symbols-outlined mb-1 text-[20px]">{cat.icon}</span>
-                            <span className="text-[10px] font-bold text-center">{cat.label}</span>
+                            <span className="material-symbols-outlined mb-1 text-[18px] sm:text-[20px]">{cat.icon}</span>
+                            <span className="text-[9px] sm:text-[10px] font-bold text-center leading-tight">{cat.label}</span>
                           </div>
                         ))}
                       </div>
