@@ -2335,7 +2335,7 @@ export const PropertyDetail = () => {
       />
 
       {!isUnlocked && !showPlanModal && !showOtpModal && !showQrModal && !showFeedbackModal && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border-t border-slate-200 dark:border-slate-800 px-5 py-3 pb-[max(12px,env(safe-area-inset-bottom))] flex items-center justify-between gap-4 shadow-[0_-10px_35px_rgba(0,0,0,0.15)]">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border-t border-slate-200 dark:border-slate-800 px-5 pt-3.5 pb-[max(24px,calc(env(safe-area-inset-bottom)+14px))] flex items-center justify-between gap-4 shadow-[0_-10px_35px_rgba(0,0,0,0.15)]">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Unlock Fee</span>
             <span className="text-[22px] font-black text-slate-950 dark:text-white leading-tight">

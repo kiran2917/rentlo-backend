@@ -1093,7 +1093,18 @@ class InitiatePassPurchaseView(views.APIView):
     throttle_scope = 'pass_initiate'
 
     def post(self, request):
-        pass_type = request.data.get('pass_type', 'starter_39')
+        raw_pass_type = request.data.get('pass_type', 'starter_39')
+        pass_type_map = {
+            'single': 'single_14',
+            'single_14': 'single_14',
+            'starter': 'starter_39',
+            'starter_39': 'starter_39',
+            'smart': 'smart_79',
+            'smart_79': 'smart_79',
+            'pro': 'pro_129',
+            'pro_129': 'pro_129',
+        }
+        pass_type = pass_type_map.get(raw_pass_type, raw_pass_type)
         
         from properties.models import PlatformSettings
         ps = PlatformSettings.load()
@@ -1179,7 +1190,18 @@ class VerifyPassPurchaseView(views.APIView):
 
     def post(self, request):
         payment_method = request.data.get('payment_method', 'razorpay')
-        pass_type = request.data.get('pass_type', 'starter_39')
+        raw_pass_type = request.data.get('pass_type', 'starter_39')
+        pass_type_map = {
+            'single': 'single_14',
+            'single_14': 'single_14',
+            'starter': 'starter_39',
+            'starter_39': 'starter_39',
+            'smart': 'smart_79',
+            'smart_79': 'smart_79',
+            'pro': 'pro_129',
+            'pro_129': 'pro_129',
+        }
+        pass_type = pass_type_map.get(raw_pass_type, raw_pass_type)
 
         if payment_method == 'upi':
             utr = request.data.get('utr')

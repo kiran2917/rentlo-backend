@@ -76,7 +76,7 @@ export const PlanSelectionModal = ({
 
   const PLANS = [
     {
-      id: "single",
+      id: "single_14",
       name: "Single Unlock",
       price: singleFee,
       unlocks: unlockCountSingle,
