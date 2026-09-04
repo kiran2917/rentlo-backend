@@ -787,6 +787,11 @@ class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        # Security Guardrail: Block changing user password while in impersonation mode
+        auth_token = getattr(request, 'auth', None)
+        if isinstance(auth_token, dict) and auth_token.get('is_impersonated'):
+            return Response({'detail': 'Password changes are strictly disabled during support assist sessions.'}, status=status.HTTP_403_FORBIDDEN)
+
         new_password = request.data.get('new_password')
         if not new_password or len(new_password) < 6:
             return Response({'detail': 'Password must be at least 6 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -1266,3 +1271,213 @@ class AdminSyncOwnerAccountView(APIView):
             'username': user.username,
             'linked_properties': linked_count
         })
+
+
+# =========================================================================
+# ADMIN SUPPORT IMPERSONATION ENGINE (DPDP ACT 2023 COMPLIANT)
+# =========================================================================
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import ImpersonationAuditLog
+
+class AdminImpersonateUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from .permissions import _user_has_role
+        if not _user_has_role(request.user, 'admin'):
+            return Response({'detail': 'Access denied. Only Administrators can start support impersonation sessions.'}, status=status.HTTP_403_FORBIDDEN)
+
+        target_user_id = request.data.get('user_id')
+        reason = (request.data.get('reason') or 'Customer Support Assistance').strip()
+
+        if not target_user_id:
+            return Response({'detail': 'Target user ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            target_user = User.objects.get(pk=target_user_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'Target user not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Disallow impersonating other administrators / superusers (prevent privilege elevation)
+        if target_user.is_superuser or target_user.is_staff or _user_has_role(target_user, 'admin'):
+            return Response({'detail': 'Administrative and staff accounts cannot be impersonated.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get client IP and user agent for immutable audit logging
+        client_ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+        if client_ip and ',' in client_ip:
+            client_ip = client_ip.split(',')[0].strip()
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+        # Close any existing active sessions for this admin
+        ImpersonationAuditLog.objects.filter(admin=request.user, is_active=True).update(is_active=False, ended_at=timezone.now())
+
+        # Create new audit log
+        log_entry = ImpersonationAuditLog.objects.create(
+            admin=request.user,
+            target_user=target_user,
+            reason=reason,
+            ip_address=client_ip or '127.0.0.1',
+            user_agent=user_agent
+        )
+
+        # Generate JWT tokens for target user with custom impersonation claims
+        refresh = RefreshToken.for_user(target_user)
+        refresh['is_impersonated'] = True
+        refresh['impersonator_id'] = request.user.id
+        refresh['impersonator_username'] = request.user.username
+        refresh['impersonator_email'] = request.user.email
+
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        # Determine target landing route based on user roles
+        target_roles = target_user.roles or [target_user.role]
+        if 'owner' in target_roles or target_user.role == 'owner':
+            redirect_url = '/owner/dashboard'
+        elif 'agent' in target_roles or target_user.role == 'agent':
+            redirect_url = '/agent/dashboard'
+        else:
+            redirect_url = '/'
+
+        response = Response({
+            'detail': f"Active support session started as {target_user.first_name or target_user.username}.",
+            'access': access_token,
+            'refresh': refresh_token,
+            'session_id': log_entry.id,
+            'target_user': {
+                'id': target_user.id,
+                'username': target_user.username,
+                'first_name': target_user.first_name,
+                'last_name': target_user.last_name,
+                'phone': target_user.phone,
+                'email': target_user.email,
+                'role': target_user.role,
+                'roles': target_user.roles
+            },
+            'impersonator': {
+                'id': request.user.id,
+                'username': request.user.username,
+                'email': request.user.email
+            },
+            'started_at': log_entry.started_at.isoformat(),
+            'redirect_url': redirect_url
+        })
+
+        # Set cookies for the new target session
+        response.set_cookie(
+            'access_token',
+            access_token,
+            max_age=3600 * 4, # 4 hours max for impersonation session
+            path='/',
+            httponly=True,
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            max_age=3600 * 4,
+            path='/',
+            httponly=True,
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+
+        return response
+
+
+class AdminExitImpersonationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        impersonator_id = request.data.get('impersonator_id')
+
+        # Find active impersonation session
+        active_log = ImpersonationAuditLog.objects.filter(
+            target_user=request.user,
+            is_active=True
+        ).order_by('-started_at').first()
+
+        if not active_log and impersonator_id:
+            active_log = ImpersonationAuditLog.objects.filter(
+                admin_id=impersonator_id,
+                target_user=request.user
+            ).order_by('-started_at').first()
+
+        admin_user = None
+        if active_log:
+            active_log.is_active = False
+            active_log.ended_at = timezone.now()
+            active_log.save(update_fields=['is_active', 'ended_at'])
+            admin_user = active_log.admin
+        elif impersonator_id:
+            admin_user = User.objects.filter(pk=impersonator_id).first()
+
+        if not admin_user:
+            return Response({'detail': 'No active impersonation session found to restore.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Restore Admin JWT tokens
+        refresh = RefreshToken.for_user(admin_user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        response = Response({
+            'detail': 'Support assist session ended. Returned to Admin Console.',
+            'access': access_token,
+            'refresh': refresh_token,
+            'user': {
+                'id': admin_user.id,
+                'username': admin_user.username,
+                'first_name': admin_user.first_name,
+                'email': admin_user.email,
+                'role': admin_user.role,
+                'roles': admin_user.roles
+            },
+            'redirect_url': '/admin/crm'
+        })
+
+        # Set cookies for the restored admin session
+        response.set_cookie(
+            'access_token',
+            access_token,
+            max_age=3600 * 24 * 7,
+            path='/',
+            httponly=True,
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            max_age=3600 * 24 * 90,
+            path='/',
+            httponly=True,
+            samesite='None' if not settings.DEBUG else 'Lax',
+            secure=not settings.DEBUG,
+        )
+
+        return response
+
+
+class AdminImpersonationLogsListView(APIView):
+    def get_permissions(self):
+        from .permissions import IsAdmin
+        return [IsAdmin()]
+
+    def get(self, request):
+        logs = ImpersonationAuditLog.objects.select_related('admin', 'target_user').order_by('-started_at')[:100]
+        data = [{
+            'id': l.id,
+            'admin_username': l.admin.username if l.admin else 'Unknown',
+            'admin_id': l.admin_id,
+            'target_username': l.target_user.username if l.target_user else 'Unknown',
+            'target_phone': getattr(l.target_user, 'phone', ''),
+            'target_id': l.target_user_id,
+            'reason': l.reason,
+            'ip_address': l.ip_address,
+            'started_at': l.started_at.isoformat(),
+            'ended_at': l.ended_at.isoformat() if l.ended_at else None,
+            'is_active': l.is_active
+        } for l in logs]
+        return Response(data)
+

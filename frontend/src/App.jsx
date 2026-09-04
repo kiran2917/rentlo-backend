@@ -10,6 +10,7 @@ import { BuyerLayout } from "./buyer/components/BuyerLayout";
 import { OwnerLayout } from "./buyer/components/owner/OwnerLayout";
 import { ProtectedRoute } from "./admin/components/ProtectedRoute";
 import { NotificationPromptModal } from "./shared/components/NotificationPromptModal";
+import { ImpersonationBanner } from "./shared/components/ImpersonationBanner";
 import { playNotificationSound } from "./shared/utils/pushNotificationService";
 
 // Lazy-Loaded Buyer & Owner Pages
@@ -118,6 +119,7 @@ function App() {
           theme="light" 
         />
         <BrowserRouter>
+          <ImpersonationBanner />
           <NotificationPromptModal />
           <KeyboardDismissHandler />
           <Suspense fallback={<PageLoadingFallback />}>

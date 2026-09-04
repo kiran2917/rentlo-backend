@@ -119,3 +119,30 @@ class PushSubscription(models.Model):
         return f"Push Subscription for {self.user.username} ({self.id})"
 
 
+class ImpersonationAuditLog(models.Model):
+    """
+    DPDP Act 2023 Compliant Audit Log for Admin Impersonation Sessions.
+    Tracks all instances where an administrator logs in as a user for support.
+    """
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='impersonation_actions')
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='impersonated_sessions')
+    reason = models.CharField(max_length=255, blank=True, default='Support Assistance')
+    ip_address = models.CharField(max_length=100, blank=True, default='127.0.0.1')
+    user_agent = models.TextField(blank=True, default='')
+    started_at = models.DateTimeField(auto_now_add=True)
+    ended_at = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-started_at']
+        indexes = [
+            models.Index(fields=['admin', '-started_at']),
+            models.Index(fields=['target_user', '-started_at']),
+            models.Index(fields=['is_active']),
+        ]
+
+    def __str__(self):
+        return f"Admin {self.admin.username} impersonated {self.target_user.username} on {self.started_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+

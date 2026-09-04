@@ -3,9 +3,11 @@ import { AdminLayout } from "../components/AdminLayout";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { useAuth } from "../../shared/context/AuthContext";
 import { PropertyLifecycleModal } from "../components/PropertyLifecycleModal";
 
 export const AdminCRM = () => {
+  const { startImpersonation } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -17,6 +19,9 @@ export const AdminCRM = () => {
   const [inspectUser, setInspectUser] = useState(null);
   const [confirmToggleUser, setConfirmToggleUser] = useState(null);
   const [selectedPropertyForLifecycle, setSelectedPropertyForLifecycle] = useState(null);
+  const [impersonateModalUser, setImpersonateModalUser] = useState(null);
+  const [impersonateReason, setImpersonateReason] = useState("");
+  const [impersonatingLoading, setImpersonatingLoading] = useState(false);
 
   useEffect(() => {
     fetchCrmUsers();
@@ -85,6 +90,22 @@ export const AdminCRM = () => {
       }
     } catch (e) {
       toast.error("Network error.");
+    }
+  };
+
+  const handleExecuteImpersonation = async (e) => {
+    e.preventDefault();
+    if (!impersonateModalUser) return;
+    setImpersonatingLoading(true);
+    try {
+      const res = await startImpersonation(impersonateModalUser.id, impersonateReason);
+      if (!res.success) {
+        toast.error(res.error || "Failed to start support session.");
+      }
+    } catch (err) {
+      toast.error("Network error while starting impersonation session.");
+    } finally {
+      setImpersonatingLoading(false);
     }
   };
 
@@ -424,8 +445,22 @@ export const AdminCRM = () => {
                       className="flex-1 h-10 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white rounded-xl text-[12px] font-extrabold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[16px]">visibility</span>
-                      Full CRM Profile
+                      Profile
                     </button>
+
+                    {!isAdmin && (
+                      <button
+                        onClick={() => {
+                          setImpersonateModalUser(u);
+                          setImpersonateReason("");
+                        }}
+                        title="Login as User (Support Mode)"
+                        className="h-10 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 border border-amber-500/30 font-extrabold text-[11.5px] transition-all flex items-center gap-1 cursor-pointer flex-shrink-0"
+                      >
+                        <span className="material-symbols-outlined text-[16px] text-amber-600">theater_comedy</span>
+                        <span>Assist</span>
+                      </button>
+                    )}
 
                     <button
                       onClick={() => setConfirmToggleUser({ id: u.id, username: u.username, is_active: u.is_active })}
@@ -549,12 +584,12 @@ export const AdminCRM = () => {
                 {/* Owner Properties Log */}
                 <div>
                   <h4 className="text-[12px] font-extrabold uppercase tracking-wider mb-2.5 flex items-center gap-1.5" style={{ color: "var(--ink)" }}>
-                    <span className="material-symbols-outlined text-[16px] text-amber-500">home_work</span>
+                    <span className="material-symbols-outlined text-[16px] text-amber-500">apartment</span>
                     Listed Properties History:
                   </h4>
-                  {inspectUser.owner_stats?.listed_properties?.length > 0 ? (
+                  {inspectUser.owner_stats?.properties_list?.length > 0 ? (
                     <div className="space-y-2">
-                      {inspectUser.owner_stats.listed_properties.map(p => (
+                      {inspectUser.owner_stats.properties_list.map(p => (
                         <div 
                           key={p.id} 
                           onClick={() => setSelectedPropertyForLifecycle(p.id)}
@@ -589,17 +624,34 @@ export const AdminCRM = () => {
               </div>
 
               {/* Modal Footer Actions */}
-              <div className="mt-6 pt-4 border-t flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
-                <button
-                  onClick={() => setConfirmToggleUser({ id: inspectUser.id, username: inspectUser.username, is_active: inspectUser.is_active })}
-                  className={`px-4 py-2 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider cursor-pointer ${
-                    inspectUser.is_active
-                      ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
-                      : 'bg-black/10 text-slate-800 border-slate-300 hover:bg-black/20'
-                  }`}
-                >
-                  {inspectUser.is_active ? 'Block Account' : 'Unblock Account'}
-                </button>
+              <div className="mt-6 pt-4 border-t flex items-center justify-between flex-wrap gap-2" style={{ borderColor: "var(--border)" }}>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setConfirmToggleUser({ id: inspectUser.id, username: inspectUser.username, is_active: inspectUser.is_active })}
+                    className={`px-4 py-2 rounded-xl border text-[11px] font-extrabold uppercase tracking-wider cursor-pointer ${
+                      inspectUser.is_active
+                        ? 'bg-red-500/10 text-red-500 border-red-500/30 hover:bg-red-500/20'
+                        : 'bg-black/10 text-slate-800 border-slate-300 hover:bg-black/20'
+                    }`}
+                  >
+                    {inspectUser.is_active ? 'Block Account' : 'Unblock Account'}
+                  </button>
+
+                  {(!inspectUser.is_superuser && !inspectUser.is_staff && !inspectUser.roles?.includes("admin") && inspectUser.role !== "admin") && (
+                    <button
+                      onClick={() => {
+                        const target = inspectUser;
+                        setInspectUser(null);
+                        setImpersonateModalUser(target);
+                        setImpersonateReason("");
+                      }}
+                      className="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 border border-amber-500/40 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <span className="material-symbols-outlined text-[16px] text-amber-700">theater_comedy</span>
+                      <span>Login as User (Support Mode)</span>
+                    </button>
+                  )}
+                </div>
 
                 <button
                   onClick={() => setInspectUser(null)}
@@ -619,6 +671,98 @@ export const AdminCRM = () => {
             isOpen={!!selectedPropertyForLifecycle}
             onClose={() => setSelectedPropertyForLifecycle(null)}
           />
+        )}
+
+        {/* Impersonation / Support Assist Confirmation Modal (DPDP Compliant) */}
+        {impersonateModalUser && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col p-6 sm:p-7 border border-amber-200 animate-in zoom-in-95 duration-200">
+              <button
+                onClick={() => setImpersonateModalUser(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-md">
+                  <span className="material-symbols-outlined text-2xl">theater_comedy</span>
+                </div>
+                <div>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-wider border border-amber-300">
+                    DPDP Act 2023 Compliant
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 mt-0.5">
+                    Start Support Assist Session
+                  </h3>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed font-medium mb-4">
+                You are about to log in and view the platform as{" "}
+                <strong className="text-slate-900">
+                  {impersonateModalUser.first_name || impersonateModalUser.username}
+                </strong>{" "}
+                {impersonateModalUser.phone && `(+91 ${impersonateModalUser.phone})`}.
+                This mode allows you to help the user configure listings or troubleshoot issues.
+              </p>
+
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 mb-4 text-[11px] text-amber-900 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <span className="material-symbols-outlined text-[16px] text-amber-600">verified_user</span>
+                  <span>Safety &amp; Compliance Audit Rules</span>
+                </div>
+                <ul className="list-disc list-inside space-y-0.5 text-amber-800/90 ml-1">
+                  <li>Session is recorded with your Admin ID and timestamp in immutable audit logs.</li>
+                  <li>Password changes &amp; bank details updates are strictly locked.</li>
+                  <li>A sticky top banner will be visible to exit back to Admin at any time.</li>
+                </ul>
+              </div>
+
+              <form onSubmit={handleExecuteImpersonation} className="space-y-4">
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700 block mb-1">
+                    Support Reason / Ticket Notes (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={impersonateReason}
+                    onChange={(e) => setImpersonateReason(e.target.value)}
+                    placeholder="e.g. Assisting owner with floor plan upload / ticket #402"
+                    className="w-full h-11 px-3.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 text-xs font-medium outline-none focus:border-amber-500 focus:bg-white transition-all shadow-xs"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setImpersonateModalUser(null)}
+                    className="flex-1 h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all cursor-pointer text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={impersonatingLoading}
+                    className="flex-1 h-11 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-extrabold rounded-xl transition-all cursor-pointer text-xs shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  >
+                    {impersonatingLoading ? (
+                      <span className="material-symbols-outlined text-[18px] animate-spin">
+                        progress_activity
+                      </span>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-[18px]">
+                          login
+                        </span>
+                        <span>Start Support Session</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
 
         {/* Block/Unblock Confirmation Modal */}

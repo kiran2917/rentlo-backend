@@ -5,7 +5,8 @@ from .views import (
     SubAdminListView, SubAdminCreateView, SubAdminUpdatePermissionsView, SubAdminDeleteView,
     AgentKYCView, ChangePasswordView, ForgotPasswordRequestOTPView, ForgotPasswordResetView,
     AdminAgentKYCListView, AdminAgentKYCReviewView, AdminCRMListView, AdminUserToggleStatusView, CheckPhoneView,
-    AdminOwnerKYCListView, AdminOwnerKYCReviewView, AdminTestSMSView, AdminSyncOwnerAccountView
+    AdminOwnerKYCListView, AdminOwnerKYCReviewView, AdminTestSMSView, AdminSyncOwnerAccountView,
+    AdminImpersonateUserView, AdminExitImpersonationView, AdminImpersonationLogsListView
 )
 
 urlpatterns = [
@@ -49,5 +50,10 @@ urlpatterns = [
 
     # Live SMS Gateway Testing
     path('admin/test-sms/', AdminTestSMSView.as_view(), name='admin-test-sms'),
+
+    # Support Assist Impersonation (DPDP Act 2023 Compliant)
+    path('admin/impersonate/', AdminImpersonateUserView.as_view(), name='admin-impersonate'),
+    path('admin/impersonate/exit/', AdminExitImpersonationView.as_view(), name='admin-impersonate-exit'),
+    path('admin/impersonate/logs/', AdminImpersonationLogsListView.as_view(), name='admin-impersonate-logs'),
 ]
 
