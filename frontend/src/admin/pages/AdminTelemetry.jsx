@@ -155,25 +155,48 @@ export const AdminTelemetry = () => {
   const dbStatus = telemetryData?.services?.database;
   const cacheStatus = telemetryData?.services?.cache;
   const systemVitals = telemetryData?.system;
-  const isHealthy = telemetryData?.status === "healthy";
+  const isHealthy = telemetryData?.status === "healthy" && dbStatus?.status === "connected";
   const currentEnv = (telemetryData?.environment || "production").toUpperCase();
   const latestRoundtrip = latencyHistory[latencyHistory.length - 1]?.client || 0;
   const cpuVal = typeof systemVitals?.cpu_percent === "number" ? Math.round(systemVitals.cpu_percent) : 32;
   const ramVal = typeof systemVitals?.memory_percent === "number" ? Math.round(systemVitals.memory_percent) : 64;
+  const dbLatencyVal = dbStatus?.latency_ms || 0;
+
+  // Dynamic status color helpers
+  const getCpuColor = (val) => {
+    if (val >= 85) return { stroke: "#ef4444", text: "text-rose-500", label: "Critical Load", badge: "bg-rose-500/15 text-rose-400 border-rose-500/30" };
+    if (val >= 65) return { stroke: "#f59e0b", text: "text-amber-500", label: "Elevated Load", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30" };
+    return { stroke: "#06b6d4", text: "text-cyan-500", label: "Optimal Load", badge: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30" };
+  };
+
+  const getRamColor = (val) => {
+    if (val >= 85) return { stroke: "#ef4444", text: "text-rose-500", label: "High Memory", badge: "bg-rose-500/15 text-rose-400 border-rose-500/30" };
+    if (val >= 70) return { stroke: "#f59e0b", text: "text-amber-500", label: "Moderate Use", badge: "bg-amber-500/15 text-amber-400 border-amber-500/30" };
+    return { stroke: "#a855f7", text: "text-purple-500", label: "Healthy RAM", badge: "bg-purple-500/15 text-purple-400 border-purple-500/30" };
+  };
+
+  const getLatencyColor = (val) => {
+    if (val >= 300) return { text: "text-rose-500", badge: "bg-rose-500/10 text-rose-600 border-rose-500/20", label: "High Latency" };
+    if (val >= 150) return { text: "text-amber-500", badge: "bg-amber-500/10 text-amber-600 border-amber-500/20", label: "Moderate" };
+    return { text: "text-emerald-500", badge: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", label: "Ultra-Fast" };
+  };
+
+  const getDbLatencyColor = (val) => {
+    if (dbStatus?.status !== "connected" || val >= 40) return { text: "text-rose-500", label: "Slow Query / Degraded" };
+    if (val >= 15) return { text: "text-amber-500", label: "Acceptable Query" };
+    return { text: "text-emerald-500", label: "Optimal Speed" };
+  };
+
+  const cpuMeta = getCpuColor(cpuVal);
+  const ramMeta = getRamColor(ramVal);
+  const roundtripMeta = getLatencyColor(latestRoundtrip);
+  const dbMeta = getDbLatencyColor(dbLatencyVal);
 
   // SVG Radial Gauge Helper
-  const RadialGauge = ({ value, label, subtext, color = "emerald" }) => {
+  const RadialGauge = ({ value, label, subtext, meta }) => {
     const radius = 38;
     const circ = 2 * Math.PI * radius;
     const strokeDashoffset = circ - (value / 100) * circ;
-    
-    const colorClasses = {
-      emerald: { stroke: "#10b981", text: "text-emerald-500", glow: "shadow-emerald-500/20" },
-      indigo: { stroke: "#6366f1", text: "text-indigo-500", glow: "shadow-indigo-500/20" },
-      cyan: { stroke: "#06b6d4", text: "text-cyan-500", glow: "shadow-cyan-500/20" },
-      purple: { stroke: "#a855f7", text: "text-purple-500", glow: "shadow-purple-500/20" },
-      amber: { stroke: "#f59e0b", text: "text-amber-500", glow: "shadow-amber-500/20" },
-    }[color] || { stroke: "#10b981", text: "text-emerald-500", glow: "shadow-emerald-500/20" };
 
     return (
       <div className="flex items-center gap-4">
@@ -191,7 +214,7 @@ export const AdminTelemetry = () => {
               cx="50"
               cy="50"
               r={radius}
-              stroke={colorClasses.stroke}
+              stroke={meta.stroke}
               strokeWidth="8"
               strokeDasharray={circ}
               strokeDashoffset={strokeDashoffset}
@@ -201,15 +224,15 @@ export const AdminTelemetry = () => {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={`text-xl font-black ${colorClasses.text} tracking-tight`}>{value}%</span>
+            <span className={`text-xl font-black ${meta.text} tracking-tight`}>{value}%</span>
           </div>
         </div>
         <div>
           <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block">{label}</span>
           <span className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-0.5 block">{subtext}</span>
-          <div className="flex items-center gap-1.5 mt-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Optimal Range</span>
+          <div className={`flex items-center gap-1.5 mt-1.5 text-xs font-semibold ${meta.text}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${value >= 85 ? 'bg-rose-500 animate-ping' : value >= 65 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+            <span>{meta.label}</span>
           </div>
         </div>
       </div>
@@ -221,22 +244,22 @@ export const AdminTelemetry = () => {
       <div className="max-w-7xl mx-auto space-y-6 pb-20">
         
         {/* ========================================================================= */}
-        {/* 1. HERO BANNER WITH LIVE STATUS & REAL-TIME CONTROLS                      */}
+        {/* 1. HERO BANNER WITH DYNAMIC RED / AMBER / GREEN ALERTS                    */}
         {/* ========================================================================= */}
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white p-7 sm:p-8 shadow-2xl border border-slate-800">
+        <div className={`relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-slate-900 ${isHealthy ? 'to-indigo-950 border-slate-800' : 'to-rose-950 border-rose-800/80 shadow-rose-900/20'} text-white p-7 sm:p-8 shadow-2xl border transition-all duration-500`}>
           {/* Ambient Lighting FX */}
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className={`absolute -top-24 -right-24 w-96 h-96 ${isHealthy ? 'bg-indigo-500/20' : 'bg-rose-500/25'} rounded-full blur-[100px] pointer-events-none`} />
+          <div className={`absolute -bottom-24 -left-24 w-96 h-96 ${isHealthy ? 'bg-emerald-500/15' : 'bg-rose-500/20'} rounded-full blur-[100px] pointer-events-none`} />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center flex-wrap gap-3">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-black tracking-wider uppercase">
+                <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full ${isHealthy ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/20 border-rose-500/40 text-rose-300 animate-pulse'} border text-xs font-black tracking-wider uppercase`}>
                   <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isHealthy ? 'bg-emerald-400' : 'bg-rose-500'} opacity-75`}></span>
+                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isHealthy ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
                   </span>
-                  System Fully Operational
+                  {isHealthy ? "System Fully Operational" : "⚠️ Attention: Degraded Performance"}
                 </div>
                 <span className="px-3 py-1 rounded-full text-[11px] font-black tracking-widest bg-white/10 text-indigo-200 border border-white/15 uppercase">
                   {currentEnv}
@@ -253,6 +276,7 @@ export const AdminTelemetry = () => {
                 Continuous end-to-end monitoring across your client edge, backend API instances, PostgreSQL database cluster, and Redis caches.
               </p>
             </div>
+
 
             {/* Right Side Refresh Controller */}
             <div className="flex items-center flex-wrap gap-3 bg-white/5 backdrop-blur-md p-2 rounded-2xl border border-white/10">
@@ -473,13 +497,13 @@ export const AdminTelemetry = () => {
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{latestRoundtrip}</span>
+                <span className={`text-4xl font-black ${roundtripMeta.text} tracking-tight`}>{latestRoundtrip}</span>
                 <span className="text-xs font-bold text-slate-400">ms</span>
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-emerald-500 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Ultra-Fast Edge Response</span>
+            <div className={`mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold ${roundtripMeta.text} flex items-center gap-1.5`}>
+              <span className={`w-2 h-2 rounded-full ${latestRoundtrip >= 300 ? 'bg-rose-500' : latestRoundtrip >= 150 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+              <span>{roundtripMeta.label}</span>
             </div>
           </div>
 
@@ -493,27 +517,28 @@ export const AdminTelemetry = () => {
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{dbStatus?.latency_ms ?? "--"}</span>
+                <span className={`text-4xl font-black ${dbMeta.text} tracking-tight`}>{dbStatus?.latency_ms ?? "--"}</span>
                 <span className="text-xs font-bold text-slate-400">ms</span>
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-emerald-500 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{dbStatus?.engine || "PostgreSQL"} Active</span>
+            <div className={`mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold ${dbMeta.text} flex items-center gap-1.5`}>
+              <span className={`w-2 h-2 rounded-full ${dbStatus?.status !== 'connected' ? 'bg-rose-500 animate-ping' : dbLatencyVal >= 40 ? 'bg-rose-500' : dbLatencyVal >= 15 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+              <span>{dbMeta.label}</span>
             </div>
           </div>
 
           {/* Card 3: Host CPU Load Gauge */}
           <div className="rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-lg shadow-slate-200/20 dark:shadow-none flex items-center">
-            <RadialGauge value={cpuVal} label="Host CPU" subtext="Processor Load" color="cyan" />
+            <RadialGauge value={cpuVal} label="Host CPU" subtext="Processor Load" meta={cpuMeta} />
           </div>
 
           {/* Card 4: Host Memory RAM Gauge */}
           <div className="rounded-3xl bg-white dark:bg-slate-900/90 backdrop-blur-xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-lg shadow-slate-200/20 dark:shadow-none flex items-center">
-            <RadialGauge value={ramVal} label="Host Memory" subtext="RAM Allocated" color="purple" />
+            <RadialGauge value={ramVal} label="Host Memory" subtext="RAM Allocated" meta={ramMeta} />
           </div>
 
         </div>
+
 
         {/* ========================================================================= */}
         {/* 4. LIVE TELEMETRY PROBES & DIAGNOSTIC TESTING SUITE                       */}
