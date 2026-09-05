@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rentlo-cache-v11';
+const CACHE_NAME = 'rentlo-cache-v12';
 
 const APP_SHELL = [
   '/',
@@ -44,8 +44,9 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Rentlo Alert 🔔';
   const options = {
     body: data.body || 'You have a new update on Rentlo.',
-    icon: '/favicon.png',
-    badge: '/favicon.png',
+    icon: data.icon || '/favicon.png',
+    badge: data.badge || data.icon || '/favicon.png',
+    image: data.image || undefined,
     vibrate: [500, 200, 500, 200, 500], // Strong high-intensity tactile vibration bursts (half-second pulses)
     tag: data.tag || ('rentlo-alert-' + Date.now()),
     renotify: true, // Forces phone hardware to re-buzz on every single notification

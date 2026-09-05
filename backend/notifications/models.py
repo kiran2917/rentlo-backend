@@ -142,10 +142,23 @@ def send_web_push_notification(sender, instance, created, **kwargs):
             body = msg
 
 
+    from properties.models import PlatformSettings
+    plat_settings = PlatformSettings.objects.first()
+    logo_url = plat_settings.company_logo_url if plat_settings and plat_settings.company_logo_url else '/favicon.png'
+    
+    prop_image = None
+    if instance.property and instance.property.media.exists():
+        first_media = instance.property.media.first()
+        if first_media and first_media.image_url:
+            prop_image = first_media.image_url
+
     payload = {
         'title': title,
         'body': body,
         'url': url,
+        'icon': logo_url,
+        'badge': logo_url,
+        'image': prop_image,
         'tag': f"rentlo-{instance.id}-{int(instance.created_at.timestamp())}"
     }
     payload_str = json.dumps(payload)
