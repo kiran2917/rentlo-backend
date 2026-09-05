@@ -13,47 +13,64 @@ import { NotificationPromptModal } from "./shared/components/NotificationPromptM
 import { ImpersonationBanner } from "./shared/components/ImpersonationBanner";
 import { playNotificationSound } from "./shared/utils/pushNotificationService";
 
-// Lazy-Loaded Buyer & Owner Pages
-const Home = lazy(() => import("./buyer/pages/Home").then(m => ({ default: m.Home })));
-const PropertyDetail = lazy(() => import("./buyer/pages/PropertyDetail").then(m => ({ default: m.PropertyDetail })));
-const MyUnlocks = lazy(() => import("./buyer/pages/MyUnlocks").then(m => ({ default: m.MyUnlocks })));
-const MySavedSearches = lazy(() => import("./buyer/pages/MySavedSearches").then(m => ({ default: m.MySavedSearches })));
-const LeaseAgreement = lazy(() => import("./buyer/pages/LeaseAgreement").then(m => ({ default: m.LeaseAgreement })));
-const BuyerChat = lazy(() => import("./buyer/pages/BuyerChat").then(m => ({ default: m.BuyerChat })));
-const PricingPage = lazy(() => import("./buyer/pages/PricingPage").then(m => ({ default: m.PricingPage })));
-const BuyerLogin = lazy(() => import("./buyer/pages/BuyerLogin").then(m => ({ default: m.BuyerLogin })));
-const CitySeoLanding = lazy(() => import("./buyer/pages/CitySeoLanding").then(m => ({ default: m.CitySeoLanding })));
+// Auto-Retrying Lazy Loader for seamless zero-error Vercel version updates
+function lazyRetry(componentImport) {
+  return lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error) {
+      console.warn("Chunk load error detected. Refreshing assets...", error);
+      if (!sessionStorage.getItem("rentlo_chunk_reloaded")) {
+        sessionStorage.setItem("rentlo_chunk_reloaded", "1");
+        window.location.reload();
+      }
+      throw error;
+    }
+  });
+}
 
-const OwnerLogin = lazy(() => import("./buyer/pages/owner/OwnerLogin").then(m => ({ default: m.OwnerLogin })));
-const OwnerDashboard = lazy(() => import("./buyer/pages/owner/OwnerDashboard").then(m => ({ default: m.OwnerDashboard })));
-const OwnerLeads = lazy(() => import("./buyer/pages/owner/OwnerLeads").then(m => ({ default: m.OwnerLeads })));
-const OwnerVerification = lazy(() => import("./buyer/pages/owner/OwnerVerification").then(m => ({ default: m.OwnerVerification })));
-const OwnerNewListing = lazy(() => import("./buyer/pages/owner/OwnerNewListing").then(m => ({ default: m.OwnerNewListing })));
-const OwnerChat = lazy(() => import("./buyer/pages/owner/OwnerChat").then(m => ({ default: m.OwnerChat })));
-const OwnerVisits = lazy(() => import("./buyer/pages/owner/OwnerVisits").then(m => ({ default: m.OwnerVisits })));
-const OwnerPGManagement = lazy(() => import("./buyer/pages/owner/OwnerPGManagement").then(m => ({ default: m.OwnerPGManagement })));
-const OwnerMaintenance = lazy(() => import("./buyer/pages/owner/OwnerMaintenance").then(m => ({ default: m.OwnerMaintenance })));
+// Lazy-Loaded Buyer & Owner Pages
+const Home = lazyRetry(() => import("./buyer/pages/Home").then(m => ({ default: m.Home })));
+const PropertyDetail = lazyRetry(() => import("./buyer/pages/PropertyDetail").then(m => ({ default: m.PropertyDetail })));
+const MyUnlocks = lazyRetry(() => import("./buyer/pages/MyUnlocks").then(m => ({ default: m.MyUnlocks })));
+const MySavedSearches = lazyRetry(() => import("./buyer/pages/MySavedSearches").then(m => ({ default: m.MySavedSearches })));
+const LeaseAgreement = lazyRetry(() => import("./buyer/pages/LeaseAgreement").then(m => ({ default: m.LeaseAgreement })));
+const BuyerChat = lazyRetry(() => import("./buyer/pages/BuyerChat").then(m => ({ default: m.BuyerChat })));
+const PricingPage = lazyRetry(() => import("./buyer/pages/PricingPage").then(m => ({ default: m.PricingPage })));
+const BuyerLogin = lazyRetry(() => import("./buyer/pages/BuyerLogin").then(m => ({ default: m.BuyerLogin })));
+const CitySeoLanding = lazyRetry(() => import("./buyer/pages/CitySeoLanding").then(m => ({ default: m.CitySeoLanding })));
+
+const OwnerLogin = lazyRetry(() => import("./buyer/pages/owner/OwnerLogin").then(m => ({ default: m.OwnerLogin })));
+const OwnerDashboard = lazyRetry(() => import("./buyer/pages/owner/OwnerDashboard").then(m => ({ default: m.OwnerDashboard })));
+const OwnerLeads = lazyRetry(() => import("./buyer/pages/owner/OwnerLeads").then(m => ({ default: m.OwnerLeads })));
+const OwnerVerification = lazyRetry(() => import("./buyer/pages/owner/OwnerVerification").then(m => ({ default: m.OwnerVerification })));
+const OwnerNewListing = lazyRetry(() => import("./buyer/pages/owner/OwnerNewListing").then(m => ({ default: m.OwnerNewListing })));
+const OwnerChat = lazyRetry(() => import("./buyer/pages/owner/OwnerChat").then(m => ({ default: m.OwnerChat })));
+const OwnerVisits = lazyRetry(() => import("./buyer/pages/owner/OwnerVisits").then(m => ({ default: m.OwnerVisits })));
+const OwnerPGManagement = lazyRetry(() => import("./buyer/pages/owner/OwnerPGManagement").then(m => ({ default: m.OwnerPGManagement })));
+const OwnerMaintenance = lazyRetry(() => import("./buyer/pages/owner/OwnerMaintenance").then(m => ({ default: m.OwnerMaintenance })));
 
 // Lazy-Loaded Admin Pages
-const AdminLogin = lazy(() => import("./admin/pages/Login").then(m => ({ default: m.Login })));
-const AdminDashboard = lazy(() => import("./admin/pages/Dashboard").then(m => ({ default: m.Dashboard })));
-const AdminNotAuthorized = lazy(() => import("./admin/pages/NotAuthorized").then(m => ({ default: m.NotAuthorized })));
-const AdminNewListing = lazy(() => import("./admin/pages/NewListing").then(m => ({ default: m.NewListing })));
-const ModerationQueue = lazy(() => import("./admin/pages/ModerationQueue").then(m => ({ default: m.ModerationQueue })));
-const FraudFlags = lazy(() => import("./admin/pages/FraudFlags").then(m => ({ default: m.FraudFlags })));
-const AdminAnalytics = lazy(() => import("./admin/pages/AdminAnalytics").then(m => ({ default: m.AdminAnalytics })));
-const AdminEarnings = lazy(() => import("./admin/pages/Earnings").then(m => ({ default: m.Earnings })));
-const AgentPayouts = lazy(() => import("./admin/pages/AgentPayouts").then(m => ({ default: m.AgentPayouts })));
-const CommissionRules = lazy(() => import("./admin/pages/CommissionRules").then(m => ({ default: m.CommissionRules })));
-const AdminSettings = lazy(() => import("./admin/pages/Settings").then(m => ({ default: m.Settings })));
-const PropertyList = lazy(() => import("./admin/pages/PropertyList").then(m => ({ default: m.PropertyList })));
-const UTRVerifications = lazy(() => import("./admin/pages/UTRVerifications").then(m => ({ default: m.UTRVerifications })));
-const AdminLocations = lazy(() => import("./admin/pages/AdminLocations").then(m => ({ default: m.AdminLocations })));
-const SubAdminManagement = lazy(() => import("./admin/pages/SubAdminManagement").then(m => ({ default: m.SubAdminManagement })));
-const AgentManagement = lazy(() => import("./admin/pages/AgentManagement").then(m => ({ default: m.AgentManagement })));
-const AdminCRM = lazy(() => import("./admin/pages/AdminCRM").then(m => ({ default: m.AdminCRM })));
-const AdminTelemetry = lazy(() => import("./admin/pages/AdminTelemetry").then(m => ({ default: m.AdminTelemetry })));
-const NotFound = lazy(() => import("./shared/pages/NotFound").then(m => ({ default: m.NotFound })));
+const AdminLogin = lazyRetry(() => import("./admin/pages/Login").then(m => ({ default: m.Login })));
+const AdminDashboard = lazyRetry(() => import("./admin/pages/Dashboard").then(m => ({ default: m.Dashboard })));
+const AdminNotAuthorized = lazyRetry(() => import("./admin/pages/NotAuthorized").then(m => ({ default: m.NotAuthorized })));
+const AdminNewListing = lazyRetry(() => import("./admin/pages/NewListing").then(m => ({ default: m.NewListing })));
+const ModerationQueue = lazyRetry(() => import("./admin/pages/ModerationQueue").then(m => ({ default: m.ModerationQueue })));
+const FraudFlags = lazyRetry(() => import("./admin/pages/FraudFlags").then(m => ({ default: m.FraudFlags })));
+const AdminAnalytics = lazyRetry(() => import("./admin/pages/AdminAnalytics").then(m => ({ default: m.AdminAnalytics })));
+const AdminEarnings = lazyRetry(() => import("./admin/pages/Earnings").then(m => ({ default: m.Earnings })));
+const AgentPayouts = lazyRetry(() => import("./admin/pages/AgentPayouts").then(m => ({ default: m.AgentPayouts })));
+const CommissionRules = lazyRetry(() => import("./admin/pages/CommissionRules").then(m => ({ default: m.CommissionRules })));
+const AdminSettings = lazyRetry(() => import("./admin/pages/Settings").then(m => ({ default: m.Settings })));
+const PropertyList = lazyRetry(() => import("./admin/pages/PropertyList").then(m => ({ default: m.PropertyList })));
+const UTRVerifications = lazyRetry(() => import("./admin/pages/UTRVerifications").then(m => ({ default: m.UTRVerifications })));
+const AdminLocations = lazyRetry(() => import("./admin/pages/AdminLocations").then(m => ({ default: m.AdminLocations })));
+const SubAdminManagement = lazyRetry(() => import("./admin/pages/SubAdminManagement").then(m => ({ default: m.SubAdminManagement })));
+const AgentManagement = lazyRetry(() => import("./admin/pages/AgentManagement").then(m => ({ default: m.AgentManagement })));
+const AdminCRM = lazyRetry(() => import("./admin/pages/AdminCRM").then(m => ({ default: m.AdminCRM })));
+const AdminTelemetry = lazyRetry(() => import("./admin/pages/AdminTelemetry").then(m => ({ default: m.AdminTelemetry })));
+const NotFound = lazyRetry(() => import("./shared/pages/NotFound").then(m => ({ default: m.NotFound })));
+
 
 // Sleek Route Loading Fallback
 function PageLoadingFallback() {
