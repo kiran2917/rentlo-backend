@@ -11,16 +11,42 @@ from django.core.cache import cache
 def health_check(request):
     """
     Real-time Health & Telemetry Diagnostic Endpoint
-    Returns system vitals, database latency, cache status, and host environment.
+    Dynamically identifies hosting platform (Render, VPS, AWS, Local) and reports live vitals.
     """
+    # Detect hosting platform dynamically
+    host_header = request.get_host()
+    if os.getenv('RENDER') or os.getenv('RENDER_SERVICE_ID') or 'onrender.com' in host_header:
+        provider_name = 'Render Cloud Platform'
+        provider_type = 'render'
+        region_info = os.getenv('RENDER_REGION', 'US-East Cloud')
+    elif os.getenv('IS_VPS') or os.getenv('VPS_ENV') or os.path.exists('/etc/nginx'):
+        provider_name = 'Dedicated VPS Server'
+        provider_type = 'vps'
+        region_info = 'Ubuntu / Nginx Dedicated Node'
+    elif 'aws' in host_header or os.getenv('AWS_EXECUTION_ENV'):
+        provider_name = 'Amazon Web Services (AWS)'
+        provider_type = 'aws'
+        region_info = os.getenv('AWS_REGION', 'Cloud Instance')
+    else:
+        provider_name = 'Local Development Server'
+        provider_type = 'local'
+        region_info = '127.0.0.1 / Localhost'
+
     health_data = {
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
         'environment': getattr(settings, 'HOST_ENVIRONMENT', 'production'),
-        'host_server': getattr(settings, 'HOST_SERVER_TYPE', 'standalone'),
+        'deployment': {
+            'provider': provider_name,
+            'type': provider_type,
+            'region': region_info,
+            'host': host_header,
+            'server_protocol': request.scheme.upper(),
+        },
         'telemetry': {
             'sentry_configured': bool(getattr(settings, 'SENTRY_DSN', None)),
             'traces_sample_rate': getattr(settings, 'SENTRY_TRACES_SAMPLE_RATE', 0.2),
+            'apm_active': bool(getattr(settings, 'SENTRY_DSN', None)),
         },
         'services': {}
     }
@@ -34,7 +60,8 @@ def health_check(request):
         health_data['services']['database'] = {
             'status': 'connected',
             'latency_ms': round((time.time() - db_start) * 1000, 2),
-            'engine': connection.vendor
+            'engine': connection.vendor.upper(),
+            'name': connection.settings_dict.get('NAME', 'default')
         }
     except Exception as e:
         health_data['status'] = 'degraded'
@@ -50,7 +77,8 @@ def health_check(request):
         is_cached = cache.get('__telemetry_ping__') == '1'
         health_data['services']['cache'] = {
             'status': 'connected' if is_cached else 'unavailable',
-            'latency_ms': round((time.time() - cache_start) * 1000, 2)
+            'latency_ms': round((time.time() - cache_start) * 1000, 2),
+            'backend': cache.__class__.__name__
         }
     except Exception:
         health_data['services']['cache'] = {
@@ -66,10 +94,15 @@ def health_check(request):
             'disk_percent': psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:\\').percent
         }
     except Exception:
-        health_data['system'] = 'unavailable'
+        health_data['system'] = {
+            'cpu_percent': None,
+            'memory_percent': None,
+            'disk_percent': None
+        }
 
     status_code = 200 if health_data['status'] == 'healthy' else 503
     return JsonResponse(health_data, status=status_code)
+
 
 
 from unlocks.views import RazorpayWebhookView
