@@ -1481,8 +1481,8 @@ export const PropertyDetail = () => {
 
                 {/* Booking Confirm Modal */}
                 {bookingSlot && (
-                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}>
-                    <div className="rounded-3xl p-8 w-full max-w-sm border border-border bg-surface shadow-2xl">
+                  <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}>
+                    <div className="rounded-3xl p-8 w-full max-w-sm border border-border bg-surface shadow-2xl relative z-10">
                       <h3 className="text-[18px] font-extrabold mb-1" style={{ color: "var(--ink)" }}>Confirm Booking</h3>
                       <p className="text-[13px] mb-4" style={{ color: "var(--text-muted)" }}>
                         {new Date(bookingSlot.slot_date).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })} at{" "}
@@ -1595,7 +1595,7 @@ export const PropertyDetail = () => {
                       {mapLat && mapLng ? (
                         <div className="flex flex-col gap-3">
                           <div
-                            className="rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
+                            className="relative z-0 isolate rounded-2xl overflow-hidden shadow-sm border border-[var(--border)]"
                             style={{ height: "220px" }}
                           >
                             <MapContainer
@@ -1826,7 +1826,7 @@ export const PropertyDetail = () => {
                     </p>
                   </div>
                   <div
-                    className="absolute inset-0 z-10"
+                    className="absolute inset-0 z-0 isolate"
                     style={{ filter: "blur(7px)", opacity: 0.55 }}
                   >
                     <MapContainer
@@ -1964,7 +1964,7 @@ export const PropertyDetail = () => {
       {/* Photo Gallery Modal */}
       {showGallery && property.media?.length > 0 && (
         <div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
           style={{
             backgroundColor: "rgba(11,12,14,0.95)",
             backdropFilter: "blur(10px)",
@@ -2030,7 +2030,7 @@ export const PropertyDetail = () => {
 
 
       {showBuyerUpiModal && buyerUpiConfig && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-[var(--surface)] rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
             <button
               onClick={() => setShowBuyerUpiModal(false)}
@@ -2093,7 +2093,7 @@ export const PropertyDetail = () => {
 
       {showFeedbackModal && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
           style={{
             backgroundColor: "rgba(11,12,14,0.8)",
             backdropFilter: "blur(10px)",
@@ -2253,7 +2253,7 @@ export const PropertyDetail = () => {
       )}
       {/* 3D Tour Modal */}
       {show3DTour && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md animate-fade-in">
           <button
             className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-[var(--surface)]/10 text-white rounded-full hover:bg-[var(--surface)]/20 transition-all z-10"
             onClick={() => setShow3DTour(false)}
@@ -2296,7 +2296,7 @@ export const PropertyDetail = () => {
 
       {/* Printable Signboard QR Code Modal (100% Free) */}
       {showQrModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-[var(--surface)] rounded-3xl p-8 w-full max-w-sm flex flex-col items-center text-center shadow-2xl relative">
             <button
               onClick={() => setShowQrModal(false)}

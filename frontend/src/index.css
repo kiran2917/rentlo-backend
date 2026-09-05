@@ -1980,3 +1980,18 @@ h6,
     /* Scales down all rem-based sizes to densify mobile UI */
   }
 }
+
+/* Leaflet map isolation & modal layering fix */
+.leaflet-container {
+  isolation: isolate;
+  z-index: 0 !important;
+}
+
+.leaflet-pane {
+  z-index: 10 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 20 !important;
+}
