@@ -174,6 +174,7 @@ export const OwnerPGManagement = () => {
   };
 
   const activeResidents = residents.filter((r) => r.status === "active");
+  const noticeResidents = residents.filter((r) => r.status === "notice_period");
   const currentProperty = properties.find((p) => String(p.id) === String(selectedPropertyId)) || (properties.length > 0 ? properties[0] : null);
 
   const totalCapacity = currentProperty ? (Number(currentProperty.total_beds) || Number(currentProperty.pg_rules?.total_beds) || 0) : 0;
