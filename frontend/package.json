@@ -26,7 +26,8 @@
     "react-router-dom": "^7.18.2",
     "react-signature-canvas": "^1.1.0-alpha.2",
     "react-toastify": "^11.1.0",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "@sentry/react": "^8.48.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.4",

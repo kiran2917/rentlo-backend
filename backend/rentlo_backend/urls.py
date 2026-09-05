@@ -3,11 +3,74 @@ from django.urls import path, include
 from django.http import JsonResponse
 from datetime import datetime
 
+import time
+import os
+from django.db import connection
+from django.core.cache import cache
+
 def health_check(request):
-    return JsonResponse({
+    """
+    Real-time Health & Telemetry Diagnostic Endpoint
+    Returns system vitals, database latency, cache status, and host environment.
+    """
+    health_data = {
         'status': 'healthy',
-        'timestamp': datetime.now().isoformat()
-    })
+        'timestamp': datetime.now().isoformat(),
+        'environment': getattr(settings, 'HOST_ENVIRONMENT', 'production'),
+        'host_server': getattr(settings, 'HOST_SERVER_TYPE', 'standalone'),
+        'telemetry': {
+            'sentry_configured': bool(getattr(settings, 'SENTRY_DSN', None)),
+            'traces_sample_rate': getattr(settings, 'SENTRY_TRACES_SAMPLE_RATE', 0.2),
+        },
+        'services': {}
+    }
+    
+    # 1. Database Ping & Latency Check
+    db_start = time.time()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+        health_data['services']['database'] = {
+            'status': 'connected',
+            'latency_ms': round((time.time() - db_start) * 1000, 2),
+            'engine': connection.vendor
+        }
+    except Exception as e:
+        health_data['status'] = 'degraded'
+        health_data['services']['database'] = {
+            'status': 'error',
+            'error': str(e)
+        }
+
+    # 2. Redis / Cache Check
+    cache_start = time.time()
+    try:
+        cache.set('__telemetry_ping__', '1', 5)
+        is_cached = cache.get('__telemetry_ping__') == '1'
+        health_data['services']['cache'] = {
+            'status': 'connected' if is_cached else 'unavailable',
+            'latency_ms': round((time.time() - cache_start) * 1000, 2)
+        }
+    except Exception:
+        health_data['services']['cache'] = {
+            'status': 'unavailable'
+        }
+
+    # 3. Hardware / System Vitals (VPS / Container metrics)
+    try:
+        import psutil
+        health_data['system'] = {
+            'cpu_percent': psutil.cpu_percent(interval=None),
+            'memory_percent': psutil.virtual_memory().percent,
+            'disk_percent': psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:\\').percent
+        }
+    except Exception:
+        health_data['system'] = 'unavailable'
+
+    status_code = 200 if health_data['status'] == 'healthy' else 503
+    return JsonResponse(health_data, status=status_code)
+
 
 from unlocks.views import RazorpayWebhookView
 from earnings.views import AgentEarningsSummaryView

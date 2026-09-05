@@ -353,3 +353,53 @@ CURRENT_DPDP_POLICY_VERSION = '1.0'
 
 # django-encrypted-model-fields key configuration
 FIELD_ENCRYPTION_KEY = os.getenv('FIELD_ENCRYPTION_KEY')
+
+# ==============================================================================
+# TELEMETRY & OBSERVABILITY CONFIGURATION (MULTI-HOST: VPS / RENDER / VERCEL)
+# ==============================================================================
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+# Automatic host environment detection
+if os.getenv('RENDER') or os.getenv('RENDER_SERVICE_ID'):
+    HOST_ENVIRONMENT = os.getenv('ENVIRONMENT', 'render-staging')
+elif os.getenv('IS_VPS') or os.getenv('VPS_ENV') or os.path.exists('/etc/nginx'):
+    HOST_ENVIRONMENT = os.getenv('ENVIRONMENT', 'vps-production')
+else:
+    HOST_ENVIRONMENT = os.getenv('ENVIRONMENT', 'development' if DEBUG else 'production')
+
+HOST_SERVER_TYPE = 'render' if (os.getenv('RENDER') or os.getenv('RENDER_SERVICE_ID')) else ('vps' if os.getenv('IS_VPS') else 'standalone')
+
+if SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.django import DjangoIntegration
+        from sentry_sdk.integrations.celery import CeleryIntegration
+        from sentry_sdk.integrations.redis import RedisIntegration
+        from sentry_sdk.integrations.logging import LoggingIntegration
+
+        sentry_logging = LoggingIntegration(
+            level=logging.INFO,
+            event_level=logging.ERROR
+        )
+
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            environment=HOST_ENVIRONMENT,
+            server_name=os.getenv('SERVER_NAME', HOST_SERVER_TYPE),
+            integrations=[
+                DjangoIntegration(
+                    transaction_style='url',
+                    middleware_spans=True,
+                ),
+                CeleryIntegration(),
+                RedisIntegration(),
+                sentry_logging,
+            ],
+            traces_sample_rate=float(os.getenv('SENTRY_TRACES_SAMPLE_RATE', '0.2' if not DEBUG else '1.0')),
+            profiles_sample_rate=float(os.getenv('SENTRY_PROFILES_SAMPLE_RATE', '0.1' if not DEBUG else '0.0')),
+            send_default_pii=False,
+            attach_stacktrace=True,
+        )
+    except Exception as _telemetry_exc:
+        # Graceful fallback so missing packages or network issues never halt boot
+        pass

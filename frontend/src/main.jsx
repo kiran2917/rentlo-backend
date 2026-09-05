@@ -3,6 +3,10 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import "./buyer/i18n";
+import { initTelemetry, captureException } from "./telemetry";
+
+// Initialize distributed telemetry across Vercel and multi-cloud hosts
+initTelemetry();
 
 // Global Fetch Interceptor: Attach Bearer token for seamless cross-origin auth in Incognito & Safari
 const originalFetch = window.fetch;
@@ -62,6 +66,7 @@ window.fetch = async (input, init = {}) => {
 
   return response;
 };
+
 class GlobalErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
 
@@ -71,6 +76,8 @@ class GlobalErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error("Unhandled Global UI Error:", error, errorInfo);
+    // Transmit crash report to Telemetry collector (Sentry / OTel)
+    captureException(error, { componentStack: errorInfo?.componentStack });
   }
 
   render() {
@@ -83,7 +90,7 @@ class GlobalErrorBoundary extends React.Component {
             </div>
             <h2 className="text-xl font-extrabold mb-2 text-white">Something Went Wrong</h2>
             <p className="text-sm text-slate-400 mb-4">
-              An unexpected user interface error occurred. Please refresh to continue.
+              An unexpected user interface error occurred. Our live telemetry system has been notified.
             </p>
             {this.state.error && (
               <div className="p-3 mb-6 bg-slate-900/50 border border-slate-700 rounded-xl text-left text-xs font-mono text-slate-300 overflow-auto max-h-40">
@@ -112,4 +119,5 @@ createRoot(document.getElementById("root")).render(
     </GlobalErrorBoundary>
   </StrictMode>,
 );
+
 
