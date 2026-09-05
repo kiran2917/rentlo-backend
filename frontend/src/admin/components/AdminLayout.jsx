@@ -46,6 +46,7 @@ export const AdminLayout = ({ children, activeTab }) => {
     { id: "team", label: "Sub-Admins", icon: "manage_accounts", path: "/admin/team", roles: ["admin"] },
     { id: "agents", label: "Field Agents & KYC", icon: "badge", path: "/admin/agents", roles: ["admin"] },
     { id: "rules", label: "Rules", icon: "rule", path: "/admin/commission-rules", roles: ["admin"] },
+    { id: "telemetry", label: "Live Telemetry", icon: "monitor_heart", path: "/admin/telemetry", roles: ["admin"] },
     { id: "settings", label: "Settings", icon: "settings", path: "/admin/settings", roles: ["admin"] },
   ];
 

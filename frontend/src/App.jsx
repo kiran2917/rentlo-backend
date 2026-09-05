@@ -52,6 +52,7 @@ const AdminLocations = lazy(() => import("./admin/pages/AdminLocations").then(m 
 const SubAdminManagement = lazy(() => import("./admin/pages/SubAdminManagement").then(m => ({ default: m.SubAdminManagement })));
 const AgentManagement = lazy(() => import("./admin/pages/AgentManagement").then(m => ({ default: m.AgentManagement })));
 const AdminCRM = lazy(() => import("./admin/pages/AdminCRM").then(m => ({ default: m.AdminCRM })));
+const AdminTelemetry = lazy(() => import("./admin/pages/AdminTelemetry").then(m => ({ default: m.AdminTelemetry })));
 const NotFound = lazy(() => import("./shared/pages/NotFound").then(m => ({ default: m.NotFound })));
 
 // Sleek Route Loading Fallback
@@ -187,6 +188,7 @@ function App() {
                 <Route path="/admin/agents" element={<AgentManagement />} />
                 <Route path="/admin/commission-rules" element={<CommissionRules />} />
                 <Route path="/admin/locations" element={<AdminLocations />} />
+                <Route path="/admin/telemetry" element={<AdminTelemetry />} />
               </Route>
 
               {/* CATCH-ALL 404 */}
