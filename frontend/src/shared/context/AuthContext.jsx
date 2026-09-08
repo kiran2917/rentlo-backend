@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
 
     if (Notification.permission === "granted") {
       subscribeUserToPush().catch((err) => {
-        console.error("Silent push sync error:", err);
+        console.warn("Silent push sync notice:", err?.message || err);
       });
     }
   }, [userId]);

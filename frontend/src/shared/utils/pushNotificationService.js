@@ -40,7 +40,7 @@ export async function subscribeUserToPush() {
   const keyData = await keyRes.json();
   const publicKey = keyData.public_key?.trim();
   if (!publicKey) {
-    throw new Error("Server returned an empty VAPID public key.");
+    return { success: false, reason: "vapid_not_configured", message: "Server returned an empty VAPID public key." };
   }
 
   // 4. Convert Base64 URL-safe string to Uint8Array

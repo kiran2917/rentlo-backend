@@ -343,6 +343,7 @@ export const AdminCRM = () => {
             {users.map((u) => {
               const isBuyer = u.roles?.includes("buyer") || u.role === "buyer";
               const isOwner = u.roles?.includes("owner") || u.role === "owner" || (u.owner_stats?.total_properties_listed > 0);
+              const isAdmin = u.roles?.includes("admin") || u.role === "admin" || u.is_superuser;
               const activePass = u.buyer_stats?.active_pass;
 
               return (
