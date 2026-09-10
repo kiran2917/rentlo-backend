@@ -394,7 +394,7 @@ export const MyUnlocks = () => {
                       <div className="relative h-52 overflow-hidden" style={{ backgroundColor: "var(--border)" }}>
                         {prop.media?.length > 0 ? (
                           <img
-                            src={prop.media[0].thumbnail_url || prop.media[0].image_url}
+                            src={prop.media?.[0]?.thumbnail_url || prop.media?.[0]?.image_url}
                             alt={prop.title || "Property"}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />

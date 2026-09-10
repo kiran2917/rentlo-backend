@@ -571,13 +571,13 @@ export const PropertyDetail = () => {
         >
           {media.map((item, idx) => (
             <div
-              key={item.id || idx}
+              key={item?.id || idx}
               className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
                 mobileSlideIndex === idx ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
               }`}
             >
               <img
-                src={item.image_url}
+                src={item?.image_url}
                 alt={`Property Photo ${idx + 1}`}
                 loading={idx === 0 ? "eager" : "lazy"}
                 decoding={idx === 0 ? "sync" : "async"}
@@ -594,7 +594,7 @@ export const PropertyDetail = () => {
             onClick={() => openGallery(0)}
           >
             <img
-              src={media[0].image_url}
+              src={media[0]?.image_url}
               alt="Main"
               loading="eager"
               decoding="sync"
@@ -604,45 +604,60 @@ export const PropertyDetail = () => {
         ) : count === 2 ? (
           <div className="hidden md:grid grid-cols-2 gap-2 h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200 shadow-xs">
             <div className="overflow-hidden group" onClick={() => openGallery(0)}>
-              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[0]?.image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             <div className="overflow-hidden group" onClick={() => openGallery(1)}>
-              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[1]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
           </div>
         ) : count === 3 ? (
           <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
             <div className="col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
-              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[0]?.image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             <div className="col-span-2 row-span-1 overflow-hidden group" onClick={() => openGallery(1)}>
-              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[1]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             <div className="col-span-2 row-span-1 overflow-hidden group" onClick={() => openGallery(2)}>
-              <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[2]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          </div>
+        ) : count === 4 ? (
+          <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[45vh] lg:h-[55vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
+            <div className="col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
+              <img src={media[0]?.image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="col-span-2 row-span-1 overflow-hidden group" onClick={() => openGallery(1)}>
+              <img src={media[1]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(2)}>
+              <img src={media[2]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(3)}>
+              <img src={media[3]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
           </div>
         ) : (
           <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-2 h-[48vh] lg:h-[58vh] overflow-hidden cursor-pointer rounded-3xl border border-slate-200/80 shadow-xs">
             {/* Main image: Left 50% width */}
             <div className="col-span-2 row-span-2 overflow-hidden group" onClick={() => openGallery(0)}>
-              <img src={media[0].image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[0]?.image_url} loading="eager" decoding="sync" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             {/* Small 1 */}
             <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(1)}>
-              <img src={media[1].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[1]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             {/* Small 2 */}
             <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(2)}>
-              <img src={media[2].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[2]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             {/* Small 3 */}
             <div className="col-span-1 row-span-1 overflow-hidden group" onClick={() => openGallery(3)}>
-              <img src={media[3].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[3]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             {/* Small 4 / Show More Overlay */}
             <div className="col-span-1 row-span-1 overflow-hidden relative group" onClick={() => openGallery(4)}>
-              <img src={media[4].image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={media[4]?.image_url} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               {count > 5 && (
                 <div
                   className="absolute inset-0 flex items-center justify-center flex-col transition-all hover:bg-black/40 duration-300"
@@ -1902,7 +1917,7 @@ export const PropertyDetail = () => {
                   {prop.media?.length > 0 ? (
                     <img
                       src={
-                        prop.media[0].thumbnail_url || prop.media[0].image_url
+                        prop.media[0]?.thumbnail_url || prop.media[0]?.image_url
                       }
                       alt="Property"
                       loading="lazy"
@@ -1992,7 +2007,7 @@ export const PropertyDetail = () => {
              )}
 
              <img
-               src={property.media[currentImageIndex].image_url}
+               src={property.media?.[currentImageIndex]?.image_url || property.media?.[0]?.image_url}
                alt="Gallery"
                className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
                onClick={(e) => e.stopPropagation()}
@@ -2019,7 +2034,7 @@ export const PropertyDetail = () => {
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`shrink-0 h-20 w-28 rounded-xl overflow-hidden border-2 transition-all ${currentImageIndex === idx ? 'border-accent scale-105 opacity-100 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
                   >
-                    <img src={m.thumbnail_url || m.image_url} className="w-full h-full object-cover" />
+                    <img src={m?.thumbnail_url || m?.image_url} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

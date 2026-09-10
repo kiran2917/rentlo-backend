@@ -299,7 +299,7 @@ export const ModerationQueue = () => {
                             <div className="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 bg-white/80 border border-white shadow-sm group-hover:scale-105 transition-transform duration-500">
                               {p.media && p.media.length > 0 ? (
                                 <img
-                                  src={p.media[0].thumbnail_url || p.media[0].image_url}
+                                  src={p.media[0]?.thumbnail_url || p.media[0]?.image_url}
                                   alt="Property"
                                   className="w-full h-full object-cover"
                                 />
@@ -424,7 +424,7 @@ export const ModerationQueue = () => {
                       <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-white border border-border shadow-xs">
                         {p.media && p.media.length > 0 ? (
                           <img
-                            src={p.media[0].thumbnail_url || p.media[0].image_url}
+                            src={p.media[0]?.thumbnail_url || p.media[0]?.image_url}
                             alt="Property"
                             className="w-full h-full object-cover"
                           />

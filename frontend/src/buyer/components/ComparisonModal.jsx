@@ -47,7 +47,7 @@ export const ComparisonModal = ({ properties, onClose, onRemove }) => {
 
               <div className="h-48 w-full bg-gray-200 relative">
                 {prop.media?.length > 0 ? (
-                  <img src={prop.media[0].thumbnail_url || prop.media[0].image_url} alt="Property" className="w-full h-full object-cover" />
+                  <img src={prop.media?.[0]?.thumbnail_url || prop.media?.[0]?.image_url} alt="Property" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400">
                     <span className="material-symbols-outlined text-4xl">home</span>
